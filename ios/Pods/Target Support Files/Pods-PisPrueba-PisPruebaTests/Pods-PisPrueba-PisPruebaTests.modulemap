@@ -1,0 +1,6 @@
+module Pods_PisPrueba_PisPruebaTests {
+  umbrella header "Pods-PisPrueba-PisPruebaTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
