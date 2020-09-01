@@ -2,6 +2,12 @@
 
 ## Metodología de desarrollo
 
+### Instalación del proyecto
+
+Para instalar el proyecto por primera vez se debe de instalar la branch `develop` y luego ejecutar el comando `npm install`.
+
+Cada vez que se agregue una nueva librería o dependencias, se deberá ejecutar el comando `npm install` antes de poder levantar el proyecto.
+
 ### Sistema de branches y PRs
 
 Al comenzar a trabajar en una feature, se deberá crear una nueva branch desde la branch `develop` con el nombre `feature/nombre-de-la-feature`.
