@@ -1,6 +1,8 @@
 {
+  "displayName": "SDK Prototype",
   "expo": {
-    "name": "id-uruguay-sdk-prototype",
+    "name": "SDK Prototype",
+    "description": "SDK Prototype to sign in with ID Uruguay",
     "slug": "id-uruguay-sdk-prototype",
     "version": "1.0.0",
     "orientation": "portrait",
