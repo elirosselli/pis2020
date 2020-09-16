@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Button, StyleSheet } from "react-native";
-import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
 
 export default function App() {
-  const handlePress = async () => {
-    const response = await AuthSession.startAsync({
-      returnUrl: "http://localhost:19006/",
-      authUrl: "https://eva.fing.edu.uy/login/index.php",
-    });
+  const [token, setToken] = useState(null);
+
+  const handleLogin = async () => {
+    const response = await WebBrowser.openAuthSessionAsync(
+      "https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize"
+    );
+    setToken(response);
+  };
+
+  const handleLogout = () => {
+    setToken(null);
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Llevame al browser" onPress={handlePress}></Button>
+      {token ? (
+        <Button title="Cerrar sesión de ID Uruguay" onPress={handleLogout} />
+      ) : (
+        <Button title="Ingresar con ID Uruguay" onPress={handleLogin} />
+      )}
     </View>
   );
 }
@@ -22,5 +32,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  text: {
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
   },
 });
