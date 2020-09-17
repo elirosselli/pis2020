@@ -4,9 +4,7 @@
 
 ### Instalación del proyecto
 
-Para instalar el proyecto por primera vez se debe de instalar la branch `develop` y luego ejecutar el comando `npm install`.
-
-Cada vez que se agregue una nueva librería o dependencias, se deberá ejecutar el comando `npm install` antes de poder levantar el proyecto.
+Para instalar el proyecto por primera vez se debe de instalar la branch `develop` y luego seguir las instrucciones correspondientes en cada carpeta.
 
 ### Sistema de branches y PRs
 
