@@ -21,8 +21,23 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [{
+            "scheme": "sdkIdU.testing"
+          }],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "sdkidu.testing"
   }
 }
