@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { View, Button, StyleSheet } from "react-native";
-import * as WebBrowser from "expo-web-browser";
+import React, { useState } from 'react';
+import { View, Button, StyleSheet } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 
 export default function App() {
   const [token, setToken] = useState(null);
 
   const handleLogin = async () => {
     const response = await WebBrowser.openAuthSessionAsync(
-      "https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize"
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize',
     );
     setToken(response);
   };
@@ -30,12 +30,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
