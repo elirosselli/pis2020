@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Image, Linking} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import ENV from './env';
 
 export default function App() {
   const [token, setToken] = useState(null);
+  const sdkIdUClientId = ENV().sdkIdUClientId;
   const handleLogin = async () => {
     const response = await WebBrowser.openAuthSessionAsync(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=894329&redirect_uri=sdkIdU.testing%3A%2F%2Fauth',
+      `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${sdkIdUClientId}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
     );
     setToken(response);
   };
@@ -15,27 +25,38 @@ export default function App() {
     setToken(null);
   };
 
+
   return (
     <>
       <View style={styles.main}>
         <View style={styles.title}>
           <Text
             numberOfLines={2}
-            style={
-              {
-                textAlign: 'left', fontSize: 40, fontWeight: 'bold', alignSelf: 'center', width: '80%', color: '#222',
-              }
-            }
+            style={{
+              textAlign: 'left',
+              fontSize: 40,
+              fontWeight: 'bold',
+              alignSelf: 'center',
+              width: '80%',
+              color: '#222',
+            }}
           >
             App
             {'\n'}
             Prototipo
           </Text>
-          <View style={{height: 10, width: 30, backgroundColor: '#222', marginLeft: '10%'}} />
+          <View
+            style={{
+              height: 10,
+              width: 30,
+              backgroundColor: '#222',
+              marginLeft: '10%',
+            }}
+          />
         </View>
         <View style={styles.loginSection}>
           <LoginButton />
-          <ScrollView 
+          <ScrollView
             style={{
               backgroundColor: '#fff',
               shadowColor: '#000',
@@ -49,49 +70,67 @@ export default function App() {
           >
             <Text
               numberOfLines={2}
-              style={{ textAlign: 'left',fontSize: 20, fontWeight: 'bold', color: '#222' }}
+              style={{
+                textAlign: 'left',
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: '#222',
+              }}
             >
               Información
             </Text>
-            <View style={{ height: 5, width: 15, backgroundColor: '#222', marginBottom: 5 }} />
+            <View
+              style={{
+                height: 5,
+                width: 15,
+                backgroundColor: '#222',
+                marginBottom: 5,
+              }}
+            />
             <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Proin nec tortor non ante lobortis consequat at eget odio.
-              Quisque vel diam egestas, aliquet elit a, mollis turpis.
-              Cras faucibus, dolor et vestibulum semper, est ipsum
-              placerat est, id dignissim felis elit ut eros.
-              Integer non nisl blandit, mattis ante sed, pellentesque magna.
-              Fusce suscipit, ipsum sit amet bibendum scelerisque,
-              nisl felis gravida tortor, eget varius orci risus vel diam.
-              Cras eget placerat nisl, quis ornare tellus. Donec sit amet faucibus nibh.
-              Praesent consequat convallis convallis.
-              Sed neque justo, tempor vel elit quis, lacinia mattis arcu.
-              Morbi mollis lacus risus, sit amet sodales tortor luctus ut.
-              Sed consequat felis vitae mattis ultricies.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
+              tortor non ante lobortis consequat at eget odio. Quisque vel diam
+              egestas, aliquet elit a, mollis turpis. Cras faucibus, dolor et
+              vestibulum semper, est ipsum placerat est, id dignissim felis elit
+              ut eros. Integer non nisl blandit, mattis ante sed, pellentesque
+              magna. Fusce suscipit, ipsum sit amet bibendum scelerisque, nisl
+              felis gravida tortor, eget varius orci risus vel diam. Cras eget
+              placerat nisl, quis ornare tellus. Donec sit amet faucibus nibh.
+              Praesent consequat convallis convallis. Sed neque justo, tempor
+              vel elit quis, lacinia mattis arcu. Morbi mollis lacus risus, sit
+              amet sodales tortor luctus ut. Sed consequat felis vitae mattis
+              ultricies.
             </Text>
           </ScrollView>
         </View>
         <View style={styles.bottomSection}>
-          <TouchableOpacity style={{flex: 1}} onPress={() => {Linking.openURL('https://agesic.gub.uy')}}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => {
+              Linking.openURL('https://agesic.gub.uy');
+            }}
+          >
             <Image
-              source={
-                require('./assets/logo-agesic.png')
-              }
-              style={
-                {
-                  flex: 1, alignSelf: 'center', resizeMode: 'contain', height: null, aspectRatio: 2,
-                }
-              }
+              source={require('./assets/logo-agesic.png')}
+              style={{
+                flex: 1,
+                alignSelf: 'center',
+                resizeMode: 'contain',
+                height: null,
+                aspectRatio: 2,
+              }}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1}}>
+          <TouchableOpacity style={{ flex: 1 }}>
             <Image
               source={require('./assets/logoGubUy.png')}
-              style={
-                {
-                  flex: 1, alignSelf: 'center', resizeMode: 'contain', height: null, aspectRatio: 2,
-                }
-              }
+              style={{
+                flex: 1,
+                alignSelf: 'center',
+                resizeMode: 'contain',
+                height: null,
+                aspectRatio: 2,
+              }}
             />
           </TouchableOpacity>
         </View>
@@ -101,7 +140,8 @@ export default function App() {
 }
 
 class LoginButton extends React.Component {
-  componentDidMount() { // B
+  componentDidMount() {
+    // B
     // Linking.addEventListener('url', this.handleOpenURL);
   }
 
@@ -123,20 +163,35 @@ class LoginButton extends React.Component {
     return (
       <TouchableOpacity
         style={styles.button}
-        onPress={ () => Linking.openURL('https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=894329&redirect_uri=sdkIdU.testing%3A%2F%2Fauth')}
+        onPress={() =>
+          Linking.openURL(
+            `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${sdkIdUClientId}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
+          )
+        }
       >
-        <View style={{ borderRightColor: '#ddd', borderRightWidth: 1, justifyContent: 'center' }}>
+        <View
+          style={{
+            borderRightColor: '#ddd',
+            borderRightWidth: 1,
+            justifyContent: 'center',
+          }}
+        >
           <Image
-            source={require('./assets/logoAgesicSimple.png')} 
-            style={
-              {
-                flex: 1, alignSelf: 'center', resizeMode: 'center', height: '100%', aspectRatio: 1, marginRight: 15 
-              }
-            }
+            source={require('./assets/logoAgesicSimple.png')}
+            style={{
+              flex: 1,
+              alignSelf: 'center',
+              resizeMode: 'center',
+              height: '100%',
+              aspectRatio: 1,
+              marginRight: 15,
+            }}
           />
         </View>
         <View>
-          <Text style={{ color: '#fff', fontWeight: 'bold', marginLeft: 15 }}>Login con USUARIO gub.uy</Text>
+          <Text style={{ color: '#fff', fontWeight: 'bold', marginLeft: 15 }}>
+            Login con USUARIO gub.uy
+          </Text>
         </View>
       </TouchableOpacity>
     );
