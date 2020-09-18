@@ -7,7 +7,7 @@ export default function App() {
 
   const handleLogin = async () => {
     const response = await WebBrowser.openAuthSessionAsync(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=894329&redirect_uri=sdkIdU.testing%3A%2F%2Fauth',
     );
     setToken(response);
   };
