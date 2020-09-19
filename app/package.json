@@ -1,5 +1,6 @@
 {
-  "name": "app",
+  "name": "sdk-prototype",
+  "displayName": "SDKPrototype",
   "version": "0.0.1",
   "private": true,
   "scripts": {
