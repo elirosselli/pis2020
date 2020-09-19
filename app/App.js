@@ -1,36 +1,53 @@
-import React, { useState } from 'react';
-import { View, Button, StyleSheet } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Linking,
+} from 'react-native';
 
-export default function App() {
-  const [token, setToken] = useState(null);
+import LogoAgesic from './images/logo-agesic.png';
+import LogoGubUy from './images/logoGubUy.png';
 
-  const handleLogin = async () => {
-    const response = await WebBrowser.openAuthSessionAsync(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=894329&redirect_uri=sdkIdU.testing%3A%2F%2Fauth',
-    );
-    setToken(response);
-  };
+import LoginButton from './LoginButton';
+import styles from './app-styles';
 
-  const handleLogout = () => {
-    setToken(null);
-  };
-
-  return (
-    <View style={styles.container}>
-      {token ? (
-        <Button title="Cerrar sesión de ID Uruguay" onPress={handleLogout} />
-      ) : (
-        <Button title="Ingresar con ID Uruguay" onPress={handleLogin} />
-      )}
+const App = () => (
+  <View style={styles.container}>
+    <View style={styles.titleContainer}>
+      <Text numberOfLines={2} style={styles.title}>
+        App{'\n'}Prototipo
+      </Text>
+      <View style={styles.titleSeparator} />
     </View>
-  );
-}
+    <View style={styles.loginContainer}>
+      <LoginButton />
+      <ScrollView style={styles.informationContainer}>
+        <Text numberOfLines={2} style={styles.informationTitle}>
+          Información
+        </Text>
+        <View style={styles.informationSeparator} />
+        <Text>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
+        </Text>
+      </ScrollView>
+    </View>
+    <View style={styles.bottomSection}>
+      <TouchableOpacity
+        style={{ flex: 1 }}
+        onPress={() => {
+          Linking.openURL('https://agesic.gub.uy');
+        }}
+      >
+        <Image source={LogoAgesic} style={styles.logosContainer} />
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }}>
+        <Image source={LogoGubUy} style={styles.logosContainer} />
+      </TouchableOpacity>
+    </View>
+  </View>
+);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
