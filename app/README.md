@@ -1,13 +1,27 @@
 # Prototype App
 
-## Instalación
+## Instalación y configuración
 
-Para instalar todas las dependencias necesarias se debe utilizar el comando `npm install`.
+Se deberá seguir las instrucciones de configuración de ambiente disponibles en la [documentación de React Native](https://reactnative.dev/docs/environment-setup), en la tab de "React Native CLI Quickstart", sección "Installing dependencies". 
 
-## Activación
+En Linux/Windows, esto incluye instalar Android Studio, y allí descargar un SDK específico. En MacOS, se deberá instalar XCode para poder levantar un emulador iOS, o Android Studio si se quiere levantar un emulador Android.
 
-Para prender el servidor debe utilizar el comando `expo start`.
-Luego, cuando se activó con exito, se puede utilizar el comando `a` para probar el prototipo en Android (es necesario tener un simulador abierto, por ejemplo de Android Studio) o `i` para levantar un simulador de iPhone (solo disponible en macOS)
+Una vez instalado Android Studio (o XCode) y configurado lo necesario, se deberá ejecutar el comando
+`npm install`
+para instalar los paquetes necesarios. 
+
+
+## Levantar la aplicación
+
+Primero, se deberá levantar un emulador (Android o iOS), o conectar un dispositivo real a la computadora. Para levantar un emulador en Android Studio, se debe ir a "Configure", y en ese menú se debe seleccionar "AVD Manager". Tener en cuenta que el AVD debe utilizar el SDK previamente instalado deberá ejecutar el comando
+`npx react-native start`
+
+En otra terminal, ejecutar además el comando
+`npx react-native run-android` o `npx react-native run-ios`
+para levantar la aplicación en el emulador o dispositivo. 
+
+De encontrarse con algún error, puede ser útil la página de [Troubleshooting](https://reactnative.dev/docs/troubleshooting#content) de la documentación de React Native.
+
 
 ## Testing
 
