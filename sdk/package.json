@@ -1,0 +1,22 @@
+{
+  "name": "sdk-gubuy-test",
+  "version": "1.0.1",
+  "description": "Sdk Pis 2020",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elirosselli/pis2020.git"
+  },
+  "author": "Santiago Acevedo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elirosselli/pis2020/issues"
+  },
+  "homepage": "https://github.com/elirosselli/pis2020#readme",
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.63.0"
+  }
+}
