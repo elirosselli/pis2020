@@ -4,6 +4,7 @@ import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
+import * as sdkActions from './requests/requests';
 
 const LoginButton = ({ sdkIdUClientId }) => {
   // Used for debug
@@ -24,10 +25,7 @@ const LoginButton = ({ sdkIdUClientId }) => {
     };
   }, [handleOpenURL]);
 
-  const handleLogin = () =>
-    Linking.openURL(
-      `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${sdkIdUClientId}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
-    );
+  const handleLogin = () => sdkActions.login(sdkIdUClientId);
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
