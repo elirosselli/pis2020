@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import ENV from '../env';
 import styles from './styles';
@@ -34,16 +35,18 @@ const LoginButton = () => {
 
   const getToken = (clientId, clientSecret, authCode) => {
     console.log(authCode);
-    fetch('https://auth-testing.iduruguay.gub.uy/oidc/v1/token', {
-      method: 'POST',
-      headers: {
-        Authorization:
-          'Basic ODk0MzI5OmNkYzA0ZjE5YWMwZjI4ZmIzZTFjZTZkNDJiMzdlODVhNjNmYjhhNjU0NjkxYWE0NDg0YjZiOTRi==',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-      body: `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
-    })
+    RNFetchBlob.config({ trusty: true })
+      .fetch(
+        'POST',
+        'https://auth-testing.iduruguay.gub.uy/oidc/v1/token',
+        {
+          Authorization:
+            'Basic ODk0MzI5OmNkYzA0ZjE5YWMwZjI4ZmIzZTFjZTZkNDJiMzdlODVhNjNmYjhhNjU0NjkxYWE0NDg0YjZiOTRi==',
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
+        `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
+      )
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(function (error) {
