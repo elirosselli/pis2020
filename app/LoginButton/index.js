@@ -17,6 +17,7 @@ const LoginButton = () => {
     console.log(`Code: ${code}`);
     const state = route.match(/\/[^/]+\/?state=([^&]*)/)[1];
     console.log(`State: ${state}`);
+    getToken(1, 1, code);
   };
 
   useEffect(() => {
@@ -30,6 +31,25 @@ const LoginButton = () => {
     Linking.openURL(
       `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${sdkIdUClientId}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
     );
+
+  const getToken = (clientId, clientSecret, authCode) => {
+    console.log(authCode);
+    fetch('https://auth-testing.iduruguay.gub.uy/oidc/v1/token', {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'Basic ODk0MzI5OmNkYzA0ZjE5YWMwZjI4ZmIzZTFjZTZkNDJiMzdlODVhNjNmYjhhNjU0NjkxYWE0NDg0YjZiOTRi==',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+      },
+      body: `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(function (error) {
+        console.log(`Hubo un problema con la petición Fetch:${error.message}`);
+      });
+  };
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
