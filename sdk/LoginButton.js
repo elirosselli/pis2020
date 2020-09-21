@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
