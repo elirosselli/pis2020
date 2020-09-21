@@ -5,7 +5,7 @@ import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
-import * as sdkActions from './requests/requests';
+import { login } from './requests/requests';
 
 const LoginButton = ({ sdkIdUClientId }) => {
   // Used for debug
@@ -26,7 +26,7 @@ const LoginButton = ({ sdkIdUClientId }) => {
     };
   }, [handleOpenURL]);
 
-  const handleLogin = () => sdkActions.login(sdkIdUClientId);
+  const handleLogin = () => login(sdkIdUClientId);
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
