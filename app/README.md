@@ -41,3 +41,9 @@ En otra terminal, ejecutar además el comando `npx react-native run-android` o `
 para levantar la aplicación en el emulador o dispositivo.
 
 De encontrarse con algún error, puede ser útil la página de [Troubleshooting](https://reactnative.dev/docs/troubleshooting#content) de la documentación de React Native.
+
+## Publicar localmente con npm
+
+Primero, se debe ir a la carpeta /sdk y ejecutar el comando `npm pack`. Esto generará un `.tar.gz`.
+Luego se debe ir a la carpeta app y en el `package.json` editar la dependencia de `sdk-gubuy-test` y actualizar la ruta del nuevo `tar.gz` (Actualizar versión).
+Por último se deberá ejecutar `npm install` para actualizar los nuevos node-modules con las dependencias nuevas.
