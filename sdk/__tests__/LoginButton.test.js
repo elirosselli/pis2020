@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import LoginButton from './LoginButton';
+import LoginButton from '../LoginButton';
 
 describe('<LoginButton />', () => {
   it('renders correctly', () => {
