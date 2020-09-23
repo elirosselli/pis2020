@@ -44,6 +44,8 @@ De encontrarse con algún error, puede ser útil la página de [Troubleshooting]
 
 ## Publicar localmente con npm
 
-Primero, se debe ir a la carpeta /sdk y ejecutar el comando `npm pack`. Esto generará un `.tar.gz`.
-Luego se debe ir a la carpeta app y en el `package.json` editar la dependencia de `sdk-gubuy-test` y actualizar la ruta del nuevo `tar.gz` (Actualizar versión).
+Primero, se debe ir a la carpeta /sdk y ejecutar el comando `npm pack`. Esto generará un `.tgz`.
+Luego se debe ir a la carpeta app y en el `package.json` editar la dependencia de `sdk-gubuy-test` y actualizar la ruta (por ejemplo `file:../sdk/sdk-gubuy-test-1.0.0.tgz`) del nuevo `tgz` (Actualizar versión).
 Por último se deberá ejecutar `npm install` para actualizar los nuevos node-modules con las dependencias nuevas.
+
+Tener en cuenta que este procedimiento se debe realizar cada vez que se realicen cambios en el sdk y se quieran ver reflejados los cambios en la aplicación de ejemplo.

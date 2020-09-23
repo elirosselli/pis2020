@@ -10,3 +10,7 @@ tmp
 
 # Examples (If applicable to your project)
 examples
+
+__snapshots__
+coverage
+sdk-gubuy-test-*.tgz
