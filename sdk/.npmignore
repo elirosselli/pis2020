@@ -11,6 +11,7 @@ tmp
 # Examples (If applicable to your project)
 examples
 
-__snapshots__
+__tests__
 coverage
+requests/__tests__
 sdk-gubuy-test-*.tgz

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
 
 export function login(sdkIdUClientId) {

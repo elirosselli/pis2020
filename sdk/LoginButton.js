@@ -8,15 +8,7 @@ import LogoAgesicSimple from './images/logoAgesicSimple.png';
 import { login } from './requests';
 
 const LoginButton = ({ sdkIdUClientId }) => {
-  const handleLogin = async () => {
-    // console.log used for debug
-    try {
-      const response = await login(sdkIdUClientId);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const handleLogin = () => login(sdkIdUClientId);
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
