@@ -12,3 +12,5 @@ node_modules
 
 coverage
 sdk-gubuy-test-*.tgz
+
+package-lock.json
