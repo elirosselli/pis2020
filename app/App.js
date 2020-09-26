@@ -8,7 +8,6 @@ import {
   Linking,
 } from 'react-native';
 
-// import LoginButton from '../sdk';
 import LoginButton from 'sdk-gubuy-test';
 
 import LogoAgesic from './images/logo-agesic.png';
