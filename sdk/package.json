@@ -1,0 +1,66 @@
+{
+  "name": "sdk-gubuy-test",
+  "version": "1.0.5",
+  "description": "Sdk Pis 2020",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage=false",
+    "testCoverage": "jest --coverage=true",
+    "testWatch": "jest --watch --coverage=false --changedSince=origin/develop",
+    "testDebug": "jest -o --watch --coverage=false",
+    "updateSnapshots": "jest -u --coverage=false"
+  },
+  "jest": {
+    "preset": "react-native",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/coverage/**",
+      "!**/node_modules/**",
+      "!**/.prettierrc.js",
+      "!**/babel.config.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 90,
+        "statements": 90
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elirosselli/pis2020.git"
+  },
+  "author": "Santiago Acevedo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elirosselli/pis2020/issues"
+  },
+  "homepage": "https://github.com/elirosselli/pis2020#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "@types/jest": "^26.0.14",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.4",
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "jest": "^26.4.2",
+    "metro-react-native-babel-preset": "^0.63.0",
+    "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1"
+  },
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-native": "^0.63.2"
+  }
+}
