@@ -2,14 +2,17 @@
 import { Linking } from 'react-native';
 
 export function login(sdkIdUClientId) {
-  let resolve;
-  // eslint-disable-next-line no-unused-vars
-  const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
+  let resolveFunction;
+  let rejectFunction;
+  const promise = new Promise((resolve, reject) => {
+    resolveFunction = resolve;
+    rejectFunction = reject;
   });
 
-  const handleOpenUrl = url => {
-    resolve(url.url);
+  const handleOpenUrl = event => {
+    const code = event.url.match(/\?code=([^&]+)/)
+    if (code) resolveFunction(code[1]);
+    else rejectFunction(Error('Invalid authorization code'));
   };
 
   Linking.addEventListener('url', handleOpenUrl);
