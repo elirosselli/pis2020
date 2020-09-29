@@ -5,13 +5,10 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
-import login from './interfaces';
+import { login } from './interfaces';
 
 const LoginButton = ({ sdkIdUClientId }) => {
-  const handleLogin = () => {
-    console.log('cambios3');
-    login(sdkIdUClientId);
-  };
+  const handleLogin = () => login(sdkIdUClientId);
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>

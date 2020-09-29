@@ -1,3 +1,8 @@
-import { login } from './login';
+/* eslint-disable import/prefer-default-export */
+import makeRequest, { REQUEST_TYPES } from '../requests';
 
-export default login;
+const login = clientId => {
+  makeRequest(REQUEST_TYPES.LOGIN, clientId);
+};
+
+export { login };
