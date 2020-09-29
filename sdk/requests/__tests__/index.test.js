@@ -1,4 +1,5 @@
-import { login } from '../index';
+import { login } from '../../interfaces';
+import makeRequest from '../index';
 
 const mockLinkingOpenUrl = jest.fn(() =>
   Promise.resolve({
@@ -17,5 +18,12 @@ describe('login', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
       `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
     );
+  });
+});
+
+describe('default', () => {
+  it('calls default makeRequest', () => {
+    const response = makeRequest('default', 'clientId');
+    expect(response).toBe('default value');
   });
 });
