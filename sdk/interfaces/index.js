@@ -14,11 +14,16 @@ const login = clientId => {
     const code = event.url.match(/\?code=([^&]+)/);
     if (code) resolveFunction(code[1]);
     else rejectFunction(Error('Invalid authorization code'));
+    Linking.removeEventListener('url', handleOpenUrl);
   };
 
-  Linking.addEventListener('url', handleOpenUrl);
-
-  makeRequest(REQUEST_TYPES.LOGIN, clientId);
+  try {
+    Linking.addEventListener('url', handleOpenUrl);
+    makeRequest(REQUEST_TYPES.LOGIN, clientId);
+  } catch (error) {
+    Linking.removeEventListener('url', handleOpenUrl);
+    rejectFunction(Error("Couldn't make request"));
+  }
 
   return promise;
 };
