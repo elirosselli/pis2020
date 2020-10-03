@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+// istanbul ignore file
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';

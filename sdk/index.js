@@ -1,4 +1,4 @@
 // istanbul ignore file
-import LogginButton from './LoginButton';
+import LoginButton from './LoginButton';
 
-export default LogginButton;
+export default LoginButton;

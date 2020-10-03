@@ -24,7 +24,6 @@ const login = clientId => {
     makeRequest(REQUEST_TYPES.LOGIN, clientId);
   } catch (error) {
     Linking.removeEventListener('url', handleOpenUrl);
-    console.log(error);
     rejectFunction(Error("Couldn't make request"));
   }
 
