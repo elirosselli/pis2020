@@ -1,6 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
-import makeRequest, { REQUEST_TYPES } from '../requests';
+import makeRequest from '../requests';
+
+const REQUEST_TYPES = { LOGIN: 'login' };
 
 const login = clientId => {
   let resolveFunction;
@@ -22,6 +24,7 @@ const login = clientId => {
     makeRequest(REQUEST_TYPES.LOGIN, clientId);
   } catch (error) {
     Linking.removeEventListener('url', handleOpenUrl);
+    console.log(error);
     rejectFunction(Error("Couldn't make request"));
   }
 
