@@ -7,7 +7,8 @@
   "extends": [
     "airbnb",
     "plugin:prettier/recommended",
-    "prettier/react"
+    "prettier/react",
+    "plugin:sonarjs/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -22,7 +23,7 @@
     "sourceType": "module"
   },
   "plugins": [
-    "prettier"
+    "prettier", "sonarjs"
   ],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
