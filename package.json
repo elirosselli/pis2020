@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "workspaces": {
+    "packages": ["app", "sdk-gubuy-test"],
+    "nohoist": [
+      "**/react-native",
+      "**/react-native/**",
+      "jetifier",
+      "@react-native-community/**"
+    ]
+  }
+}

@@ -28,7 +28,7 @@ const App = () => (
       <View style={styles.titleSeparator} />
     </View>
     <View style={styles.loginContainer}>
-     {/* <LoginButton sdkIdUClientId={sdkIdUClientId} /> */}
+     {/*<LoginButton sdkIdUClientId={sdkIdUClientId} />*/}
       <ScrollView style={styles.informationContainer}>
         <Text numberOfLines={2} style={styles.informationTitle}>
           Información
