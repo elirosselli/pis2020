@@ -4,7 +4,7 @@ import makeRequest from '../requests';
 
 const REQUEST_TYPES = { LOGIN: 'login' };
 
-const login = clientId => {
+const login = async clientId => {
   let resolveFunction;
   let rejectFunction;
   const promise = new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ const login = clientId => {
 
   try {
     Linking.addEventListener('url', handleOpenUrl);
-    makeRequest(REQUEST_TYPES.LOGIN, clientId);
+    await makeRequest(REQUEST_TYPES.LOGIN, clientId);
   } catch (error) {
     Linking.removeEventListener('url', handleOpenUrl);
     rejectFunction(Error("Couldn't make request"));
