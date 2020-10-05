@@ -2,6 +2,7 @@ import { login } from '../index';
 import makeRequest from '../../requests';
 
 jest.mock('../../requests');
+const { REQUEST_TYPES } = jest.requireActual('../../requests');
 
 const mockAddEventListener = jest.fn();
 jest.mock('react-native/Libraries/Linking/Linking', () => ({
@@ -25,7 +26,7 @@ describe('login', () => {
     const clientId = 'clientId';
     const code = await login(clientId);
     expect(makeRequest).toHaveBeenCalledTimes(1);
-    expect(makeRequest).toHaveBeenCalledWith('login', clientId);
+    expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.LOGIN, clientId);
     expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
   });
 
@@ -44,7 +45,7 @@ describe('login', () => {
       expect(error).toMatchObject(Error('Invalid authorization code'));
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
-    expect(makeRequest).toHaveBeenCalledWith('login', clientId);
+    expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.LOGIN, clientId);
     expect.assertions(3);
   });
 
@@ -58,7 +59,7 @@ describe('login', () => {
       expect(error).toMatchObject(Error("Couldn't make request"));
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
-    expect(makeRequest).toHaveBeenCalledWith('login', clientId);
+    expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.LOGIN, clientId);
     expect.assertions(3);
   });
 });
