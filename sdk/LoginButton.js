@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+// istanbul ignore file
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
@@ -8,7 +9,14 @@ import LogoAgesicSimple from './images/logoAgesicSimple.png';
 import { login } from './interfaces';
 
 const LoginButton = ({ sdkIdUClientId }) => {
-  const handleLogin = () => login(sdkIdUClientId);
+  const handleLogin = async () => {
+    try {
+      const code = await login(sdkIdUClientId);
+      console.log(code);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>

@@ -66,5 +66,3 @@ exports[`<LoginButton /> renders correctly 1`] = `
   </Text>
 </View>
 `;
-
-exports[`<LoginButton /> test click event 1`] = `ShallowWrapper {}`;
