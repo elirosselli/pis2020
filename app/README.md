@@ -66,7 +66,7 @@ Donde YOUR_CLIENT_ID es nuestro client id provisto por AGESIC. Este archivo .env
 
 ### 2. Instalación de paquetes
 
-Se deberá ejecutar el comando `npm install` en la carpeta /app para instalar los paquetes necesarios. Si esta utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` y utilizar el comando `pod install`.
+Se deberá ejecutar el comando `npm install` en la carpeta /sdk y luego en la carpeta /app para instalar los paquetes necesarios. Si esta utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` dentro de la carpeta app y utilizar el comando `pod install`.
 
 ### 3. Iniciar wml
 
