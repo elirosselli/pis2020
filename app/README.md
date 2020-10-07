@@ -32,6 +32,8 @@ Si al ejecutar el comando este devuelve un error de permisos, es posible que nec
 
 `sudo wml add ./sdk ./app/node_modules/sdk-gubuy-test`
 
+Al ejecutar el comando, es posible que se muestre un mensaje similar a "Source folder is an npm package, add `node_modules` to ignored folders? Y/n", con la opción de responder que sí (Y) o que no (n). Se deberá confirmar con Y.
+
 Este comando causa que cuando se ejecute wml, este detecte los cambios en la carpeta sdk y los copie automáticamente al sdk-gubuy-test en los node_modules de la aplicación de ejemplo, permitiendo así ver los cambios realizados en tiempo real y sin necesidad de re-instalar el paquete del sdk. Se observa que esto ocurre únicamente cuando se está ejecutando wml (las instrucciones para ejecutarlo se encuentran en la siguiente sección).
 
 ## Ejecutar la aplicación
