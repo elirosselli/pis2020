@@ -76,6 +76,8 @@ Una vez instalados los paquetes, se debe ejecutar wml para que observe los cambi
 
 Deberían ver en la consola una salida con la lista de archivos que fueron copiados de la carpeta de origen (en este caso /sdk) a la de destino (/app/node_modules/sdk-gubuy-test). 
 
+**Nota para Windows:** En sistemas operativos Windows, es posible que el comando `wml start` no produzca ningún resultado. Para resolver esto, se debe probar ejecutar antes el comando `watchman watch C:\Users\%user%\AppData\Roaming\npm\node_modules\wml\src`, y luego si `wml start`.
+
 ### 4a. Ejecutar en Android
 
 En el caso de estar probando en un dispositivo o emulador Android, se debe conectar el dispositivo (ver [documentación de React Native](https://reactnative.dev/docs/running-on-device)) o iniciar un emulador. Para ejecutar un emulador en Android Studio, se debe ir a "Configure", y en ese menú se debe seleccionar "AVD Manager". Tener en cuenta que el AVD debe utilizar el SDK Android previamente instalado.
