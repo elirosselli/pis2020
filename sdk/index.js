@@ -1,4 +1,5 @@
 // istanbul ignore file
-import LoginButton from './LoginButton';
+/* eslint-disable import/prefer-default-export */
+import { login } from './interfaces';
 
-export default LoginButton;
+export { login };
