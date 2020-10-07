@@ -1,12 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 // istanbul ignore file
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { login } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
-import { login } from './interfaces';
 
 const LoginButton = ({ sdkIdUClientId }) => {
   const handleLogin = async () => {

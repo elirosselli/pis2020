@@ -9,7 +9,7 @@ import {
   Linking,
 } from 'react-native';
 
-import LoginButton from 'sdk-gubuy-test';
+import LoginButton from './LoginButton';
 
 import LogoAgesic from './images/logo-agesic.png';
 import LogoGubUy from './images/logoGubUy.png';
