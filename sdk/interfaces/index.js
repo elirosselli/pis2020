@@ -30,4 +30,19 @@ const login = async clientId => {
   return promise;
 };
 
+
+const getToken = (code, clientId, clientSecret) => {
+  makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
+    .then(data => {
+      console.log('resp');
+      console.log(data);
+    })
+    .catch(error => {
+      console.log('err:');
+      console.log(error);
+    });
+  return null;
+};
+
+
 export { login };
