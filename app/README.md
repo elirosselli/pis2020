@@ -19,14 +19,17 @@ Se utilizará [wml](https://github.com/wix/wml#readme) para poder ver los cambio
 Para utilizar wml, es necesario instalar [watchman](https://facebook.github.io/watchman/), un servicio provisto por Facebook que observa cambios en los archivos. Para instalar watchman, se deben seguir los pasos explicados en [su documentación](https://facebook.github.io/watchman/docs/install.html). En sistemas operativos Linux o MacOS, se recomienda usar [homebrew](https://brew.sh/) para la instalación (si no está instalado en su sistema, se puede instalar fácilmente siguiendo los pasos en su sitio web). En sistemas Windows, se puede instalar watchman mediante una de las distribuciones binarias provistas en su documentación de instalación. 
 
 Una vez instalado watchman, se debe instalar wml. Para ello, se debe ir a la raíz del proyecto (pis2020) y ejecutar el comando:
+
 `npm install -g wml`
 
 Se observa que esta instalación de wml es global (no local al proyecto). 
 
 Por último, también en la raíz del proyecto, se debe ejecutar el comando:
+
 `wml add ./sdk ./app/node_modules/sdk-gubuy-test`
 
 Si al ejecutar el comando este devuelve un error de permisos, es posible que necesiten permisos de root para ejecutarlo, con lo que deberán ejecutarlo con `sudo`:
+
 `sudo wml add ./sdk ./app/node_modules/sdk-gubuy-test`
 
 Este comando causa que cuando se ejecute wml, este detecte los cambios en la carpeta sdk y los copie automáticamente al sdk-gubuy-test en los node_modules de la aplicación de ejemplo, permitiendo así ver los cambios realizados en tiempo real y sin necesidad de re-instalar el paquete del sdk. Se observa que esto ocurre únicamente cuando se está ejecutando wml (las instrucciones para ejecutarlo se encuentran en la siguiente sección).
@@ -66,6 +69,7 @@ Se deberá ejecutar el comando `npm install` en la carpeta /app para instalar lo
 ### 3. Iniciar wml
 
 Una vez instalados los paquetes, se debe ejecutar wml para que observe los cambios en el sdk y los copie a la aplicación de ejemplo. Esto se hace ejecutando el siguiente comando en la raíz del proyecto:
+
 `wml start`
 
 Deberían ver en la consola una salida con la lista de archivos que fueron copiados de la carpeta de origen (en este caso /sdk) a la de destino (/app/node_modules/sdk-gubuy-test). 
