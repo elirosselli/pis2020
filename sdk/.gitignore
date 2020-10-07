@@ -14,3 +14,4 @@ coverage
 sdk-gubuy-test-*.tgz
 
 package-lock.json
+.watchmanconfig
