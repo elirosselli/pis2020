@@ -1,6 +1,6 @@
 # Prototype App
 
-## Instalación y configuración 
+## Instalación y configuración
 
 ### React Native
 
@@ -16,13 +16,13 @@ De encontrarse con algún error, puede ser útil la página de [Troubleshooting]
 
 Se utilizará [wml](https://github.com/wix/wml#readme) para poder ver los cambios realizados en el sdk reflejados en la aplicación de ejemplo sin necesidad de re-instalar el paquete sdk. Esta herramienta forma parte del ambiente de desarrollo y su configuración es local a cada computadora, con lo que se debe realizar la siguiente instalación antes de ejecutar la aplicación. Esta instalación y configuración debe ser realizada una única vez.
 
-Para utilizar wml, es necesario instalar [watchman](https://facebook.github.io/watchman/), un servicio provisto por Facebook que observa cambios en los archivos. Para instalar watchman, se deben seguir los pasos explicados en [su documentación](https://facebook.github.io/watchman/docs/install.html). En sistemas operativos Linux o MacOS, se recomienda usar [homebrew](https://brew.sh/) para la instalación (si no está instalado en su sistema, se puede instalar fácilmente siguiendo los pasos en su sitio web). En sistemas Windows, se puede instalar watchman mediante una de las distribuciones binarias provistas en su documentación de instalación. 
+Para utilizar wml, es necesario instalar [watchman](https://facebook.github.io/watchman/), un servicio provisto por Facebook que observa cambios en los archivos. Para instalar watchman, se deben seguir los pasos explicados en [su documentación](https://facebook.github.io/watchman/docs/install.html). En sistemas operativos Linux o MacOS, se recomienda usar [homebrew](https://brew.sh/) para la instalación (si no está instalado en su sistema, se puede instalar fácilmente siguiendo los pasos en su sitio web). En sistemas Windows, se puede instalar watchman mediante una de las distribuciones binarias provistas en su documentación de instalación.
 
 Una vez instalado watchman, se debe instalar wml. Para ello, se debe ir a la raíz del proyecto (pis2020) y ejecutar el comando:
 
 `npm install -g wml`
 
-Se observa que esta instalación de wml es global (no local al proyecto). 
+Se observa que esta instalación de wml es global (no local al proyecto).
 
 Por último, también en la raíz del proyecto, se debe ejecutar el comando:
 
@@ -46,23 +46,25 @@ Primero, debe crear un archivo `env.js` en esta carpeta (app), con el siguiente 
 const variables = {
     development: {
       sdkIdUClientId: "YOUR_CLIENT_ID",
+      sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
     },
     production: {
         sdkIdUClientId: "YOUR_CLIENT_ID",
+        sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
     },
   };
-  
+
   const getEnvVariables = () => {
     if (__DEV__) {
       return variables.development; // return this if in development mode
     }
     return variables.production; // otherwise, return this
   };
-  
+
   export default getEnvVariables; // export a reference to the function
 ```
 
-Donde YOUR_CLIENT_ID es nuestro client id provisto por AGESIC. Este archivo .env no se versiona para proteger este client id, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo.
+Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es nuestro client id y client secret provisto por AGESIC. Este archivo .env no se versiona para proteger el client id y el client secret, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo.
 
 ### 2. Instalación de paquetes
 
@@ -74,7 +76,7 @@ Una vez instalados los paquetes, se debe ejecutar wml para que observe los cambi
 
 `wml start`
 
-Deberían ver en la consola una salida con la lista de archivos que fueron copiados de la carpeta de origen (en este caso /sdk) a la de destino (/app/node_modules/sdk-gubuy-test). 
+Deberían ver en la consola una salida con la lista de archivos que fueron copiados de la carpeta de origen (en este caso /sdk) a la de destino (/app/node_modules/sdk-gubuy-test).
 
 **Nota para Windows:** En sistemas operativos Windows, es posible que el comando `wml start` no produzca ningún resultado. Para resolver esto, se debe probar ejecutar antes el comando `watchman watch C:\Users\%user%\AppData\Roaming\npm\node_modules\wml\src`, y luego si `wml start`.
 
@@ -91,4 +93,3 @@ En otra terminal, ejecutar además el comando `npx react-native run-android` en 
 Ejectuar el comando `npx react-native run-ios` dentro de la carpeta /app.
 
 Al ejectuar este comando, se abrirá un emulador iOS ejecutando la aplicación.
-

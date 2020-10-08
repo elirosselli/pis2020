@@ -1,5 +1,7 @@
 import makeRequest, { REQUEST_TYPES } from '../index';
 import { getParameters } from '../../configuration';
+import { loginEndpoint } from '../endpoints';
+import { getToken } from '../../interfaces';
 
 jest.mock('../../configuration');
 
@@ -43,6 +45,26 @@ describe('login', () => {
       'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=clientId&redirect_uri=',
     );
   });
+});
+
+
+jest.mock('rn-fetch-blob', () => ({
+  fetch:  jest.fn(() => Promise.resolve()),
+  config:  jest.fn(() => Promise.resolve()),
+}));
+
+describe('getToken', () => {
+
+  it('calls getToken with incorrect code', async () => {
+    const clientId = '894329';
+    const clientSecret = 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b';
+    const code = 'incorrectCode';
+    
+    const response = await makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code);
+
+
+  });
+
 });
 
 describe('default', () => {
