@@ -18,7 +18,7 @@ import styles from './app-styles';
 
 import ENV from './env';
 
-const { sdkIdUClientId } = ENV();
+const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
 const App = () => (
   <View style={styles.container}>
@@ -29,7 +29,10 @@ const App = () => (
       <View style={styles.titleSeparator} />
     </View>
     <View style={styles.loginContainer}>
-      <LoginButton sdkIdUClientId={sdkIdUClientId} />
+      <LoginButton
+        sdkIdUClientId={sdkIdUClientId}
+        sdkIdUClientSecret={sdkIdUClientSecret}
+      />
       <ScrollView style={styles.informationContainer}>
         <Text numberOfLines={2} style={styles.informationTitle}>
           Información

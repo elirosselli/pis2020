@@ -1,8 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
-import { loginEndpoint } from './endpoints';
+import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { encode as btoa } from 'base-64';
 import RNFetchBlob from 'rn-fetch-blob';
+
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
@@ -17,8 +18,7 @@ const makeRequest = (type, clientId, clientSecret, authCode)=> {
     case REQUEST_TYPES.GET_TOKEN: {
       const encodedCredentials = btoa(`${clientId}:${clientSecret}`);
 
-      return RNFetchBlob.config({ trusty: true })
-        .fetch(
+      return RNFetchBlob.config({ trusty: true }).fetch(
           'POST',
           tokenEndpoint,
           {

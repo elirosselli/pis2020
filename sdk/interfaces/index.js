@@ -2,7 +2,7 @@
 import { Linking } from 'react-native';
 import makeRequest from '../requests';
 
-const REQUEST_TYPES = { LOGIN: 'login' };
+const REQUEST_TYPES = { LOGIN: 'login', GET_TOKEN: 'getToken',};
 
 const login = async clientId => {
   let resolveFunction;
@@ -31,7 +31,7 @@ const login = async clientId => {
 };
 
 
-const getToken = (code, clientId, clientSecret) => {
+const getToken = async (code, clientId, clientSecret) => {
   makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
     .then(data => {
       console.log('resp');
@@ -45,4 +45,4 @@ const getToken = (code, clientId, clientSecret) => {
 };
 
 
-export { login };
+export { login, getToken };

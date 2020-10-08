@@ -1,5 +1,5 @@
 // istanbul ignore file
 /* eslint-disable import/prefer-default-export */
-import { login } from './interfaces';
+import { login, getToken } from './interfaces';
 
-export { login };
+export { login, getToken };

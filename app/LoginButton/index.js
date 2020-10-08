@@ -4,16 +4,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { login } from 'sdk-gubuy-test';
+import { login, getToken } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = ({ sdkIdUClientId }) => {
+const LoginButton = ({ sdkIdUClientId, sdkIdUClientSecret }) => {
   const handleLogin = async () => {
     try {
       const code = await login(sdkIdUClientId);
       console.log(code);
+      await getToken(code, sdkIdUClientId, sdkIdUClientSecret);
     } catch (err) {
       console.log(err);
     }
@@ -31,6 +32,7 @@ const LoginButton = ({ sdkIdUClientId }) => {
 
 LoginButton.propTypes = {
   sdkIdUClientId: PropTypes.string.isRequired,
+  sdkIdUClientSecret: PropTypes.string.isRequired,
 };
 
 export default LoginButton;
