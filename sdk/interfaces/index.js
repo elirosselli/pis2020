@@ -32,17 +32,15 @@ const login = async clientId => {
 
 
 const getToken = async (code, clientId, clientSecret) => {
-  makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
-    .then(data => {
-      console.log('resp');
-      console.log(data);
-    })
-    .catch(error => {
-      console.log('err:');
+  try {
+    const response = await makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
+    console.log(response);
+    return response; // no se si seria response directo o algo tipo response.token
+    } catch(error) {
       console.log(error);
-    });
-  return null;
-};
+      return error;
+    }
+}
 
 
 export { login, getToken };

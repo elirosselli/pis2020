@@ -4,13 +4,12 @@ import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { encode as btoa } from 'base-64';
 import RNFetchBlob from 'rn-fetch-blob';
 
-
 export const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
 };
 
-const makeRequest = (type, clientId, clientSecret, authCode)=> {
+const makeRequest = (type, clientId, clientSecret, authCode) => {
   switch (type) {
     case REQUEST_TYPES.LOGIN: {
       return clientId && Linking.openURL(loginEndpoint(clientId));
@@ -18,7 +17,8 @@ const makeRequest = (type, clientId, clientSecret, authCode)=> {
     case REQUEST_TYPES.GET_TOKEN: {
       const encodedCredentials = btoa(`${clientId}:${clientSecret}`);
 
-      return RNFetchBlob.config({ trusty: true }).fetch(
+      return RNFetchBlob.config({ trusty: true })
+        .fetch(
           'POST',
           tokenEndpoint,
           {

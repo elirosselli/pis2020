@@ -14,7 +14,8 @@ const LoginButton = ({ sdkIdUClientId, sdkIdUClientSecret }) => {
     try {
       const code = await login(sdkIdUClientId);
       console.log(code);
-      await getToken(code, sdkIdUClientId, sdkIdUClientSecret);
+      const token = await getToken(code, sdkIdUClientId, sdkIdUClientSecret);
+      console.log(token);
     } catch (err) {
       console.log(err);
     }
