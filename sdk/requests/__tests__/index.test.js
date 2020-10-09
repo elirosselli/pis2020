@@ -33,8 +33,8 @@ jest.mock('rn-fetch-blob', () => ({
 describe('getToken', () => {
 
   it('calls getToken with incorrect code', async () => {
-    const clientId = '894329';
-    const clientSecret = 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b';
+    const clientId = '899';
+    const clientSecret = 'cdc04f5a63fb8a654691aa4484b6b94b';
     const code = 'incorrectCode';
     
     const response = await makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code);
