@@ -1,15 +1,21 @@
-const params = {
-  clientCode: undefined,
-  clientSecret: undefined,
-  clientId: undefined, 
+const parameters = {
+  redirectUri: '',
+  clientId: '',
+  clientSecret: '',
+  code: '',
 };
 
-const getParams = () => params;
+const getParameters = () => parameters;
 
-const setParams = params => {
+const setParameters = params => {
   Object.keys(params).forEach(key => {
-    if (params[key] !== undefined) params[key] = params[key];
+    if (params[key] !== '') parameters[key] = params[key];
   });
 };
 
-export { getParams, setParams };
+const clearParameters = () => {
+  // eslint-disable-next-line no-return-assign
+  Object.keys(parameters).forEach(key => (parameters[key] = ''));
+};
+
+export { getParameters, setParameters, clearParameters };
