@@ -30,7 +30,6 @@ const login = async clientId => {
   return promise;
 };
 
-
 const getToken = async (code, clientId, clientSecret) => {
   makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
     .then(data => {
