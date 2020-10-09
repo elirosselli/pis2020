@@ -12,6 +12,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      postLogoutRedirectUri: '',
     };
     const parameters2 = {
       redirectUri: 'redirectUri',
@@ -45,6 +46,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      postLogoutRedirectUri: '',
     });
     setParameters(parameters3);
     expect(getParameters()).toStrictEqual({
@@ -57,6 +59,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      postLogoutRedirectUri: '',
     });
     setParameters(parameters4);
     expect(getParameters()).toStrictEqual({
@@ -69,6 +72,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      postLogoutRedirectUri: '',
     });
     setParameters(parameters5);
     expect(getParameters()).toStrictEqual({
@@ -81,6 +85,7 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 'expiresIn',
       idToken: 'idToken',
+      postLogoutRedirectUri: '',
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
@@ -93,6 +98,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      postLogoutRedirectUri: '',
     });
   });
 });

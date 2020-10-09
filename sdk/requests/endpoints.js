@@ -10,4 +10,7 @@ const loginEndpoint = () => {
 const userInfoEndpoint = accessToken =>
   `https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo?authorization=${accessToken}`;
 
-export { loginEndpoint, userInfoEndpoint, tokenEndpoint };
+const logoutEndpoint = (idToken, postLogoutRedirectUri) =>
+  `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}`;
+
+export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint };

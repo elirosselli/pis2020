@@ -1,12 +1,13 @@
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
 import { getParameters, setParameters } from '../configuration';
-import { tokenEndpoint } from './endpoints';
+import { tokenEndpoint, logoutEndpoint } from './endpoints';
 import login from './login';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
+  LOGOUT: 'logout',
 };
 
 const makeRequest = async type => {
@@ -63,6 +64,14 @@ const makeRequest = async type => {
         // error.
         return Promise.reject(error);
       }
+    }
+    case REQUEST_TYPES.LOGOUT: {
+      return (
+        parameters.idToken &&
+        Linking.openURL(
+          logoutEndpoint(parameters.idToken, parameters.postLogoutRedirectUri),
+        )
+      );
     }
     default:
       return 'default value';
