@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 import makeRequest from '../requests';
 import { setParameters } from '../configuration';
 
-const REQUEST_TYPES = { LOGIN: 'login' };
+const REQUEST_TYPES = { LOGIN: 'login', LOGOUT: 'logout' };
 
 const initialize = (redirectUri, clientId, clientSecret) => {
   setParameters({ redirectUri, clientId, clientSecret });
@@ -49,4 +49,30 @@ const login = async () => {
   return promise;
 };
 
-export { initialize, login };
+const logout = async idToken => {
+  let resolveFunction;
+  let rejectFunction;
+  const promise = new Promise((resolve, reject) => {
+    resolveFunction = resolve;
+    rejectFunction = reject;
+  });
+
+  const handleOpenUrl = event => {
+    const urlCheck = event.url.match(/\?code=([^&]+)/);
+    if (urlCheck) resolveFunction(urlCheck);
+    else rejectFunction(Error('Invalid url'));
+    Linking.removeEventListener('url', handleOpenUrl);
+  };
+
+  try {
+    Linking.addEventListener('url', handleOpenUrl);
+    await makeRequest(REQUEST_TYPES.LOGOUT, null, idToken);
+  } catch (error) {
+    Linking.removeEventListener('url', handleOpenUrl);
+    rejectFunction(Error("Couldn't make request"));
+  }
+
+  return promise;
+};
+
+export { initialize, login, logout };

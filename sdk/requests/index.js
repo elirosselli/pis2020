@@ -1,11 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
-import { loginEndpoint } from './endpoints';
+import { loginEndpoint, logoutEndpoint } from './endpoints';
 import { getParameters } from '../configuration';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
+  LOGOUT: 'logout',
 };
 
 const makeRequest = type => {
@@ -21,6 +22,12 @@ const makeRequest = type => {
     }
     case REQUEST_TYPES.GET_TOKEN: {
       return 'get token functionality';
+    }
+    case REQUEST_TYPES.LOGOUT: {
+      return (
+        parameters.idToken &&
+        Linking.openURL(logoutEndpoint(parameters.idToken))
+      );
     }
     default:
       return 'default value';

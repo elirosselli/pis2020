@@ -1,5 +1,7 @@
 import { getParameters } from '../configuration';
 
+const postLogoutRedirectUri = 'sdkIdU.testing://redirect';
+
 const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
 
 const loginEndpoint = clientId => {
@@ -10,4 +12,7 @@ const loginEndpoint = clientId => {
 const userInfoEndpoint = accessToken =>
   `https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo?authorization=${accessToken}`;
 
-export { loginEndpoint, userInfoEndpoint, tokenEndpoint };
+const logoutEndpoint = idToken =>
+  `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}`;
+
+export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint };
