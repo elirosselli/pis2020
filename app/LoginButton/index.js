@@ -3,11 +3,12 @@
 // istanbul ignore file
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-
 import { login, getToken, getParameters, logout } from 'sdk-gubuy-test';
-
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
+
+const stateLog = 'loggedOut'; //  cambiar a loggedIn una vez loggeado, y de nuevo a loggedOut una vez hecho el log out
+const idToken = ''; //  poner idToken obtenido con Postman
 
 const LoginButton = () => {
   const handleButton = async () => {

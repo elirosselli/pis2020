@@ -1,3 +1,4 @@
+import { Linking } from 'react-native';
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
 import { getParameters, setParameters } from '../configuration';

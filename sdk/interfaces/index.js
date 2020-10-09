@@ -1,3 +1,4 @@
+import { Linking } from 'react-native';
 import makeRequest, { REQUEST_TYPES } from '../requests';
 import { setParameters } from '../configuration';
 
