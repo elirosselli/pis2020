@@ -8,6 +8,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
+import { initialize } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -18,7 +19,9 @@ import styles from './app-styles';
 
 import ENV from './env';
 
-const { sdkIdUClientId } = ENV();
+const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
+
+initialize('sdkIdU.testing%3A%2F%2Fauth', sdkIdUClientId, sdkIdUClientSecret);
 
 const App = () => (
   <View style={styles.container}>
@@ -29,7 +32,7 @@ const App = () => (
       <View style={styles.titleSeparator} />
     </View>
     <View style={styles.loginContainer}>
-      <LoginButton sdkIdUClientId={sdkIdUClientId} />
+      <LoginButton />
       <ScrollView style={styles.informationContainer}>
         <Text numberOfLines={2} style={styles.informationTitle}>
           Información

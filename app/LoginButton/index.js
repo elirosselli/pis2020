@@ -2,20 +2,23 @@
 /* eslint-disable no-console */
 // istanbul ignore file
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { login } from 'sdk-gubuy-test';
+import { login, getParameters } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = ({ sdkIdUClientId }) => {
+const LoginButton = () => {
   const handleLogin = async () => {
     try {
-      const code = await login(sdkIdUClientId);
-      console.log(code);
+      const code = await login();
+      console.log(`Code: ${code}`);
+      const parameters = getParameters();
+      console.log(parameters);
     } catch (err) {
       console.log(err);
+      const parameters = getParameters();
+      console.log(parameters);
     }
   };
 
@@ -27,10 +30,6 @@ const LoginButton = ({ sdkIdUClientId }) => {
       <Text style={styles.buttonText}>Login con USUARIO gub.uy</Text>
     </TouchableOpacity>
   );
-};
-
-LoginButton.propTypes = {
-  sdkIdUClientId: PropTypes.string.isRequired,
 };
 
 export default LoginButton;
