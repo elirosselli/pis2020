@@ -4,11 +4,11 @@ const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
 
 const loginEndpoint = () => {
   const { redirectUri, clientId } = getParameters();
-  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20personal_info&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
 };
 
-const userInfoEndpoint = accessToken =>
-  `https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo?authorization=${accessToken}`;
+const userInfoEndpoint =
+  'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
 
 const logoutEndpoint = () => {
   const { idToken, postLogoutRedirectUri, state } = getParameters();

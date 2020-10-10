@@ -64,6 +64,12 @@ describe('refreshToken', () => {
   });
 
   it('calls refreshToken with incorrect clientId or clientSecret or refreshToken', async () => {
+    getParameters.mockReturnValue({
+      clientId: '',
+      clientSecret: '',
+      code: 'incorrectCode',
+    });
+
     const error = 'invalid_grant';
     const errorDescription =
       'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
