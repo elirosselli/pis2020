@@ -12,6 +12,7 @@ export const REQUEST_TYPES = {
 // eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line import/no-extraneous-dependencies
 const axios = require('axios').default;
+const https = require('https');
 
 const makeRequest = (type, clientId, clientSecret, authCode) => {
   switch (type) {
