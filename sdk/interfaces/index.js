@@ -2,7 +2,7 @@
 import { Linking } from 'react-native';
 import makeRequest from '../requests';
 
-const REQUEST_TYPES = { LOGIN: 'login', GET_TOKEN: 'getToken',};
+const REQUEST_TYPES = { LOGIN: 'login', GET_TOKEN: 'getToken' };
 
 const login = async clientId => {
   let resolveFunction;
@@ -30,17 +30,20 @@ const login = async clientId => {
   return promise;
 };
 
-
 const getToken = async (code, clientId, clientSecret) => {
   try {
-    const response = await makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code)
+    const response = makeRequest(
+      REQUEST_TYPES.GET_TOKEN,
+      clientId,
+      clientSecret,
+      code,
+    );
     console.log(response);
     return response; // no se si seria response directo o algo tipo response.token
-    } catch(error) {
-      console.log(error);
-      return error;
-    }
-}
-
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export { login, getToken };

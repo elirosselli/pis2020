@@ -24,24 +24,82 @@ describe('login', () => {
   });
 });
 
-
-jest.mock('rn-fetch-blob', () => ({
-  fetch:  jest.fn(() => Promise.resolve()),
-  config:  jest.fn(() => Promise.resolve()),
-}));
-
 describe('getToken', () => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      respInfo: {
+        status: 200,
+      },
+      json: () =>
+        Promise.resolve({
+          access_token: 'c9747e3173544b7b870d48aeafa0f661',
+          expires_in: 3600,
+          id_token:
+            'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw',
+          refresh_token: '041a156232ac43c6b719c57b7217c9ee',
+          token_type: 'bearer',
+        }),
+    }),
+  );
 
-  it('calls getToken with incorrect code', async () => {
-    const clientId = '894329';
-    const clientSecret = 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b';
-    const code = 'incorrectCode';
-    
-    const response = await makeRequest(REQUEST_TYPES.GET_TOKEN, clientId, clientSecret, code);
+  it('calls getToken with correct code', async () => {
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d49753946af';
 
-
+    const response = makeRequest(
+      REQUEST_TYPES.GET_TOKEN,
+      clientId,
+      clientSecret,
+      code,
+    );
+    expect.assertions(1);
+    return expect(response).resolves.toEqual({
+      access_token: 'c9747e3173544b7b870d48aeafa0f661',
+      expires_in: 3600,
+      id_token:
+        'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw',
+      refresh_token: '041a156232ac43c6b719c57b7217c9ee',
+      token_type: 'bearer',
+    });
   });
 
+  it('calls get token with incorrect code', async () => {
+    fetch.mockImplementationOnce(
+      jest.fn(() =>
+        Promise.resolve({
+          respInfo: {
+            status: 400,
+          },
+          json: () =>
+            Promise.resolve({
+              error: 'invalid_grant',
+              error_description:
+                'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+            }),
+        }),
+      ),
+    );
+
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d4975saddf'; //Incorrect
+
+    const response = makeRequest(
+      REQUEST_TYPES.GET_TOKEN,
+      clientId,
+      clientSecret,
+      code,
+    );
+    expect.assertions(1);
+    return expect(response).resolves.toEqual({
+      error: 'invalid_grant',
+      error_description:
+        'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+    });
+  });
 });
 
 describe('default', () => {

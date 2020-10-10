@@ -4,21 +4,21 @@ import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { encode as btoa } from 'base-64';
 import RNFetchBlob from 'rn-fetch-blob';
 
+
 export const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
 };
 
-const makeRequest = (type, clientId, clientSecret, authCode) => {
+const makeRequest = (type, clientId, clientSecret, authCode)=> {
   switch (type) {
     case REQUEST_TYPES.LOGIN: {
       return clientId && Linking.openURL(loginEndpoint(clientId));
     }
     case REQUEST_TYPES.GET_TOKEN: {
       const encodedCredentials = btoa(`${clientId}:${clientSecret}`);
-
-      return RNFetchBlob.config({ trusty: true })
-        .fetch(
+      //RNFetchBlob.config({ trusty: true }).
+      const res = RNFetchBlob.config({ trusty: true }).fetch(
           'POST',
           tokenEndpoint,
           {
@@ -32,12 +32,17 @@ const makeRequest = (type, clientId, clientSecret, authCode) => {
           return [resp.json(), resp.respInfo.status];
         })
         .then(data => {
+          console.log('data'+data[0]);
           if (data[1] === 400) {
             return Promise.reject(data[0]);
           } else {
             return Promise.resolve(data[0]);
           }
         });
+      console.log('res');
+      console.log(res);
+      console.log('-res');
+      return res;
     }
     default:
       return 'default value';
