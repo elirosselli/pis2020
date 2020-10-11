@@ -49,7 +49,7 @@ const makeRequest = async type => {
         });
         return Promise.resolve(responseJson.access_token);
       } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
       }
     }
     default:
