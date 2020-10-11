@@ -42,9 +42,11 @@ const getToken = async (code) => {
     const response = makeRequest(
       REQUEST_TYPES.GET_TOKEN
     );
+    console.log('respppppppp');
     console.log(response);
     return response; // no se si seria response directo o algo tipo response.token
   } catch (error) {
+    console.log('errrrrrrrr');
     console.log(error);
     return error;
   }

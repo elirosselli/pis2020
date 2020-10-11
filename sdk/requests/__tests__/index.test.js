@@ -1,12 +1,7 @@
 import makeRequest, { REQUEST_TYPES } from '../index';
-<<<<<<< HEAD
 import { getParameters } from '../../configuration';
 
 jest.mock('../../configuration');
-=======
-import { loginEndpoint } from '../endpoints';
-import { getToken } from '../../interfaces';
->>>>>>> feature/get-token-request
 
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
 
@@ -120,7 +115,7 @@ describe('getToken', () => {
       code,
     );
     expect.assertions(1);
-    return expect(response).resolves.toEqual({
+    return expect(response).rejects.toEqual({
       error: 'invalid_grant',
       error_description:
         'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
