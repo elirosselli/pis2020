@@ -3,7 +3,6 @@ import { Linking } from 'react-native';
 import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { getParameters } from '../configuration';
 import { encode as btoa } from 'base-64';
-import RNFetchBlob from 'rn-fetch-blob';
 
 
 export const REQUEST_TYPES = {
@@ -11,7 +10,8 @@ export const REQUEST_TYPES = {
   GET_TOKEN: 'getToken',
 };
 
-const makeRequest = (type, clientId, clientSecret, authCode)=> {
+const makeRequest = async type =>  {
+  const parameters = getParameters();
   switch (type) {
     case REQUEST_TYPES.LOGIN: {
       // si hay un clientId setteado, se abre el browser
@@ -22,9 +22,9 @@ const makeRequest = (type, clientId, clientSecret, authCode)=> {
       );
     }
     case REQUEST_TYPES.GET_TOKEN: {
-      const encodedCredentials = btoa(`${clientId}:${clientSecret}`);
-      //RNFetchBlob.config({ trusty: true }).
-      const res = RNFetchBlob.config({ trusty: true }).fetch(
+      const encodedCredentials = btoa(`${parameters.clientId}:${parameters.clientSecret}`);
+      try {
+        const response = await fetch(
           'POST',
           tokenEndpoint,
           {
@@ -32,23 +32,17 @@ const makeRequest = (type, clientId, clientSecret, authCode)=> {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             Accept: 'application/json',
           },
-          `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
-        )
-        .then(resp => {
-          return [resp.json(), resp.respInfo.status];
-        })
-        .then(data => {
-          console.log('data'+data[0]);
-          if (data[1] === 400) {
-            return Promise.reject(data[0]);
-          } else {
-            return Promise.resolve(data[0]);
-          }
-        });
-      console.log('res');
-      console.log(res);
-      console.log('-res');
-      return res;
+          `grant_type=authorization_code&code=${parameters.code}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
+        );
+        const { status } = response.respInfo;
+        const responseJson = await response.json();
+        if (status === 400) {
+          return Promise.reject(responseJson);
+        }
+        return Promise.resolve(responseJson);
+      } catch (error) {
+        console.log(error);
+      }
     }
     default:
       return 'default value';

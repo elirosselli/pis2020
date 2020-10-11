@@ -1,7 +1,10 @@
 import makeRequest, { REQUEST_TYPES } from '../index';
 import { getParameters } from '../../configuration';
+<<<<<<< HEAD
 import { loginEndpoint } from '../endpoints';
 import { getToken } from '../../interfaces';
+=======
+>>>>>>> Fixed tests. Add await async instead of then.
 
 jest.mock('../../configuration');
 
@@ -117,7 +120,7 @@ describe('getToken', () => {
       code,
     );
     expect.assertions(1);
-    return expect(response).resolves.toEqual({
+    return expect(response).rejects.toEqual({
       error: 'invalid_grant',
       error_description:
         'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',

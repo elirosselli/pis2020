@@ -57,6 +57,7 @@ const getToken = async (code, clientId, clientSecret) => {
       clientSecret,
       code,
     );
+    console.log('respppppppp');
     console.log(response);
     return response; // no se si seria response directo o algo tipo response.token
     } catch(error) {
