@@ -14,8 +14,9 @@ const setParameters = params => {
 };
 
 const clearParameters = () => {
-  // eslint-disable-next-line no-return-assign
-  Object.keys(parameters).forEach(key => (parameters[key] = ''));
+  Object.keys(parameters).forEach(key => {
+    parameters[key] = '';
+  });
 };
 
 export { getParameters, setParameters, clearParameters };
