@@ -21,23 +21,21 @@ const makeRequest = (type, clientId, clientSecret, authCode) => {
     case REQUEST_TYPES.GET_TOKEN: {
       const encodedCredentials = btoa(`${clientId}:${clientSecret}`);
 
-      axios
-        .post(tokenEndpoint, {
-          httpsAgent: new https.Agent({
-            ca: fs.readFileSync("../certificate.crt"),
-          }),
-          headers: {
+      // 
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
+
+      return fetch(
+          'POST',
+          tokenEndpoint,
+          {
             Authorization: `Basic ${encodedCredentials}`,
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             Accept: 'application/json',
           },
-          data: {
-            grant_type: 'authorization_code',
-            code: `${authCode}`,
-            redirect_uri: 'sdkIdU.testing%3A%2F%2Fauth',
-            // `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
-          },
-        })
+          `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
+        )
         .then(resp => [resp.json(), resp.respInfo.status])
         .then(data => {
           if (data[1] === 400) {
@@ -45,28 +43,6 @@ const makeRequest = (type, clientId, clientSecret, authCode) => {
           }
           return Promise.resolve(data[0]);
         });
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
-
-      // return RNFetchBlob.config({ trusty: true })
-      //   .fetch(
-      //     'POST',
-      //     tokenEndpoint,
-      //     {
-      //       Authorization: `Basic ${encodedCredentials}`,
-      //       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      //       Accept: 'application/json',
-      //     },
-      //     `grant_type=authorization_code&code=${authCode}&redirect_uri=sdkIdU.testing%3A%2F%2Fauth`,
-      //   )
-      //   .then(resp => [resp.json(), resp.respInfo.status])
-      //   .then(data => {
-      //     if (data[1] === 400) {
-      //       return Promise.reject(data[0]);
-      //     }
-      //     return Promise.resolve(data[0]);
-      //   });
     }
     // eslint-disable-next-line no-fallthrough
     default:

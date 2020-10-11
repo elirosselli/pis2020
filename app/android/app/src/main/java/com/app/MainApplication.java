@@ -10,6 +10,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.facebook.react.modules.network.OkHttpClientProvider;
+import com.app.CertificatePinningClientFactory;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -44,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    OkHttpClientProvider.setOkHttpClientFactory(new CertificatePinningClientFactory());
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
