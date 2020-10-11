@@ -57,13 +57,12 @@ const getToken = async (code, clientId, clientSecret) => {
       clientSecret,
       code,
     );
-    console.log('respppppppp');
     console.log(response);
-    return response; // no se si seria response directo o algo tipo response.token
-    } catch(error) {
-      console.log(error);
-      return error;
-    }
-}
+    return response; 
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export { initialize, login, getToken };
