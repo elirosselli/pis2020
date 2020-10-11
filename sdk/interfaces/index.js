@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 import makeRequest from '../requests';
 import { setParameters } from '../configuration';
 
-const REQUEST_TYPES = { LOGIN: 'login' };
+const REQUEST_TYPES = { LOGIN: 'login', GET_TOKEN: 'getToken' };
 
 const initialize = (redirectUri, clientId, clientSecret) => {
   setParameters({ redirectUri, clientId, clientSecret });
@@ -36,4 +36,18 @@ const login = async () => {
   return promise;
 };
 
-export { initialize, login };
+
+const getToken = async (code) => {
+  try {
+    const response = makeRequest(
+      REQUEST_TYPES.GET_TOKEN
+    );
+    console.log(response);
+    return response; // no se si seria response directo o algo tipo response.token
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export { initialize, login, getToken };
