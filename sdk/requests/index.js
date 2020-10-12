@@ -22,10 +22,15 @@ const makeRequest = async type => {
       );
     }
     case REQUEST_TYPES.GET_TOKEN: {
+      // Codificar en base64 el clientId y el clientSecret, 
+      // siguiendo el esquema de autenticación HTTP Basic Auth.
       const encodedCredentials = btoa(
         `${parameters.clientId}:${parameters.clientSecret}`,
       );
       try {
+        // Se arma la solicitud a enviar al tokenEndpoint, tomando 
+        // los datos de autenticación codificados, el code obtenido
+        // durante el login, y la redirect uri correspondiente.
         const response = await fetch(tokenEndpoint, {
           method: 'POST',
           sslPinning: {
@@ -38,11 +43,18 @@ const makeRequest = async type => {
           },
           body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
         });
+
         const { status } = response;
         const responseJson = await response.json();
+
+        // En caso de error se devuelve la respuesta, 
+        // rechazando la promesa.
         if (status === 400) {
           return Promise.reject(responseJson);
         }
+
+        // En caso de una respuesta correcta se definen los 
+        // parámetros correspondientes en configuración.
         setParameters({
           accessToken: responseJson.access_token,
           refreshToken: responseJson.refresh_token,
@@ -52,6 +64,9 @@ const makeRequest = async type => {
         });
         return Promise.resolve(responseJson.access_token);
       } catch (error) {
+        // Si existe algun error, se 
+        // rechaza la promesa y se devuelve el
+        // error.
         return Promise.reject(error);
       }
     }
