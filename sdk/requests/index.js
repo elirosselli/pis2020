@@ -2,7 +2,7 @@
 import { Linking } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint, tokenEndpoint } from './endpoints';
-import { encode as btoa } from 'base-64';
+import { encode } from 'base-64';
 import RNFetchBlob from 'rn-fetch-blob';
 
 export const REQUEST_TYPES = {
@@ -20,7 +20,7 @@ const makeRequest = async type => {
       );
     }
     case REQUEST_TYPES.GET_TOKEN: {
-      const encodedCredentials = btoa(
+      const encodedCredentials = encode(
         `${parameters.clientId}:${parameters.clientSecret}`,
       );
       try {
@@ -34,7 +34,6 @@ const makeRequest = async type => {
           },
           `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
         );
-        console.log(response);
         const { status } = response.respInfo;
         const responseJson = await response.json();
         if (status === 400) {
@@ -45,7 +44,7 @@ const makeRequest = async type => {
           refreshToken: responseJson.refresh_token,
           tokenType: responseJson.token_type,
           expiresIn: responseJson.expires_in,
-          idToken: responseJson.id_token
+          idToken: responseJson.id_token,
         });
         return Promise.resolve(responseJson.access_token);
       } catch (error) {

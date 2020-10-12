@@ -14,7 +14,7 @@ const LoginButton = () => {
       const code = await login();
       console.log(`Code: ${code}`);
       const token = await getToken(code);
-      console.log(token);
+      console.log(`Token: ${token}`);
       const parameters = getParameters();
       console.log(parameters);
     } catch (err) {

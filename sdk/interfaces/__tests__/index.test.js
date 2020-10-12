@@ -11,6 +11,10 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   removeEventListener: jest.fn(),
 }));
 
+jest.mock('rn-fetch-blob', () => ({
+  config: jest.fn(() => ({ fetch: jest.fn() })),
+}));
+
 describe('initialize', () => {
   const parameters = {
     redirectUri: 'redirectUri',

@@ -36,14 +36,9 @@ const login = async () => {
   return promise;
 };
 
-
-const getToken = async (code) => {
+const getToken = async () => {
   try {
-    const response = makeRequest(
-      REQUEST_TYPES.GET_TOKEN
-    );
-    console.log(response);
-    return response; 
+    return await makeRequest(REQUEST_TYPES.GET_TOKEN);
   } catch (error) {
     console.log(error);
     return error;
