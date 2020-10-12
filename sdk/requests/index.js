@@ -3,7 +3,6 @@ import { Linking } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { encode as btoa } from 'base-64';
-import RNFetchBlob from 'rn-fetch-blob';
 import { fetch } from 'react-native-ssl-pinning';
 
 export const REQUEST_TYPES = {
@@ -39,7 +38,6 @@ const makeRequest = async type => {
           },
           body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
         });
-        console.log(response);
         const { status } = response;
         const responseJson = await response.json();
         if (status === 400) {
