@@ -26,7 +26,7 @@ const login = async () => {
     const code = event.url.match(/\?code=([^&]+)/);
 
     // si existe el codigo, se guarda y se resuelve la promise
-    // si no, se hace un reject de la promise con un error
+    // si no, se rechaza la promise con un error
     if (code) {
       setParameters({ code: code[1] });
       resolveFunction(code[1]);
@@ -41,7 +41,7 @@ const login = async () => {
     Linking.addEventListener('url', handleOpenUrl);
     await makeRequest(REQUEST_TYPES.LOGIN);
   } catch (error) {
-    // en caso de error, se elimina el handler y se hace reject de la promise
+    // en caso de error, se elimina el handler y rechaza la promise
     Linking.removeEventListener('url', handleOpenUrl);
     rejectFunction(Error("Couldn't make request"));
   }
