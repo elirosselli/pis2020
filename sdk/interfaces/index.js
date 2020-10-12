@@ -25,7 +25,7 @@ const login = async () => {
     // redirige el browser luego de realizado el login
     const code = event.url.match(/\?code=([^&]+)/);
 
-    // si existe el codigo, se settea y se resuelve la promise
+    // si existe el codigo, se guarda y se resuelve la promise
     // si no, se hace un reject de la promise con un error
     if (code) {
       setParameters({ code: code[1] });
