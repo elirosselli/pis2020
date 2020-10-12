@@ -12,6 +12,8 @@ const makeRequest = type => {
   const parameters = getParameters();
   switch (type) {
     case REQUEST_TYPES.LOGIN: {
+      // si hay un clientId setteado, se abre el browser
+      // para realizar la autenticación con idUruguay
       return (
         parameters.clientId &&
         Linking.openURL(loginEndpoint(parameters.clientId))
