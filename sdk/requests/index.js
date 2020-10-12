@@ -4,6 +4,7 @@ import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint, tokenEndpoint } from './endpoints';
 import { encode as btoa } from 'base-64';
 import RNFetchBlob from 'rn-fetch-blob';
+import { fetch } from 'react-native-ssl-pinning';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
@@ -26,18 +27,20 @@ const makeRequest = async type => {
         `${parameters.clientId}:${parameters.clientSecret}`,
       );
       try {
-        const response = await RNFetchBlob.config({ trusty: true }).fetch(
-          'POST',
-          tokenEndpoint,
-          {
+        const response = await fetch(tokenEndpoint, {
+          method: 'POST',
+          sslPinning: {
+            certs: ['certificate'],
+          },
+          headers: {
             Authorization: `Basic ${encodedCredentials}`,
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             Accept: 'application/json',
           },
-          `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
-        );
+          body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
+        });
         console.log(response);
-        const { status } = response.respInfo;
+        const { status } = response;
         const responseJson = await response.json();
         if (status === 400) {
           return Promise.reject(responseJson);
@@ -47,7 +50,7 @@ const makeRequest = async type => {
           refreshToken: responseJson.refresh_token,
           tokenType: responseJson.token_type,
           expiresIn: responseJson.expires_in,
-          idToken: responseJson.id_token
+          idToken: responseJson.id_token,
         });
         return Promise.resolve(responseJson.access_token);
       } catch (error) {
