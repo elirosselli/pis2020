@@ -54,7 +54,6 @@ jest.mock('react-native-ssl-pinning', () => ({
 
 describe('getToken', () => {
   it('calls getToken with correct code', async () => {
-
     // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -73,20 +72,21 @@ describe('getToken', () => {
 
     const clientId = '898562';
     const clientSecret =
-    'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';
     const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
-    
+
     //Mockear getParameters
     getParameters.mockReturnValue({
       clientId: clientId,
       clientSecret: clientSecret,
       redirectUri: redirectUri,
-      code: code
+      code: code,
     });
 
-    const encodedCredentials = 'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
     const response = makeRequest(REQUEST_TYPES.GET_TOKEN);
 
@@ -140,6 +140,37 @@ describe('getToken', () => {
       error: 'invalid_grant',
       error_description:
         'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+    });
+  });
+
+  it('calls get token with incorrect clientId or clientSecret', async () => {
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_client',
+            error_description:
+              'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
+          }),
+      }),
+    );
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d4975saddf'; //Incorrect
+
+    const response = makeRequest(
+      REQUEST_TYPES.GET_TOKEN,
+      clientId,
+      clientSecret,
+      code,
+    );
+    expect.assertions(1);
+    return expect(response).rejects.toEqual({
+      error: 'invalid_client',
+      error_description:
+        'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
     });
   });
 });
