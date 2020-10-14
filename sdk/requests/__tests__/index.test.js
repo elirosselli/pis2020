@@ -24,12 +24,12 @@ describe('login', () => {
     );
   });
 
-  it('calls login without clientId and with redirectUri', () => {
+  it('calls login without clientId and with redirectUri', async() => {
     getParameters.mockReturnValue({
       clientId: '',
       redirectUri: 'redirectUri',
     });
-    const response = makeRequest(REQUEST_TYPES.LOGIN);
+    const response = await makeRequest(REQUEST_TYPES.LOGIN);
     expect(response).toBe('');
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
   });
@@ -144,14 +144,14 @@ describe('getToken', () => {
 });
 
 describe('default', () => {
-  it('calls default with clientId', () => {
-    const response = makeRequest('default', 'clientId');
+  it('calls default with clientId', async () => {
+    const response = await makeRequest('default', 'clientId');
     expect(response).toBe('default value');
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
   });
 
-  it('calls default without clientId', () => {
-    const response = makeRequest('default', '');
+  it('calls default without clientId', async () => {
+    const response = await makeRequest('default', '');
     expect(response).toBe('default value');
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
   });
