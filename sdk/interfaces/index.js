@@ -48,7 +48,6 @@ const login = async () => {
 };
 
 const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
-
 const logout = async () => {
   let resolveFunction;
   let rejectFunction;
@@ -59,8 +58,12 @@ const logout = async () => {
 
   const handleOpenUrl = event => {
     const urlCheck = event.url;
-    if (urlCheck) resolveFunction(urlCheck);
-    else rejectFunction(Error('Invalid url'));
+
+    if (urlCheck) {
+      setParameters({ code: 'empty' });
+      resolveFunction();
+    } else rejectFunction(Error('Invalid url'));
+
     Linking.removeEventListener('url', handleOpenUrl);
   };
 
