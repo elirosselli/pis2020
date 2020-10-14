@@ -7,6 +7,7 @@ import login from './login';
 export const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
+  GET_REFRESH_TOKEN: 'getRefreshToken',
 };
 
 const makeRequest = async type => {
@@ -15,16 +16,24 @@ const makeRequest = async type => {
     case REQUEST_TYPES.LOGIN: {
       return login();
     }
-    case REQUEST_TYPES.GET_TOKEN: {
+    case REQUEST_TYPES.GET_TOKEN:
+    case REQUEST_TYPES.GET_REFRESH_TOKEN: {
       // Codificar en base64 el clientId y el clientSecret,
       // siguiendo el esquema de autenticación HTTP Basic Auth.
       const encodedCredentials = encode(
         `${parameters.clientId}:${parameters.clientSecret}`,
       );
+      // En caso de que el request sea GET_TOKEN el body de la request contendrá el code obtenido
+      // durante el login, y la redirect uri correspondiente.
+      let bodyString = `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`;
+      // En caso de que el request sea GET_REFRESH_TOKEN el body de la request contendrá grant_type 'refresh_token' y
+      // el refresh token obtenido en get token
+      // eslint-disable-next-line eqeqeq
+      if (type == REQUEST_TYPES.GET_REFRESH_TOKEN)
+        bodyString = `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`;
       try {
         // Se arma la solicitud a enviar al tokenEndpoint, tomando
-        // los datos de autenticación codificados, el code obtenido
-        // durante el login, y la redirect uri correspondiente.
+        // los datos de autenticación codificados
         const response = await fetch(tokenEndpoint, {
           method: 'POST',
           sslPinning: {
@@ -35,7 +44,7 @@ const makeRequest = async type => {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             Accept: 'application/json',
           },
-          body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
+          body: bodyString,
         });
 
         const { status } = response;
