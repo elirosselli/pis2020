@@ -52,7 +52,6 @@ jest.mock('react-native-ssl-pinning', () => ({
 
 describe('getToken', () => {
   it('calls getToken with correct code', async () => {
-    // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -75,7 +74,6 @@ describe('getToken', () => {
     const redirectUri = 'uri';
     const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       clientId,
       clientSecret,
@@ -88,7 +86,6 @@ describe('getToken', () => {
 
     const response = await makeRequest(REQUEST_TYPES.GET_TOKEN);
 
-    // Chequeo de parametros enviados
     expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
       method: 'POST',
       sslPinning: {
@@ -102,7 +99,6 @@ describe('getToken', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
     });
 
-    // Chequeo de respuestas
     expect(response).toBe('c9747e3173544b7b870d48aeafa0f661');
   });
 
