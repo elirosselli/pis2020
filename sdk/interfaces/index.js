@@ -20,12 +20,10 @@ const logout = async () => {
 
   const handleOpenUrl = event => {
     const urlCheck = event.url;
-
     if (urlCheck) {
       setParameters({ code: 'empty' });
       resolveFunction(urlCheck);
     } else rejectFunction(Error('Invalid url'));
-
     Linking.removeEventListener('url', handleOpenUrl);
   };
 
