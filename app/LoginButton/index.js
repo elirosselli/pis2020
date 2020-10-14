@@ -8,12 +8,11 @@ import { login, getParameters, logout } from 'sdk-gubuy-test';
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const stateLog = 'loggedOut'; //  cambiar a loggedIn una vez loggeado, y de nuevo a loggedOut una vez hecho el log out
-const idToken = ''; //  poner idToken obtenido con Postman
-
 const LoginButton = () => {
   const handleButton = async () => {
-    if (stateLog === 'loggedOut') await handleLogin();
+    const parameters = getParameters();
+    if (parameters.code === '' || parameters.code === 'empty')
+      await handleLogin();
     else await handleLogout();
   };
   const handleLogin = async () => {
@@ -31,8 +30,7 @@ const LoginButton = () => {
 
   const handleLogout = async () => {
     try {
-      const redirectUri = await logout(idToken);
-      console.log(redirectUri);
+      await logout();
     } catch (err) {
       console.log(err);
     }

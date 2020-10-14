@@ -49,7 +49,7 @@ const login = async () => {
   return promise;
 };
 
-const logout = async idToken => {
+const logout = async () => {
   let resolveFunction;
   let rejectFunction;
   const promise = new Promise((resolve, reject) => {
@@ -58,15 +58,17 @@ const logout = async idToken => {
   });
 
   const handleOpenUrl = event => {
-    const urlCheck = event.url.match(/\?code=([^&]+)/);
-    if (urlCheck) resolveFunction(urlCheck);
-    else rejectFunction(Error('Invalid url'));
+    const urlCheck = event.url;
+    if (urlCheck) {
+      setParameters({ code: 'empty' });
+      resolveFunction();
+    } else rejectFunction(Error('Invalid url'));
     Linking.removeEventListener('url', handleOpenUrl);
   };
 
   try {
     Linking.addEventListener('url', handleOpenUrl);
-    await makeRequest(REQUEST_TYPES.LOGOUT, null, idToken);
+    await makeRequest(REQUEST_TYPES.LOGOUT);
   } catch (error) {
     Linking.removeEventListener('url', handleOpenUrl);
     rejectFunction(Error("Couldn't make request"));
