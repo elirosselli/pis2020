@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
@@ -49,7 +48,7 @@ const makeRequest = async type => {
 
         // En caso de error se devuelve la respuesta,
         // rechazando la promesa.
-        if (status === 400) {
+        if (status !== 200) {
           return Promise.reject(responseJson);
         }
 

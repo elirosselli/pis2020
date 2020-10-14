@@ -51,7 +51,6 @@ const getToken = async () => {
   try {
     return await makeRequest(REQUEST_TYPES.GET_TOKEN);
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
