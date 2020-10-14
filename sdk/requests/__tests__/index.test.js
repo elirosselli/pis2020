@@ -108,15 +108,19 @@ describe('getToken', () => {
     expect(response).toBe('c9747e3173544b7b870d48aeafa0f661');
   });
 
+  let error = 'invalid_grant';
+  let errorDescription =
+    'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
+
   it('calls get token with incorrect code', async () => {
+
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
         json: () =>
           Promise.resolve({
-            error: 'invalid_grant',
-            error_description:
-              'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+            error,
+            error_description: errorDescription,
           }),
       }),
     );
@@ -124,24 +128,16 @@ describe('getToken', () => {
     const response = makeRequest(REQUEST_TYPES.GET_TOKEN);
     expect.assertions(1);
     expect(response).rejects.toEqual({
-      error: 'invalid_grant',
-      error_description:
-        'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+      error,
+      error_description: errorDescription,
     });
   });
 
   it('calls get token with incorrect clientId or clientSecret', async () => {
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error: 'invalid_client',
-            error_description:
-              'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
-          }),
-      }),
-    );
+    error = 'invalid_client';
+    errorDescription =
+      'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)';
+
     const clientId = '898562';
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
