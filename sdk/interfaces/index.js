@@ -11,11 +11,8 @@ const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
 const refreshToken = async () => {
   try {
-    const response = makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    console.log(response);
-    return response;
+    return makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
