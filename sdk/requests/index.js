@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import { Linking } from 'react-native';
+import { encode } from 'base-64';
+import { fetch } from 'react-native-ssl-pinning';
 import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint, tokenEndpoint } from './endpoints';
-import { encode as btoa } from 'base-64';
-import { fetch } from 'react-native-ssl-pinning';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
@@ -22,13 +22,13 @@ const makeRequest = async type => {
       );
     }
     case REQUEST_TYPES.GET_TOKEN: {
-      // Codificar en base64 el clientId y el clientSecret, 
+      // Codificar en base64 el clientId y el clientSecret,
       // siguiendo el esquema de autenticación HTTP Basic Auth.
-      const encodedCredentials = btoa(
+      const encodedCredentials = encode(
         `${parameters.clientId}:${parameters.clientSecret}`,
       );
       try {
-        // Se arma la solicitud a enviar al tokenEndpoint, tomando 
+        // Se arma la solicitud a enviar al tokenEndpoint, tomando
         // los datos de autenticación codificados, el code obtenido
         // durante el login, y la redirect uri correspondiente.
         const response = await fetch(tokenEndpoint, {
@@ -47,13 +47,13 @@ const makeRequest = async type => {
         const { status } = response;
         const responseJson = await response.json();
 
-        // En caso de error se devuelve la respuesta, 
+        // En caso de error se devuelve la respuesta,
         // rechazando la promesa.
         if (status === 400) {
           return Promise.reject(responseJson);
         }
 
-        // En caso de una respuesta correcta se definen los 
+        // En caso de una respuesta correcta se definen los
         // parámetros correspondientes en configuración.
         setParameters({
           accessToken: responseJson.access_token,
@@ -64,7 +64,7 @@ const makeRequest = async type => {
         });
         return Promise.resolve(responseJson.access_token);
       } catch (error) {
-        // Si existe algun error, se 
+        // Si existe algun error, se
         // rechaza la promesa y se devuelve el
         // error.
         return Promise.reject(error);

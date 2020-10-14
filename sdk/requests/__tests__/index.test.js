@@ -1,8 +1,6 @@
+import { fetch } from 'react-native-ssl-pinning';
 import makeRequest, { REQUEST_TYPES } from '../index';
 import { getParameters } from '../../configuration';
-import { loginEndpoint } from '../endpoints';
-import { getToken } from '../../interfaces';
-import { fetch } from 'react-native-ssl-pinning';
 
 jest.mock('../../configuration');
 
@@ -77,18 +75,18 @@ describe('getToken', () => {
     const redirectUri = 'uri';
     const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
 
-    //Mockear getParameters
+    // Mockear getParameters
     getParameters.mockReturnValue({
-      clientId: clientId,
-      clientSecret: clientSecret,
-      redirectUri: redirectUri,
-      code: code,
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
     });
 
     const encodedCredentials =
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
-    const response = makeRequest(REQUEST_TYPES.GET_TOKEN);
+    const response = await makeRequest(REQUEST_TYPES.GET_TOKEN);
 
     expect.assertions(2);
 
@@ -107,9 +105,7 @@ describe('getToken', () => {
     });
 
     // Chequeo de respuestas
-    return expect(response).resolves.toEqual(
-      'c9747e3173544b7b870d48aeafa0f661',
-    );
+    expect(response).toBe('c9747e3173544b7b870d48aeafa0f661');
   });
 
   it('calls get token with incorrect code', async () => {
@@ -124,19 +120,10 @@ describe('getToken', () => {
           }),
       }),
     );
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d4975saddf'; //Incorrect
 
-    const response = makeRequest(
-      REQUEST_TYPES.GET_TOKEN,
-      clientId,
-      clientSecret,
-      code,
-    );
+    const response = makeRequest(REQUEST_TYPES.GET_TOKEN);
     expect.assertions(1);
-    return expect(response).rejects.toEqual({
+    expect(response).rejects.toEqual({
       error: 'invalid_grant',
       error_description:
         'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
@@ -158,7 +145,7 @@ describe('getToken', () => {
     const clientId = '898562';
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d4975saddf'; //Incorrect
+    const code = 'f24df0c4fcb142328b843d4975saddf'; // Incorrect
 
     const response = makeRequest(
       REQUEST_TYPES.GET_TOKEN,
