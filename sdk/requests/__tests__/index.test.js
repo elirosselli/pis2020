@@ -121,7 +121,7 @@ describe('getToken', () => {
 
 
 describe('makeRequest refreshToken', () => {
-  it('calls refreshToken with correct code', async () => {
+  it('calls refreshToken with correct refreshToken', async () => {
     // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -174,6 +174,43 @@ describe('makeRequest refreshToken', () => {
 
     // Chequeo de respuestas
     expect(response).toBe('c9747e3173544b7b870d48aeafa0f661');
+  });
+
+  it('calls getToken with incorrect clientId or clientSecret or refreshToken', async () => {
+    const error = 'invalid_grant';
+    const errorDescription =
+      'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error,
+        error_description: errorDescription,
+      });
+    }
+    expect.assertions(1);
+  });
+  it('calls refreshToken and fetch fails', async () => {
+    const error = Error('error');
+    fetch.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    expect.assertions(1);
   });
 }); 
 

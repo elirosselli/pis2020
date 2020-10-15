@@ -1,4 +1,4 @@
-import { initialize, getToken } from '../index';
+import { initialize, getToken, refreshToken } from '../index';
 import makeRequest from '../../requests';
 import { getParameters } from '../../configuration';
 
@@ -43,6 +43,34 @@ describe('getToken', () => {
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_TOKEN);
+    expect.assertions(3);
+  });
+});
+
+describe('refreshToken', () => {
+  afterEach(() => jest.clearAllMocks());
+
+  it('calls refreshToken correctly', async () => {
+    const newToken = '041a156232ac43c6b719c57b7217c9ee';
+    makeRequest.mockReturnValue(Promise.resolve(newToken));
+
+    const response = await refreshToken();
+
+    expect(response).toBe(newToken);
+  });
+
+  it('calls refreshToken incorrectly', async () => {
+    makeRequest.mockReturnValue(
+      Promise.reject(new Error("Couldn't make request")),
+    );
+    try {
+      await refreshToken();
+    } catch (error) {
+      expect(error).toMatchObject(Error("Couldn't make request"));
+    }
+
+    expect(makeRequest).toHaveBeenCalledTimes(1);
+    expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_REFRESH_TOKEN);
     expect.assertions(3);
   });
 });
