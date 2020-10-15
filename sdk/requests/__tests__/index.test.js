@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import { fetch } from 'react-native-ssl-pinning';
 import makeRequest, { REQUEST_TYPES } from '../index';
 import login from '../login';
