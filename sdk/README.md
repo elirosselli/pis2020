@@ -34,3 +34,52 @@ Donde *loginEndpoint* está encontrado en el archivo *endpoints.js*, teniendo el
     `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`
 
 Y donde el valor de *redirectUri* se obtiene del módulo de configuración. Al abrir el *browser* *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no. El usuario entonces ingresará sus credenciales y aceptará compartir los datos solicitados o no. Una vez realizado el request, la aplicación preguntará al usuario final si desea volver a la aplicación, lo cual detectará el *Event Listener* como un evento url (*redirect*). Entonces, se ejecutará la función **handleOpenUrl**. En esta última, el evento capturado es un objeto que tiene *key url* y *value* un *string*, donde este *value* será la *url* que contenga (o no) el código de autorización. Entonces, se intenta obtener el código de autorización a través de una expresión regular. En caso de encontrarse el código, se resuelve la promesa retornando el código, en caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Luego, se remueve el *Event Listener* para no seguir escuchando por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
+
+
+## Funcionalidad de *getToken*
+
+### Generalidades
+La función **getToken** es la encargada de la comunicación entre la aplicación de usuario  y el token endpoint, de forma de obtener los datos correspondientes a una **Token Response**.  Esta función depende del ***authorization code*** obtenido en la función login, además de requerir los datos de autenticación del usuario (***clientId*** y ***clientSecret***), y la ***redirectUri*** correspondiente. A partir de estos datos se realiza una consulta con el método POST al tokenEnpoint, siguiendo lo definido en la [*API de ID Uruguay*](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect#section-ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect-Token+Endpoint+(/oidc/v1/token)). 
+
+Como resultado de la solicitud, se obtiene una **Token Response** que incluye los siguientes parámetros codificados como `application/json`. En caso de que todo haya salido bien, la respuesta HTTP tiene código `200 OK` y contiene los siguientes datos: 
+
+| Parámetro     	| Tipo        	| Descripción                                                               	|
+|---------------	|-------------	|---------------------------------------------------------------------------	|
+| access_token  	| Requerido   	| Access Token emitido por el OP                                            	|
+| token_type    	| Requerido   	| Tipo de token. Será siempre `Bearer`                                      	|
+| id_token      	| Requerido   	| ID Token asociado a la sesión de autenticación                            	|
+| expires_in    	| Recomendado 	| Tiempo de vida del Access Token en segundos. Valor por defecto 60 minutos 	|
+| refresh_token 	| Opcional    	| Refresh Token que puede ser utilizado para obtener nuevos Access Tokens   	|
+
+Estos datos serán guardados en el componente de configuración, y se retorna únicamente el **access_token** generado.
+
+
+En caso de error, la respuesta tiene un código de error `HTTP 400 Bad Request` y tiene la siguiente estructura:
+| Parámetro         	| Tipo      	| Descripción                                                                                                  	|
+|-------------------	|-----------	|--------------------------------------------------------------------------------------------------------------	|
+| error             	| Requerido 	| Un código de error de los descritos en [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-5.1)                                                             	|
+| error_description 	| Opcional  	| Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. 	|
+
+Los datos de error son devueltos como resultado de la función `makeRequest`.
+
+
+
+### Archivos y Parámetros
+
+La implementación de la funcionalidad de *getToken* involucra los siguientes archivos:
+* **sdk/interfaces/index.js**: Donde se implementa la función de **getToken**.
+* **sdk/requests/index.js**: La función de login utilizará la función **makeRequest** de este archivo, que se encargará de realizar el *request* mencionado anteriormente.
+*  **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtendrán parámetros necesarios.
+* **sdk/requests/endpoints.js**: Contiene constantes que serán utilizadas.
+
+  
+La función **getToken** no recibe parámetros, sino que obtiene los parámetros necesarios a través del módulo de configuración y retorna una promesa, que cuando se resuelve retorna el `access_token`, o cuando se rechaza retorna un mensaje de error acorde. 
+
+
+### Código
+
+La función **getToken** implementada en `interfaces/index.js` cumple la función de invocar a la función ***makeRequest*** con el tipo de request correspondiente.
+
+La función **makeRequest** implementada en `requests/index.js` recibe como único parámetros el tipo de request, que en este caso es "getToken". Dada esta situación, la función toma los parámetros del componente configuración, que van a ser usados a la hora de realizar la solicitud.
+
+Utilizando la librería `base-64` codifica el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617).
