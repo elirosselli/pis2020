@@ -8,7 +8,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import { initialize, setParameters } from 'sdk-gubuy-test';
+import { initialize } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -21,9 +21,12 @@ import ENV from './env';
 
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
-initialize('sdkIdU.testing%3A%2F%2Fauth', sdkIdUClientId, sdkIdUClientSecret);
-
-setParameters({ postLogoutRedirectUri: 'sdkIdU.testing://redirect' });
+initialize(
+  'sdkIdU.testing%3A%2F%2Fauth',
+  sdkIdUClientId,
+  sdkIdUClientSecret,
+  'sdkIdU.testing://redirect',
+);
 
 const App = () => (
   <View style={styles.container}>
