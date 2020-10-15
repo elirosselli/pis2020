@@ -2,8 +2,13 @@ import { Linking } from 'react-native';
 import makeRequest, { REQUEST_TYPES } from '../requests';
 import { setParameters } from '../configuration';
 
-const initialize = (redirectUri, clientId, clientSecret) => {
-  setParameters({ redirectUri, clientId, clientSecret });
+const initialize = (
+  redirectUri,
+  clientId,
+  clientSecret,
+  postLogoutRedirectUri,
+) => {
+  setParameters({ redirectUri, clientId, clientSecret, postLogoutRedirectUri });
 };
 
 const login = async () => {
@@ -62,7 +67,7 @@ const logout = async () => {
     if (urlCheck) {
       setParameters({ code: 'empty' });
       resolveFunction(urlCheck);
-    } else rejectFunction(Error('Invalid url'));
+    } else rejectFunction(Error('Invalid post logout redirect uri'));
     Linking.removeEventListener('url', handleOpenUrl);
   };
 

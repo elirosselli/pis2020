@@ -71,16 +71,7 @@ const makeRequest = async type => {
       }
     }
     case REQUEST_TYPES.LOGOUT: {
-      return (
-        parameters.idToken &&
-        parameters.postLogoutRedirectUri &&
-        Linking.openURL(
-          logoutEndpoint(parameters.idToken, parameters.postLogoutRedirectUri),
-        )
-      );
-    }
-    case REQUEST_TYPES.LOGOUT: {
-      return idToken && Linking.openURL(logoutEndpoint(idToken));
+      return Linking.openURL(logoutEndpoint());
     }
     default:
       return 'default value';
