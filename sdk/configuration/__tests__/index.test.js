@@ -31,7 +31,7 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 'expiresIn',
       idToken: 'idToken',
-    }
+    };
     const parameters = getParameters();
     expect(parameters).toStrictEqual(parameters1);
     setParameters(parameters2);

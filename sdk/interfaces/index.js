@@ -47,12 +47,6 @@ const login = async () => {
   return promise;
 };
 
-const getToken = async () => {
-  try {
-    return await makeRequest(REQUEST_TYPES.GET_TOKEN);
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
+const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
 export { initialize, login, getToken };
