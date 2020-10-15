@@ -13,7 +13,7 @@ const LoginButton = () => {
     try {
       const code = await login();
       console.log(`Code: ${code}`);
-      const token = await getToken(code);
+      const token = await getToken();
       console.log(`Token: ${token}`);
       const parameters = getParameters();
       console.log(parameters);
