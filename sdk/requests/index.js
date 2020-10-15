@@ -28,8 +28,7 @@ const makeRequest = async type => {
       let bodyString = `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`;
       // En caso de que el request sea GET_REFRESH_TOKEN el body de la request contendrá grant_type 'refresh_token' y
       // el refresh token obtenido en get token
-      // eslint-disable-next-line eqeqeq
-      if (type == REQUEST_TYPES.GET_REFRESH_TOKEN)
+      if (type === REQUEST_TYPES.GET_REFRESH_TOKEN)
         bodyString = `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`;
       try {
         // Se arma la solicitud a enviar al tokenEndpoint, tomando
