@@ -9,6 +9,11 @@ const login = () => makeRequest(REQUEST_TYPES.LOGIN);
 
 const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 const logout = async () => {
+  setParameters({ postLogoutRedirectUri: 'sdkIdU.testing://redirect' });
+  setParameters({
+    idToken:
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODY0IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAyNzE4NTg0LCJpYXQiOjE2MDI3MTc5ODQsImF1dGhfdGltZSI6MTYwMjcxMzQ3MCwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJCNVFxNWttUE1TNzgzMnBYY1RSOG1BIn0.Va86IxpPVwtAUSZgLYs4kZxSZVCMvE6tZtXCbMOPVC_-Lo3WTqnHIurUJZxEw6K4ae_AYN24lS4elYXN0tt9DVEXfnUmT3F3LkULX9cxWxxaFe7G-yBTkX9tsK93JqHywVuwX9soT6q7s_DKKEJ0vi9iWW6eltF71fzUPXrKN7Q',
+  });
   let resolveFunction;
   let rejectFunction;
   const promise = new Promise((resolve, reject) => {

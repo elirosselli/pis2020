@@ -119,6 +119,41 @@ describe('getToken', () => {
   });
 });
 
+describe('logout', () => {
+  it('calls logout with idTokenHint and postLogoutRedirectUri', async () => {
+    getParameters.mockReturnValue({
+      idToken: 'idToken',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+    });
+    await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri',
+    );
+  });
+
+  it('calls logout with idTokenHint and without postLogoutRedirectUri', async () => {
+    getParameters.mockReturnValue({
+      idToken: 'idToken',
+      postLogoutRedirectUri: '',
+    });
+    await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=',
+    );
+  });
+
+  it('calls logout without idTokenHint and with postLogoutRedirectUri', async () => {
+    getParameters.mockReturnValue({
+      idToken: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+    });
+    await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=postLogoutRedirectUri',
+    );
+  });
+});
+
 describe('default', () => {
   it('calls default', async () => {
     const response = await makeRequest('default');
