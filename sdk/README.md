@@ -83,3 +83,7 @@ La función **getToken** implementada en `interfaces/index.js` cumple la funció
 La función **makeRequest** implementada en `requests/index.js` recibe como único parámetros el tipo de request, que en este caso es "getToken". Dada esta situación, la función toma los parámetros del componente configuración, que van a ser usados a la hora de realizar la solicitud.
 
 Utilizando la librería `base-64` codifica el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617).
+
+A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del endpoint, o error en la solicitud, entrando al *catch* y retornando el error correspondiente.
+
+En caso de una respuesta, como fue mencionado anteriormente, puede tener código 200, o 400. En caso que el código sea 200, se definen los parámetros recibidos en el componente configuración, y se resuelve la Promise con el valor correspondiente al *access_token*. En caso de error, se rechaza la Promise devolviendo el error recibido.
