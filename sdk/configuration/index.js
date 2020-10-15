@@ -3,6 +3,11 @@ const parameters = {
   clientId: '',
   clientSecret: '',
   code: '',
+  accessToken: '',
+  refreshToken: '',
+  tokenType: '',
+  expiresIn: '',
+  idToken: '',
 };
 
 const getParameters = () => parameters;

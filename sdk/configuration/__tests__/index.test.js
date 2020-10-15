@@ -7,6 +7,11 @@ describe('configuration module', () => {
       clientId: '',
       clientSecret: '',
       code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
     };
     const parameters2 = {
       redirectUri: 'redirectUri',
@@ -20,6 +25,13 @@ describe('configuration module', () => {
       clientId: 'clientId2',
       code: '',
     };
+    const parameters5 = {
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
+    }
     const parameters = getParameters();
     expect(parameters).toStrictEqual(parameters1);
     setParameters(parameters2);
@@ -28,6 +40,11 @@ describe('configuration module', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
     });
     setParameters(parameters3);
     expect(getParameters()).toStrictEqual({
@@ -35,6 +52,11 @@ describe('configuration module', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       code: 'code',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
     });
     setParameters(parameters4);
     expect(getParameters()).toStrictEqual({
@@ -42,6 +64,23 @@ describe('configuration module', () => {
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
       code: 'code',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+    });
+    setParameters(parameters5);
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'redirectUri',
+      clientId: 'clientId2',
+      clientSecret: 'clientSecret',
+      code: 'code',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
@@ -49,6 +88,11 @@ describe('configuration module', () => {
       clientId: '',
       clientSecret: '',
       code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
     });
   });
 });
