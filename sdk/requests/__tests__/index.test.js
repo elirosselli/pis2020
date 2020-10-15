@@ -119,7 +119,6 @@ describe('getToken', () => {
   });
 });
 
-
 describe('makeRequest refreshToken', () => {
   it('calls refreshToken with correct refreshToken', async () => {
     // Mockear la funcion fetch
@@ -212,7 +211,7 @@ describe('makeRequest refreshToken', () => {
     }
     expect.assertions(1);
   });
-}); 
+});
 
 describe('default', () => {
   it('calls default', async () => {

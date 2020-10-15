@@ -4,6 +4,7 @@ import { getParameters } from '../../configuration';
 
 jest.mock('../../requests');
 const { REQUEST_TYPES } = jest.requireActual('../../requests');
+const requestFailedMessage = "Couldn't make request";
 
 describe('initialize', () => {
   const parameters = {
@@ -61,12 +62,12 @@ describe('refreshToken', () => {
 
   it('calls refreshToken incorrectly', async () => {
     makeRequest.mockReturnValue(
-      Promise.reject(new Error("Couldn't make request")),
+      Promise.reject(new Error(requestFailedMessage)),
     );
     try {
       await refreshToken();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toMatchObject(Error(requestFailedMessage));
     }
 
     expect(makeRequest).toHaveBeenCalledTimes(1);
