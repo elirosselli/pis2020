@@ -79,6 +79,9 @@ const makeRequest = async type => {
         )
       );
     }
+    case REQUEST_TYPES.LOGOUT: {
+      return idToken && Linking.openURL(logoutEndpoint(idToken));
+    }
     default:
       return 'default value';
   }
