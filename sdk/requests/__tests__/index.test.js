@@ -1,7 +1,9 @@
 import { fetch } from 'react-native-ssl-pinning';
 import makeRequest, { REQUEST_TYPES } from '../index';
+import login from '../login';
 import { getParameters } from '../../configuration';
 
+jest.mock('../login');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
@@ -9,6 +11,26 @@ afterEach(() => jest.clearAllMocks());
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
+
+describe('login', () => {
+  it('calls login and works correctly', async () => {
+    const code = 'code';
+    login.mockImplementation(() => Promise.resolve(code));
+    const response = await makeRequest(REQUEST_TYPES.LOGIN);
+    expect(response).toBe(code);
+  });
+
+  it('calls login and fails', async () => {
+    const error = Error('error');
+    login.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    expect.assertions(1);
+  });
+});
 
 describe('getToken', () => {
   it('calls getToken with correct code', async () => {

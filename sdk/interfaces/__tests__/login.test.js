@@ -17,11 +17,12 @@ describe('login', () => {
   });
 
   it('calls login and fails', async () => {
-    makeRequest.mockReturnValue(Promise.reject(Error()));
+    const error = Error('error');
+    makeRequest.mockReturnValue(Promise.reject(error));
     try {
       await login();
-    } catch (error) {
-      expect(error).toMatchObject(Error());
+    } catch (err) {
+      expect(err).toBe(error);
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.LOGIN);

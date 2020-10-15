@@ -1,4 +1,4 @@
-import makeRequest, { REQUEST_TYPES } from '../index';
+import login from '../login';
 import { getParameters } from '../../configuration';
 
 jest.mock('../../configuration');
@@ -30,7 +30,7 @@ describe('login', () => {
             'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=TEST_STATE',
         });
     });
-    const code = await makeRequest(REQUEST_TYPES.LOGIN);
+    const code = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
@@ -48,7 +48,7 @@ describe('login', () => {
         });
     });
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
       expect(error).toMatchObject(Error('Invalid authorization code'));
     }
@@ -65,7 +65,7 @@ describe('login', () => {
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
       expect(error).toMatchObject(Error("Couldn't make request"));
     }
@@ -80,7 +80,7 @@ describe('login', () => {
     });
     mockAddEventListener.mockImplementation();
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
       expect(error).toMatchObject(Error("Couldn't make request"));
     }
