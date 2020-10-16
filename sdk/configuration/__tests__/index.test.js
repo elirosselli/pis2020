@@ -13,6 +13,7 @@ describe('configuration module', () => {
       expiresIn: '',
       idToken: '',
       postLogoutRedirectUri: '',
+      state: '',
     };
     const parameters2 = {
       redirectUri: 'redirectUri',
@@ -47,6 +48,7 @@ describe('configuration module', () => {
       expiresIn: '',
       idToken: '',
       postLogoutRedirectUri: '',
+      state: '',
     });
     setParameters(parameters3);
     expect(getParameters()).toStrictEqual({
@@ -60,6 +62,7 @@ describe('configuration module', () => {
       expiresIn: '',
       idToken: '',
       postLogoutRedirectUri: '',
+      state: '',
     });
     setParameters(parameters4);
     expect(getParameters()).toStrictEqual({
@@ -73,6 +76,7 @@ describe('configuration module', () => {
       expiresIn: '',
       idToken: '',
       postLogoutRedirectUri: '',
+      state: '',
     });
     setParameters(parameters5);
     expect(getParameters()).toStrictEqual({
@@ -86,6 +90,7 @@ describe('configuration module', () => {
       expiresIn: 'expiresIn',
       idToken: 'idToken',
       postLogoutRedirectUri: '',
+      state: '',
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
@@ -99,6 +104,7 @@ describe('configuration module', () => {
       expiresIn: '',
       idToken: '',
       postLogoutRedirectUri: '',
+      state: '',
     });
   });
 });

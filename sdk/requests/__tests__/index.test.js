@@ -120,37 +120,48 @@ describe('getToken', () => {
 });
 
 describe('logout', () => {
-  it('calls logout with idTokenHint and postLogoutRedirectUri', async () => {
+  it('calls logout with idTokenHint, postLogoutRedirectUri and state', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: 'chau',
     });
     await makeRequest(REQUEST_TYPES.LOGOUT);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=chau',
     );
   });
 
-  it('calls logout with idTokenHint and without postLogoutRedirectUri', async () => {
+  it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
+    getParameters.mockReturnValue({
+      idToken: 'idToken',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: '',
+    });
+    await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=',
+    );
+  });
+
+  it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: '',
+      state: 'chau',
     });
     await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=',
-    );
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith('');
   });
 
-  it('calls logout without idTokenHint and with postLogoutRedirectUri', async () => {
+  it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: 'chau',
     });
     await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=postLogoutRedirectUri',
-    );
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith('');
   });
 });
 
