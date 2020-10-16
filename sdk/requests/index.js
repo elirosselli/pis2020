@@ -1,9 +1,9 @@
-import { Linking } from 'react-native';
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
 import { getParameters, setParameters } from '../configuration';
-import { tokenEndpoint, logoutEndpoint } from './endpoints';
+import { tokenEndpoint } from './endpoints';
 import login from './login';
+import logout from './logout';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
@@ -67,7 +67,7 @@ const makeRequest = async type => {
       }
     }
     case REQUEST_TYPES.LOGOUT: {
-      return Linking.openURL(logoutEndpoint());
+      return logout();
     }
     default:
       return 'default value';

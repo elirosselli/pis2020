@@ -1,12 +1,20 @@
 import { fetch } from 'react-native-ssl-pinning';
 import makeRequest, { REQUEST_TYPES } from '../index';
 import login from '../login';
+import logout from '../logout';
 import { getParameters } from '../../configuration';
 
 jest.mock('../login');
+jest.mock('../logout');
 jest.mock('../../configuration');
 
+jest.mock('react-native/Libraries/Linking/Linking', () => ({
+  openURL: mockLinkingOpenUrl,
+}));
+
 afterEach(() => jest.clearAllMocks());
+
+const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -120,48 +128,22 @@ describe('getToken', () => {
 });
 
 describe('logout', () => {
-  it('calls logout with idTokenHint, postLogoutRedirectUri and state', async () => {
-    getParameters.mockReturnValue({
-      idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      state: 'chau',
-    });
-    await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=chau',
-    );
+  it('calls logout and works correctly', async () => {
+    const redirectUri = 'postLogoutRedirectUri';
+    logout.mockImplementation(() => Promise.resolve(redirectUri));
+    const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(response).toBe(redirectUri);
   });
 
-  it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
-    getParameters.mockReturnValue({
-      idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      state: '',
-    });
-    await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=',
-    );
-  });
-
-  it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
-    getParameters.mockReturnValue({
-      idToken: 'idToken',
-      postLogoutRedirectUri: '',
-      state: 'chau',
-    });
-    await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith('');
-  });
-
-  it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
-    getParameters.mockReturnValue({
-      idToken: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      state: 'chau',
-    });
-    await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith('');
+  it('calls logout and fails', async () => {
+    const error = Error('error');
+    logout.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    expect.assertions(1);
   });
 });
 

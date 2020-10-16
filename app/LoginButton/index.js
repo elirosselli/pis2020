@@ -32,7 +32,7 @@ const LoginButton = () => {
   const handleLogout = async () => {
     try {
       const redirectUri = await logout();
-      console.log(redirectUri);
+      console.log(`PostLogoutRedirectUri: ${redirectUri}`);
     } catch (err) {
       console.log(err);
     }
