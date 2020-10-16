@@ -9,6 +9,7 @@ const parameters = {
   expiresIn: '',
   idToken: '',
   postLogoutRedirectUri: '',
+  state: '',
 };
 
 const getParameters = () => parameters;
