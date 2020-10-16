@@ -3,7 +3,7 @@ import makeRequest from '../../requests';
 import { getParameters } from '../../configuration';
 
 jest.mock('../../requests');
-const { REQUEST_TYPES } = jest.requireActual('../../requests');
+const REQUEST_TYPES = jest.requireActual('../../requests/constants');
 const requestFailedMessage = "Couldn't make request";
 
 describe('initialize', () => {

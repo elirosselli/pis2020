@@ -1,4 +1,5 @@
-import makeRequest, { REQUEST_TYPES } from '../requests';
+import makeRequest from '../requests';
+import REQUEST_TYPES from '../requests/constants';
 import { setParameters } from '../configuration';
 
 const initialize = (redirectUri, clientId, clientSecret) => {

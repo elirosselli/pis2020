@@ -2,7 +2,7 @@ import { login } from '../index';
 import makeRequest from '../../requests';
 
 jest.mock('../../requests');
-const { REQUEST_TYPES } = jest.requireActual('../../requests');
+const REQUEST_TYPES = jest.requireActual('../../requests/constants');
 
 afterEach(() => jest.clearAllMocks());
 

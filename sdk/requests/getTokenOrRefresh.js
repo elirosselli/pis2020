@@ -4,7 +4,7 @@ import { getParameters, setParameters } from '../configuration';
 import { tokenEndpoint } from './endpoints';
 import REQUEST_TYPES from './constants';
 
-const getToken = async type => {
+const getTokenOrRefresh = async type => {
   const parameters = getParameters();
 
   // Codificar en base64 el clientId y el clientSecret,
@@ -63,4 +63,4 @@ const getToken = async type => {
   }
 };
 
-export default getToken;
+export default getTokenOrRefresh;

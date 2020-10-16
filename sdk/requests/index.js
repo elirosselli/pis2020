@@ -1,5 +1,5 @@
 import login from './login';
-import getToken from './getToken';
+import getTokenOrRefresh from './getTokenOrRefresh';
 import REQUEST_TYPES from './constants';
 
 const makeRequest = async type => {
@@ -8,7 +8,7 @@ const makeRequest = async type => {
       return login();
     }
     case REQUEST_TYPES.GET_TOKEN || REQUEST_TYPES.GET_REFRESH_TOKEN: {
-      return getToken(type);
+      return getTokenOrRefresh(type);
     }
     default:
       return 'default value';
