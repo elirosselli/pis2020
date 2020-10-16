@@ -1,8 +1,8 @@
-import { Linking } from 'react-native';
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
 import { getParameters, setParameters } from '../configuration';
-import { loginEndpoint, tokenEndpoint } from './endpoints';
+import { tokenEndpoint } from './endpoints';
+import login from './login';
 
 export const REQUEST_TYPES = {
   LOGIN: 'login',
@@ -13,12 +13,7 @@ const makeRequest = async type => {
   const parameters = getParameters();
   switch (type) {
     case REQUEST_TYPES.LOGIN: {
-      // si hay un clientId setteado, se abre el browser
-      // para realizar la autenticación con idUruguay
-      return (
-        parameters.clientId &&
-        Linking.openURL(loginEndpoint(parameters.clientId))
-      );
+      return login();
     }
     case REQUEST_TYPES.GET_TOKEN: {
       // Codificar en base64 el clientId y el clientSecret,
