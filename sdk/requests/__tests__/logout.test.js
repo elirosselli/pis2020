@@ -18,41 +18,41 @@ describe('logout', () => {
   it('calls logout with idTokenHint, postLogoutRedirectUri and state', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri1',
       state: 'chau',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'postLogoutRedirectUri',
+          url: 'postLogoutRedirectUri1',
         });
     });
     const redirectUri = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=chau',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri1&state=chau',
     );
-    expect(redirectUri).toBe('postLogoutRedirectUri');
+    expect(redirectUri).toBe('postLogoutRedirectUri1');
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri2',
       state: '',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'postLogoutRedirectUri',
+          url: 'postLogoutRedirectUri2',
         });
     });
     const redirectUri = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri2&state=',
     );
-    expect(redirectUri).toBe('postLogoutRedirectUri');
+    expect(redirectUri).toBe('postLogoutRedirectUri2');
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
