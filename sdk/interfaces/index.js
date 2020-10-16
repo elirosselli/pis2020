@@ -9,12 +9,6 @@ const login = () => makeRequest(REQUEST_TYPES.LOGIN);
 
 const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
-const refreshToken = async () => {
-  try {
-    return makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-  } catch (error) {
-    return error;
-  }
-};
+const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
 export { initialize, login, getToken, refreshToken };
