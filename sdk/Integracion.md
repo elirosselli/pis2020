@@ -12,7 +12,7 @@ Esto añadirá las dependencias correspondientes al proyecto a desarrollar.
 
 ## Asignar el certificado
 
-Acá iría info sobre el certificado y donde copiarlo.
+Actualmente funciona únicamente para Android. Lo que se debe hacer es copiar el certificado certificate.cer en la carpeta src/main/assets.
 
 ## Funcionalidades
 
@@ -127,18 +127,48 @@ De esta forma, la función quedaría:
 
 ### Función getToken
 
-Info de getToken
+Una vez obtenido el code en el proceso de `login`, es posible obtener el `access_token` correpondiente. Para esto se debe invocar a la función `getToken`, por ejemplo, con el siguiente código:
 
+```javascript
+const token = await getToken();
+console.log(`Token: ${token}`);
+```
+
+Una posible implementación es invocar a la función una vez obtenido el code, en el `handleLogin`, quedando este último:
+
+```javascript
+const handleLogin = async () => {
+    try {
+      const code = await login();
+      console.log(`Code: ${code}`);
+      const token = await getToken();
+      console.log(`Token: ${token}`);
+    } catch (err) {
+     /*
+      Manejar el error.
+      */
+    }
+};
+```
 
 ### Función refreshToken
 
-Info de refreshToken
+El token otorgado por el OP tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el token pasará a ser inválido. Para obtener un nuevo token es suficiente con invocar a la función `refreshToken`.
+
+```javascript
+const token = await refreshToken();
+console.log(`New Token: ${token}`);
+```
+
+Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
 
 ### Función getUserInfo
 
 Info de getUserInfo
 
+### Función Logout
 
+Info de logout
 
 
 
