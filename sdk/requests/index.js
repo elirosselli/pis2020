@@ -7,7 +7,8 @@ const makeRequest = async type => {
     case REQUEST_TYPES.LOGIN: {
       return login();
     }
-    case REQUEST_TYPES.GET_TOKEN || REQUEST_TYPES.GET_REFRESH_TOKEN: {
+    case REQUEST_TYPES.GET_TOKEN:
+    case REQUEST_TYPES.GET_REFRESH_TOKEN: {
       return getTokenOrRefresh(type);
     }
     default:
