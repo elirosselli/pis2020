@@ -1,6 +1,6 @@
 import makeRequest from '../../requests';
 import { refreshToken } from '../index';
-import REQUEST_TYPES from '../../requests/constants';
+import REQUEST_TYPES from '../../utils/constants';
 
 const requestFailedMessage = "Couldn't make request";
 
