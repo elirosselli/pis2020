@@ -1,5 +1,5 @@
 import makeRequest from '../index';
-import REQUEST_TYPES from '../constants';
+import REQUEST_TYPES from '../../utils/constants';
 import login from '../login';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 

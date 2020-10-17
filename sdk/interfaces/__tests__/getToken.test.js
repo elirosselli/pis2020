@@ -1,6 +1,6 @@
 import makeRequest from '../../requests';
 import { getToken } from '../index';
-import REQUEST_TYPES from '../../requests/constants';
+import REQUEST_TYPES from '../../utils/constants';
 
 jest.mock('../../requests');
 

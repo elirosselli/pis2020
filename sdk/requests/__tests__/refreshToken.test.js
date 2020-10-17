@@ -1,5 +1,5 @@
 import { fetch } from 'react-native-ssl-pinning';
-import REQUEST_TYPES from '../constants';
+import REQUEST_TYPES from '../../utils/constants';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
