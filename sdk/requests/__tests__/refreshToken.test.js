@@ -45,8 +45,6 @@ describe('refreshToken', () => {
 
     const response = await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
-    expect.assertions(2);
-
     // Chequeo de parametros enviados
     expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
       method: 'POST',
@@ -91,6 +89,7 @@ describe('refreshToken', () => {
     }
     expect.assertions(1);
   });
+
   it('calls refreshToken and fetch fails', async () => {
     const error = Error('error');
     fetch.mockImplementation(() => Promise.reject(error));
