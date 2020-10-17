@@ -1,5 +1,5 @@
 # SDK ID Uruguay
-El propósito de esta documentación es proveer a los desarrolladores interesados en integrar la función de inicio de sesión con ID Uruguay.
+El propósito de esta documentación es proveer una guía pasos a paso a los desarrolladores interesados en integrar la función de inicio de sesión con ID Uruguay.
 
 Este SDK se basa en el protocolo OAuth 2.0 y OpenID Connect para su implementación, brindando una capa de abstracción al usuario, simplificando su utilización.
 
