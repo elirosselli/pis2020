@@ -3,7 +3,6 @@
 // istanbul ignore file
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-// eslint-disable-next-line import/no-unresolved
 import { login, getToken, refreshToken, getParameters } from 'sdk-gubuy-test';
 
 import styles from './styles';
