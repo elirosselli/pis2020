@@ -84,9 +84,9 @@ describe('configuration module', () => {
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
+      redirectUri: 'redirectUri',
+      clientId: 'clientId2',
+      clientSecret: 'clientSecret',
       code: '',
       accessToken: '',
       refreshToken: '',
