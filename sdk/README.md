@@ -39,26 +39,26 @@ Y donde el valor de *redirectUri* se obtiene del módulo de configuración. Al a
 ## Funcionalidad de *getToken*
 
 ### Generalidades
-La función **getToken** es la encargada de la comunicación entre la aplicación de usuario  y el token endpoint, de forma de obtener los datos correspondientes a una **Token Response**.  Esta función depende del ***authorization code*** obtenido en la función login, además de requerir los datos de autenticación del usuario (***clientId*** y ***clientSecret***), y la ***redirectUri*** correspondiente. A partir de estos datos se realiza una consulta con el método POST al tokenEnpoint, siguiendo lo definido en la [*API de ID Uruguay*](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect#section-ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect-Token+Endpoint+(/oidc/v1/token)). 
+La función **getToken** se encarga de la comunicación entre la aplicación de usuario  y el *Token Endpoint*, de forma de obtener los datos correspondientes a una *Token Request*. El fin principal de esta función será obtener un *token* para posteriormente utilizarlo con el fin de obtener información del usuario final previamente autenticado. Por ende, esta función depende del *authorization code* obtenido en la función ***login***, además de requerir los datos de autenticación del usuario (***clientId*** y ***clientSecret***), y la ***redirectUri*** correspondiente. A partir de estos datos se realiza una consulta (*Token Request*) con el método POST al tokenEnpoint, siguiendo lo definido en la [*API de ID Uruguay*](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect#section-ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect-Token+Endpoint+(/oidc/v1/token)). 
 
-Como resultado de la solicitud, se obtiene una **Token Response** que incluye los siguientes parámetros codificados como `application/json`. En caso de que todo haya salido bien, la respuesta HTTP tiene código `200 OK` y contiene los siguientes datos: 
+Como resultado de la solicitud, se obtiene una *Token Response*, que incluye los siguientes parámetros codificados como `application/json`. En caso de éxito, la respuesta HTTP tiene código `200 OK` y contiene los siguientes datos: 
 
 | Parámetro     	| Tipo        	| Descripción                                                               	|
 |---------------	|-------------	|---------------------------------------------------------------------------	|
-| access_token  	| Requerido   	| Access Token emitido por el OP                                            	|
-| token_type    	| Requerido   	| Tipo de token. Será siempre `Bearer`                                      	|
-| id_token      	| Requerido   	| ID Token asociado a la sesión de autenticación                            	|
-| expires_in    	| Recomendado 	| Tiempo de vida del Access Token en segundos. Valor por defecto 60 minutos 	|
-| refresh_token 	| Opcional    	| Refresh Token que puede ser utilizado para obtener nuevos Access Tokens   	|
+| *access_token*  	| Requerido   	| *Access Token* emitido por el OP                                            	|
+| *token_type*    	| Requerido   	| Tipo de *token*. Será siempre `Bearer`                                      	|
+| *id_token*      	| Requerido   	| *ID Token* asociado a la sesión de autenticación                            	|
+| *expires_in*    	| Recomendado 	| Tiempo de vida del *Access Token* en segundos. Valor por defecto 60 minutos 	|
+| *refresh_token* 	| Opcional    	| Refresh Token que puede ser utilizado para obtener nuevos *Access Tokens*   	|
 
-Estos datos serán guardados en el componente de configuración, y se retorna únicamente el **access_token** generado.
+Estos datos serán guardados en el componente de configuración, y la función retornará únicamente el **access_token** generado.
 
 
 En caso de error, la respuesta tiene un código de error `HTTP 400 Bad Request` y tiene la siguiente estructura:
 | Parámetro         	| Tipo      	| Descripción                                                                                                  	|
 |-------------------	|-----------	|--------------------------------------------------------------------------------------------------------------	|
-| error             	| Requerido 	| Un código de error de los descritos en [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-5.1)                                                             	|
-| error_description 	| Opcional  	| Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. 	|
+| *error*             	| Requerido 	| Un código de error de los descritos en [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-5.1)                                                             	|
+| *error_description* 	| Opcional  	| Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. 	|
 
 Los datos de error son devueltos como resultado de la función `makeRequest`.
 
@@ -68,7 +68,7 @@ Los datos de error son devueltos como resultado de la función `makeRequest`.
 
 La implementación de la funcionalidad de *getToken* involucra los siguientes archivos:
 * **sdk/interfaces/index.js**: Donde se implementa la función de **getToken**.
-* **sdk/requests/index.js**: La función de login utilizará la función **makeRequest** de este archivo, que se encargará de realizar el *request* mencionado anteriormente.
+* **sdk/requests/index.js**: La función de *getToken* utilizará la función **makeRequest** de este archivo, que se encargará de realizar el *request* mencionado anteriormente.
 *  **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtendrán parámetros necesarios.
 * **sdk/requests/endpoints.js**: Contiene constantes que serán utilizadas.
 
@@ -78,12 +78,10 @@ La función **getToken** no recibe parámetros, sino que obtiene los parámetros
 
 ### Código
 
-La función **getToken** implementada en `interfaces/index.js` cumple la función de invocar a la función ***makeRequest*** con el tipo de request correspondiente.
+La función **getToken** implementada en `interfaces/index.js` cumple la función de invocar a la función ***makeRequest*** con el parámetro REQUEST_TYPES.GET_TOKEN, indicando que es un *request* del tipo *getToken*.
 
-La función **makeRequest** implementada en `requests/index.js` recibe como único parámetros el tipo de request, que en este caso es "getToken". Dada esta situación, la función toma los parámetros del componente configuración, que van a ser usados a la hora de realizar la solicitud.
+La función **makeRequest** implementada en `requests/index.js` recibe como único parámetro el tipo de request. Dada esta situación, la función toma los parámetros del componente configuración, que van a ser utilizados a la hora de realizar la solicitud.
 
-Utilizando la librería `base-64` codifica el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617).
+Entonces, la función utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *endpoint*, o error en la solicitud, entrando al bloque *catch* y retornando el error correspondiente.
 
-A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del endpoint, o error en la solicitud, entrando al *catch* y retornando el error correspondiente.
-
-En caso de una respuesta, como fue mencionado anteriormente, puede tener código 200, o 400. En caso que el código sea 200, se definen los parámetros recibidos en el componente configuración, y se resuelve la Promise con el valor correspondiente al *access_token*. En caso de error, se rechaza la Promise devolviendo el error recibido.
+En caso de éxito, como fue mencionado anteriormente, la respuesta puede tener código 200, o 400. En caso que el código sea 200, se setean los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*. En caso de error, se rechaza la misma devolviendo el error recibido.
