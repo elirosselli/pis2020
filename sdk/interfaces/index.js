@@ -12,4 +12,6 @@ const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
 const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
-export { initialize, login, getToken, refreshToken };
+const getUserInfo = async () => makeRequest(REQUEST_TYPES.USER_INFO);
+
+export { initialize, login, getToken, getUserInfo, refreshToken };

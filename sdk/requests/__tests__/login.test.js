@@ -13,7 +13,7 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
 }));
 
 const correctLoginEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20personal_info&response_type=code&client_id=clientId&redirect_uri=redirectUri';
 
 describe('login', () => {
   afterEach(() => jest.clearAllMocks());
