@@ -95,11 +95,11 @@ El botón de Login es el encargado de invocar a la función Login del sdk. En la
   };
 
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
-      <View style={styles.buttonSeparator}>
-        <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
+    <TouchableOpacity onPress={handleLogin}>
+      <View>
+        <Image source={LogoAgesicSimple} />
       </View>
-      <Text style={styles.buttonText}>Login con USUARIO gub.uy</Text>
+      <Text>Login con USUARIO gub.uy</Text>
     </TouchableOpacity>
   );
 };
@@ -223,11 +223,8 @@ Un ejemplo del `LogoutButton` podría ser el siguiente:
   };
 
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogout}>
-      <View style={styles.buttonSeparator}>
-        <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
-      </View>
-      <Text style={styles.buttonText}>Logout</Text>
+    <TouchableOpacity onPress={handleLogout}>
+      <Text>Logout</Text>
     </TouchableOpacity>
   );
 };
