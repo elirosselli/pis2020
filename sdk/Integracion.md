@@ -1,29 +1,29 @@
-# SDK ID Uruguay
-El propósito de esta documentación es proveer una guía pasos a paso a los desarrolladores interesados en integrar la función de inicio de sesión con ID Uruguay.
+# SDK React Native ID Uruguay
+El propósito de esta documentación es proveer una guía paso a paso a los desarrolladores interesados en integrar la funcionalidad de autenticación con ID Uruguay a sus aplicaciones React Native. 
 
-Este SDK se basa en el protocolo OAuth 2.0 y OpenID Connect para su implementación, brindando una capa de abstracción al usuario, simplificando su utilización.
+Este SDK se basa en el protocolo [OAuth 2.0](https://oauth.net/2/) y [OpenID Connect](https://openid.net/connect/) para su implementación, brindando una capa de abstracción al desarrollador y simplificando la interacción con la API de Id Uruguay. Para que su integración con el SDK funcione, debe registrarse como RP (_Relaying Party_) en Id Uruguay, siguiendo las instrucciones disponibles en la [página web de AGESIC](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect)
 
 ## Instalación
-Lo primero que se debe hacer es instalar la app mediante el comando 
+El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 `$ npm install sdk-gubuy-test`
 
-Esto añadirá las dependencias correspondientes al proyecto a desarrollar.
+Este comando añadirá el SDK y las dependencias necesarias a su proyecto.
 
 ## Asignar el certificado
 
-Actualmente funciona únicamente para Android. Lo que se debe hacer es copiar el certificado certificate.cer en la carpeta src/main/assets.
+En modo de testing, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Para lograr esto debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto React Native. Actualmente esta alternativa funciona únicamente para Android. 
 
 ## Funcionalidades
 
 | Función                                                      	| Descripción                                                                                                                                                                             	|
 |--------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| initialize (redirect_uri, clientId, clientSecret) 	| Define los parámetros redirect_uri, clientId y clientSecret en el componente configuración.                                                                                             	|
-| login()                                                      	| Abre la ventana del navegador para que el usuario final digite sus credenciales e inicie sesión en el OP y devuelve el code. <br>En caso de error, devuelve el mensaje correspondiente. 	|
-| getToken()                                                   	| Dado el code obtenido en la función login, obtiene el token correspondiente.                                                                                                            	|
-| refreshToken()                                               	| Toma el refresh_token recibido previamente y solicita una actualización del token.                                                                                                      	|
-| getUserInfo()                                                	| Toma el access_token actual y devuelve la información solicitada al usuario.                                                                                                            	|
-| logout()                                                     	| Cierra la sesión del usuario en el endpoint.                                                                                                                                            	|
+| `initialize (redirect_uri, clientId, clientSecret)` 	| Define los parámetros redirect_uri, clientId y clientSecret en el componente configuración.                                                                                             	|
+| `login()`                                                     	| Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al redirect_uri configurado y se devuelve el authentication code. <br>En caso de error, devuelve el mensaje correspondiente. 	|
+| `getToken()`                                                   	| Devuelve el token correspondiente al usuario autenticado.                                                                                                    	|
+| `refreshToken()`                                               	| Actualiza el token del usuario autenticado a partir del token actual y de un refresh_token obtenido al ejecutar el `login`.                                                                                                     	|
+| `getUserInfo()`                                                	| Devuelve la información provista por ID Uruguay sobre el usuario autenticado.                                                                                                           	|
+| `logout()`                                                     	| Abre una ventana del navegador web y cierra la sesión del usuario en ID Uruguay, redirigiendo a la aplicación una vez cerrada la sesión.                                                                                                                                            	|
 
 
 ## Utilización
