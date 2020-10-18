@@ -186,7 +186,7 @@ const LoginButton = ({ handleUserInfo }) => {
 
 Notar que en este ejemplo de implementación se llama a la función `handleUserInfo` pasada por parametros a `LoginButton`. En este caso `handleUserInfo` es una función en `App.js` que almacena el lo que se le pase como parametro en un state, para poder luego acceder a esa información y utilizarla.
 
-Este es un ejemplo de como se puede invocar el componente `LoginButton`, para pode guardar la información del usuario conseguida mediante `getUserInfo` en la APP:
+Este es un ejemplo de como se puede invocar el componente `LoginButton`, para pode guardar la información del usuario conseguida mediante `getUserInfo` en la App:
 
 ```javascript
 const App = () => {
@@ -203,9 +203,7 @@ const App = () => {
 
 La función `logout` del sdk permite al usuario final cerrar su sesión con IdUruguay. 
 
-Esta función toma los parámetros idToken, postLogoutRedirectUri, y opcionalmente state, y envía una solicitud al Logout Endpoint de la API con estos parámetros, cerrando la sesión del usuario final en el OP.
-
- Se abre además un browser mediante la librería Linking de react-native, que muestra al usuario final que efectivamente se está realizando el logout. 
+Esta función toma los parámetros idToken, postLogoutRedirectUri, y opcionalmente state, y envía una solicitud al Logout Endpoint de la API con estos parámetros, cerrando la sesión del usuario final en el OP. Se abre además un browser mediante la librería Linking de react-native, que muestra al usuario final que efectivamente se está realizando el logout. 
 
 De esta forma, una posible implementación es desde la app invocar esta funcionalidad mediante un componente `LogoutButton`, similar a como se mencionaba previamente como invocar al componente `LoginButton`. 
 
