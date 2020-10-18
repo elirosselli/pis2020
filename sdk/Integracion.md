@@ -158,7 +158,44 @@ Esta función requiere que la función `getToken` haya sido ejecutada de forma c
 
 ### Función getUserInfo
 
-Info de getUserInfo
+Una vez obtenido el acces_token en el proceso de `getToken`, este se utiliza para solicitar información sobre el usuario al UserInfo Endpoint. Esto se realiza invocando la funcion `getUserInfo` del sdk, por ejemplo, con el siguiente código:
+
+```javascript
+const userInfo = await getUserInfo();
+```
+Una posible implementación es invocar a la función luego de obtener el access token en la funcion `handleLogin`:
+
+```javascript
+const LoginButton = ({ handleUserInfo }) => {
+  const handleLogin = async () => {
+    try {
+      const code = await login();
+      const token = await getToken();
+      const userInfo = await getUserInfo();
+      // Guardo Info de usuario en la APP
+      handleUserInfo(userInfo);
+    } catch (err) {
+      /*
+      Manejar el error.
+      */
+    }
+};
+```
+
+Notar que en este ejemplo de implementación se llama a la función `handleUserInfo` pasada por parametros a `LoginButton`. En este caso `handleUserInfo` es una función en `App.js` que almacena el lo que se le pase como parametro en un state, para poder luego acceder a esa información y utilizarla.
+
+Este es un ejemplo de como se puede invocar el componente `LoginButton`, para pode guardar la información del usuario conseguida mediante `getUserInfo` en la APP:
+
+```javascript
+const App = () => {
+  const [userInfo, setUserInfo] = useState({});
+  return (
+  ...
+    <LoginButton handleUserInfo={setUserInfo} />
+  ...
+  );
+};
+```
 
 ### Función Logout
 
