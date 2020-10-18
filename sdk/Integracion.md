@@ -4,7 +4,7 @@ El propósito de esta documentación es proveer una guía pasos a paso a los des
 Este SDK se basa en el protocolo OAuth 2.0 y OpenID Connect para su implementación, brindando una capa de abstracción al usuario, simplificando su utilización.
 
 ## Instalación
-Lo primero que se debe hacer es instalar la app mediante el comando 
+Lo primero que se debe hacer es instalar la app mediante el comando: 
 
 `$ npm install sdk-gubuy-test`
 
@@ -12,10 +12,9 @@ Esto añadirá las dependencias correspondientes al proyecto a desarrollar.
 
 ## Asignar el certificado
 
-Actualmente funciona únicamente para Android. Lo que se debe hacer es copiar el certificado certificate.cer en la carpeta src/main/assets.
+Actualmente funciona únicamente para Android. Lo que se debe hacer es copiar el certificado `certificate.cer` en la carpeta \app\android\app\src\main\assets.
 
 ## Funcionalidades
-
 | Función                                                      	| Descripción                                                                                                                                                                             	|
 |--------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 | initialize (redirect_uri, clientId, clientSecret) 	| Define los parámetros redirect_uri, clientId y clientSecret en el componente configuración.                                                                                             	|
@@ -30,7 +29,7 @@ Actualmente funciona únicamente para Android. Lo que se debe hacer es copiar el
 
 ### Archivo con variables de ambiente (Opcional) 
 
-Se recomienda crear un archivo con variables de ambiente `env.js` en la carpeta raíz del proyecto, con el siguiente contenido:
+Se debe crear un archivo con variables de ambiente `env.js` en la carpeta raíz del proyecto, con el siguiente contenido:
 
 ```javascript
 const variables = {
@@ -54,11 +53,11 @@ const variables = {
   export default getEnvVariables; // export a reference to the function
 ```
 
-Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es nuestro client id y client secret provisto por AGESIC. Este archivo .env no se versiona para proteger el client id y el client secret, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo.
+Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es el client id y client secret provisto por AGESIC. Este archivo .env no se versiona para proteger el client id y el client secret, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo, con su respectiva información.
 
 ### Componente de configuración
 
-En caso de tener un archivo `env.js`, primero se debe obtener las constantes definidas en el, mediante los comandos
+En caso de tener un archivo `env.js`, primero se debe obtener las constantes definidas en el, mediante los siguientes comandos:
 
 ```javascript
 import ENV from './env';
@@ -68,7 +67,7 @@ import ENV from './env';
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 ```
 
-Se debe inicializar el componente de configuración con la función `initialize`, y teniendo definidos el `clientId` y el `clientSecret`.
+Se debe inicializar el componente de configuración con la función `initialize`, ya teniendo definidos el `clientId` y el `clientSecret` en env.js.
 
 Para esto se invoca al siguiente comando:
 
@@ -79,7 +78,7 @@ initialize('redirect_uri', sdkIdUClientId, sdkIdUClientSecret);
 Luego de esto, el componente de configuración estará inicializado correctamente.
 
 ### LoginButton
-El botón de Login es el encargado de invocar a la función Login del sdk. En la [App de ejemplo]() se puede ver una posible implementación de este. 
+El botón de Login es el encargado de invocar a la función Login del sdk. En la [App de ejemplo](https://github.com/elirosselli/pis2020/blob/develop/app/LoginButton/index.js) se puede ver una posible implementación de este. 
 
  ```javascript
  const LoginButton = () => {
@@ -107,7 +106,7 @@ El botón de Login es el encargado de invocar a la función Login del sdk. En la
  ```
 
 ### Función Login
-La función `handleLogin` del LoginButton debe invocar a la función login del sdk. Esta retornará error en caso de que algo haya salido mal, o en su defecto, retornará el `authCode` correspondiente.
+La función `handleLogin` del LoginButton debe invocar a la función `login` del sdk. Esta retornará error en caso de que algo haya salido mal, o en su defecto, retornará el `authCode` correspondiente.
 
 De esta forma, la función quedaría:
 
@@ -115,7 +114,6 @@ De esta forma, la función quedaría:
  const handleLogin = async () => {
     try {
       const code = await login();
-      console.log(`Code: ${code}`);
     } catch (err) {
       /*
       Manejar el error.
@@ -127,11 +125,10 @@ De esta forma, la función quedaría:
 
 ### Función getToken
 
-Una vez obtenido el code en el proceso de `login`, es posible obtener el `access_token` correpondiente. Para esto se debe invocar a la función `getToken`, por ejemplo, con el siguiente código:
+Una vez obtenido el code en el proceso de `login`, es posible obtener el `access_token` correpondiente. Para esto se debe invocar a la función `getToken` del sdk, por ejemplo, con el siguiente código:
 
 ```javascript
 const token = await getToken();
-console.log(`Token: ${token}`);
 ```
 
 Una posible implementación es invocar a la función una vez obtenido el code, en el `handleLogin`, quedando este último:
@@ -140,9 +137,7 @@ Una posible implementación es invocar a la función una vez obtenido el code, e
 const handleLogin = async () => {
     try {
       const code = await login();
-      console.log(`Code: ${code}`);
       const token = await getToken();
-      console.log(`Token: ${token}`);
     } catch (err) {
      /*
       Manejar el error.
@@ -153,11 +148,10 @@ const handleLogin = async () => {
 
 ### Función refreshToken
 
-El token otorgado por el OP tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el token pasará a ser inválido. Para obtener un nuevo token es suficiente con invocar a la función `refreshToken`.
+El token otorgado por el OP tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el token pasará a ser inválido. Para obtener un nuevo token es suficiente con invocar a la función `refreshToken` del sdk:
 
 ```javascript
 const token = await refreshToken();
-console.log(`New Token: ${token}`);
 ```
 
 Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
