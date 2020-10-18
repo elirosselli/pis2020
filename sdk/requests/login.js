@@ -1,6 +1,6 @@
 import { Linking } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
-import { loginEndpoint } from './endpoints';
+import { loginEndpoint } from '../utils/endpoints';
 
 const login = async () => {
   const parameters = getParameters();
