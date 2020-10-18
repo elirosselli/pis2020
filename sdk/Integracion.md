@@ -158,7 +158,9 @@ Esta función requiere que la función `getToken` haya sido ejecutada de forma c
 
 ### Función getUserInfo
 
-Una vez obtenido el acces_token en el proceso de `getToken`, este se utiliza para solicitar información sobre el usuario al UserInfo Endpoint. Esto se realiza invocando la funcion `getUserInfo` del sdk, por ejemplo, con el siguiente código:
+Una vez obtenido el acces_token en el proceso de `getToken`, este se utiliza para solicitar información sobre el usuario al UserInfo Endpoint, y el UserInfo Endpoint retorna un listado de claims del usuario. 
+
+Para realizar esto en la app se debe invocar la funcion `getUserInfo` del sdk, por ejemplo, con el siguiente código:
 
 ```javascript
 const userInfo = await getUserInfo();
@@ -199,10 +201,36 @@ const App = () => {
 
 ### Función Logout
 
-Info de logout
+La función `logout` del sdk permite al usuario final cerrar su sesión con IdUruguay. 
 
+Esta función toma los parámetros idToken, postLogoutRedirectUri, y opcionalmente state, y envía una solicitud al Logout Endpoint de la API con estos parámetros, cerrando la sesión del usuario final en el OP.
 
+ Se abre además un browser mediante la librería Linking de react-native, que muestra al usuario final que efectivamente se está realizando el logout. 
 
+De esta forma, una posible implementación es desde la app invocar esta funcionalidad mediante un componente `LogoutButton`, similar a como se mencionaba previamente como invocar al componente `LoginButton`. 
 
+Un ejemplo del `LogoutButton` podría ser el siguiente:
 
+ ```javascript
+ const LogoutButton = () => {
+  const handleLogout = async () => {
+    try {
+      const redirectUri = await logout();
+      console.log(`PostLogoutRedirectUri: ${redirectUri}`);
+    } catch (err) {
+      /*
+      Manejar el error.
+      */
+    }
+  };
 
+  return (
+    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogout}>
+      <View style={styles.buttonSeparator}>
+        <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
+      </View>
+      <Text style={styles.buttonText}>Logout</Text>
+    </TouchableOpacity>
+  );
+};
+ ```
