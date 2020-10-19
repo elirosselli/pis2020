@@ -5,6 +5,7 @@ jest.mock('../../configuration');
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
+const missingParams = 'Missing required parameter(s): ';
 
 jest.mock('react-native/Libraries/Linking/Linking', () => ({
   addEventListener: mockAddEventListener,
@@ -18,70 +19,95 @@ describe('logout', () => {
   it('calls logout with idTokenHint, postLogoutRedirectUri and state', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri1',
-      state: 'chau',
+      postLogoutRedirectUri: 'post_logout_redirect_uri1',
+      state: '2KVAEzPpazbGFD5',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'postLogoutRedirectUri1',
+          url: 'post_logout_redirect_uri1',
         });
     });
     const redirectUri = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri1&state=chau',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri1&state=2KVAEzPpazbGFD5',
     );
-    expect(redirectUri).toBe('postLogoutRedirectUri1');
+    expect(redirectUri).toBe('post_logout_redirect_uri1');
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'postLogoutRedirectUri2',
+      postLogoutRedirectUri: 'post_logout_redirect_uri2',
       state: '',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'postLogoutRedirectUri2',
+          url: 'post_logout_redirect_uri2',
         });
     });
     const redirectUri = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri2&state=',
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri2&state=',
     );
-    expect(redirectUri).toBe('postLogoutRedirectUri2');
+    expect(redirectUri).toBe('post_logout_redirect_uri2');
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: '',
-      state: 'chau',
+      state: '2KVAEzPpazbGFD5',
     });
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toMatchObject(
+        Error(`${missingParams}postLogoutRedirectUri`),
+      );
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(1);
+    expect.assertions(2);
   });
 
   it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
     getParameters.mockReturnValue({
       idToken: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      state: 'chau',
+      postLogoutRedirectUri: 'post_logout_redirect_uri',
+      state: '2KVAEzPpazbGFD5',
     });
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toMatchObject(Error(`${missingParams}idTokenHint`));
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(1);
+    expect.assertions(2);
+  });
+
+  it('calls logout with state but without idTokenHint and postLogoutRedirectUri', async () => {
+    getParameters.mockReturnValue({
+      idToken: '',
+      postLogoutRedirectUri: '',
+      state: '2KVAEzPpazbGFD5',
+    });
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
+    try {
+      await logout();
+    } catch (error) {
+      expect(error).toMatchObject(
+        Error(`${missingParams}idTokenHint, postLogoutRedirectUri`),
+      );
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    expect.assertions(2);
   });
 });

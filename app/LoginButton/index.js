@@ -17,8 +17,7 @@ import LogoAgesicSimple from './images/logoAgesicSimple.png';
 const LoginButton = () => {
   const handleButton = async () => {
     const parameters = getParameters();
-    if (parameters.code === '' || parameters.code === 'empty')
-      await handleLogin();
+    if (parameters.code === '') await handleLogin();
     else await handleLogout();
   };
   const handleLogin = async () => {
@@ -40,8 +39,7 @@ const LoginButton = () => {
 
   const handleLogout = async () => {
     try {
-      const redirectUri = await logout();
-      console.log(`PostLogoutRedirectUri: ${redirectUri}`);
+      await logout();
     } catch (err) {
       console.log(err);
     }

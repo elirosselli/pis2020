@@ -1,8 +1,8 @@
 import { logout } from '../index';
 import makeRequest from '../../requests';
+import REQUEST_TYPES from '../../utils/constants';
 
 jest.mock('../../requests');
-const { REQUEST_TYPES } = jest.requireActual('../../requests');
 
 afterEach(() => jest.clearAllMocks());
 
