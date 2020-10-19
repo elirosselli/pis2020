@@ -15,7 +15,7 @@ import {
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = ({ handleUserInfo }) => {
+const LoginButton = ({ handleUserInfo, handleCode }) => {
   const handleLogin = async () => {
     try {
       const code = await login();
@@ -30,6 +30,7 @@ const LoginButton = ({ handleUserInfo }) => {
       console.log('User Info', userInfo);
       // Guardo Info de usuario en la APP
       handleUserInfo(userInfo);
+      handleCode(code);
     } catch (err) {
       console.log(err);
       const parameters = getParameters();
@@ -49,6 +50,7 @@ const LoginButton = ({ handleUserInfo }) => {
 
 LoginButton.propTypes = {
   handleUserInfo: PropTypes.func.isRequired,
+  handleCode: PropTypes.func.isRequired,
 };
 
 export default LoginButton;

@@ -29,7 +29,7 @@ const buttonStyles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: 15,
-  },
+  }
 });
 
 export default buttonStyles;

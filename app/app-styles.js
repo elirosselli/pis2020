@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     width: '80%',
     alignSelf: 'center',
     margin: 15,
+    flex: 1,
   },
   informationTitle: {
     textAlign: 'left',
@@ -65,6 +66,49 @@ const styles = StyleSheet.create({
     height: null,
     aspectRatio: 2,
   },
+  logoutContainer: {
+    backgroundColor: '#005492',
+    textAlign: 'right',
+    padding: 10,
+    flexDirection: 'row',
+  },
+  logoutContText: {
+    color: '#fff',
+    textDecorationLine: 'underline',
+    textAlign: 'right',
+    flex: 1,
+  },
+  logoutContCodeText: {
+    color: '#fff',
+    textAlign: 'left',
+    flex: 5,
+  },
+  infoBtn: {
+    backgroundColor: '#222',
+    padding: 10,
+    width: '80%',
+    borderWidth: 2,
+  },
+  infoBtnText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  infoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#ecf0f1',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  infoHeader: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#005492',
+  }
 });
 
 export default styles;
