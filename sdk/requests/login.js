@@ -16,11 +16,11 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
-    // Obtiene el auth code a partir de la url a la que
+    // Obtiene el code a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
 
-    // Si existe el código, se guarda y se resuelve la promise
+    // Si existe el code, se guarda y se resuelve la promise
     // si no, se rechaza la promise con un error.
     if (code) {
       setParameters({ code: code[1] });
@@ -35,7 +35,7 @@ const login = async () => {
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
     // Si hay un clientId setteado, se abre el browser
-    // para realizar la autenticación con idUruguay.
+    // para realizar la autenticación y autorización con idUruguay.
     if (parameters.clientId) await Linking.openURL(loginEndpoint());
     else {
       // En caso de error, se elimina el handler y rechaza la promise.

@@ -12,7 +12,7 @@ const getTokenOrRefresh = async type => {
   const encodedCredentials = encode(
     `${parameters.clientId}:${parameters.clientSecret}`,
   );
-  // En caso de que el request sea GET_TOKEN el body de la request contendrá el code obtenido
+  // En caso de que el request sea GET_TOKEN el body de la request contendrá grant_type 'authorization_code', el code obtenido
   // durante el login, y la redirect uri correspondiente.
   let bodyString = `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`;
   // En caso de que el request sea GET_REFRESH_TOKEN el body de la request contendrá grant_type 'refresh_token' y
@@ -22,7 +22,7 @@ const getTokenOrRefresh = async type => {
 
   try {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
-    // los datos de autenticación codificados
+    // los datos de autenticación codificados en base64
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
       sslPinning: {
@@ -54,6 +54,7 @@ const getTokenOrRefresh = async type => {
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
     });
+    // Además se retorna el access_token al RP
     return Promise.resolve(responseJson.access_token);
   } catch (error) {
     // Si existe algun error, se
