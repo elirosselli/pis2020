@@ -3,7 +3,14 @@
 // istanbul ignore file
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { login, getToken, getParameters, logout } from 'sdk-gubuy-test';
+import {
+  login,
+  getToken,
+  refreshToken,
+  getParameters,
+  logout,
+} from 'sdk-gubuy-test';
+
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
@@ -20,6 +27,8 @@ const LoginButton = () => {
       console.log(`Code: ${code}`);
       const token = await getToken();
       console.log(`Token: ${token}`);
+      const newToken = await refreshToken();
+      console.log(`New Token: ${newToken}`);
       const parameters = getParameters();
       console.log(parameters);
     } catch (err) {

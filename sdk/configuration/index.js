@@ -22,7 +22,13 @@ const setParameters = params => {
 
 const clearParameters = () => {
   Object.keys(parameters).forEach(key => {
-    parameters[key] = '';
+    if (
+      key !== 'redirectUri' &&
+      key !== 'clientId' &&
+      key !== 'clientSecret' &&
+      key !== 'postLogoutRedirectUri'
+    )
+      parameters[key] = '';
   });
 };
 

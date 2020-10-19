@@ -1,4 +1,5 @@
-import makeRequest, { REQUEST_TYPES } from '../requests';
+import makeRequest from '../requests';
+import REQUEST_TYPES from '../utils/constants';
 import { setParameters } from '../configuration';
 
 const initialize = (
@@ -14,6 +15,7 @@ const login = () => makeRequest(REQUEST_TYPES.LOGIN);
 
 const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
+const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 const logout = async () => makeRequest(REQUEST_TYPES.LOGOUT);
 
-export { initialize, login, getToken, logout };
+export { initialize, login, getToken, refreshToken, logout };
