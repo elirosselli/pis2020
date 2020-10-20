@@ -15,6 +15,7 @@ describe('logout', () => {
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.LOGOUT);
     expect(response).toBe(postLogoutRedirectUri);
   });
+
   it('calls logout and fails', async () => {
     const error = Error('error');
     makeRequest.mockReturnValue(Promise.reject(error));

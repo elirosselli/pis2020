@@ -17,6 +17,6 @@ const getToken = () => makeRequest(REQUEST_TYPES.GET_TOKEN);
 
 const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
-const logout = async () => makeRequest(REQUEST_TYPES.LOGOUT);
+const logout = () => makeRequest(REQUEST_TYPES.LOGOUT);
 
 export { initialize, login, getToken, refreshToken, logout };

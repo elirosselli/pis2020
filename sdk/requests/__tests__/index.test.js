@@ -9,17 +9,7 @@ jest.mock('../logout');
 jest.mock('../getTokenOrRefresh');
 jest.mock('../../configuration');
 
-jest.mock('react-native/Libraries/Linking/Linking', () => ({
-  openURL: mockLinkingOpenUrl,
-}));
-
 afterEach(() => jest.clearAllMocks());
-
-const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
-
-jest.mock('react-native-ssl-pinning', () => ({
-  fetch: jest.fn(),
-}));
 
 describe('login', () => {
   it('calls login and works correctly', async () => {
