@@ -12,7 +12,7 @@ import {
 import CheckboxList from 'rn-checkbox-list';
 
 import { initialize } from 'sdk-gubuy-test';
-import { getToken, getUserInfo, refreshToken, logout } from 'sdk-gubuy-test';
+import { getToken, getUserInfo, refreshToken } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -64,7 +64,6 @@ const App = () => {
                 setCode();
                 setToken(null);
                 setUserInfo({});
-                logout();
               }}
             >
               <Text style={styles.logoutContText}>Logout</Text>
