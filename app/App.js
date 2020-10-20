@@ -12,7 +12,7 @@ import {
 import CheckboxList from 'rn-checkbox-list';
 
 import { initialize } from 'sdk-gubuy-test';
-import { getToken, getUserInfo } from 'sdk-gubuy-test';
+import { getToken, getUserInfo, refreshToken } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -24,6 +24,8 @@ import styles from './app-styles';
 import ENV from './env';
 
 import scope from './scope';
+
+import ReloadIcon from './utils/reload.png';
 
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
@@ -53,7 +55,6 @@ const App = () => {
             <CheckboxList listItems={scope} theme="#005492" />
           </View>
         )}
-        
         {code && (
           <View style={styles.logoutContainer}>
             {/* <Text style={styles.logoutContCodeText}>Code: {code}</Text> */}
@@ -109,15 +110,40 @@ const App = () => {
                   </TouchableOpacity>
                 )}
                 {token != null && (
-                  <ScrollView
+                  <View
                     style={{
                       width: '100%',
                       padding: 10,
+                      flexDirection: 'row-reverse',
                     }}
                   >
-                    <Text style={styles.infoHeader}>access_token</Text>
-                    <Text style={{ fontSize: 12 }}>{token}</Text>
-                  </ScrollView>
+                    <View
+                      style={{
+                        flex: 1,
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        onPress={async () => {
+                          setToken(await refreshToken());
+                        }}
+                      >
+                        <Image
+                          style={{ height: 15, width: 15, alignSelf: 'center' }}
+                          source={ReloadIcon}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 9 }}>
+                      <Text style={styles.infoHeader}>access_token</Text>
+                      <Text style={{ fontSize: 12 }}>{token}</Text>
+                    </View>
+                  </View>
                 )}
               </View>
             </View>

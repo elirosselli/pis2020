@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingLeft: '7%',
     paddingRight: '7%',
+    marginTop: 20,
     flex: 1,
   },
   informationTitle: {
