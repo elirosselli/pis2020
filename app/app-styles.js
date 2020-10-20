@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
 =======
     paddingLeft: '7%',
     paddingRight: '7%',
+    marginTop: 20,
     flex: 1,
 >>>>>>> Some buttons
   },
