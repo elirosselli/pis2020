@@ -79,15 +79,6 @@ const App = () => {
         </ScrollView>
 =======
         {!code && <LoginButton handleCode={setCode} />}
-        {code && (
-          <View style={styles.logoutContainer}>
-            {/* <Text style={styles.logoutContCodeText}>Code: {code}</Text> */}
-            <TouchableOpacity  style={styles.logoutContTouch}>
-              <Text style={styles.logoutContText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
         {!code && (
           <View style={styles.informationContainer}>
             <Text numberOfLines={2} style={styles.informationTitle}>
@@ -97,6 +88,23 @@ const App = () => {
             <CheckboxList listItems={scope} theme="#005492" />
           </View>
         )}
+        
+        {code && (
+          <View style={styles.logoutContainer}>
+            {/* <Text style={styles.logoutContCodeText}>Code: {code}</Text> */}
+            <TouchableOpacity
+              style={styles.logoutContTouch}
+              onPress={() => {
+                setCode();
+                setToken(null);
+                setUserInfo({});
+              }}
+            >
+              <Text style={styles.logoutContText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {code && (
           <ScrollView style={styles.informationContainer}>
             {/* Code */}
