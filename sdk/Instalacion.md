@@ -8,7 +8,7 @@ El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 `$ npm install sdk-gubuy-test`
 
-Este comando añadirá el SDK y las dependencias necesarias a su proyecto.
+Este comando añade el SDK y las dependencias necesarias al proyecto.
 
 
 ## Utilización
@@ -19,7 +19,7 @@ Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. P
   import { initialize, login } from 'sdk-gubyuy-test';
 ```
 
-Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`.
+Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
   initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miLogoutRedirectUri');
@@ -32,7 +32,7 @@ Una vez inicializado el componente, se puede realizar el login con ID Uruguay me
   await login();
 ```
 
-Esta llamada podría realizarse cuando el usuario apreta un botón, como se muestra en el siguiente ejemplo:
+Esta llamada podría realizarse cuando el usuario presiona un botón, como se muestra en el siguiente ejemplo:
 
 ```javascript
   const LoginButton = () => {
@@ -60,12 +60,12 @@ Esta llamada podría realizarse cuando el usuario apreta un botón, como se mues
 
 | Función                                                      	| Descripción                                                                                                                                                                             	|
 |--------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)` 	| Inicializa el SDK con los parámetros redirectUri, clientId, clientSecret, y postLogoutRedirectUri, que serán utilizados en la interacción con la API de ID Uruguay.                                                                                         	|
+| `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)` 	| Inicializa el SDK con los parámetros redirectUri, clientId, clientSecret, y postLogoutRedirectUri, que son utilizados en la interacción con la API de ID Uruguay.                                                                                         	|
 | `login()`                                                     	| Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al redirectUri configurado y se devuelve el authentication code. <br>En caso de error, devuelve el mensaje correspondiente. 	|
-| `getToken()`                                                   	| Devuelve el token correspondiente al usuario autenticado.                                                                                                    	|
-| `refreshToken()`                                               	| Actualiza el token del usuario autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                     	|
-| `getUserInfo()`                                                	| Devuelve la información provista por ID Uruguay sobre el usuario autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                        	|
-| `logout()`                                                     	| Abre una ventana del navegador web y cierra la sesión del usuario en ID Uruguay, redirigiendo al _postLogoutUri_ especificado en `initialize` una vez cerrada la sesión.                                                                                                                                            	|
+| `getToken()`                                                   	| Devuelve el token correspondiente al usuario final autenticado.                                                                                                    	|
+| `refreshToken()`                                               	| Actualiza el token del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                     	|
+| `getUserInfo()`                                                	| Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                        	|
+| `logout()`                                                     	| Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al _postLogoutUri_ especificado en `initialize` una vez cerrada la sesión.                                                                                                                                            	|
 
 
 ### Función Initialize
@@ -76,11 +76,11 @@ Se debe inicializar el SDK con la función `initialize`, que recibe como paráme
 initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miPostLogoutRedirectUri');
 ```
 
-Luego de esto, el SDK estará inicializado correctamente.
+Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
 ### Función Login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (https://mi.iduruguay.gub.uy/login o https://mi-testing.iduruguay.gub.uy/login si se está en modo testing). Una vez que el usuario ingresa sus credenciales, este es redirigido a la _redirect URI_ configurada en la inicialización del SDK. Esta función devuelve el `authorization code` correspondiente al usuario autenticado, y en caso de error lanza una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (https://mi.iduruguay.gub.uy/login o https://mi-testing.iduruguay.gub.uy/login si se está en modo testing). Una vez que el usuario ingresa sus credenciales, este es redirigido a la _redirect URI_ configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario autenticado, y en caso de error se produce una excepción.
 
 ``` javascript
   try {
@@ -92,7 +92,7 @@ La función `login` abre una ventana en el navegador web del dispositivo con la 
   }
 ```
 
-El `authorization code` retornado por la función se guarda internamente en el SDK durante la sesión del usuario (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al login sin guardar la respuesta:
+El `code` retornado por la función se guarda internamente en el SDK durante la sesión del usuario (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al login sin guardar la respuesta:
 
 ``` javascript
   try { 
@@ -113,7 +113,7 @@ Una vez realizado el `login`, es posible obtener el `access_token` correpondient
   const token = await getToken();
 ```
 
-Al igual que el `authorization code`, el token retornado se guarda en el SDK, con lo que de no necesitar almacenar el token, también se puede llamar a getToken sin guardar la respuesta.
+Al igual que el `code`, el token retornado se guarda en el SDK, con lo que de no necesitar almacenar el token, también se puede llamar a `getToken` sin guardar la respuesta.
 
 ### Función refreshToken
 
