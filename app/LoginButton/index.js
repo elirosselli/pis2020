@@ -6,10 +6,7 @@ import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import {
   login,
-<<<<<<< HEAD
   logout,
-=======
->>>>>>> Get user Info
   getParameters,
   getToken,
   getUserInfo,

@@ -35,9 +35,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
+<<<<<<< HEAD
     margin: 15,
+=======
+    paddingLeft: '7%',
+    paddingRight: '7%',
+    flex: 1,
+>>>>>>> Some buttons
   },
   informationTitle: {
     textAlign: 'left',
@@ -49,6 +55,12 @@ const styles = StyleSheet.create({
     height: 5,
     width: 15,
     backgroundColor: '#222',
+    marginBottom: 5,
+  },
+  informationSeparatorBlue: {
+    height: 5,
+    width: 15,
+    backgroundColor: '#005492',
     marginBottom: 5,
   },
   bottomSection: {
@@ -65,6 +77,68 @@ const styles = StyleSheet.create({
     height: null,
     aspectRatio: 2,
   },
+<<<<<<< HEAD
+=======
+  logoutContainer: {
+    backgroundColor: '#005492',
+    textAlign: 'right',
+    padding: 10,
+    flexDirection: 'row',
+  },
+  logoutContText: {
+    color: '#fff',
+    textDecorationLine: 'underline',
+    textAlign: 'right',
+    flex: 1,
+  },
+  logoutContTouch: {
+    flex: 1,
+    height: 20,
+  },
+  logoutContCodeText: {
+    color: '#fff',
+    textAlign: 'left',
+    flex: 5,
+  },
+  infoBtn: {
+    backgroundColor: '#222',
+    padding: 10,
+    width: '80%',
+    borderWidth: 2,
+    margin: 20,
+  },
+  infoBtnText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  infoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#ecf0f1',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  infoHeader: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#005492',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
+  label: {
+    margin: 8,
+    fontSize: 15,
+  },
+>>>>>>> Some buttons
 });
 
 export default styles;
