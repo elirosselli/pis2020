@@ -155,6 +155,7 @@ const App = () => {
                                   borderBottomWidth: 1,
                                   borderColor: '#ecf0f1',
                                 }}
+                                key={val}
                               >
                                 <Text style={{ fontWeight: 'bold' }}>
                                   {val}
