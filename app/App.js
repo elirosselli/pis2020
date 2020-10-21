@@ -29,17 +29,7 @@ import ReloadIcon from './utils/reload.png';
 
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
-initialize(
-  'sdkIdU.testing%3A%2F%2Fauth',
-  sdkIdUClientId,
-  sdkIdUClientSecret,
-  'sdkIdU.testing://redirect',
-);
-
 const App = () => {
-<<<<<<< HEAD
-  const [userInfo, setUserInfo] = useState({});
-=======
   const [code, setCode] = useState();
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState({});
@@ -51,7 +41,6 @@ const App = () => {
     }, 0);
   };
 
->>>>>>> Some buttons
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -61,32 +50,6 @@ const App = () => {
         <View style={styles.titleSeparator} />
       </View>
       <View style={styles.loginContainer}>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <LoginButton handleUserInfo={setUserInfo} />
-=======
-        {!userInfo.nombre_completo && (
-          <LoginButton handleUserInfo={setUserInfo} />
-        )}
-        {userInfo.nombre_completo && <Text> Logout </Text>}
->>>>>>> Get user Info
-        <ScrollView style={styles.informationContainer}>
-          <Text numberOfLines={2} style={styles.informationTitle}>
-            Información
-          </Text>
-          <View style={styles.informationSeparator} />
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
-          </Text>
-<<<<<<< HEAD
-          {userInfo && userInfo.nombre_completo && (
-=======
-          {userInfo.nombre_completo && (
->>>>>>> Get user Info
-            <Text>Hola: {userInfo.nombre_completo}</Text>
-          )}
-        </ScrollView>
-=======
         {!code && <LoginButton handleCode={setCode} />}
         {!code && (
           <View
@@ -308,7 +271,6 @@ const App = () => {
             </View>
           </ScrollView>
         )}
->>>>>>> Some buttons
       </View>
       <View style={styles.bottomSection}>
         <TouchableOpacity
