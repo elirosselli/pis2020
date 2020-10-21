@@ -12,7 +12,7 @@ import {
 import CheckboxList from 'rn-checkbox-list';
 
 import { initialize } from 'sdk-gubuy-test';
-import { getToken, getUserInfo, refreshToken } from 'sdk-gubuy-test';
+import { getToken, getUserInfo, refreshToken} from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -116,10 +116,11 @@ const App = () => {
             {/* <Text style={styles.logoutContCodeText}>Code: {code}</Text> */}
             <TouchableOpacity
               style={styles.logoutContTouch}
-              onPress={() => {
+              onPress={async () => {                
                 setCode();
                 setToken(null);
                 setUserInfo({});
+
               }}
             >
               <Text style={styles.logoutContText}>Logout</Text>
