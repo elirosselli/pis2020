@@ -29,8 +29,6 @@ import ReloadIcon from './utils/reload.png';
 
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
-initialize('sdkIdU.testing%3A%2F%2Fauth', sdkIdUClientId, sdkIdUClientSecret);
-
 const App = () => {
   const [code, setCode] = useState();
   const [token, setToken] = useState(null);
