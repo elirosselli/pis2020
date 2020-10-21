@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -28,40 +28,46 @@ initialize(
   'sdkIdU.testing://redirect',
 );
 
-const App = () => (
-  <View style={styles.container}>
-    <View style={styles.titleContainer}>
-      <Text numberOfLines={2} style={styles.title}>
-        App{'\n'}Prototipo
-      </Text>
-      <View style={styles.titleSeparator} />
-    </View>
-    <View style={styles.loginContainer}>
-      <LoginButton />
-      <ScrollView style={styles.informationContainer}>
-        <Text numberOfLines={2} style={styles.informationTitle}>
-          Información
+const App = () => {
+  const [userInfo, setUserInfo] = useState({});
+  return (
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text numberOfLines={2} style={styles.title}>
+          App{'\n'}Prototipo
         </Text>
-        <View style={styles.informationSeparator} />
-        <Text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
-        </Text>
-      </ScrollView>
+        <View style={styles.titleSeparator} />
+      </View>
+      <View style={styles.loginContainer}>
+        <LoginButton handleUserInfo={setUserInfo} />
+        <ScrollView style={styles.informationContainer}>
+          <Text numberOfLines={2} style={styles.informationTitle}>
+            Información
+          </Text>
+          <View style={styles.informationSeparator} />
+          <Text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
+          </Text>
+          {userInfo && userInfo.nombre_completo && (
+            <Text>Hola: {userInfo.nombre_completo}</Text>
+          )}
+        </ScrollView>
+      </View>
+      <View style={styles.bottomSection}>
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={() => {
+            Linking.openURL('https://agesic.gub.uy');
+          }}
+        >
+          <Image source={LogoAgesic} style={styles.logosContainer} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ flex: 1 }}>
+          <Image source={LogoGubUy} style={styles.logosContainer} />
+        </TouchableOpacity>
+      </View>
     </View>
-    <View style={styles.bottomSection}>
-      <TouchableOpacity
-        style={{ flex: 1 }}
-        onPress={() => {
-          Linking.openURL('https://agesic.gub.uy');
-        }}
-      >
-        <Image source={LogoAgesic} style={styles.logosContainer} />
-      </TouchableOpacity>
-      <TouchableOpacity style={{ flex: 1 }}>
-        <Image source={LogoGubUy} style={styles.logosContainer} />
-      </TouchableOpacity>
-    </View>
-  </View>
-);
+  );
+};
 
 export default App;
