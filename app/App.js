@@ -141,7 +141,14 @@ const App = () => {
                   );
                 }}
               >
-                <Text>Iniciar</Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                  }}
+                >
+                  Inicializar SDK
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
