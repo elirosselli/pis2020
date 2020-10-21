@@ -4,7 +4,7 @@ import { logoutEndpoint } from '../utils/endpoints';
 
 const logout = async () => {
   const parameters = getParameters();
-  const missingParams = 'Missing required parameter(s): ';
+  const missingParamsMessage = 'Missing required parameter(s): ';
   let resolveFunction;
   let rejectFunction;
 
@@ -43,12 +43,12 @@ const logout = async () => {
       // En caso de error, se elimina el handler y rechaza la promise.
       Linking.removeEventListener('url', handleOpenUrl);
       if (parameters.idToken)
-        rejectFunction(Error(`${missingParams}postLogoutRedirectUri`));
+        rejectFunction(Error(`${missingParamsMessage}postLogoutRedirectUri`));
       else if (parameters.postLogoutRedirectUri)
-        rejectFunction(Error(`${missingParams}idTokenHint`));
+        rejectFunction(Error(`${missingParamsMessage}idTokenHint`));
       else
         rejectFunction(
-          Error(`${missingParams}idTokenHint, postLogoutRedirectUri`),
+          Error(`${missingParamsMessage}idTokenHint, postLogoutRedirectUri`),
         );
     }
   } catch (error) {
