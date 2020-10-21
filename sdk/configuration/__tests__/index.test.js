@@ -14,6 +14,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
     };
     const parameters2 = {
       redirectUri: 'redirectUri',
@@ -34,6 +35,9 @@ describe('configuration module', () => {
       expiresIn: 'expiresIn',
       idToken: 'idToken',
     };
+    const parameters6 = {
+      scope: 'scope',
+    };
     const parameters = getParameters();
     expect(parameters).toStrictEqual(parameters1);
     setParameters(parameters2);
@@ -49,6 +53,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
     });
     setParameters(parameters3);
     expect(getParameters()).toStrictEqual({
@@ -63,6 +68,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
     });
     setParameters(parameters4);
     expect(getParameters()).toStrictEqual({
@@ -77,6 +83,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
     });
     setParameters(parameters5);
     expect(getParameters()).toStrictEqual({
@@ -91,6 +98,22 @@ describe('configuration module', () => {
       idToken: 'idToken',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
+    });
+    setParameters(parameters6);
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'redirectUri',
+      clientId: 'clientId2',
+      clientSecret: 'clientSecret',
+      code: 'code',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
+      postLogoutRedirectUri: '',
+      state: '',
+      scope: 'scope',
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
@@ -105,6 +128,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: '',
       state: '',
+      scope: '',
     });
   });
 });
