@@ -37,14 +37,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     width: '100%',
     alignSelf: 'center',
-<<<<<<< HEAD
-    margin: 15,
-=======
     paddingLeft: '7%',
     paddingRight: '7%',
     marginTop: 20,
     flex: 1,
->>>>>>> Some buttons
   },
   informationTitle: {
     textAlign: 'left',
@@ -78,8 +74,6 @@ const styles = StyleSheet.create({
     height: null,
     aspectRatio: 2,
   },
-<<<<<<< HEAD
-=======
   logoutContainer: {
     backgroundColor: '#005492',
     textAlign: 'right',
@@ -139,7 +133,6 @@ const styles = StyleSheet.create({
     margin: 8,
     fontSize: 15,
   },
->>>>>>> Some buttons
 });
 
 export default styles;
