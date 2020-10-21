@@ -19,7 +19,6 @@ La implementación de la funcionalidad de *Logout* involucra los siguientes arch
 * **sdk/utils/constants.js**: Contiene constantes que serán utilizadas.
 * **sdk/utils/endpoints.js**: Contiene los endpoints que serán utilizados. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters()** definida en el módulo de configuración.
 
-  
 La función **logout** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en la request a través del módulo de configuración, en la función **logoutEndpoint()** definida en el archivo de *endpoints* previamente mencionado, y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa, y si corresponde, el parámetro *state*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
 
 ### Código
