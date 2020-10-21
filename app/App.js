@@ -47,12 +47,41 @@ const App = () => {
       <View style={styles.loginContainer}>
         {!code && <LoginButton handleCode={setCode} />}
         {!code && (
-          <View style={styles.informationContainer}>
+          <View
+            style={[
+              styles.informationContainer,
+              { width: '80%', paddingLeft: 0, paddingRight: 0 },
+            ]}
+          >
             <Text numberOfLines={2} style={styles.informationTitle}>
               Scope
             </Text>
             <View style={styles.informationSeparator} />
-            <CheckboxList listItems={scope} theme="#005492" />
+            <View style={{ minHeight: '35%' }}>
+              <CheckboxList
+                listItems={scope}
+                listItemStyle={{
+                  padding: 0,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#eee',
+                }}
+                theme="#005492"
+              />
+            </View>
+            <View style={{ alignItems: 'flex-end' }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#222',
+                  padding: 5,
+                  width: '40%',
+                  borderColor: '#000',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                }}
+              >
+                <Text style={{ textAlign: 'center', color: '#fff' }}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         {code && (
