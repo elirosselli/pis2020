@@ -4,6 +4,12 @@ import { getParameters } from '../../configuration';
 jest.mock('../../requests');
 afterEach(() => jest.clearAllMocks());
 
+const mockAddEventListener = jest.fn();
+jest.mock('react-native/Libraries/Linking/Linking', () => ({
+  addEventListener: mockAddEventListener,
+  removeEventListener: jest.fn(),
+}));
+
 describe('initialize', () => {
   it('works correctly', () => {
     const parameters = {

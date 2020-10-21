@@ -1,17 +1,15 @@
 import makeRequest from '../index';
 import REQUEST_TYPES from '../../utils/constants';
 import login from '../login';
+import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
 jest.mock('../login');
+jest.mock('../logout');
 jest.mock('../getTokenOrRefresh');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
-
-jest.mock('react-native-ssl-pinning', () => ({
-  fetch: jest.fn(),
-}));
 
 describe('login', () => {
   it('calls login and works correctly', async () => {
@@ -66,6 +64,26 @@ describe('refreshToken', () => {
     getTokenOrRefresh.mockImplementation(() => Promise.reject(error));
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    expect.assertions(1);
+  });
+});
+
+describe('logout', () => {
+  it('calls logout and works correctly', async () => {
+    const redirectUri = 'postLogoutRedirectUri';
+    logout.mockImplementation(() => Promise.resolve(redirectUri));
+    const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(response).toBe(redirectUri);
+  });
+
+  it('calls logout and fails', async () => {
+    const error = Error('error');
+    logout.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (err) {
       expect(err).toBe(error);
     }

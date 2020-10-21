@@ -3,12 +3,23 @@
 // istanbul ignore file
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { login, getToken, refreshToken, getParameters } from 'sdk-gubuy-test';
+import {
+  login,
+  getToken,
+  refreshToken,
+  getParameters,
+  logout,
+} from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
 const LoginButton = () => {
+  const handleButton = async () => {
+    const parameters = getParameters();
+    if (parameters.code === '') await handleLogin();
+    else await handleLogout();
+  };
   const handleLogin = async () => {
     try {
       const code = await login();
@@ -26,8 +37,16 @@ const LoginButton = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
+    <TouchableOpacity style={styles.buttonContainer} onPress={handleButton}>
       <View style={styles.buttonSeparator}>
         <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
       </View>

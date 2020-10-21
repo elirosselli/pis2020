@@ -8,6 +8,8 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
+  postLogoutRedirectUri: '',
+  state: '',
 };
 
 const getParameters = () => parameters;

@@ -21,7 +21,12 @@ import ENV from './env';
 
 const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
-initialize('sdkIdU.testing%3A%2F%2Fauth', sdkIdUClientId, sdkIdUClientSecret);
+initialize(
+  'sdkIdU.testing%3A%2F%2Fauth',
+  sdkIdUClientId,
+  sdkIdUClientSecret,
+  'sdkIdU.testing://redirect',
+);
 
 const App = () => (
   <View style={styles.container}>
