@@ -39,7 +39,14 @@ const App = () => {
         <View style={styles.titleSeparator} />
       </View>
       <View style={styles.loginContainer}>
+<<<<<<< HEAD
         <LoginButton handleUserInfo={setUserInfo} />
+=======
+        {!userInfo.nombre_completo && (
+          <LoginButton handleUserInfo={setUserInfo} />
+        )}
+        {userInfo.nombre_completo && <Text> Logout </Text>}
+>>>>>>> Get user Info
         <ScrollView style={styles.informationContainer}>
           <Text numberOfLines={2} style={styles.informationTitle}>
             Información
@@ -48,7 +55,11 @@ const App = () => {
           <Text>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
           </Text>
+<<<<<<< HEAD
           {userInfo && userInfo.nombre_completo && (
+=======
+          {userInfo.nombre_completo && (
+>>>>>>> Get user Info
             <Text>Hola: {userInfo.nombre_completo}</Text>
           )}
         </ScrollView>

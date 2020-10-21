@@ -6,7 +6,10 @@ import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import {
   login,
+<<<<<<< HEAD
   logout,
+=======
+>>>>>>> Get user Info
   getParameters,
   getToken,
   getUserInfo,
@@ -16,29 +19,19 @@ import {
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = ({ handleUserInfo }) => {
+const LoginButton = ({ handleCode }) => {
   const handleButton = async () => {
     const parameters = getParameters();
     if (parameters.code === '') await handleLogin();
     else {
       await handleLogout();
-      handleUserInfo(null);
+      handleCode(null);
     }
   };
   const handleLogin = async () => {
     try {
       const code = await login();
-      console.log(`Code: ${code}`);
-      const token = await getToken();
-      console.log(`Token: ${token}`);
-      const newToken = await refreshToken();
-      console.log(`New Token: ${newToken}`);
-      const parameters = getParameters();
-      console.log(parameters);
-      const userInfo = await getUserInfo();
-      console.log(`User Info: ${userInfo.nombre_completo}`);
-      // Guardo Info de usuario en la APP
-      handleUserInfo(userInfo);
+      handleCode(code);
     } catch (err) {
       console.log(err);
       const parameters = getParameters();
@@ -65,7 +58,7 @@ const LoginButton = ({ handleUserInfo }) => {
 };
 
 LoginButton.propTypes = {
-  handleUserInfo: PropTypes.func.isRequired,
+  handleCode: PropTypes.func.isRequired,
 };
 
 export default LoginButton;

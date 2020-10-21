@@ -7,7 +7,6 @@ import {
   getUserInfo,
   refreshToken,
 } from './interfaces';
-
 import { getParameters } from './configuration';
 
 export {
