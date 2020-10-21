@@ -25,9 +25,8 @@ const getTokenOrRefresh = async type => {
     // los datos de autenticación codificados
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
-      skPinning: true,
       sslPinning: {
-        certs: ['certificate', 'letsEnc', 'root'],
+        certs: ['certificate'],
       },
       headers: {
         Authorization: `Basic ${encodedCredentials}`,

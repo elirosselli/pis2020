@@ -10,17 +10,16 @@ import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
 const LoginButton = ({ handleCode }) => {
+  const handleButton = async () => {
+    const parameters = getParameters();
+    if (parameters.code === '') await handleLogin();
+  };
   const handleLogin = async () => {
     try {
       const code = await login();
       console.log(`Code: ${code}`);
-
-      // const newToken = await refreshToken();
-      // console.log(`New Token: ${newToken}`);
-      // const parameters = getParameters();
-      // console.log(parameters);
-      // Guardo Info de usuario en la APP
       handleCode(code);
+      // Guardo Info de usuario en la APP
     } catch (err) {
       console.log(err);
       const parameters = getParameters();
@@ -29,7 +28,7 @@ const LoginButton = ({ handleCode }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
+    <TouchableOpacity style={styles.buttonContainer} onPress={handleButton}>
       <View style={styles.buttonSeparator}>
         <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
       </View>
