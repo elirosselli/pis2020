@@ -7,8 +7,9 @@ const initialize = (
   clientId,
   clientSecret,
   postLogoutRedirectUri,
+  scope
 ) => {
-  setParameters({ redirectUri, clientId, clientSecret, postLogoutRedirectUri });
+  setParameters({ redirectUri, clientId, clientSecret, postLogoutRedirectUri, scope });
 };
 
 const login = () => makeRequest(REQUEST_TYPES.LOGIN);

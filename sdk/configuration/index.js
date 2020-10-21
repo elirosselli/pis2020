@@ -10,6 +10,7 @@ const parameters = {
   idToken: '',
   postLogoutRedirectUri: '',
   state: '',
+  scope: '',
 };
 
 const getParameters = () => parameters;
