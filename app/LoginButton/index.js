@@ -39,7 +39,11 @@ const LoginButton = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      const postLogoutRedirectUriWithState = await logout();
+      const receivedState = postLogoutRedirectUriWithState.match(
+        /\?state=([^&]+)/,
+      );
+      if (receivedState) console.log(`State: ${receivedState[1]}`);
     } catch (err) {
       console.log(err);
     }

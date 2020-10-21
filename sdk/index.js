@@ -6,6 +6,14 @@ import {
   refreshToken,
   logout,
 } from './interfaces';
-import { getParameters } from './configuration';
+import { getParameters, setParameters } from './configuration';
 
-export { initialize, login, getToken, getParameters, refreshToken, logout };
+export {
+  initialize,
+  login,
+  getToken,
+  getParameters,
+  refreshToken,
+  logout,
+  setParameters,
+};
