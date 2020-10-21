@@ -5,6 +5,7 @@ import { logoutEndpoint } from '../utils/endpoints';
 const logout = async () => {
   const parameters = getParameters();
   const missingParamsMessage = 'Missing required parameter(s): ';
+  const lowerCasePostLogoutRedirectUri = parameters.postLogoutRedirectUri.toLowerCase();
   let resolveFunction;
   let rejectFunction;
 
@@ -24,7 +25,10 @@ const logout = async () => {
     //  setteada, se limpian los parámetros del componente
     //  de configuración que correspondan y se resuelve la
     //  promise. Si no, se rechaza la promise con un error.
-    if (urlCheck === parameters.postLogoutRedirectUri.toLowerCase()) {
+    if (
+      urlCheck === lowerCasePostLogoutRedirectUri ||
+      urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
+    ) {
       clearParameters();
       resolveFunction(urlCheck);
     } else rejectFunction(Error('Invalid post logout redirect uri'));
