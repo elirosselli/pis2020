@@ -8,6 +8,8 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
+  postLogoutRedirectUri: '',
+  state: '',
 };
 
 const getParameters = () => parameters;
@@ -20,7 +22,13 @@ const setParameters = params => {
 
 const clearParameters = () => {
   Object.keys(parameters).forEach(key => {
-    parameters[key] = '';
+    if (
+      key !== 'redirectUri' &&
+      key !== 'clientId' &&
+      key !== 'clientSecret' &&
+      key !== 'postLogoutRedirectUri'
+    )
+      parameters[key] = '';
   });
 };
 
