@@ -43,6 +43,13 @@ const App = () => {
   const [code, setCode] = useState();
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState({});
+  const [scopeSel, setScopeSel] = useState('');
+
+  const doUpdate = someNewValue => {
+    setTimeout(() => {
+      setScopeSel(someNewValue);
+    }, 0);
+  };
 
 >>>>>>> Some buttons
   return (
@@ -93,12 +100,23 @@ const App = () => {
             </Text>
             <View style={styles.informationSeparator} />
             <View style={{ minHeight: '35%' }}>
+              <Text>{scopeSel}</Text>
               <CheckboxList
                 listItems={scope}
                 listItemStyle={{
                   padding: 0,
                   borderBottomWidth: 1,
                   borderBottomColor: '#eee',
+                }}
+                onChange={({ a, items }) => {
+                  doUpdate(() => {
+                    if (Array.isArray(items) && items.length > 0) {
+                      return items
+                        .map(val => val.name)
+                        .reduce((acum, curr) => `${acum}  ${curr}`);
+                    }
+                    return '';
+                  });
                 }}
                 theme="#005492"
               />
@@ -113,8 +131,17 @@ const App = () => {
                   borderWidth: 1,
                   borderRadius: 5,
                 }}
+                onPress={() => {
+                  initialize(
+                    'sdkIdU.testing%3A%2F%2Fauth',
+                    sdkIdUClientId,
+                    sdkIdUClientSecret,
+                    'sdkIdU.testing://redirect',
+                    scopeSel,
+                  );
+                }}
               >
-                <Text style={{ textAlign: 'center', color: '#fff' }}>Confirmar</Text>
+                <Text>Iniciar</Text>
               </TouchableOpacity>
             </View>
           </View>

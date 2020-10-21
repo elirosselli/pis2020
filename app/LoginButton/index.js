@@ -4,14 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import {
-  login,
-  logout,
-  getParameters,
-  getToken,
-  getUserInfo,
-  refreshToken,
-} from 'sdk-gubuy-test';
+import { login, logout, getParameters } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
@@ -29,6 +22,7 @@ const LoginButton = ({ handleCode }) => {
     try {
       const code = await login();
       handleCode(code);
+      // Guardo Info de usuario en la APP
     } catch (err) {
       console.log(err);
       const parameters = getParameters();
