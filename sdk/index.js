@@ -2,10 +2,20 @@
 import {
   initialize,
   login,
-  getToken,
-  refreshToken,
   logout,
+  getToken,
+  getUserInfo,
+  refreshToken,
 } from './interfaces';
+
 import { getParameters } from './configuration';
 
-export { initialize, login, getToken, getParameters, refreshToken, logout };
+export {
+  initialize,
+  login,
+  logout,
+  getParameters,
+  getToken,
+  getUserInfo,
+  refreshToken,
+};
