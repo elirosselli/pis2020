@@ -69,7 +69,9 @@ const App = () => {
         <View style={styles.titleSeparator} />
       </View>
       <View style={styles.loginContainer}>
-        {!code && <LoginButton handleCode={setCode} />}
+        {!code && (
+          <LoginButton handleCode={setCode} notActive={initialized !== 1} />
+        )}
         {!code && (
           <View
             style={[

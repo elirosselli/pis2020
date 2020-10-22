@@ -3,19 +3,28 @@
 // istanbul ignore file
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { login, logout, getParameters } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = ({ handleCode }) => {
+const LoginButton = ({ handleCode, notActive }) => {
   const handleButton = async () => {
-    const parameters = getParameters();
-    if (parameters.code === '') await handleLogin();
-    else {
-      await handleLogout();
-      handleCode('');
+    if (notActive) {
+      Alert.alert(
+        'SDK Alert',
+        'SDK no inicializado',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: true },
+      );
+    } else {
+      const parameters = getParameters();
+      if (parameters.code === '') await handleLogin();
+      else {
+        await handleLogout();
+        handleCode('');
+      }
     }
   };
   const handleLogin = async () => {
@@ -50,6 +59,7 @@ const LoginButton = ({ handleCode }) => {
 
 LoginButton.propTypes = {
   handleCode: PropTypes.func.isRequired,
+  notActive: PropTypes.bool.isRequired,
 };
 
 export default LoginButton;
