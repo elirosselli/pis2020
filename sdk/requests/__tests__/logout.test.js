@@ -116,7 +116,7 @@ describe('logout', () => {
   it('calls logout with required parameters and Linking.openUrl fails', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'post_logout_redirect_uri1',
+      postLogoutRedirectUri: 'post_logout_redirect_uri',
       state: '2KVAEzPpazbGFD5',
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
@@ -134,7 +134,7 @@ describe('logout', () => {
   it('calls login with required parameters and returns invalid url', async () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
-      postLogoutRedirectUri: 'post_logout_redirect_uri1',
+      postLogoutRedirectUri: 'post_logout_redirect_uri',
       state: '2KVAEzPpazbGFD5',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
