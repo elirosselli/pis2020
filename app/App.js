@@ -8,7 +8,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import { initialize } from 'sdk-gubuy-test';
+import { initialize, setParameters } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -27,6 +27,7 @@ initialize(
   sdkIdUClientSecret,
   'sdkIdU.testing://redirect',
 );
+setParameters({ state: 'CBtRg8OyZh' });
 
 const App = () => {
   const [userInfo, setUserInfo] = useState({});
