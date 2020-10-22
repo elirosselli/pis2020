@@ -15,3 +15,7 @@ __tests__
 coverage
 requests/__tests__
 sdk-gubuy-test-*.tgz
+.prettierrc.js
+.eslintrc.json
+.markdownlint.json
+babel.config.js
