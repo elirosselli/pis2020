@@ -11,8 +11,13 @@ import {
 
 import CheckboxList from 'rn-checkbox-list';
 
-import { initialize } from 'sdk-gubuy-test';
-import { getToken, getUserInfo, refreshToken, logout } from 'sdk-gubuy-test';
+import {
+  initialize,
+  getToken,
+  getUserInfo,
+  refreshToken,
+  logout,
+} from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
 
@@ -34,13 +39,27 @@ const App = () => {
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [scopeSel, setScopeSel] = useState('');
+  const [initialized, setInitialized] = useState(0);
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
-      setScopeSel(someNewValue);
+      if (someNewValue() !== scopeSel) {
+        setScopeSel(someNewValue);
+        setInitialized(0);
+      }
     }, 0);
   };
 
+  const updateInitialized = init => {
+    setTimeout(() => {
+      setInitialized(init);
+    }, 0);
+  };
+
+  const errorColor =
+    (initialized === 0 && { backgroundColor: '#222' }) ||
+    (initialized === 1 && { backgroundColor: '#2ecc71' }) ||
+    (initialized === -1 && { backgroundColor: '#e74c3c' });
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -63,7 +82,6 @@ const App = () => {
             </Text>
             <View style={styles.informationSeparator} />
             <View style={{ minHeight: '35%' }}>
-              <Text>{scopeSel}</Text>
               <CheckboxList
                 listItems={scope}
                 listItemStyle={{
@@ -74,9 +92,10 @@ const App = () => {
                 onChange={({ a, items }) => {
                   doUpdate(() => {
                     if (Array.isArray(items) && items.length > 0) {
-                      return items
+                      const res = items
                         .map(val => val.name)
                         .reduce((acum, curr) => `${acum}  ${curr}`);
+                      return res;
                     }
                     return '';
                   });
@@ -86,22 +105,30 @@ const App = () => {
             </View>
             <View style={{ alignItems: 'flex-end' }}>
               <TouchableOpacity
-                style={{
-                  backgroundColor: '#222',
-                  padding: 5,
-                  width: '40%',
-                  borderColor: '#000',
-                  borderWidth: 1,
-                  borderRadius: 5,
-                }}
+                style={[
+                  {
+                    padding: 5,
+                    width: '40%',
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  },
+                  errorColor,
+                ]}
                 onPress={() => {
-                  initialize(
-                    'sdkIdU.testing%3A%2F%2Fauth',
-                    sdkIdUClientId,
-                    sdkIdUClientSecret,
-                    'sdkIdU.testing://redirect',
-                    scopeSel,
-                  );
+                  try {
+                    initialize(
+                      'sdkIdU.testing%3A%2F%2Fauth',
+                      sdkIdUClientId,
+                      sdkIdUClientSecret,
+                      'sdkIdU.testing://redirect',
+                      scopeSel,
+                    );
+                    updateInitialized(1);
+                  } catch (error) {
+                    console.log(error);
+                    updateInitialized(-1);
+                  }
                 }}
               >
                 <Text
