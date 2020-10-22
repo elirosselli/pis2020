@@ -163,7 +163,6 @@ La función `login` abre una ventana en el navegador web del dispositivo con la 
 try {
   const code = await login();
   /* Hacer algo con el code */
-  console.log(`Code: ${code}`);
 } catch (err) {
   /* Manejar el error */
 }
@@ -206,7 +205,7 @@ Esta función requiere que la función `getToken` haya sido ejecutada de forma c
 Luego de realizado el `getToken`, se puede invocar la función `getUserInfo` para obtener la información del usuario autenticado, provista por ID Uruguay:
 
 ```javascript
-  const userInfo = await getUserInfo();
+const userInfo = await getUserInfo();
 ```
 
 Esta función devuelve un objeto con el siguiente formato:
