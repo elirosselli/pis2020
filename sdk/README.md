@@ -254,10 +254,12 @@ En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final
 
 La implementación de la funcionalidad de *login* involucra los siguientes archivos:
 
-- **sdk/interfaces/index.js**: Donde se implementa la función de **login**.
-- **sdk/requests/index.js**: La función de **login** utiliza la función **makeRequest** de este archivo, que se encarga de realizar el *request* mencionado anteriormente.
+- **sdk/requests/logout.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
+- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **login**.
+- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
 - **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
-- **sdk/requests/endpoints.js**: Contiene las constantes a utilizar.
+- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
+- **sdk/utils/endpoints.js**: Contiene los endpoints a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 
 La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa y el parámetro *code*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
 
@@ -275,17 +277,16 @@ El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaSc
   Linking.addEventListener('url', handleOpenUrl);
 ```
 
-En este punto se tiene un *Event Listener* que quedará esperando por un evento del tipo '*url*'. Luego, se ejecuta la función **makeRequest**, con el parámetro REQUEST_TYPES.LOGIN, indicando que es un *request* del tipo *login*.
-Luego, la función obtiene los parámetros necesarios del módulo de configuración con la función **getParameters** (previamente inicializados a través de la función **initialize**) e intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *scope* deseado, el *response type*, *client\_id* indicado, *redirect\_uri* y opcionalmente *state*, *nonce*, *prompt* y *arc_values*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que quedará esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intentará abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
 
 ```javascript
-  Linking.openURL(loginEndpoint(parameters.clientId))
+  Linking.openURL(loginEndpoint())
 ```
 
 Donde *loginEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
 
 ```javascript
-  https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}
+  https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}
 ```
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
