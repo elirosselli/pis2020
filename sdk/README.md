@@ -139,7 +139,7 @@ Esta llamada podría realizarse cuando el usuario final presiona un botón, como
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)`| Inicializa el SDK con los parámetros redirectUri, clientId, clientSecret, y postLogoutRedirectUri, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
-| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al redirectUri configurado y se devuelve el authentication code. <br>En caso de error, devuelve el mensaje correspondiente.|
+| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al redirectUri configurado y se devuelve el authentication code.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el token correspondiente al usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el token del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
@@ -157,7 +157,7 @@ Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
 #### Función Login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (https://mi.iduruguay.gub.uy/login o https://mi-testing.iduruguay.gub.uy/login si se está en modo testing). Una vez que el usuario ingresa sus credenciales, este es redirigido a la _redirect URI_ configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario autenticado, y en caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario ingresa sus credenciales, este es redirigido a la _redirect URI_ configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario autenticado, y en caso de error se produce una excepción.
 
 ``` javascript
   try {
@@ -265,20 +265,28 @@ La función **login** no recibe parámetros, sino que obtiene los parámetros ne
 
 La función de **login** es declarada como una función asincrónica de la siguiente manera:
 
-    const login = async () => {
+```javascript
+  const login = async () => {
+```
 
 El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Esto se puede ver en la siguiente línea:
 
-    Linking.addEventListener('url', handleOpenUrl);
+```javascript
+  Linking.addEventListener('url', handleOpenUrl);
+```
 
 En este punto se tiene un *Event Listener* que quedará esperando por un evento del tipo '*url*'. Luego, se ejecuta la función **makeRequest**, con el parámetro REQUEST_TYPES.LOGIN, indicando que es un *request* del tipo *login*.
 Luego, la función obtiene los parámetros necesarios del módulo de configuración con la función **getParameters** (previamente inicializados a través de la función **initialize**) e intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *scope* deseado, el *response type*, *client\_id* indicado, *redirect\_uri* y opcionalmente *state*, *nonce*, *prompt* y *arc_values*. Esto se puede ver a continuación:
 
-    Linking.openURL(loginEndpoint(parameters.clientId))
+```javascript
+  Linking.openURL(loginEndpoint(parameters.clientId))
+```
 
 Donde *loginEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
 
-    `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`
+```javascript
+  https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}
+```
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
@@ -338,19 +346,27 @@ La función **logout** no recibe parámetros, sino que obtiene los parámetros n
 
 La función de **logout** es declarada como una función asincrónica de la siguiente manera:
 
-    const logout = async () => {
+```javascript
+  const logout = async () => {
+```
 
 El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Esto se puede ver en la siguiente línea:
 
-    Linking.addEventListener('url', handleOpenUrl);
+```javascript
+  Linking.addEventListener('url', handleOpenUrl);
+```
 
 En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo *url*. Luego, se verifica que los parámetros necesarios para realizar el cierre de sesión se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Logout Endpoint*. Esta *url* contendrá el *id_token_hint*, el *post_logout_redirect_uri*, y opcionalmente *state*. Esto se puede ver a continuación
 
-    Linking.openURL(logoutEndpoint())
+```javascript
+  Linking.openURL(logoutEndpoint())
+```
 
 Donde *logoutEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
 
-    `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`
+```javascript
+  https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}
+```
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no.
 
