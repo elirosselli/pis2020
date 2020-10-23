@@ -8,6 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* appTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* appTests.m */; };
+		12F8C6492542927A00EC2B96 /* certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6482542927A00EC2B96 /* certificate.cer */; };
+		12F8C64A2542927A00EC2B96 /* certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6482542927A00EC2B96 /* certificate.cer */; };
+		12F8C64B2542927A00EC2B96 /* certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6482542927A00EC2B96 /* certificate.cer */; };
+		12F8C64C2542927A00EC2B96 /* certificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6482542927A00EC2B96 /* certificate.cer */; };
+		12F8C6562542928500EC2B96 /* letsEncrypt.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6552542928500EC2B96 /* letsEncrypt.cer */; };
+		12F8C6572542928500EC2B96 /* letsEncrypt.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6552542928500EC2B96 /* letsEncrypt.cer */; };
+		12F8C6582542928500EC2B96 /* letsEncrypt.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6552542928500EC2B96 /* letsEncrypt.cer */; };
+		12F8C6592542928500EC2B96 /* letsEncrypt.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6552542928500EC2B96 /* letsEncrypt.cer */; };
+		12F8C6632542928F00EC2B96 /* dst.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6622542928F00EC2B96 /* dst.cer */; };
+		12F8C6642542928F00EC2B96 /* dst.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6622542928F00EC2B96 /* dst.cer */; };
+		12F8C6652542928F00EC2B96 /* dst.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6622542928F00EC2B96 /* dst.cer */; };
+		12F8C6662542928F00EC2B96 /* dst.cer in Resources */ = {isa = PBXBuildFile; fileRef = 12F8C6622542928F00EC2B96 /* dst.cer */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -45,6 +57,9 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* appTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = appTests.m; sourceTree = "<group>"; };
 		0D2DA08780F09966BBFF35F3 /* Pods-app-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-app-tvOS/Pods-app-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		12F8C6482542927A00EC2B96 /* certificate.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = certificate.cer; sourceTree = "<group>"; };
+		12F8C6552542928500EC2B96 /* letsEncrypt.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = letsEncrypt.cer; sourceTree = "<group>"; };
+		12F8C6622542928F00EC2B96 /* dst.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = dst.cer; sourceTree = "<group>"; };
 		13610BBAF0E48F5EBFD7D8BB /* Pods-app-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-app-tvOSTests/Pods-app-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = app/AppDelegate.h; sourceTree = "<group>"; };
@@ -174,6 +189,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				12F8C6482542927A00EC2B96 /* certificate.cer */,
+				12F8C6552542928500EC2B96 /* letsEncrypt.cer */,
+				12F8C6622542928F00EC2B96 /* dst.cer */,
 				13B07FAE1A68108700A75B9A /* app */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* appTests */,
@@ -332,6 +350,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F8C6642542928F00EC2B96 /* dst.cer in Resources */,
+				12F8C6572542928500EC2B96 /* letsEncrypt.cer in Resources */,
+				12F8C64A2542927A00EC2B96 /* certificate.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,8 +360,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F8C6562542928500EC2B96 /* letsEncrypt.cer in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				12F8C6492542927A00EC2B96 /* certificate.cer in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				12F8C6632542928F00EC2B96 /* dst.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +372,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F8C6582542928500EC2B96 /* letsEncrypt.cer in Resources */,
+				12F8C64B2542927A00EC2B96 /* certificate.cer in Resources */,
+				12F8C6652542928F00EC2B96 /* dst.cer in Resources */,
 				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +383,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F8C6662542928F00EC2B96 /* dst.cer in Resources */,
+				12F8C6592542928500EC2B96 /* letsEncrypt.cer in Resources */,
+				12F8C64C2542927A00EC2B96 /* certificate.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
