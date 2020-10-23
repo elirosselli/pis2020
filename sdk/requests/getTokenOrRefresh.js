@@ -1,8 +1,8 @@
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
+import { Platform } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
-import { Platform } from 'react-native';
 import REQUEST_TYPES from '../utils/constants';
 
 const getTokenOrRefresh = async type => {
