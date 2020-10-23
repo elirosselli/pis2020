@@ -24,7 +24,8 @@ const logout = async () => {
     //  Si la url es igual a la postLogoutRedirectUri
     //  setteada, se limpian los parámetros del componente
     //  de configuración que correspondan y se resuelve la
-    //  promise. Si no, se rechaza la promise con un error.
+    //  promise, retornando si corresponde el parámetro state.
+    //  Si las url no coinciden, se rechaza la promise con un error.
     if (urlCheck === lowerCasePostLogoutRedirectUri) {
       clearParameters();
       resolveFunction();
