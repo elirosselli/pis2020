@@ -34,10 +34,10 @@ describe('logout', () => {
           url: 'post_logout_redirect_uri?state=2KVAEzPpazbGFD5',
         });
     });
-    const redirectUri = await logout();
+    const state = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint1);
-    expect(redirectUri).toBe('post_logout_redirect_uri?state=2KVAEzPpazbGFD5');
+    expect(state).toBe('2KVAEzPpazbGFD5');
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
@@ -55,7 +55,7 @@ describe('logout', () => {
     const redirectUri = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint2);
-    expect(redirectUri).toBe('post_logout_redirect_uri');
+    expect(redirectUri).toBe(undefined);
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
