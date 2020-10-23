@@ -10,6 +10,7 @@ import makeRequest from '../requests';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
+// const missingParamsMessage = 'Missing required parameter(s): ';
 
 jest.mock('react-native/Libraries/Linking/Linking', () => ({
   addEventListener: mockAddEventListener,
@@ -220,5 +221,113 @@ describe('configuration module and make request type refresh token integration',
     expect(parameters.tokenType).toBe('bearer');
     expect(parameters.expiresIn).toBe(3600);
     expect(parameters.idToken).toBe(expectedIdToken);
+  });
+});
+
+describe('configuration module and make request type logout integration', () => {
+  it('calls initialize, sets parameters and makes a logout request which returns non-empty state', async () => {
+    // const correctLogoutEndpoint =
+    //   'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postlogoutredirecturi&state=2KVAEzPpazbGFD5';
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchCode = 'code';
+    const fetchAccessToken = 'accessToken';
+    const fetchRefreshToken = 'refreshToken';
+    const fetchTokenType = 'tokenType';
+    const fetchExpiresIn = 'expiresIn';
+    const fetchIdToken = 'idToken';
+    const fetchPostLogoutRedirectUri = 'sdkIdU.testing://redirect';
+    const fetchState = '2KVAEzPpazbGFD5';
+    initialize(fetchRedirectUri, fetchClientId, fetchClientSecret);
+    setParameters({
+      code: fetchCode,
+      accessToken: fetchAccessToken,
+      refreshToken: fetchRefreshToken,
+      tokenType: fetchTokenType,
+      expiresIn: fetchExpiresIn,
+      idToken: fetchIdToken,
+      postLogoutRedirectUri: fetchPostLogoutRedirectUri,
+      state: fetchState,
+    });
+
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.accessToken).toBe(fetchAccessToken);
+    expect(parameters.refreshToken).toBe(fetchRefreshToken);
+    expect(parameters.tokenType).toBe(fetchTokenType);
+    expect(parameters.expiresIn).toBe(fetchExpiresIn);
+    expect(parameters.idToken).toBe(fetchIdToken);
+    expect(parameters.postLogoutRedirectUri).toBe(fetchPostLogoutRedirectUri);
+    expect(parameters.state).toBe(fetchState);
+
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `${parameters.postLogoutRedirectUri.toLowerCase()}?state=${
+            parameters.state
+          }`,
+        });
+    });
+    const urlCheck = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const receivedState = urlCheck.match(/\?state=([^&]+)/);
+    expect(receivedState[1]).toBe('2KVAEzPpazbGFD5');
+    // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
+  });
+
+  it('calls set parameters and makes a logout request which returns empty state', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchCode = 'code';
+    const fetchAccessToken = 'accessToken';
+    const fetchRefreshToken = 'refreshToken';
+    const fetchTokenType = 'tokenType';
+    const fetchExpiresIn = 'expiresIn';
+    const fetchIdToken = 'idToken';
+    const fetchPostLogoutRedirectUri = 'postLogoutRedirectUri';
+    const fetchState = '';
+    setParameters({
+      redirectUri: fetchRedirectUri,
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      code: fetchCode,
+      accessToken: fetchAccessToken,
+      refreshToken: fetchRefreshToken,
+      tokenType: fetchTokenType,
+      expiresIn: fetchExpiresIn,
+      idToken: fetchIdToken,
+      postLogoutRedirectUri: fetchPostLogoutRedirectUri,
+      state: fetchState,
+    });
+
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.accessToken).toBe(fetchAccessToken);
+    expect(parameters.refreshToken).toBe(fetchRefreshToken);
+    expect(parameters.tokenType).toBe(fetchTokenType);
+    expect(parameters.expiresIn).toBe(fetchExpiresIn);
+    expect(parameters.idToken).toBe(fetchIdToken);
+    expect(parameters.postLogoutRedirectUri).toBe(fetchPostLogoutRedirectUri);
+    expect(parameters.state).toBe(fetchState);
+
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: parameters.postLogoutRedirectUri.toLowerCase(),
+        });
+    });
+    const urlCheck = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const receivedState = urlCheck.match(/\?state=([^&]+)/);
+    // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
+    expect(receivedState).toBe(null);
   });
 });

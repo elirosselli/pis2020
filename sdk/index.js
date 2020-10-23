@@ -7,15 +7,15 @@ import {
   getUserInfo,
   refreshToken,
 } from './interfaces';
-import { getParameters, setParameters } from './configuration';
+
+import { getParameters } from './configuration';
 
 export {
   initialize,
   login,
+  logout,
+  getParameters,
   getToken,
   getUserInfo,
-  getParameters,
   refreshToken,
-  logout,
-  setParameters,
 };
