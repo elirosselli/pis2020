@@ -38,6 +38,8 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *grant_type*         | Requerido |Tipo de credenciales a presentar. Debe ser "*authorization_code*". |
     | *code* | Requerido | Código de autorización emitido por el OP, previamente tramitado en el *Authentication Endpoint*. |
     | *redirect_uri*     | Requerido | URI a donde debe ser redirigido el *User Agent* con la respuesta (*Token Response*). Debe ser una de las URIs configuradas al momento del registro del RP. |
+
+
     Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
 
   - *Logout Request*: pedido HTTP empleando el método GET que incluye los *Logout Request Params* y sirve para cerrar la sesión del *End User* autenticado en el OP. Este pedido es enviado al *Logout Endpoint*. Los *Logout Request Params* son:
@@ -215,7 +217,7 @@ Esta función devuelve un objeto con el siguiente formato:
 {
   primer_nombre: 'Juan',
   segundo_nombre: 'José',
-  primer_apellido: 'perez',
+  primer_apellido: 'Perez',
   segundo_apellido: 'Martinez',
   documento: 'uy-ci-1234567',
 }
