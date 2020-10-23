@@ -27,12 +27,6 @@ afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
   clearParameters();
-  setParameters({
-    clientId: '',
-    clientSecret: '',
-    redirectUri: '',
-    postLogoutRedirectUri: '',
-  });
 });
 
 describe('configuration module and make request type login integration', () => {
@@ -42,7 +36,13 @@ describe('configuration module and make request type login integration', () => {
     const fetchRedirectUri = 'redirectUri';
     const fetchClientId = 'clientId';
     const fetchClientSecret = 'clientSecret';
-    initialize(fetchRedirectUri, fetchClientId, fetchClientSecret);
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
 
     let parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
@@ -160,6 +160,7 @@ describe('configuration module and make request type get token integration', () 
 describe('configuration module and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     const fetchClientId = '898562';
+    const fetchRedirectUri = 'redirectUri';
     const fetchClientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const fetchRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
@@ -169,12 +170,13 @@ describe('configuration module and make request type refresh token integration',
     setParameters({
       clientId: fetchClientId,
       clientSecret: fetchClientSecret,
+      redirectUri: fetchRedirectUri,
       refreshToken: fetchRefreshToken,
     });
     let parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.clientSecret).toBe(fetchClientSecret);
-    expect(parameters.redirectUri).toBe('');
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
     expect(parameters.code).toBe('');
     expect(parameters.accessToken).toBe('');
     expect(parameters.refreshToken).toBe(fetchRefreshToken);
@@ -218,7 +220,7 @@ describe('configuration module and make request type refresh token integration',
     parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.clientSecret).toBe(fetchClientSecret);
-    expect(parameters.redirectUri).toBe('');
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
     expect(parameters.code).toBe('');
     expect(parameters.accessToken).toBe(returnedAccessToken);
     expect(parameters.refreshToken).toBe(returnedRefreshToken);
