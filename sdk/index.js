@@ -8,13 +8,14 @@ import {
   refreshToken,
 } from './interfaces';
 
-import { getParameters } from './configuration';
+import { getParameters, setParameters } from './configuration';
 
 export {
   initialize,
   login,
   logout,
   getParameters,
+  setParameters,
   getToken,
   getUserInfo,
   refreshToken,
