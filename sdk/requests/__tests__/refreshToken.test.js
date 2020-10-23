@@ -1,4 +1,5 @@
 import { fetch } from 'react-native-ssl-pinning';
+import { Platform } from 'react-native';
 import REQUEST_TYPES from '../../utils/constants';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
@@ -48,6 +49,7 @@ describe('refreshToken', () => {
     // Chequeo de parametros enviados
     expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
       method: 'POST',
+      pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
       },

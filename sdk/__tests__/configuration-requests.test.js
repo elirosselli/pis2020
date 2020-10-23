@@ -1,4 +1,5 @@
 import { fetch } from 'react-native-ssl-pinning';
+import { Platform } from 'react-native';
 import REQUEST_TYPES from '../utils/constants';
 import {
   setParameters,
@@ -37,7 +38,7 @@ beforeEach(() => {
 describe('configuration module and make request type login integration', () => {
   it('calls initialize and makes a login request', async () => {
     const correctLoginEndpoint =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20personal_info&response_type=code&client_id=clientId&redirect_uri=redirectUri';
     const fetchRedirectUri = 'redirectUri';
     const fetchClientId = 'clientId';
     const fetchClientSecret = 'clientSecret';
@@ -130,6 +131,7 @@ describe('configuration module and make request type get token integration', () 
 
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
       },
@@ -200,6 +202,7 @@ describe('configuration module and make request type refresh token integration',
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
       },
