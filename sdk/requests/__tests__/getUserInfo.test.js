@@ -1,4 +1,5 @@
 import { fetch } from 'react-native-ssl-pinning';
+import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../../utils/endpoints';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
@@ -40,6 +41,7 @@ describe('getUserInfo', () => {
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
       },
