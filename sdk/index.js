@@ -15,6 +15,7 @@ export {
   getToken,
   getUserInfo,
   getParameters,
+  setParameters,
   refreshToken,
   logout,
   setParameters,
