@@ -4,8 +4,8 @@ import { logoutEndpoint } from '../utils/endpoints';
 
 const logout = async () => {
   const parameters = getParameters();
-  const missingParamsMessage = 'Missing required parameter(s): ';
   const lowerCasePostLogoutRedirectUri = parameters.postLogoutRedirectUri.toLowerCase();
+  const missingParamsMessage = 'Missing required parameter(s): ';
   let resolveFunction;
   let rejectFunction;
 
@@ -24,13 +24,17 @@ const logout = async () => {
     //  Si la url es igual a la postLogoutRedirectUri
     //  setteada, se limpian los parámetros del componente
     //  de configuración que correspondan y se resuelve la
-    //  promise. Si no, se rechaza la promise con un error.
-    if (
-      urlCheck === lowerCasePostLogoutRedirectUri ||
+    //  promise, retornando si corresponde el parámetro state.
+    //  Si las url no coinciden, se rechaza la promise con un error.
+    if (urlCheck === lowerCasePostLogoutRedirectUri) {
+      clearParameters();
+      resolveFunction();
+    } else if (
       urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
     ) {
       clearParameters();
-      resolveFunction(urlCheck);
+      const state = urlCheck.match(/\?state=([^&]+)/);
+      resolveFunction(state[1]);
     } else rejectFunction(Error('Invalid post logout redirect uri'));
 
     // Se elimina el handler para los eventos url.
