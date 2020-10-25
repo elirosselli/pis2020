@@ -281,9 +281,8 @@ describe('configuration module and make request type logout integration', () => 
           }`,
         });
     });
-    const urlCheck = await makeRequest(REQUEST_TYPES.LOGOUT);
-    const receivedState = urlCheck.match(/\?state=([^&]+)/);
-    expect(receivedState[1]).toBe('2KVAEzPpazbGFD5');
+    const state = await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(state).toBe('2KVAEzPpazbGFD5');
     // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
   });
@@ -309,10 +308,9 @@ describe('configuration module and make request type logout integration', () => 
           url: parameters.postLogoutRedirectUri.toLowerCase(),
         });
     });
-    const urlCheck = await makeRequest(REQUEST_TYPES.LOGOUT);
-    const receivedState = urlCheck.match(/\?state=([^&]+)/);
+    const state = await makeRequest(REQUEST_TYPES.LOGOUT);
     // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
-    expect(receivedState).toBe(null);
+    expect(state).toBe(undefined);
   });
 });
