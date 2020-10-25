@@ -32,4 +32,10 @@ const clearParameters = () => {
   });
 };
 
-export { getParameters, setParameters, clearParameters };
+const resetParameters = () => {
+  Object.keys(parameters).forEach(key => {
+    parameters[key] = '';
+  });
+};
+
+export { getParameters, setParameters, clearParameters, resetParameters };
