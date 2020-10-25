@@ -62,16 +62,16 @@ describe('getUserInfo', () => {
     });
   });
 
-  it('calls getUserInfo with incorrect clientId or clientSecret or returns incorrect code', async () => {
+  it('calls getUserInfo with incorrect access token', async () => {
     getParameters.mockReturnValue({
       clientId: '',
       clientSecret: '',
-      code: 'incorrectCode',
+      code: 'incorrectAccesToken',
     });
 
-    const error = 'invalid_grant';
+    const error = 'invalid_token';
     const errorDescription =
-      'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
+      'The Access Token expired';
 
     fetch.mockImplementation(() =>
       Promise.resolve({
