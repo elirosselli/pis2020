@@ -70,8 +70,7 @@ describe('getUserInfo', () => {
     });
 
     const error = 'invalid_token';
-    const errorDescription =
-      'The Access Token expired';
+    const errorDescription = 'The Access Token expired';
 
     fetch.mockImplementation(() =>
       Promise.resolve({
