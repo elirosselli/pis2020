@@ -32,10 +32,10 @@ const clearParameters = () => {
   });
 };
 
-const resetSDK = () => {
+const resetParameters = () => {
   Object.keys(parameters).forEach(key => {
     parameters[key] = '';
   });
 };
 
-export { getParameters, setParameters, clearParameters, resetSDK };
+export { getParameters, setParameters, clearParameters, resetParameters };

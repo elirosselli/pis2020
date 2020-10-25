@@ -1,4 +1,9 @@
-import { getParameters, setParameters, clearParameters } from '../index';
+import {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+} from '../index';
 
 describe('configuration module', () => {
   it('works correctly', () => {
@@ -97,6 +102,20 @@ describe('configuration module', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      postLogoutRedirectUri: '',
+      state: '',
+    });
+    resetParameters();
+    expect(getParameters()).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
       code: '',
       accessToken: '',
       refreshToken: '',
