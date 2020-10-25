@@ -39,7 +39,6 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *code* | Requerido | Código de autorización emitido por el OP, previamente tramitado en el *Authentication Endpoint*. |
     | *redirect_uri*     | Requerido | URI a donde debe ser redirigido el *User Agent* con la respuesta (*Token Response*). Debe ser una de las URIs configuradas al momento del registro del RP. |
 
-
     Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
 
   - *Logout Request*: pedido HTTP empleando el método GET que incluye los *Logout Request Params* y sirve para cerrar la sesión del *End User* autenticado en el OP. Este pedido es enviado al *Logout Endpoint*. Los *Logout Request Params* son:
@@ -372,6 +371,6 @@ https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&po
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no.
 
-Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente. 
+Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente.
 
 En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **logout** también se encuentra un bloque *catch*, que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
