@@ -17,6 +17,7 @@ import {
   getUserInfo,
   refreshToken,
   logout,
+  setParameters,
 } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
@@ -39,14 +40,21 @@ const App = () => {
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [scopeSel, setScopeSel] = useState('');
+  const [updated, setUpdated] = useState(0);
   const [initialized, setInitialized] = useState(0);
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
       if (someNewValue() !== scopeSel) {
         setScopeSel(someNewValue);
-        setInitialized(0);
+        setUpdated(0);
       }
+    }, 0);
+  };
+
+  const updateUpdated = init => {
+    setTimeout(() => {
+      setUpdated(init);
     }, 0);
   };
 
@@ -57,6 +65,11 @@ const App = () => {
   };
 
   const errorColor =
+    (updated === 0 && { backgroundColor: '#222' }) ||
+    (updated === 1 && { backgroundColor: '#2ecc71' }) ||
+    (updated === -1 && { backgroundColor: '#e74c3c' });
+
+  const initializedColor =
     (initialized === 0 && { backgroundColor: '#222' }) ||
     (initialized === 1 && { backgroundColor: '#2ecc71' }) ||
     (initialized === -1 && { backgroundColor: '#e74c3c' });
@@ -79,6 +92,44 @@ const App = () => {
               { width: '80%', paddingLeft: 0, paddingRight: 0 },
             ]}
           >
+            {/* INICIALIZAR SDK */}
+            <View style={{ alignItems: 'flex-end' }}>
+              <TouchableOpacity
+                style={[
+                  {
+                    padding: 5,
+                    width: '40%',
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                  },
+                  initializedColor,
+                ]}
+                onPress={() => {
+                  try {
+                    initialize(
+                      'sdkIdU.testing%3A%2F%2Fauth',
+                      sdkIdUClientId,
+                      sdkIdUClientSecret,
+                      'sdkIdU.testing://redirect'
+                    );
+                    updateInitialized(1);
+                  } catch (error) {
+                    console.log(error);
+                    updateInitialized(-1);
+                  }
+                }}
+              >
+                <Text
+                  style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                  }}
+                >
+                  Inicializar SDK
+                </Text>
+              </TouchableOpacity>
+            </View>
             <Text numberOfLines={2} style={styles.informationTitle}>
               Scope
             </Text>
@@ -119,17 +170,11 @@ const App = () => {
                 ]}
                 onPress={() => {
                   try {
-                    initialize(
-                      'sdkIdU.testing%3A%2F%2Fauth',
-                      sdkIdUClientId,
-                      sdkIdUClientSecret,
-                      'sdkIdU.testing://redirect',
-                      scopeSel,
-                    );
-                    updateInitialized(1);
+                    setParameters({ scope: scopeSel });
+                    updateUpdated(1);
                   } catch (error) {
                     console.log(error);
-                    updateInitialized(-1);
+                    updateUpdated(-1);
                   }
                 }}
               >
@@ -139,10 +184,13 @@ const App = () => {
                     textAlign: 'center',
                   }}
                 >
-                  Inicializar SDK
+                  Guardar scope
                 </Text>
               </TouchableOpacity>
             </View>
+
+
+            
           </View>
         )}
         {code && (

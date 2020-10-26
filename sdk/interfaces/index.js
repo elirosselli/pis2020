@@ -7,14 +7,12 @@ const initialize = (
   clientId,
   clientSecret,
   postLogoutRedirectUri,
-  scope,
 ) => {
   setParameters({
     redirectUri,
     clientId,
     clientSecret,
     postLogoutRedirectUri,
-    scope,
   });
 };
 
