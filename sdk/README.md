@@ -111,6 +111,8 @@ Para que el SDK funcione correctamente, debe instalar en su aplicación la libre
 
 Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links).
 
+#### Android
+
 En Android, esto implica editar el archivo `AndroidManifest.xml`, que se encuentra en el directorio
 app/android/app/src/main/ de su aplicación *React Native*. En particular, se debe agregar un [*intent filter*](https://developer.android.com/training/app-links/deep-linking#adding-filters) en una de sus *activities*, como se muestra a continuación:
 
@@ -137,6 +139,16 @@ app/android/app/src/main/ de su aplicación *React Native*. En particular, se de
   <!--Fin de lo que debe agregar -->
 </activity>
 ```
+
+#### iOS
+
+En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en [este link](https://medium.com/@MdNiks/custom-url-scheme-deep-link-fa3e701a6295) y en la [documentación de XCode](https://developer.apple.com/documentation/xcode/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app)):
+
+1. Abra su proyecto en XCode
+2. Seleccione la opción "Target"
+3. Seleccione "Info", y en la sección de URL Types haga click en el botón de "+".
+4. En el campo "URL Schemes" ingrese su redirect URI
+
 
 ### Utilización
 
