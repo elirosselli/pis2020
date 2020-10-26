@@ -101,6 +101,43 @@ El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 Este comando añade el SDK y las dependencias necesarias al proyecto.
 
+### Instalación de rn-ssl-spinning
+
+Para que el SDK funcione correctamente, debe instalar en su aplicación la librería [react-native-ssl-pinning](https://github.com/MaxToyberman/react-native-ssl-pinning). Esto se hace ejecutando el comando
+
+`$ react-native-ssl-pinning --save`
+
+### Configuración de redirect uri
+
+Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links). 
+
+En Android, esto implica editar el archivo `AndroidManifest.xml`, que se encuentra en el directorio
+app/android/app/src/main/ de su aplicación *React Native*. En particular, se debe agregar un [*intent filter*](https://developer.android.com/training/app-links/deep-linking#adding-filters) en una de sus *activities*, como se muestra a continuación:
+
+```xml
+  <!-- Esta es su MainActivity-->
+  <activity
+    android:name=".MainActivity"
+    android:label="@string/app_name"
+    android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+    android:launchMode="singleTask"
+    android:windowSoftInputMode="adjustResize">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+    <!--Debe agregar lo que sigue a continuación -->
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!--Aquí debe agregar su redirect URI-->
+        <data android:scheme="su-redirect-uri" />
+    </intent-filter>
+    <!--Fin de lo que debe agregar -->
+  </activity>
+```
+
 ### Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
