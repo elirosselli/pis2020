@@ -105,7 +105,7 @@ Este comando añade el SDK y las dependencias necesarias al proyecto.
 
 Para que el SDK funcione correctamente, debe instalar en su aplicación la librería [react-native-ssl-pinning](https://github.com/MaxToyberman/react-native-ssl-pinning). Esto se hace ejecutando el comando
 
-`$ react-native-ssl-pinning --save`
+`$ npm install react-native-ssl-pinning --save`
 
 ### Configuración de redirect uri
 
