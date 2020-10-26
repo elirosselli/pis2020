@@ -229,19 +229,17 @@ describe('configuration module and make request type refresh token integration',
     expect(parameters.idToken).toBe(expectedIdToken);
   });
 
-  
-
   it('calls setParameters with invalid refresh token and makes a refresh token request which returns error', async () => {
     const fetchClientId = '898562';
     const fetchRedirectUri = 'redirectUri';
     const fetchRefreshToken = '';
-  
+
     setParameters({
       clientId: fetchClientId,
       redirectUri: fetchRedirectUri,
       refreshToken: fetchRefreshToken,
     });
-    let parameters = getParameters();
+    const parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.redirectUri).toBe(fetchRedirectUri);
     expect(parameters.code).toBe('');
@@ -271,13 +269,13 @@ describe('configuration module and make request type refresh token integration',
     const fetchClientId = '898562';
     const fetchRedirectUri = 'redirectUri';
     const fetchRefreshToken = 'invalid_refresh_token';
-  
+
     setParameters({
       clientId: fetchClientId,
       redirectUri: fetchRedirectUri,
       refreshToken: fetchRefreshToken,
     });
-    let parameters = getParameters();
+    const parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.redirectUri).toBe(fetchRedirectUri);
     expect(parameters.code).toBe('');
