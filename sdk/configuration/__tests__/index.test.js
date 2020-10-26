@@ -117,7 +117,7 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 'expiresIn',
       idToken: 'idToken',
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: 'scope',
     });
@@ -134,6 +134,7 @@ describe('configuration module', () => {
       idToken: '',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
+      scope: '',
     });
     resetParameters();
     expect(getParameters()).toStrictEqual({
