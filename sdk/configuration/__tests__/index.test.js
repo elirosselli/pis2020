@@ -1,4 +1,9 @@
-import { getParameters, setParameters, clearParameters } from '../index';
+import {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+} from '../index';
 
 describe('configuration module', () => {
   it('works correctly', () => {
@@ -18,6 +23,7 @@ describe('configuration module', () => {
     const parameters2 = {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
     };
     const parameters3 = {
       clientId: 'clientId',
@@ -47,7 +53,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
     });
     setParameters(parameters3);
@@ -61,7 +67,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
     });
     setParameters(parameters4);
@@ -75,7 +81,7 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
     });
     setParameters(parameters5);
@@ -89,7 +95,7 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 'expiresIn',
       idToken: 'idToken',
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
     });
     clearParameters();
@@ -97,6 +103,20 @@ describe('configuration module', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: '',
+    });
+    resetParameters();
+    expect(getParameters()).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
       code: '',
       accessToken: '',
       refreshToken: '',
