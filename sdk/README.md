@@ -6,17 +6,16 @@
 - [Consideraciones previas](https://github.com/elirosselli/pis2020/tree/develop/sdk#consideraciones-previas)
 - [Guía de instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#guía-de-instalación)
   - [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
-  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-  - [Utilización](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#utilizaci%C3%B3n)
+  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
   - [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
-  - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#utilizaci%C3%B3n)
-- [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#utilizaci%C3%B3n)
-  - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#funcionalidad-de-login)
-  - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#funcionalidad-de-gettoken)
-  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/bugfix/arreglos-documentacion/sdk#funcionalidad-de-logout)
-
-
+  - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
+- [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades-del-componente-sdk)
+  - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-login)
+  - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-gettoken)
+  - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-refreshtoken)
+  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-logout)
 
 ## Introducción
 
@@ -169,7 +168,6 @@ En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en 
 3. Seleccione "Info", y en la sección de URL Types haga click en el botón de "+".
 4. En el campo "URL Schemes" ingrese su redirect URI
 
-
 ### Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
@@ -314,15 +312,15 @@ await logout();
 
 ### Certificado *self-signed* en modo *testing*
 
-En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL https://mi-testing.iduruguay.gub.uy/login en Google Chrome, y haciendo click en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo click en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
 
-Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*. 
+Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
 
 Para el desarrollo en iOS, se deben obtener los 3 certificados de la URL de testing de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
 
 1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
 2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
-3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo 
+3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
 
 ## Funcionalidades del componente SDK
 
