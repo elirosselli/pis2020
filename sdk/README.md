@@ -77,8 +77,8 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *expires_in*  | Recomendado |Tiempo de vida del *Access Token* en segundos. Valor por defecto 60 minutos.             |
     | *refresh_token*  | Requerido |*Refresh Token* que puede ser utilizado para obtener nuevos *Access Tokens*             |
 
-  - *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.   
-     
+  - *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.
+
   - *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
 
 Cabe destacar que ante un posible error la *response* generada por el OP contiene los siguientes parámetros:
@@ -335,7 +335,7 @@ Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para 
 
  En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*. En caso de error, se rechaza la promesa devolviendo el error recibido.
 
- ### Funcionalidad de *refreshToken*
+### Funcionalidad de *refreshToken*
 
 #### Generalidades
 
@@ -349,9 +349,7 @@ La implementación de la funcionalidad de **refreshToken** involucra los mismos 
 
 #### Código
 
-La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_REFRESH_TOKEN, indicando que es un *request* del tipo *refreshToken*. Luego, dentro de **makeRequest**, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
-
-
+La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_REFRESH_TOKEN, indicando que es un *request* del tipo *refreshToken*. Luego, dentro de **makeRequest**, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant\_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
 
 ### Funcionalidad de *Logout*
 
