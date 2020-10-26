@@ -18,6 +18,5 @@ export {
   setParameters,
   refreshToken,
   logout,
-  setParameters,
   resetParameters,
 };
