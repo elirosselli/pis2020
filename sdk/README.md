@@ -109,7 +109,7 @@ Para que el SDK funcione correctamente, debe instalar en su aplicación la libre
 
 ### Configuración de redirect uri
 
-Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links). 
+Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links).
 
 En Android, esto implica editar el archivo `AndroidManifest.xml`, que se encuentra en el directorio
 app/android/app/src/main/ de su aplicación *React Native*. En particular, se debe agregar un [*intent filter*](https://developer.android.com/training/app-links/deep-linking#adding-filters) en una de sus *activities*, como se muestra a continuación:
