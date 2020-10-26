@@ -231,12 +231,10 @@ describe('configuration module and make request type refresh token integration',
 
   
 
-  it('calls setParameters with empty refresh token and makes a refresh token request which returns error', async () => {
+  it('calls setParameters with invalid refresh token and makes a refresh token request which returns error', async () => {
     const fetchClientId = '898562';
     const fetchRedirectUri = 'redirectUri';
     const fetchRefreshToken = '';
-    const returnedAccessToken = 'c9747e3173544b7b870d48aeafa0f661';
-    const returnedRefreshToken = '041a156232ac43c6b719c57b7217c9ea';
   
     setParameters({
       clientId: fetchClientId,
@@ -264,6 +262,37 @@ describe('configuration module and make request type refresh token integration',
         // errorDescription =
         //   'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
       );
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    // expect.assertions(2);
+  });
+
+  it('calls setParameters with empty refresh token and makes a refresh token request which returns error', async () => {
+    const fetchClientId = '898562';
+    const fetchRedirectUri = 'redirectUri';
+    const fetchRefreshToken = 'invalid_refresh_token';
+  
+    setParameters({
+      clientId: fetchClientId,
+      redirectUri: fetchRedirectUri,
+      refreshToken: fetchRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe(fetchRefreshToken);
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toMatchObject(Error(`invalid_grant`));
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     // expect.assertions(2);
