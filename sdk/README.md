@@ -41,7 +41,7 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
     Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
 
-  - *Refresh Token Request*: pedido HTTP empleando el método POST que incluye los *Refresh Token Request Params* y sirve para obtener un nuevo token, con la condición de haber obtenido un token previamente. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
+  - *Refresh Token Request*: pedido HTTP empleando el método POST que incluye los *Refresh Token Request Params* y sirve para obtener un nuevo *token*, con la condición de haber obtenido un *token* previamente. Este pedido es enviado al *Token Endpoint*. Los *Refresh Token Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -300,7 +300,7 @@ Donde *loginEndpoint* se encuentra en el archivo *endpoints.js*, con el siguient
 https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}
 ```
 
-Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
+Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
@@ -310,7 +310,7 @@ Adicionalmente, se intenta obtener el *code* a través de una expresión regular
 
 #### Generalidades
 
-La función **getToken** se encarga de la comunicación entre la aplicación de usuario y el *Token Endpoint*, de forma de obtener los datos correspondientes a un Token Request. El objetivo principal de esta función es obtener un *token* para posteriormente utilizarlo con el fin de adquirir información del usuario final previamente autenticado. Por ende, esta función depende del *code* obtenido en la función **login**, además de requerir los datos de autenticación del usuario (*client_id* y *client_secret*), y la *redirect_uri* correspondiente. A partir de estos datos se realiza una consulta (*Token Request*) con el método POST al *Token Endpoint*, siguiendo lo definido en la [*API de ID Uruguay*](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect#section-ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect-Token+Endpoint+(/oidc/v1/token)).
+La función **getToken** se encarga de la comunicación entre la aplicación de usuario y el *Token Endpoint*, de forma de obtener los datos correspondientes a un Token Request. El objetivo principal de esta función es obtener un *token* para posteriormente utilizarlo con el fin de adquirir información del usuario final previamente autenticado. Por ende, esta función depende del *code* obtenido en la función **login**, además de requerir los datos de autenticación del usuario (*client_id* y *client_secret*), y la *redirect_uri* correspondiente. A partir de estos datos se realiza una consulta *Token Request* con el método POST al *Token Endpoint*.
 
 Como resultado de la solicitud se obtiene un *Token Response* conteniendo los parámetros correspondientes. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *access_token* generado. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
@@ -320,7 +320,7 @@ La implementación de la funcionalidad de **getToken** se encuentra implementada
 
 - **sdk/requests/getTokenOrRefresh.js**: Donde se implementan las funcionalidades de **getToken** y **refreshToken**.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca a **getTokenOrRefresh**.
--**sdk/interfaces/index.js**: Donde se invoca la función **makeRequest** y se implementa la función de **getToken**.
+- **sdk/interfaces/index.js**: Donde se invoca la función **makeRequest** y se implementa la función de **getToken**.
 - **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Contiene las constantes necesarias.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
@@ -331,15 +331,15 @@ La función **getTokenOrRefresh** recibe un solo parámetro, que indica si el re
 
 La función **getTokenOrRefresh** en el caso de la funcionalidad de **getToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_TOKEN, indicando que es un *request* del tipo *getToken*. Esta última, recibe como único parámetro el tipo de *request*. Por lo tanto, la función toma los parámetros del componente configuración, que van a ser utilizados a la hora de realizar la solicitud.
 
-Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
+Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *client_id* y el *client_secret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
 
- En caso de obtenerse una respuesta y que la misma sea exitosa, se setean los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*. En caso de error, se rechaza la promesa devolviendo el error recibido.
+ En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*. En caso de error, se rechaza la promesa devolviendo el error recibido.
 
  ### Funcionalidad de *refreshToken*
 
 #### Generalidades
 
-La función **refreshToken** se encarga de obtener un nuevo token, cuando un token obtenido anteriormente expira, se vuelve inválido, o simplemente se desea obtener uno nuevo. Por ende, esta función depende del token obtenido en la función **getToken**. A partir de este dato se realiza una consulta (*Refresh Token Request*) con el método POST al *Token Endpoint*, siguiendo lo definido en la [*API de ID Uruguay*](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect#section-ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect-Token+Endpoint+(/oidc/v1/token)).
+La función **refreshToken** se encarga de obtener un nuevo *token*, cuando un *token* obtenido anteriormente se vuelve inválido o cuando simplemente se desea obtener uno nuevo. Por ende, esta función depende del *token* obtenido en la función **getToken**. A partir de este dato se realiza una consulta *Refresh Token Request* con el método POST al *Token Endpoint*.
 
 Como resultado de la solicitud se obtiene un *Refresh Token Response* conteniendo los parámetros correspondientes, que serán los mismos que en un *Token Response*. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *access_token* generado. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
