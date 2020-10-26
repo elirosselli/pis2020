@@ -1,10 +1,29 @@
-# Introducción
+# SDK ID Uruguay React Native
+
+## Índice
+
+- [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk#introducci%C3%B3n)
+- [Consideraciones previas](https://github.com/elirosselli/pis2020/tree/develop/sdk#consideraciones-previas)
+- [Guía de instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#guía-de-instalación)
+  - [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
+  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
+  - [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
+  - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
+- [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades-del-componente-sdk)
+  - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-login)
+  - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-gettoken)
+  - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-refreshtoken)
+  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-logout)
+
+## Introducción
 
 En este documento se presentan las distintas funcionalidades brindadas por el componente SDK y una guía para lograr la integración del componente con la aplicación. Además, se exponen definiciones previas necesarias para entender el protocolo utilizado para la autenticación y autorización del usuario final.
 
 Este SDK se basa en el protocolo [OAuth 2.0](https://oauth.net/2/) y [OpenID Connect](https://openid.net/connect/) para su implementación, brindando una capa de abstracción al desarrollador y simplificando la interacción con la API REST de ID Uruguay. Para que su integración con el SDK funcione, debe registrarse como RP (_Relaying Party_) en ID Uruguay, siguiendo las instrucciones disponibles en la [página web de AGESIC](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect).
 
-## Consideraciones Previas
+## Consideraciones previas
 
 Para lograr autenticar y autorizar al usuario final, el componente SDK establece una comunicación con el servidor de *ID Uruguay* utilizando el protocolo *OpenID Connect 1.0*.
 Este es un protocolo de identidad simple y de estándar abierto creado sobre el protocolo OAuth 2.0, el cual permite a aplicaciones cliente (*Relaying Party* - RP) verificar la identidad de un usuario final basado en la autenticación realizada por este en un Servidor de Autorización (*OpenID Provider* - OP), así como también obtener información personal del usuario final mediante el uso de una *API REST*.
@@ -101,6 +120,54 @@ El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 Este comando añade el SDK y las dependencias necesarias al proyecto.
 
+### Instalación de react-native-ssl-pinning
+
+Para que el SDK funcione correctamente, debe instalar en su aplicación la librería [react-native-ssl-pinning](https://github.com/MaxToyberman/react-native-ssl-pinning). Esto se hace ejecutando el comando
+
+`$ npm install react-native-ssl-pinning --save`
+
+### Configuración de redirect URI
+
+Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links).
+
+#### Android
+
+En Android, esto implica editar el archivo `AndroidManifest.xml`, que se encuentra en el directorio
+app/android/app/src/main/ de su aplicación *React Native*. En particular, se debe agregar un [*intent filter*](https://developer.android.com/training/app-links/deep-linking#adding-filters) en una de sus *activities*, como se muestra a continuación:
+
+```xml
+<!-- Esta es su MainActivity-->
+<activity
+  android:name=".MainActivity"
+  android:label="@string/app_name"
+  android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+  android:launchMode="singleTask"
+  android:windowSoftInputMode="adjustResize">
+  <intent-filter>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+  </intent-filter>
+  <!--Debe agregar lo que sigue a continuación -->
+  <intent-filter>
+      <action android:name="android.intent.action.VIEW" />
+      <category android:name="android.intent.category.DEFAULT" />
+      <category android:name="android.intent.category.BROWSABLE" />
+      <!--Aquí debe agregar su redirect URI-->
+      <data android:scheme="su-redirect-uri" />
+  </intent-filter>
+  <!--Fin de lo que debe agregar -->
+</activity>
+```
+
+#### iOS
+
+En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en [este link](https://medium.com/@MdNiks/custom-url-scheme-deep-link-fa3e701a6295) y en la [documentación de XCode](https://developer.apple.com/documentation/xcode/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app)):
+
+1. Abra su proyecto en XCode
+2. Seleccione la opción "Target"
+3. Seleccione "Info", y en la sección de URL Types haga click en el botón de "+".
+4. En el campo "URL Schemes" ingrese su redirect URI
+
 ### Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
@@ -158,7 +225,7 @@ const LoginButton = () => {
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `logout()`                                                    | Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al *post_logout_redirect_uri* especificado en `initialize` una vez cerrada la sesión.                                                                                                                                          |
 
-#### Función Initialize
+#### Función initialize
 
 Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *post_logout_redirect_uri* para luego del logout.
 
@@ -168,7 +235,7 @@ initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miPostLogoutRedirec
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
-#### Función Login
+#### Función login
 
 La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
 
@@ -233,7 +300,7 @@ Esta función devuelve un objeto con el siguiente formato:
 }
 ```
 
-#### Función Logout
+#### Función logout
 
 La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
 
@@ -243,15 +310,23 @@ Al llamar a esta función, se abre un navegador web en el dispositivo del usuari
 await logout();
 ```
 
-### Certificado *Self-Signed* en modo *Testing*
+### Certificado *self-signed* en modo *testing*
 
-En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Para lograr esto debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*. Actualmente esta alternativa funciona únicamente para *Android*.
+En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo click en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+
+Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
+
+Para el desarrollo en iOS, se deben obtener los 3 certificados de la URL de testing de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
+
+1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
+2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
+3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
 
 ## Funcionalidades del componente SDK
 
 Esta sección presenta las funcionalidades brindadas por el componente SDK. Para cada funcionalidad se explica su utilidad y la forma en la que se encuentra implementada. Puede resultar útil para aquellos desarrolladores que busquen entender con mayor detalle el funcionamiento del componente y realizar modificaciones.
 
-### Funcionalidad de *Login*
+### Funcionalidad de *login*
 
 #### Generalidades
 
@@ -261,7 +336,7 @@ Para validar al RP, el OP verifica que el *client_id* y *redirect_uri* enviados 
 
 En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve el parámetro *code*. En caso contrario, ya sea porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna una descripción acorde al error ocurrido.
 
-#### Archivos y Parámetros
+#### Archivos y parámetros
 
 La implementación de la funcionalidad de *login* involucra los siguientes archivos:
 
@@ -314,7 +389,7 @@ La función **getToken** se encarga de la comunicación entre la aplicación de 
 
 Como resultado de la solicitud se obtiene un *Token Response* conteniendo los parámetros correspondientes. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *access_token* generado. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
-#### Archivos y Parámetros
+#### Archivos y parámetros
 
 La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionaldiad de **refreshToken**. La misma involucra los siguientes archivos:
 
@@ -351,7 +426,7 @@ La implementación de la funcionalidad de **refreshToken** involucra los mismos 
 
 La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_REFRESH_TOKEN, indicando que es un *request* del tipo *refreshToken*. Luego, dentro de **makeRequest**, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant\_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
 
-### Funcionalidad de *Logout*
+### Funcionalidad de *logout*
 
 #### Generalidades
 
@@ -359,7 +434,7 @@ La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final e
 
 En caso de que los parámetros sean los correctos, la función de **logout** redirecciona al usuario final a la aplicación del RP, y si corresponde, devuelve el parámetro *state*. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
-#### Archivos y Parámetros
+#### Archivos y parámetros
 
 La implementación de la funcionalidad de *logout* involucra los siguientes archivos:
 
