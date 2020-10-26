@@ -101,7 +101,7 @@ El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 Este comando añade el SDK y las dependencias necesarias al proyecto.
 
-### Instalación de rn-ssl-spinning
+### Instalación de react-native-ssl-pinning
 
 Para que el SDK funcione correctamente, debe instalar en su aplicación la librería [react-native-ssl-pinning](https://github.com/MaxToyberman/react-native-ssl-pinning). Esto se hace ejecutando el comando
 
