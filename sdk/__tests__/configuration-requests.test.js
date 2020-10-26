@@ -4,7 +4,7 @@ import REQUEST_TYPES from '../utils/constants';
 import {
   setParameters,
   getParameters,
-  clearParameters,
+  resetParameters,
 } from '../configuration';
 import { initialize } from '../interfaces';
 import makeRequest from '../requests';
@@ -26,7 +26,7 @@ jest.mock('react-native-ssl-pinning', () => ({
 afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
-  clearParameters();
+  resetParameters();
 });
 
 describe('configuration module and make request type login integration', () => {
@@ -298,31 +298,6 @@ describe('configuration module and make request type refresh token integration',
 });
 
 describe('configuration module and make request type logout integration', () => {
-  it('calls set parameters with empty postLogoutRedirectUri and makes a logout request which returns error', async () => {
-    const fetchIdToken = 'idToken';
-    const fetchState = '2KVAEzPpazbGFD5';
-    setParameters({
-      idToken: fetchIdToken,
-      state: fetchState,
-    });
-
-    const parameters = getParameters();
-    expect(parameters.idToken).toBe(fetchIdToken);
-    expect(parameters.postLogoutRedirectUri).toBe('');
-    expect(parameters.state).toBe(fetchState);
-    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
-    mockAddEventListener.mockImplementation();
-    try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
-    } catch (error) {
-      expect(error).toMatchObject(
-        Error(`${missingParamsMessage}postLogoutRedirectUri`),
-      );
-    }
-    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    // expect.assertions(2);
-  });
-
   it('calls set parameters and makes a logout request which returns non-empty state', async () => {
     // const correctLogoutEndpoint =
     //   'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postlogoutredirecturi&state=2KVAEzPpazbGFD5';
@@ -349,9 +324,9 @@ describe('configuration module and make request type logout integration', () => 
         });
     });
     const state = await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(state).toBe('2KVAEzPpazbGFD5');
     // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
+    expect(state).toBe('2KVAEzPpazbGFD5');
   });
 
   it('calls set parameters and makes a logout request which returns empty state', async () => {
@@ -379,5 +354,30 @@ describe('configuration module and make request type logout integration', () => 
     // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
     expect(state).toBe(undefined);
+  });
+
+  it('calls set parameters with empty postLogoutRedirectUri and makes a logout request which returns error', async () => {
+    const fetchIdToken = 'idToken';
+    const fetchState = '2KVAEzPpazbGFD5';
+    setParameters({
+      idToken: fetchIdToken,
+      state: fetchState,
+    });
+
+    const parameters = getParameters();
+    expect(parameters.idToken).toBe(fetchIdToken);
+    expect(parameters.postLogoutRedirectUri).toBe('');
+    expect(parameters.state).toBe(fetchState);
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (error) {
+      expect(error).toMatchObject(
+        Error(`${missingParamsMessage}postLogoutRedirectUri`),
+      );
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    expect.assertions(5);
   });
 });
