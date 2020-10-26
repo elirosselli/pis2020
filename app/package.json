@@ -11,12 +11,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/checkbox": "^0.5.5",
     "base-64": "^0.1.0",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-native": "0.63.2",
-    "react-native-ssl-pinning": "^1.5.1",
-    "rn-checkbox-list": "^0.3.0"
+    "rn-checkbox-list": "^0.3.0",
+    "react-native-ssl-pinning": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
