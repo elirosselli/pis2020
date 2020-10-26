@@ -52,18 +52,6 @@ const App = () => {
     }, 0);
   };
 
-  const updateUpdated = init => {
-    setTimeout(() => {
-      setUpdated(init);
-    }, 0);
-  };
-
-  const updateInitialized = init => {
-    setTimeout(() => {
-      setInitialized(init);
-    }, 0);
-  };
-
   const errorColor =
     (updated === 0 && { backgroundColor: '#222' }) ||
     (updated === 1 && { backgroundColor: '#2ecc71' }) ||
@@ -111,12 +99,12 @@ const App = () => {
                       'sdkIdU.testing%3A%2F%2Fauth',
                       sdkIdUClientId,
                       sdkIdUClientSecret,
-                      'sdkIdU.testing://redirect'
+                      'sdkIdU.testing://redirect',
                     );
-                    updateInitialized(1);
+                    setInitialized(1)
                   } catch (error) {
                     console.log(error);
-                    updateInitialized(-1);
+                    setInitialized(-1);
                   }
                 }}
               >
@@ -142,7 +130,7 @@ const App = () => {
                   borderBottomWidth: 1,
                   borderBottomColor: '#eee',
                 }}
-                onChange={({ a, items }) => {
+                onChange={({ items }) => {
                   doUpdate(() => {
                     if (Array.isArray(items) && items.length > 0) {
                       const res = items
@@ -171,10 +159,10 @@ const App = () => {
                 onPress={() => {
                   try {
                     setParameters({ scope: scopeSel });
-                    updateUpdated(1);
+                    setUpdated(1);
                   } catch (error) {
                     console.log(error);
-                    updateUpdated(-1);
+                    setUpdated(-1);
                   }
                 }}
               >
@@ -188,14 +176,10 @@ const App = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-
-
-            
           </View>
         )}
         {code && (
           <View style={styles.logoutContainer}>
-            {/* <Text style={styles.logoutContCodeText}>Code: {code}</Text> */}
             <TouchableOpacity
               style={styles.logoutContTouch}
               onPress={async () => {

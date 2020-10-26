@@ -31,10 +31,6 @@ const styles = StyleSheet.create({
   },
   informationContainer: {
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
     width: '100%',
     alignSelf: 'center',
     paddingLeft: '7%',
