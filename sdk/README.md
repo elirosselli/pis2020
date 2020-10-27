@@ -16,6 +16,7 @@
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-gettoken)
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-refreshtoken)
   - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-logout)
+  - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-getuserinfo)
 
 ## Introducción
 
@@ -478,3 +479,125 @@ Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve a
 Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente.
 
 En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **logout** también se encuentra un bloque *catch*, que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
+
+### Funcionalidad de *getUserInfo*
+
+#### Generalidades
+
+La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario logueado. Por ende, esta función depende del *accesToken* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario devuelta por la función, dependerá del scope seteado al realizar el **login**. Dicha información será devuelta en formato JSON.
+
+#### Archivos y parámetros
+
+La implementación de la funcionalidad de *getUserInfo* involucra los siguientes archivos:
+
+- **sdk/requests/getUserInfo.js**: Donde se implementa la función **getUserInfo**. Esta función se encarga de realizar la *GetUserInfo Request*.
+- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **getUserInfo**.
+- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen el accesToken necesario.
+- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
+- **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+
+La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
+
+A continuación se presentará una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
+
+Scope: openId:
+
+```javascript
+{
+  sub: '5968',
+}
+```
+
+Scope: openId y profile:
+
+```javascript
+{
+  name: 'Clark Jose Kent Gonzalez',
+  given_name: 'Clark Jose',
+  family_name: 'Kent Gonzalez',
+  sub: "5869",
+}
+```
+
+Scope: openId y email:
+
+```javascript
+{
+  email: 'kentprueba@gmail.com',
+  email_verified: true,
+  sub: "5869",
+}
+```
+
+Scope: openId y auth_info:
+
+```javascript
+{
+  ae: "urn:uce:ae:1",
+  nid: "urn:uce:nid:1",
+  rid: "urn:uce:rid:1",
+  sub: "5869",
+}
+```
+
+Scope: openId y document:
+
+```javascript
+{
+  pais_documento: { codigo: 'uy', nombre: 'Uruguay' },
+  tipo_documento: { codigo: 68909, nombre: 'C.I.' },
+  numero_documento: '12345678',
+  sub: "5869",
+}
+```
+
+Scope: openId y personal_info:
+
+```javascript
+{
+  nombre_completo: 'Clark Jose Kent Gonzalez',
+  primer_apellido: 'Kent',
+  primer_nombre: 'Jose',
+  segundo_apellido: 'Gonzalez',
+  segundo_nombre: 'Jose',
+  sub: '5968',
+  uid: 'uy-cid-12345678',
+}
+```
+
+Scope: Todos los scopes:
+
+```javascript
+{
+  sub: '5968',
+  name: 'Clark Jose Kent Gonzalez',
+  given_name: 'Clark Jose',
+  family_name: 'Kent Gonzalez',
+  nickname: 'uy-ci-12345678',
+  email: 'kentprueba@gmail.com',
+  email_verified: true,
+  nombre_completo: 'Clark Jose Kent Gonzalez',
+  primer_nombre: 'Clark',
+  segundo_nombre: 'Jose',
+  primer_apellido: 'Kent',
+  segundo_apellido: 'Gonzalez',
+  uid: 'uy-ci-12345678',
+  pais_documento: { codigo: 'uy', nombre: 'Uruguay' },
+  tipo_documento: { codigo: 68909, nombre: 'C.I.' },
+  numero_documento: '12345678',
+  ae: 'urn:uce:ae:1',
+  nid: "urn:uce:nid:1",
+  rid: "urn:uce:rid:1",
+}
+```
+
+#### Código
+
+La función de **getUserInfo** es declarada como una función asincrónica de la siguiente manera:
+
+```javascript
+const getUserInfo = async () => {
+```
+
+La función **getUserInfo** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_USER_INFO, indicando que es un *request* del tipo *getUserInfo*. Luego, dentro de **makeRequest**, se realiza la request como se mencionó previamente.
