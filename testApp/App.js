@@ -89,7 +89,11 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const info = await getUserInfo();
-      console.log(`Nombre: ${info.primer-nombre}`);
+      console.log(`Nombre: ${info.primer_nombre}`);
+      console.log(`Sdo Nombre: ${info.segundo_nombre}`);
+      console.log(`Apellido: ${info.primer_apellido}`);
+      console.log(`Sdo Apellido: ${info.segundo_apellido}`);
+      console.log(`Documento: ${info.documento}`);
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
