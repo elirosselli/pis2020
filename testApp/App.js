@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import {initialize, login, logout, getToken, refreshToken, getUserInfo} from 'sdk-gubuy-test';
+import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters} from 'sdk-gubuy-test';
 import styles from './styles';
 import React from 'react';
 import {
@@ -37,6 +37,7 @@ const App: () => React$Node = () => {
     var now = require("performance-now")
     var start = now();
     initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+    setParameters({scope: "personal_info"});
     console.log("Inicializado");
     var end = now();
     console.log(`Tiempo de ejec: ${end-start} ms`);
@@ -89,11 +90,10 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const info = await getUserInfo();
-      console.log(`Nombre: ${info.primer_nombre}`);
-      console.log(`Sdo Nombre: ${info.segundo_nombre}`);
-      console.log(`Apellido: ${info.primer_apellido}`);
-      console.log(`Sdo Apellido: ${info.segundo_apellido}`);
-      console.log(`Documento: ${info.documento}`);
+      Object.keys(info).forEach(key => {
+        console.log(`${key}: ${info[key]}`);
+      });
+      
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
