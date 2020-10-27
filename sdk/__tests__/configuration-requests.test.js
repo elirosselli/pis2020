@@ -299,8 +299,8 @@ describe('configuration module and make request type refresh token integration',
 
 describe('configuration module and make request type logout integration', () => {
   it('calls set parameters and makes a logout request which returns non-empty state', async () => {
-    // const correctLogoutEndpoint =
-    //   'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postlogoutredirecturi&state=2KVAEzPpazbGFD5';
+    const correctLogoutEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=2KVAEzPpazbGFD5';
     const fetchIdToken = 'idToken';
     const fetchPostLogoutRedirectUri = 'postLogoutRedirectUri';
     const fetchState = '2KVAEzPpazbGFD5';
@@ -323,9 +323,10 @@ describe('configuration module and make request type logout integration', () => 
           }`,
         });
     });
+
     const state = await makeRequest(REQUEST_TYPES.LOGOUT);
-    // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
     expect(state).toBe('2KVAEzPpazbGFD5');
   });
 
