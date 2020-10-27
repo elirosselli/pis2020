@@ -331,6 +331,8 @@ describe('configuration module and make request type logout integration', () => 
   });
 
   it('calls set parameters and makes a logout request which returns empty state', async () => {
+    const correctLogoutEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=postLogoutRedirectUri&state=';
     const fetchIdToken = 'idToken';
     const fetchPostLogoutRedirectUri = 'postLogoutRedirectUri';
     const fetchState = '';
@@ -352,8 +354,8 @@ describe('configuration module and make request type logout integration', () => 
         });
     });
     const state = await makeRequest(REQUEST_TYPES.LOGOUT);
-    // expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    // expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint);
     expect(state).toBe(undefined);
   });
 
@@ -380,5 +382,248 @@ describe('configuration module and make request type logout integration', () => 
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(5);
+  });
+});
+
+describe('configuration module and make request type user info integration', () => {
+  const userInfoEndpoint =
+    'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
+  const userId = 'uy-cid-12345678';
+
+  it('calls set parameters and makes a user info request with all scopes', async () => {
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchAccessToken = 'accessToken';
+    const fetchCode = 'code';
+    const fetchRedirectUri = 'redirectUri';
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      accessToken: fetchAccessToken,
+      code: fetchCode,
+      redirectUri: fetchRedirectUri,
+    });
+    const parameters = getParameters();
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            nombre_completo: 'test',
+            primer_apellido: 'test',
+            primer_nombre: 'testNombre',
+            segundo_apellido: 'testApellido',
+            segundo_nombre: 'testSegundoNombre',
+            sub: '5968',
+            uid: userId,
+            name: 'name',
+            given_name: 'given_name',
+            family_name: 'family_name',
+            pais_documento: 'pais_documento',
+            tipo_documento: 'tipo_documento',
+            numero_documento: 'numero_documento',
+            email: 'email',
+            email_verified: 'email_verified',
+            rid: 'rid',
+            nid: 'nid',
+            ae: 'ae',
+          }),
+      }),
+    );
+
+    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Bearer ${parameters.accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+      },
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(response).toStrictEqual({
+      nombre_completo: 'test',
+      primer_apellido: 'test',
+      primer_nombre: 'testNombre',
+      segundo_apellido: 'testApellido',
+      segundo_nombre: 'testSegundoNombre',
+      sub: '5968',
+      uid: userId,
+      name: 'name',
+      given_name: 'given_name',
+      family_name: 'family_name',
+      pais_documento: 'pais_documento',
+      tipo_documento: 'tipo_documento',
+      numero_documento: 'numero_documento',
+      email: 'email',
+      email_verified: 'email_verified',
+      rid: 'rid',
+      nid: 'nid',
+      ae: 'ae',
+    });
+  });
+
+  it('calls set parameters and makes a user info request with personal_info scope', async () => {
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchAccessToken = 'accessToken';
+    const fetchCode = 'code';
+    const fetchRedirectUri = 'redirectUri';
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      accessToken: fetchAccessToken,
+      code: fetchCode,
+      redirectUri: fetchRedirectUri,
+    });
+    const parameters = getParameters();
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            nombre_completo: 'test',
+            primer_apellido: 'test',
+            primer_nombre: 'testNombre',
+            segundo_apellido: 'testApellido',
+            segundo_nombre: 'testSegundoNombre',
+            sub: '5968',
+            uid: userId,
+            rid: 'rid',
+          }),
+      }),
+    );
+
+    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Bearer ${parameters.accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+      },
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(response).toStrictEqual({
+      nombre_completo: 'test',
+      primer_apellido: 'test',
+      primer_nombre: 'testNombre',
+      segundo_apellido: 'testApellido',
+      segundo_nombre: 'testSegundoNombre',
+      sub: '5968',
+      uid: userId,
+      rid: 'rid',
+    });
+  });
+
+  it('calls set parameters and makes a user info request with no claims', async () => {
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchAccessToken = 'accessToken';
+    const fetchCode = 'code';
+    const fetchRedirectUri = 'redirectUri';
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      accessToken: fetchAccessToken,
+      code: fetchCode,
+      redirectUri: fetchRedirectUri,
+    });
+    const parameters = getParameters();
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve({}),
+      }),
+    );
+
+    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Bearer ${parameters.accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+      },
+    });
+
+    expect(response).toStrictEqual({});
+  });
+
+  it('calls set parameters and makes a user info request with expired access token', async () => {
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const fetchAccessToken = 'accessToken';
+    const fetchCode = 'code';
+    const fetchRedirectUri = 'redirectUri';
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      accessToken: fetchAccessToken,
+      code: fetchCode,
+      redirectUri: fetchRedirectUri,
+    });
+    const parameters = getParameters();
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    const error = 'invalid_token';
+    const errorDescription = 'The Access Token expired';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error,
+        error_description: errorDescription,
+      });
+    }
+
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Bearer ${parameters.accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+      },
+    });
+    expect.assertions(4);
   });
 });
