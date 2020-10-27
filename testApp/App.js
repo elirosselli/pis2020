@@ -36,7 +36,7 @@ const App: () => React$Node = () => {
     console.log("Inicializando sdk");
     var now = require("performance-now")
     var start = now();
-    initialize('sdkIdU.testing%3A%2F%2Fauth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing%3A%2F%2Fredirect');
+    initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
     console.log("Inicializado");
     var end = now();
     console.log(`Tiempo de ejec: ${end-start} ms`);
@@ -103,9 +103,14 @@ const App: () => React$Node = () => {
   handleLogout = async() => {
     var now = require("performance-now")
     var start = now();
-    await logout();
-    var end = now();
-    console.log(`Tiempo de ejec: ${end-start} ms`);
+    try{
+      await logout();
+      var end = now();
+      console.log(`Sesión cerrada.`)
+      console.log(`Tiempo de ejec: ${end-start} ms`);
+    } catch (error){
+      console.log(`Error: ${error}`)
+    }
   }
   return (
     <>
