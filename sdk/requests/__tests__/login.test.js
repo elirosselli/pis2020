@@ -13,7 +13,7 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
 }));
 
 const correctLoginEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20personal_info&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20scope&response_type=code&client_id=clientId&redirect_uri=redirectUri';
 
 describe('login', () => {
   afterEach(() => jest.clearAllMocks());
@@ -22,6 +22,7 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      scope: 'scope',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
@@ -40,6 +41,7 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      scope: 'scope',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
@@ -61,6 +63,7 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      scope: 'scope',
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();

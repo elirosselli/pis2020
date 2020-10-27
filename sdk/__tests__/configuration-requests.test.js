@@ -32,7 +32,7 @@ beforeEach(() => {
 describe('configuration module and make request type login integration', () => {
   it('calls initialize and makes a login request', async () => {
     const correctLoginEndpoint =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20personal_info&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
     const fetchRedirectUri = 'redirectUri';
     const fetchClientId = 'clientId';
     const fetchClientSecret = 'clientSecret';
