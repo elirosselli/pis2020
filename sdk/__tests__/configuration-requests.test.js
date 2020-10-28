@@ -415,6 +415,8 @@ const expectedIdToken =
   'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
 const correctTokenEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
+const contentType = 'application/x-www-form-urlencoded;charset=UTF-8';
+const accept = 'application/json';
 
 describe('configuration module and make request type get token integration', () => {
   it('calls setParameters and makes a get token request', async () => {
@@ -469,8 +471,8 @@ describe('configuration module and make request type get token integration', () 
       },
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        'Content-Type': contentType,
+        Accept: accept,
       },
       body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
     });
@@ -487,12 +489,61 @@ describe('configuration module and make request type get token integration', () 
     expect(parameters.expiresIn).toBe(3600);
     expect(parameters.idToken).toBe(expectedIdToken);
   });
+
+  it('calls setParameters and makes a get token request with invalid code', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = '898562';
+    const fetchClientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const fetchCode = 'f24df0c4fcb142328b843d49753946af';
+
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      redirectUri: fetchRedirectUri,
+      code: fetchCode,
+    });
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    const error = 'invalid_grant';
+    const errorDescription =
+      'The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error,
+        error_description: errorDescription,
+      });
+    }
+
+    expect.assertions(10);
+  });
 });
 
 describe('configuration module and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     const fetchClientId = '898562';
-    // const fetchRedirectUri = 'redirectUri';
     const fetchClientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const fetchRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
@@ -541,8 +592,8 @@ describe('configuration module and make request type refresh token integration',
       },
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        'Content-Type': contentType,
+        Accept: accept,
       },
       body: `grant_type=refresh_token&refresh_token=${fetchRefreshToken}`, // Se usa el refresh token viejo, ya que la funcion makeRequest cambia el valor de parameters.refreshToken
     });
@@ -774,8 +825,8 @@ describe('configuration module and make request type user info integration', () 
       },
       headers: {
         Authorization: `Bearer ${parameters.accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        'Content-Type': contentType,
+        Accept: accept,
       },
     });
 
@@ -845,8 +896,8 @@ describe('configuration module and make request type user info integration', () 
       },
       headers: {
         Authorization: `Bearer ${parameters.accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        'Content-Type': contentType,
+        Accept: accept,
       },
     });
 
@@ -897,8 +948,8 @@ describe('configuration module and make request type user info integration', () 
       },
       headers: {
         Authorization: `Bearer ${parameters.accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        'Content-Type': contentType,
+        Accept: accept,
       },
     });
 
@@ -921,14 +972,14 @@ describe('configuration module and make request type user info integration', () 
     const parameters = getParameters();
     expect(parameters.code).toBe(fetchCode);
     expect(parameters.redirectUri).toBe(fetchRedirectUri);
-    const error = 'invalid_token';
+    const error1 = 'invalid_token';
     const errorDescription = 'The Access Token expired';
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
         json: () =>
           Promise.resolve({
-            error,
+            error1,
             error_description: errorDescription,
           }),
       }),
@@ -938,23 +989,11 @@ describe('configuration module and make request type user info integration', () 
       await makeRequest(REQUEST_TYPES.GET_USER_INFO);
     } catch (err) {
       expect(err).toStrictEqual({
-        error,
+        error1,
         error_description: errorDescription,
       });
     }
 
-    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-      headers: {
-        Authorization: `Bearer ${parameters.accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-    });
-    expect.assertions(4);
+    expect.assertions(3);
   });
 });
