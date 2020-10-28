@@ -28,11 +28,13 @@ afterEach(() => jest.clearAllMocks());
 beforeEach(() => {
   resetParameters();
 });
+const correctLoginEndpoint =
+  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+const invalidAuthCodeError = 'Invalid authorization code';
+const couldntMakeRequestError = "Couldn't make request";
 
 describe('configuration module and make request type login integration', () => {
   it('calls initialize and makes a login request', async () => {
-    const correctLoginEndpoint =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
     const fetchRedirectUri = 'redirectUri';
     const fetchClientId = 'clientId';
     const fetchClientSecret = 'clientSecret';
@@ -76,6 +78,336 @@ describe('configuration module and make request type login integration', () => {
     expect(parameters.expiresIn).toBe('');
     expect(parameters.idToken).toBe('');
   });
+
+  it('calls initialize and makes a login request with state', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    const fetchState = 'hola';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+    setParameters({
+      state: fetchState,
+    });
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe(fetchState);
+
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=${parameters.state}`,
+        });
+    });
+    const code = await makeRequest(REQUEST_TYPES.LOGIN);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe(fetchState);
+  });
+
+  it('calls initialize and makes a login request with empty clientId', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = '';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe('');
+    mockAddEventListener.mockImplementation();
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toMatchObject(Error(couldntMakeRequestError));
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe('');
+  });
+
+  it('calls initialize and makes a login request with empty redirectUri', async () => {
+    const fetchRedirectUri = '';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+
+    // TODO: no se deberia chequear al hacer login que la redirectUri no sea vacia?
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe('');
+
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+    expect(parameters.state).toBe('');
+  });
+
+  it('calls initialize with clientId different from RP and makes a login request', async () => {
+    const badLoginEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=qwrty&redirect_uri=redirectUri';
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'qwrty';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `https://mi-testing.iduruguay.gub.uy/error/?errorCode=OIDC_ERROR`,
+        });
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toMatchObject(Error(invalidAuthCodeError));
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint);
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+  });
+
+  it('calls initialize with redirectUri different from RP and makes a login request', async () => {
+    const badLoginEndpoint2 =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=qwrty';
+    const fetchRedirectUri = 'qwrty';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `https://mi-testing.iduruguay.gub.uy/error/?errorCode=OIDC_ERROR`,
+        });
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toMatchObject(Error(invalidAuthCodeError));
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint2);
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+  });
+
+  it('calls initialize and makes a login request, the user denies access to the application ', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'clientId';
+    const fetchClientSecret = 'clientSecret';
+    const postLogoutRedirectUri = '';
+    initialize(
+      fetchRedirectUri,
+      fetchClientId,
+      fetchClientSecret,
+      postLogoutRedirectUri,
+    );
+
+    let parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `sdkidu.testing://auth?error=access_denied&error_description=The%20resource%20owner%20or%20authorization%20server%20denied%20the%20request`,
+        });
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toMatchObject(Error(invalidAuthCodeError));
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+  });
+
+  // it('calls initialize and makes a login request with no response type', async () => {
+  //   const badLoginEndpoint3 =
+  //     'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&client_id=clientId&redirect_uri=redirectUri';
+  //   const fetchRedirectUri = 'redirectUri';
+  //   const fetchClientId = 'clientId';
+  //   const fetchClientSecret = 'clientSecret';
+  //   const postLogoutRedirectUri = '';
+  //   initialize(
+  //     fetchRedirectUri,
+  //     fetchClientId,
+  //     fetchClientSecret,
+  //     postLogoutRedirectUri,
+  //   );
+
+  //   let parameters = getParameters();
+  //   expect(parameters.clientId).toBe(fetchClientId);
+  //   expect(parameters.clientSecret).toBe(fetchClientSecret);
+  //   expect(parameters.redirectUri).toBe(fetchRedirectUri);
+  //   expect(parameters.code).toBe('');
+  //   expect(parameters.accessToken).toBe('');
+  //   expect(parameters.refreshToken).toBe('');
+  //   expect(parameters.tokenType).toBe('');
+  //   expect(parameters.expiresIn).toBe('');
+  //   expect(parameters.idToken).toBe('');
+
+  //   try {
+  //     await makeRequest(REQUEST_TYPES.LOGIN);
+  //   } catch (error) {
+  //     expect(error).toMatchObject(Error(invalidAuthCodeError));
+  //   }
+  //   expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+  //   expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint3);
+  //   parameters = getParameters();
+  //   expect(parameters.clientId).toBe(fetchClientId);
+  //   expect(parameters.clientSecret).toBe(fetchClientSecret);
+  //   expect(parameters.redirectUri).toBe(fetchRedirectUri);
+  //   expect(parameters.code).toBe('');
+  //   expect(parameters.accessToken).toBe('');
+  //   expect(parameters.refreshToken).toBe('');
+  //   expect(parameters.tokenType).toBe('');
+  //   expect(parameters.expiresIn).toBe('');
+  //   expect(parameters.idToken).toBe('');
+  // });
 });
 
 // For get token and refresh token
@@ -160,7 +492,7 @@ describe('configuration module and make request type get token integration', () 
 describe('configuration module and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     const fetchClientId = '898562';
-    const fetchRedirectUri = 'redirectUri';
+    // const fetchRedirectUri = 'redirectUri';
     const fetchClientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const fetchRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
@@ -170,13 +502,12 @@ describe('configuration module and make request type refresh token integration',
     setParameters({
       clientId: fetchClientId,
       clientSecret: fetchClientSecret,
-      redirectUri: fetchRedirectUri,
       refreshToken: fetchRefreshToken,
     });
     let parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.clientSecret).toBe(fetchClientSecret);
-    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.redirectUri).toBe('');
     expect(parameters.code).toBe('');
     expect(parameters.accessToken).toBe('');
     expect(parameters.refreshToken).toBe(fetchRefreshToken);
@@ -220,7 +551,7 @@ describe('configuration module and make request type refresh token integration',
     parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
     expect(parameters.clientSecret).toBe(fetchClientSecret);
-    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.redirectUri).toBe('');
     expect(parameters.code).toBe('');
     expect(parameters.accessToken).toBe(returnedAccessToken);
     expect(parameters.refreshToken).toBe(returnedRefreshToken);
