@@ -75,6 +75,7 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
+      
       const rfToken = await refreshToken();
       console.log(`Token: ${rfToken}`);
       var end = now();
@@ -107,6 +108,7 @@ const App: () => React$Node = () => {
   handleLogout = async() => {
     var now = require("performance-now")
     var start = now();
+    setParameters({idToken: "iewfwoie121"});
     try{
       await logout();
       var end = now();
