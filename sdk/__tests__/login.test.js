@@ -16,7 +16,7 @@ afterEach(() => jest.clearAllMocks());
 describe('login', () => {
   afterEach(() => jest.clearAllMocks());
 
-  it('calls initialize and login and works correctly', async () => {
+  it('calls initialize and login and it works correctly', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const redirectUri = 'redirectUri';
@@ -47,10 +47,37 @@ describe('login', () => {
     expect(getParameters().scope).toBe(scope);
   });
 
-  // Se tiene que tener un conjunto de parámetros previamente seteados.  El usuario deniega el acceso a la aplicación.
-  // Se retorna código de error correspondiente. ?????????
+  it('calls initialize and login and Linking.openUrl fails', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const redirectUri = 'redirectUri';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+    const scope = 'scope';
 
-  it('calls initialize and login with incorrect data', async () => {
+    const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+
+    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    setParameters({ scope });
+
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toMatchObject(Error("Couldn't make request"));
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+
+    expect(getParameters().clientId).toBe(clientId);
+    expect(getParameters().clientSecret).toBe(clientSecret);
+    expect(getParameters().redirectUri).toBe(redirectUri);
+    expect(getParameters().postLogoutRedirectUri).toBe(postLogoutRedirectUri);
+    expect(getParameters().scope).toBe(scope);
+    expect.assertions(8);
+  });
+
+  it('calls initialize and login, and return invalid code', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const redirectUri = 'redirectUri';
