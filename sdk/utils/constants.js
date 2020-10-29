@@ -5,6 +5,7 @@ const REQUEST_TYPES = {
   GET_REFRESH_TOKEN: 'getRefreshToken',
   GET_USER_INFO: 'getUserInfo',
   LOGOUT: 'logout',
+  VALIDATE_TOKEN: 'validateToken',
 };
 
 const errorCodes = {

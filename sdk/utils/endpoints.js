@@ -27,4 +27,7 @@ const logoutEndpoint = () => {
   return `${endpointPrefix}logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 };
 
-export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint };
+const validateTokenEndpoint =
+  'https://auth-testing.iduruguay.gub.uy/oidc/v1/jwks';
+
+export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint, validateTokenEndpoint };

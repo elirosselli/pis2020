@@ -57,6 +57,8 @@ const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
 const getUserInfo = () => makeRequest(REQUEST_TYPES.GET_USER_INFO);
 
+const validateToken = () => makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+
 export {
   initialize,
   login,
@@ -68,4 +70,5 @@ export {
   getParameters,
   clearParameters,
   resetParameters,
+  validateToken,
 };
