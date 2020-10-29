@@ -1,5 +1,6 @@
 import logout from '../logout';
 import { getParameters } from '../../configuration';
+import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
@@ -52,10 +53,10 @@ describe('logout', () => {
           url: 'post_logout_redirect_uri',
         });
     });
-    const redirectUri = await logout();
+    const response = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint2);
-    expect(redirectUri).toBe(undefined);
+    expect(response.error).toMatchObject(ERRORS.NO_ERROR);
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {

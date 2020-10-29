@@ -1,5 +1,6 @@
 import { Linking } from 'react-native';
 import { getParameters, clearParameters } from '../configuration';
+import { ERRORS } from '../utils/constants';
 import { logoutEndpoint } from '../utils/endpoints';
 
 const logout = async () => {
@@ -28,7 +29,7 @@ const logout = async () => {
     //  Si las url no coinciden, se rechaza la promise con un error.
     if (urlCheck === lowerCasePostLogoutRedirectUri) {
       clearParameters();
-      resolveFunction();
+      resolveFunction({ error: ERRORS.NO_ERROR });
     } else if (
       urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
     ) {

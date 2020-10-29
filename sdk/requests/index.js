@@ -2,7 +2,7 @@ import login from './login';
 import logout from './logout';
 import getUserInfo from './getUserInfo';
 import getTokenOrRefresh from './getTokenOrRefresh';
-import REQUEST_TYPES from '../utils/constants';
+import { REQUEST_TYPES } from '../utils/constants';
 
 const makeRequest = async type => {
   switch (type) {

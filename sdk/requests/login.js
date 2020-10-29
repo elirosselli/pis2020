@@ -1,6 +1,8 @@
 import { Linking } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
+import { ERRORS } from '../utils/constants';
+import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
   const parameters = getParameters();
@@ -16,16 +18,23 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
-    // Obtiene el auth code a partir de la url a la que
+    // Obtiene el code a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
-
-    // Si existe el código, se guarda y se resuelve la promise
+    // Si existe el code, se guarda y se resuelve la promise
     // si no, se rechaza la promise con un error.
     if (code) {
       setParameters({ code: code[1] });
-      resolveFunction(code[1]);
-    } else rejectFunction(Error('Invalid authorization code'));
+      // Se retorna el código y el error correspondiente (en este caso no hay error)
+      resolveFunction({
+        name: 'Success',
+        message: ERRORS.NO_ERROR,
+        code: code[1],
+      });
+    } else if (event.url.indexOf('error=access_denied') !== -1) {
+      // Cuando el usuario niega el acceso
+      rejectFunction(ERRORS.ACCESS_DENIED);
+    } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
 
     // Se elimina el handler para los eventos url.
     Linking.removeEventListener('url', handleOpenUrl);
@@ -34,18 +43,30 @@ const login = async () => {
   try {
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
-    // Si hay un clientId setteado, se abre el browser
-    // para realizar la autenticación con idUruguay.
-    if (parameters.clientId) await Linking.openURL(loginEndpoint());
+    // Si hay un clientId, redirectUri y postLogoutRedirectUri setteado, se abre el browser
+    // para realizar la autenticación y autorización con idUruguay.
+    if (
+      parameters.clientId &&
+      parameters.redirectUri &&
+      parameters.postLogoutRedirectUri &&
+      parameters.clientSecret
+    )
+      await Linking.openURL(loginEndpoint());
     else {
-      // En caso de error, se elimina el handler y rechaza la promise.
+      // En caso de que algún parámetro sea vacío, se elimina el handler y rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
-      rejectFunction(Error("Couldn't make request"));
+      const errorResponse = initializeErrors(
+        parameters.clientId,
+        parameters.redirectUri,
+        parameters.postLogoutRedirectUri,
+        parameters.clientSecret,
+      );
+      rejectFunction(errorResponse);
     }
   } catch (error) {
     // En caso de error, se elimina el handler y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
-    rejectFunction(Error("Couldn't make request"));
+    rejectFunction(ERRORS.FAILED_REQUEST);
   }
   return promise;
 };

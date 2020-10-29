@@ -1,5 +1,6 @@
 import login from '../login';
 import { getParameters } from '../../configuration';
+import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
@@ -22,6 +23,8 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      clientSecret: 'clientSecret',
       scope: 'scope',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
@@ -31,16 +34,19 @@ describe('login', () => {
             'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=TEST_STATE',
         });
     });
-    const code = await login();
+    const resp = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(resp.code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(resp.message).toMatchObject(ERRORS.NO_ERROR);
   });
 
   it('calls login with correct clientId, correct redirectUri and return invalid code', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      clientSecret: 'clientSecret',
       scope: 'scope',
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
@@ -52,7 +58,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(Error('Invalid authorization code'));
+      expect(error).toMatchObject(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
@@ -63,6 +69,8 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      clientSecret: 'clientSecret',
       scope: 'scope',
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
@@ -70,7 +78,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toMatchObject(ERRORS.FAILED_REQUEST);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
@@ -85,9 +93,81 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toMatchObject(ERRORS.INVALID_CLIENT_ID);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(2);
+  });
+
+  it('calls login with incorrect redirectUri', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: '',
+    });
+    mockAddEventListener.mockImplementation();
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toMatchObject(ERRORS.INVALID_REDIRECT_URI);
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    expect.assertions(2);
+  });
+
+  it('calls login with incorrect postLogoutRedirectUri', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: '',
+    });
+    mockAddEventListener.mockImplementation();
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toMatchObject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    expect.assertions(2);
+  });
+
+  it('calls login with incorrect clientSecret', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      clientSecret: '',
+    });
+    mockAddEventListener.mockImplementation();
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toMatchObject(ERRORS.INVALID_CLIENT_SECRET);
+    }
+    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
+    expect.assertions(2);
+  });
+
+  it('calls login with correct clientId, correct redirectUri and user denies access', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      clientSecret: 'clientSecret',
+      scope: 'scope',
+    });
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url:
+            'sdkidu.testing://auth?error=access_denied&error_description=The%20resource%20owner%20or%20authorization%20server%20denied%20the%20request',
+        });
+    });
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toMatchObject(ERRORS.ACCESS_DENIED);
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
   });
 });
