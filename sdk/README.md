@@ -15,8 +15,8 @@
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-gettoken)
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-refreshtoken)
-  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-logout)
   - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-getuserinfo)
+  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidad-de-logout)
 
 ## Introducción
 
@@ -36,9 +36,7 @@ Se tienen tres entidades principales:
 
 El componente SDK funciona como intermediario de la comunicación entre el RP y el OP, en base a HTTP *requests* y *responses* que son presentadas a continuación:
 
-- *Requests*:
-
-  - *Authentication Request*: pedido HTTP que incluye los *Authentication Request Params* y sirve para solicitar la autenticación de un *End User* en Usuario gub.uy. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *Authorization Endpoint*. Los *Authentication Request Params* son:
+- *Authentication Request*: pedido HTTP que incluye los *Authentication Request Params* y sirve para solicitar la autenticación de un *End User* en Usuario gub.uy. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *Authorization Endpoint*. Los *Authentication Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -51,7 +49,14 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *prompt*  | Opcional |Lista de valores de cadena ASCII delimitados por un espacio, sensibles a minúsculas y mayúsculas, que especifica si el servidor de autorización solicita al usuario final la reautenticación y consentimiento. Los valores definidos son: *none*, *login* y *consent*.             |
     | *acr_values*  | Opcional |Lista de *strings* sensibles a minúsculas y mayúsculas, separados por espacios y en orden de preferencia, correspondientes a los nombrados en la sección acr - *Authentication Context Class Reference*.            |
 
-  - *Token Request*: pedido HTTP empleando el método POST que incluye los *Token Request Params* y sirve para solicitar un token. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
+- *Authentication Response*: respuesta HTTP (a una *Authentication Request*) que incluye los *Authentication Response Params*. Esta respuesta es obtenida desde el *Authorization Endpoint*. Los *Authentication Response Params* son:
+
+    | Parámetro       | Tipo      | Descripción |
+    |-----------------|-----------|-------------|
+    | *code*         | Requerido |Código de autorización generado por el OP. Puede ser utilizado una única vez para obtener un *ID Token y Access Token*. Expira en 10 minutos. |
+    | *state*     | Requerido | El valor exacto recibido del RP en el parámetro "*state*" del *Authentication Request*. |
+
+- *Token Request*: pedido HTTP empleando el método POST que incluye los *Token Request Params* y sirve para solicitar un token. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -61,33 +66,7 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
     Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
 
-  - *Refresh Token Request*: pedido HTTP empleando el método POST que incluye los *Refresh Token Request Params* y sirve para obtener un nuevo *token*, con la condición de haber obtenido un *token* previamente. Este pedido es enviado al *Token Endpoint*. Los *Refresh Token Request Params* son:
-
-    | Parámetro       | Tipo      | Descripción |
-    |-----------------|-----------|-------------|
-    | *grant_type*         | Requerido |Tipo de credenciales a presentar. Debe ser "*refresh_token*". |
-    | *refresh_token* | Requerido | Token emitido por el OP, previamente tramitado en el *Token Request*. |
-
-    Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
-
-  - *Logout Request*: pedido HTTP empleando el método GET que incluye los *Logout Request Params* y sirve para cerrar la sesión del *End User* autenticado en el OP. Este pedido es enviado al *Logout Endpoint*. Los *Logout Request Params* son:
-
-    | Parámetro       | Tipo      | Descripción |
-    |-----------------|-----------|-------------|
-    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
-    | *post_logout_redirect_uri* | Opcional | URL a la cual será redireccionado el RP luego que el *logout* en el OP finalice exitosamente. Esta URL debe existir en la configuración que mantiene el OP del RP, si la misma no existe o no es exactamente igual, será redireccionado al inicio del OP. |
-    | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
-
-- *Responses*:
-
-  - *Authentication Response*: respuesta HTTP (a una *Authentication Request*) que incluye los *Authentication Response Params*. Esta respuesta es obtenida desde el *Authorization Endpoint*. Los *Authentication Response Params* son:
-
-    | Parámetro       | Tipo      | Descripción |
-    |-----------------|-----------|-------------|
-    | *code*         | Requerido |Código de autorización generado por el OP. Puede ser utilizado una única vez para obtener un *ID Token y Access Token*. Expira en 10 minutos. |
-    | *state*     | Requerido | El valor exacto recibido del RP en el parámetro "*state*" del *Authentication Request*. |
-
-  - *Token Response*: respuesta HTTP (a una *Token Request*) que incluye los *Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los *Token Response Params* son:
+- *Token Response*: respuesta HTTP (a una *Token Request*) que incluye los *Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los *Token Response Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -97,9 +76,42 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *expires_in*  | Recomendado |Tiempo de vida del *Access Token* en segundos. Valor por defecto 60 minutos.             |
     | *refresh_token*  | Requerido |*Refresh Token* que puede ser utilizado para obtener nuevos *Access Tokens*             |
 
-  - *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.
+- *Refresh Token Request*: pedido HTTP empleando el método POST que incluye los *Refresh Token Request Params* y sirve para obtener un nuevo *token*, con la condición de haber obtenido un *token* previamente. Este pedido es enviado al *Token Endpoint*. Los *Refresh Token Request Params* son:
 
-  - *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
+    | Parámetro       | Tipo      | Descripción |
+    |-----------------|-----------|-------------|
+    | *grant_type*         | Requerido |Tipo de credenciales a presentar. Debe ser "*refresh_token*". |
+    | *refresh_token* | Requerido | Token emitido por el OP, previamente tramitado en el *Token Request*. |
+
+    Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
+
+- *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.
+
+- *User Info Request*: pedido HTTP que incluye los User Info Request Params y sirve para solicitar información del End-User autenticado. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *UserInfo Endpoint*. Los *User Info Request Params* son:
+
+    | Parámetro       | Tipo      | Descripción |
+    |-----------------|-----------|-------------|
+    | *access_token*         | Requerido |Es incluido en el *header* HTTP *Authorization* siguiendo el esquema *Bearer* |
+
+- *User Info Response*: respuesta HTTP (a una *User Info Request*) que incluye los *User Info Response Params*. Esta respuesta es obtenida desde el *UserInfo Endpoint*. Los *User Info Response Params* son un JSON conteniendo los *claims* solicitados. Dichos *claims* pueden ser:
+
+    | Nombre      | Claims      | Descripción |
+    |-----------------|-----------|-------------|
+    | *personal_info*         | nombre_completo, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, uid, rid | Nombres y apellidos del usuario, identificador y el nivel de registro de identidad digital. Este último puede ser alguno de los siguientes valores: [0,1,2,3] correspondiendo a los niveles Muy Bajo, Bajo, Medio y Alto respectivamente. |
+    | *profile*         | *name*, *given_name*, *family_name* | Nombre completo, nombre(s) y apellido(s) respectivamente. |
+    | *document*         | pais_documento, tipo_documento, numero_documento | Información sobre el documento del usuario. |
+    | *email*         | *email*, *email_verified* | Correo electrónico y si el mismo está verificado. |
+    | *auth_info*         | rid, nid, ae | Datos de registro y autenticación del ciudadano en formato URN correspondientes a la Política de Identificación Digital. |
+
+- *Logout Request*: pedido HTTP empleando el método GET que incluye los *Logout Request Params* y sirve para cerrar la sesión del *End User* autenticado en el OP. Este pedido es enviado al *Logout Endpoint*. Los *Logout Request Params* son:
+
+    | Parámetro       | Tipo      | Descripción |
+    |-----------------|-----------|-------------|
+    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
+    | *post_logout_redirect_uri* | Opcional | URL a la cual será redireccionado el RP luego que el *logout* en el OP finalice exitosamente. Esta URL debe existir en la configuración que mantiene el OP del RP, si la misma no existe o no es exactamente igual, será redireccionado al inicio del OP. |
+    | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
+
+- *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
 
 Cabe destacar que ante un posible error la *response* generada por el OP contiene los siguientes parámetros:
 
@@ -427,64 +439,11 @@ La implementación de la funcionalidad de **refreshToken** involucra los mismos 
 
 La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_REFRESH_TOKEN, indicando que es un *request* del tipo *refreshToken*. Luego, dentro de **makeRequest**, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant\_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
 
-### Funcionalidad de *logout*
-
-#### Generalidades
-
-La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final en el OP para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del *logout* consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. Los parámetros obligatorios enviados son: *id_token_hint* y *post_logout_redirect_uri*. El primero se corresponde con el *id_token* obtenido en la última *Get Token Request* o *Refresh Token Request*, mientras que el segundo se corresponde con la dirección a la cual el RP espera que se redireccione al usuario final una vez finalizado el proceso de cierre de sesión. Esta dirección deberá coincidir con la provista al momento del registro del RP ante el OP. Además de los parámetros obligatorios se tiene la opción de brindar el parámetro opcional *state*.
-
-En caso de que los parámetros sean los correctos, la función de **logout** redirecciona al usuario final a la aplicación del RP, y si corresponde, devuelve el parámetro *state*. En caso contrario, se retorna una descripción acorde al error ocurrido.
-
-#### Archivos y parámetros
-
-La implementación de la funcionalidad de *logout* involucra los siguientes archivos:
-
-- **sdk/requests/logout.js**: Donde se implementa la función **logout**. Esta función se encarga de realizar la *Logout Request*.
-- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **logout**.
-- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
-- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
-- **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
-
-La función **logout** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en la *request* a través del módulo de configuración, en la función **logoutEndpoint** definida en el archivo de *endpoints* previamente mencionado, y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa, y si corresponde el parámetro *state*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
-
-#### Código
-
-La función de **logout** es declarada como una función asincrónica de la siguiente manera:
-
-```javascript
-const logout = async () => {
-```
-
-El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. En el cuerpo de la función, dentro del bloque *try*, se declara un *Event Listener* que escucha por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza linking. Esto se puede ver en la siguiente línea:
-
-```javascript
-Linking.addEventListener('url', handleOpenUrl);
-```
-
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo *url*. Luego, se verifica que los parámetros necesarios para realizar el cierre de sesión se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Logout Endpoint*. Esta *url* contendrá el *id_token_hint*, el *post_logout_redirect_uri*, y opcionalmente *state*. Esto se puede ver a continuación
-
-```javascript
-Linking.openURL(logoutEndpoint())
-```
-
-Donde *logoutEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
-
-```javascript
-https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}
-```
-
-Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no.
-
-Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente.
-
-En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **logout** también se encuentra un bloque *catch*, que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
-
 ### Funcionalidad de *getUserInfo*
 
 #### Generalidades
 
-La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario logueado. Por ende, esta función depende del *accesToken* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario devuelta por la función, dependerá del scope seteado al realizar el **login**. Dicha información será devuelta en formato JSON.
+La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *access_token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* seteado al realizar el **login**. Dicha información será devuelta en formato JSON.
 
 #### Archivos y parámetros
 
@@ -493,11 +452,11 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 - **sdk/requests/getUserInfo.js**: Donde se implementa la función **getUserInfo**. Esta función se encarga de realizar la *GetUserInfo Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **getUserInfo**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen el accesToken necesario.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen el *access_token* necesario.
 - **sdk/utils/constants.js**: Contiene las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 
-La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
+La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
 A continuación se presentará una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
 
@@ -558,7 +517,7 @@ Scope: openId y personal_info:
 {
   nombre_completo: 'Clark Jose Kent Gonzalez',
   primer_apellido: 'Kent',
-  primer_nombre: 'Jose',
+  primer_nombre: 'Clark',
   segundo_apellido: 'Gonzalez',
   segundo_nombre: 'Jose',
   sub: '5968',
@@ -601,3 +560,59 @@ const getUserInfo = async () => {
 ```
 
 La función **getUserInfo** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_USER_INFO, indicando que es un *request* del tipo *getUserInfo*. Luego, dentro de **makeRequest**, se realiza la request como se mencionó previamente.
+A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *getUserInfo Endpoint*.
+
+En el cuerpo de la función de **getUserInfo** se encuentra un bloque de try y uno de catch. Con esto se logra que si la función se ejecuta de forma satisfactoria se retorna la promesa con los valores explicados anteriormente. De lo contrario se la rechaza devolviendo un codigo de error y una descripción del mismo.
+
+### Funcionalidad de *logout*
+
+#### Generalidades
+
+La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final en el OP para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del *logout* consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. Los parámetros obligatorios enviados son: *id_token_hint* y *post_logout_redirect_uri*. El primero se corresponde con el *id_token* obtenido en la última *Get Token Request* o *Refresh Token Request*, mientras que el segundo se corresponde con la dirección a la cual el RP espera que se redireccione al usuario final una vez finalizado el proceso de cierre de sesión. Esta dirección deberá coincidir con la provista al momento del registro del RP ante el OP. Además de los parámetros obligatorios se tiene la opción de brindar el parámetro opcional *state*.
+
+En caso de que los parámetros sean los correctos, la función de **logout** redirecciona al usuario final a la aplicación del RP, y si corresponde, devuelve el parámetro *state*. En caso contrario, se retorna una descripción acorde al error ocurrido.
+
+#### Archivos y parámetros
+
+La implementación de la funcionalidad de *logout* involucra los siguientes archivos:
+
+- **sdk/requests/logout.js**: Donde se implementa la función **logout**. Esta función se encarga de realizar la *Logout Request*.
+- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **logout**.
+- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
+- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
+- **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+
+La función **logout** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en la *request* a través del módulo de configuración, en la función **logoutEndpoint** definida en el archivo de *endpoints* previamente mencionado, y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa, y si corresponde el parámetro *state*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
+
+#### Código
+
+La función de **logout** es declarada como una función asincrónica de la siguiente manera:
+
+```javascript
+const logout = async () => {
+```
+
+El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. En el cuerpo de la función, dentro del bloque *try*, se declara un *Event Listener* que escucha por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza linking. Esto se puede ver en la siguiente línea:
+
+```javascript
+Linking.addEventListener('url', handleOpenUrl);
+```
+
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo *url*. Luego, se verifica que los parámetros necesarios para realizar el cierre de sesión se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Logout Endpoint*. Esta *url* contendrá el *id_token_hint*, el *post_logout_redirect_uri*, y opcionalmente *state*. Esto se puede ver a continuación
+
+```javascript
+Linking.openURL(logoutEndpoint())
+```
+
+Donde *logoutEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
+
+```javascript
+https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}
+```
+
+Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no.
+
+Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente.
+
+En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **logout** también se encuentra un bloque *catch*, que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
