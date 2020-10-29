@@ -364,50 +364,6 @@ describe('configuration module and make request type login integration', () => {
     expect(parameters.expiresIn).toBe('');
     expect(parameters.idToken).toBe('');
   });
-
-  // it('calls initialize and makes a login request with no response type', async () => {
-  //   const badLoginEndpoint3 =
-  //     'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&client_id=clientId&redirect_uri=redirectUri';
-  //   const fetchRedirectUri = 'redirectUri';
-  //   const fetchClientId = 'clientId';
-  //   const fetchClientSecret = 'clientSecret';
-  //   const postLogoutRedirectUri = '';
-  //   initialize(
-  //     fetchRedirectUri,
-  //     fetchClientId,
-  //     fetchClientSecret,
-  //     postLogoutRedirectUri,
-  //   );
-
-  //   let parameters = getParameters();
-  //   expect(parameters.clientId).toBe(fetchClientId);
-  //   expect(parameters.clientSecret).toBe(fetchClientSecret);
-  //   expect(parameters.redirectUri).toBe(fetchRedirectUri);
-  //   expect(parameters.code).toBe('');
-  //   expect(parameters.accessToken).toBe('');
-  //   expect(parameters.refreshToken).toBe('');
-  //   expect(parameters.tokenType).toBe('');
-  //   expect(parameters.expiresIn).toBe('');
-  //   expect(parameters.idToken).toBe('');
-
-  //   try {
-  //     await makeRequest(REQUEST_TYPES.LOGIN);
-  //   } catch (error) {
-  //     expect(error).toMatchObject(Error(invalidAuthCodeError));
-  //   }
-  //   expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-  //   expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint3);
-  //   parameters = getParameters();
-  //   expect(parameters.clientId).toBe(fetchClientId);
-  //   expect(parameters.clientSecret).toBe(fetchClientSecret);
-  //   expect(parameters.redirectUri).toBe(fetchRedirectUri);
-  //   expect(parameters.code).toBe('');
-  //   expect(parameters.accessToken).toBe('');
-  //   expect(parameters.refreshToken).toBe('');
-  //   expect(parameters.tokenType).toBe('');
-  //   expect(parameters.expiresIn).toBe('');
-  //   expect(parameters.idToken).toBe('');
-  // });
 });
 
 // For get token and refresh token
@@ -514,9 +470,9 @@ describe('configuration module and make request type get token integration', () 
     expect(parameters.expiresIn).toBe('');
     expect(parameters.idToken).toBe('');
 
-    const error = 'invalid_grant';
+    const error = 'invalid_code';
     const errorDescription =
-      'The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
+      'The provided authorization code is invalid or expired';
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
@@ -533,6 +489,103 @@ describe('configuration module and make request type get token integration', () 
     } catch (err) {
       expect(err).toStrictEqual({
         error,
+        error_description: errorDescription,
+      });
+    }
+
+    expect.assertions(10);
+  });
+
+  it('calls setParameters and makes a get token request with invalid client id', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = 'invalidClientId';
+    const fetchClientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const fetchCode = 'f24df0c4fcb142328b843d49753946af';
+
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      redirectUri: fetchRedirectUri,
+      code: fetchCode,
+    });
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    const error2 = 'invalid_client_id';
+    const errorDescription = 'The provided client_id is invalid';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error2,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error2,
+        error_description: errorDescription,
+      });
+    }
+
+    expect.assertions(10);
+  });
+
+  it('calls setParameters and makes a get token request with invalid client secret', async () => {
+    const fetchRedirectUri = 'redirectUri';
+    const fetchClientId = '898562';
+    const fetchClientSecret = 'invalidClientSecret';
+    const fetchCode = 'f24df0c4fcb142328b843d49753946af';
+
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      redirectUri: fetchRedirectUri,
+      code: fetchCode,
+    });
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.code).toBe(fetchCode);
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe('');
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    const error3 = 'invalid_client_secret';
+    const errorDescription = 'The provided client_secret is invalid';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error3,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error3,
         error_description: errorDescription,
       });
     }
@@ -611,55 +664,21 @@ describe('configuration module and make request type refresh token integration',
     expect(parameters.idToken).toBe(expectedIdToken);
   });
 
-  it('calls setParameters with invalid refresh token and makes a refresh token request which returns error', async () => {
+  it('calls setParameters and makes a refresh token request with invalid refresh token', async () => {
     const fetchClientId = '898562';
-    const fetchRedirectUri = 'redirectUri';
-    const fetchRefreshToken = '';
-
-    setParameters({
-      clientId: fetchClientId,
-      redirectUri: fetchRedirectUri,
-      refreshToken: fetchRefreshToken,
-    });
-    const parameters = getParameters();
-    expect(parameters.clientId).toBe(fetchClientId);
-    expect(parameters.redirectUri).toBe(fetchRedirectUri);
-    expect(parameters.code).toBe('');
-    expect(parameters.accessToken).toBe('');
-    expect(parameters.refreshToken).toBe(fetchRefreshToken);
-    expect(parameters.tokenType).toBe('');
-    expect(parameters.expiresIn).toBe('');
-    expect(parameters.idToken).toBe('');
-
-    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
-    mockAddEventListener.mockImplementation();
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (error) {
-      expect(error).toMatchObject(
-        Error(`invalid_grant`),
-        // error = 'invalid_grant';
-        // errorDescription =
-        //   'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
-      );
-    }
-    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    // expect.assertions(2);
-  });
-
-  it('calls setParameters with empty refresh token and makes a refresh token request which returns error', async () => {
-    const fetchClientId = '898562';
-    const fetchRedirectUri = 'redirectUri';
+    const fetchClientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const fetchRefreshToken = 'invalid_refresh_token';
 
     setParameters({
       clientId: fetchClientId,
-      redirectUri: fetchRedirectUri,
+      clientSecret: fetchClientSecret,
       refreshToken: fetchRefreshToken,
     });
     const parameters = getParameters();
     expect(parameters.clientId).toBe(fetchClientId);
-    expect(parameters.redirectUri).toBe(fetchRedirectUri);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe('');
     expect(parameters.code).toBe('');
     expect(parameters.accessToken).toBe('');
     expect(parameters.refreshToken).toBe(fetchRefreshToken);
@@ -667,15 +686,122 @@ describe('configuration module and make request type refresh token integration',
     expect(parameters.expiresIn).toBe('');
     expect(parameters.idToken).toBe('');
 
-    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
-    mockAddEventListener.mockImplementation();
+    const error4 = 'invalid_refresh_token';
+    const errorDescription = 'The provided refresh_token is invalid';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error4,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (error) {
-      expect(error).toMatchObject(Error(`invalid_grant`));
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error4,
+        error_description: errorDescription,
+      });
     }
-    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    // expect.assertions(2);
+
+    expect.assertions(10);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid client id', async () => {
+    const fetchClientId = '898562';
+    const fetchClientSecret = 'invalid_client_secret';
+    const fetchRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
+
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      refreshToken: fetchRefreshToken,
+    });
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe('');
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe(fetchRefreshToken);
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    const error5 = 'invalid_client_secret';
+    const errorDescription = 'The provided client_secret is invalid';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error5,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error5,
+        error_description: errorDescription,
+      });
+    }
+
+    expect.assertions(10);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid client secret', async () => {
+    const fetchClientId = 'invalid_client_id';
+    const fetchClientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const fetchRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
+
+    setParameters({
+      clientId: fetchClientId,
+      clientSecret: fetchClientSecret,
+      refreshToken: fetchRefreshToken,
+    });
+    const parameters = getParameters();
+    expect(parameters.clientId).toBe(fetchClientId);
+    expect(parameters.clientSecret).toBe(fetchClientSecret);
+    expect(parameters.redirectUri).toBe('');
+    expect(parameters.code).toBe('');
+    expect(parameters.accessToken).toBe('');
+    expect(parameters.refreshToken).toBe(fetchRefreshToken);
+    expect(parameters.tokenType).toBe('');
+    expect(parameters.expiresIn).toBe('');
+    expect(parameters.idToken).toBe('');
+
+    const error6 = 'invalid_client_id';
+    const errorDescription = 'The provided client_id is invalid';
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error6,
+            error_description: errorDescription,
+          }),
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual({
+        error6,
+        error_description: errorDescription,
+      });
+    }
+
+    expect.assertions(10);
   });
 });
 
