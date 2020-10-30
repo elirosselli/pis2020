@@ -1,11 +1,11 @@
-import REQUEST_TYPES from '../utils/constants';
+import REQUEST_TYPES from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
-} from '../configuration';
-import { initialize } from '../interfaces';
-import makeRequest from '../requests';
+} from '../../configuration';
+import { initialize } from '../../interfaces';
+import makeRequest from '../../requests';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
@@ -27,7 +27,6 @@ const correctLoginEndpoint =
 const invalidAuthCodeError = 'Invalid authorization code';
 const couldntMakeRequestError = "Couldn't make request";
 
-// FIXME: with empty redirectUri
 describe('configuration module and make request type login integration', () => {
   it('calls initialize and makes a login request', async () => {
     const redirectUri = 'redirectUri';
@@ -177,7 +176,6 @@ describe('configuration module and make request type login integration', () => {
     });
   });
 
-  // FIXME: Cambiar test cuando se incluya chequeo de redirectUri vacía en login.
   it('calls initialize and makes a login request with empty redirectUri', async () => {
     const redirectUri = '';
     const clientId = 'clientId';

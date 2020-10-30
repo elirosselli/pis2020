@@ -1,12 +1,12 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../utils/constants';
+import REQUEST_TYPES from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
-} from '../configuration';
-import makeRequest from '../requests';
+} from '../../configuration';
+import makeRequest from '../../requests';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
@@ -33,10 +33,10 @@ const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
 const userInfoEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
 
-describe('configuration module and make request type user info integration', () => {
+describe('configuration module and make request type get user info integration', () => {
   const userId = 'uy-cid-12345678';
 
-  it('calls set parameters and makes a user info request with all scopes', async () => {
+  it('calls set parameters and makes a get user info request with all scopes', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -124,7 +124,7 @@ describe('configuration module and make request type user info integration', () 
     });
   });
 
-  it('calls set parameters and makes a user info request with personal_info scope', async () => {
+  it('calls set parameters and makes a get user info request with personal_info scope', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -192,7 +192,7 @@ describe('configuration module and make request type user info integration', () 
     });
   });
 
-  it('calls set parameters and makes a user info request with no claims', async () => {
+  it('calls set parameters and makes a get user info request with no claims', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -241,7 +241,7 @@ describe('configuration module and make request type user info integration', () 
     expect(response).toStrictEqual({});
   });
 
-  it('calls set parameters and makes a user info request with expired access token', async () => {
+  it('calls set parameters and makes a get user info request with expired access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';

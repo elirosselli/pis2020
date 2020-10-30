@@ -1,10 +1,10 @@
-import REQUEST_TYPES from '../utils/constants';
+import REQUEST_TYPES from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
-} from '../configuration';
-import makeRequest from '../requests';
+} from '../../configuration';
+import makeRequest from '../../requests';
 
 const missingParamsMessage = 'Missing required parameter(s): ';
 const mockAddEventListener = jest.fn();

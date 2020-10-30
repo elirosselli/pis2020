@@ -1,12 +1,12 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../utils/constants';
+import REQUEST_TYPES from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
-} from '../configuration';
-import makeRequest from '../requests';
+} from '../../configuration';
+import makeRequest from '../../requests';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
