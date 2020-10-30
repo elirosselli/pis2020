@@ -19,6 +19,7 @@ import {
   refreshToken,
   logout,
   setParameters,
+  validateToken,
 } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
@@ -273,6 +274,7 @@ const App = () => {
                       try {
                         const respGetToken = await getToken();
                         setToken(respGetToken.accessToken);
+                        console.log(validateToken());
                       } catch (err) {
                         console.log(err.errorCode, err.errorDescription);
                       }
@@ -307,6 +309,7 @@ const App = () => {
                             const respRefreshToken = await refreshToken();
                             setToken(respRefreshToken.refreshToken);
                             setRefreshTokenLoading(false);
+                            validateToken();
                           } catch (err) {
                             console.log(err.errorCode, err.errorDescription);
                           }

@@ -59,6 +59,8 @@
   },
   "dependencies": {
     "base-64": "^0.1.0",
+    "jsrsasign": "^10.0.4",
+    "jsrsasign-util": "^1.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-native": "^0.63.2",
