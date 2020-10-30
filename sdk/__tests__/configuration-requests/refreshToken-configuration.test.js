@@ -113,7 +113,7 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       refreshToken: invalidRefreshToken,
     });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -150,7 +150,22 @@ describe('configuration module and make request type refresh token integration',
         error_description: errorDescription,
       });
     }
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken: invalidRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a refresh token request with invalid client id', async () => {
@@ -159,7 +174,7 @@ describe('configuration module and make request type refresh token integration',
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
 
     setParameters({ clientId, clientSecret, refreshToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -196,7 +211,22 @@ describe('configuration module and make request type refresh token integration',
         error_description: errorDescription,
       });
     }
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a refresh token request with invalid client secret', async () => {
@@ -204,7 +234,7 @@ describe('configuration module and make request type refresh token integration',
     const clientSecret = 'invalid_client_secret';
 
     setParameters({ clientId, clientSecret, refreshToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -241,6 +271,21 @@ describe('configuration module and make request type refresh token integration',
         error_description: errorDescription,
       });
     }
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
   });
 });

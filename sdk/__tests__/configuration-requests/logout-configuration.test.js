@@ -130,7 +130,7 @@ describe('configuration module and make request type logout integration', () => 
     const state = '2KVAEzPpazbGFD5';
     setParameters({ idToken, state });
 
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -156,6 +156,22 @@ describe('configuration module and make request type logout integration', () => 
       );
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(3);
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state,
+      scope: '',
+    });
+    expect.assertions(4);
   });
 });

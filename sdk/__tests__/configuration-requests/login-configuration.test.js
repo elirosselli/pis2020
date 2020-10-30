@@ -26,6 +26,12 @@ const correctLoginEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
 const invalidAuthCodeError = 'Invalid authorization code';
 const couldntMakeRequestError = "Couldn't make request";
+const mockAddEventListenerError = (eventType, eventHandler) => {
+  if (eventType === 'url')
+    eventHandler({
+      url: `https://mi-testing.iduruguay.gub.uy/error/?errorCode=OIDC_ERROR`,
+    });
+};
 
 describe('configuration module and make request type login integration', () => {
   it('calls initialize and makes a login request', async () => {
@@ -174,6 +180,7 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(3);
   });
 
   it('calls initialize and makes a login request with empty redirectUri', async () => {
@@ -246,12 +253,7 @@ describe('configuration module and make request type login integration', () => {
       scope: '',
     });
 
-    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
-      if (eventType === 'url')
-        eventHandler({
-          url: `https://mi-testing.iduruguay.gub.uy/error/?errorCode=OIDC_ERROR`,
-        });
-    });
+    mockAddEventListener.mockImplementation(mockAddEventListenerError);
 
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
@@ -275,6 +277,7 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls initialize with redirectUri different from RP and makes a login request', async () => {
@@ -302,13 +305,7 @@ describe('configuration module and make request type login integration', () => {
       scope: '',
     });
 
-    // eslint-disable-next-line sonarjs/no-identical-functions
-    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
-      if (eventType === 'url')
-        eventHandler({
-          url: `https://mi-testing.iduruguay.gub.uy/error/?errorCode=OIDC_ERROR`,
-        });
-    });
+    mockAddEventListener.mockImplementation(mockAddEventListenerError);
 
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
@@ -332,6 +329,7 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls initialize and makes a login request, the user denies access to the application ', async () => {
@@ -357,7 +355,6 @@ describe('configuration module and make request type login integration', () => {
       scope: '',
     });
 
-    // eslint-disable-next-line sonarjs/no-identical-functions
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
@@ -387,5 +384,6 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 });

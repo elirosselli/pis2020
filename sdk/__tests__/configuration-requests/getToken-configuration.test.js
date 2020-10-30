@@ -113,7 +113,7 @@ describe('configuration module and make request type get token integration', () 
     const code = 'f24df0c4fcb142328b843d49753946af';
 
     setParameters({ clientId, clientSecret, redirectUri, code });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -152,7 +152,23 @@ describe('configuration module and make request type get token integration', () 
       });
     }
 
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a get token request with invalid client id', async () => {
@@ -163,7 +179,7 @@ describe('configuration module and make request type get token integration', () 
     const code = 'f24df0c4fcb142328b843d49753946af';
 
     setParameters({ clientId, clientSecret, redirectUri, code });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -201,7 +217,23 @@ describe('configuration module and make request type get token integration', () 
       });
     }
 
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a get token request with invalid client secret', async () => {
@@ -211,7 +243,7 @@ describe('configuration module and make request type get token integration', () 
     const code = 'f24df0c4fcb142328b843d49753946af';
 
     setParameters({ clientId, clientSecret, redirectUri, code });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -249,6 +281,22 @@ describe('configuration module and make request type get token integration', () 
       });
     }
 
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
   });
 });

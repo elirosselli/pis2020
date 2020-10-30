@@ -32,10 +32,9 @@ const accept = 'application/json';
 const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
 const userInfoEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
+const userId = 'uy-cid-12345678';
 
 describe('configuration module and make request type get user info integration', () => {
-  const userId = 'uy-cid-12345678';
-
   it('calls set parameters and makes a get user info request with all scopes', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -43,7 +42,7 @@ describe('configuration module and make request type get user info integration',
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -122,6 +121,22 @@ describe('configuration module and make request type get user info integration',
       nid: 'nid',
       ae: 'ae',
     });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
   });
 
   it('calls set parameters and makes a get user info request with personal_info scope', async () => {
@@ -131,7 +146,7 @@ describe('configuration module and make request type get user info integration',
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -190,6 +205,22 @@ describe('configuration module and make request type get user info integration',
       uid: userId,
       rid: 'rid',
     });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
   });
 
   it('calls set parameters and makes a get user info request with no claims', async () => {
@@ -199,7 +230,7 @@ describe('configuration module and make request type get user info integration',
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -239,6 +270,22 @@ describe('configuration module and make request type get user info integration',
     });
 
     expect(response).toStrictEqual({});
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
   });
 
   it('calls set parameters and makes a get user info request with expired access token', async () => {
@@ -248,7 +295,7 @@ describe('configuration module and make request type get user info integration',
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
@@ -285,6 +332,22 @@ describe('configuration module and make request type get user info integration',
         error_description: errorDescription,
       });
     }
-    expect.assertions(2);
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
   });
 });
