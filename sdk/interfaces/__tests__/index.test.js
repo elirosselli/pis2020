@@ -53,6 +53,7 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
+    console.log(errorResp.code);
     expect(errorResp).toMatchObject(ERRORS.INVALID_CLIENT_ID);
     const responseParameters = getParameters();
     // Serán vacíos ya que no se setean

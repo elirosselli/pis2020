@@ -33,10 +33,35 @@ const noError = {
   code: errorCodes.noError,
 };
 
-const invalidClientId = Error({
-  description: errorDescriptions.invalidClientId,
-  code: errorCodes.invalidClientId,
-});
+class ErrorInvalidClientId extends Error {
+  constructor(
+    errorCode = errorCodes.invalidClientId,
+    errorDescription = errorDescriptions.invalidClientId,
+    ...params
+  ) {
+    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre
+    super(...params);
+
+    // Mantiene un seguimiento adecuado de la pila para el lugar donde se lanzó nuestro error (solo disponible en V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidClientId);
+    }
+
+    this.name = 'invalidClientId';
+    // Información de depuración personalizada
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+// const invalidClientId = Error("descripcion");
+// invalidClientId.name = errorCodes.invalidClientId;
+// invalidClientId.state = "hola";
+
+// const invalidClientId = Error({
+//   description: errorDescriptions.invalidClientId,
+//   code: errorCodes.invalidClientId,
+// });
 
 const invalidRedirectUri = Error({
   description: errorDescriptions.invalidRedirectUri,
@@ -70,7 +95,7 @@ const failedRequest = Error({
 
 const ERRORS = {
   NO_ERROR: noError,
-  INVALID_CLIENT_ID: invalidClientId,
+  INVALID_CLIENT_ID: new ErrorInvalidClientId(),
   INVALID_REDIRECT_URI: invalidRedirectUri,
   INVALID_POST_LOGOUT_REDIRECT_URI: invalidPostLogoutRedirecrtUri,
   INVALID_CLIENT_SECRET: invalidClientSecret,

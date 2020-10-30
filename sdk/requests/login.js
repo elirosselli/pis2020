@@ -27,8 +27,8 @@ const login = async () => {
       setParameters({ code: code[1] });
       // Se retorna el código y el error correspondiente (en este caso no hay error)
       resolveFunction({
-        name: 'Success',
-        message: ERRORS.NO_ERROR,
+        errorCode: 'Success',
+        errorDescription: 'No hay error',
         code: code[1],
       });
     } else if (event.url.indexOf('error=access_denied') !== -1) {
