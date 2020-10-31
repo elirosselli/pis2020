@@ -1,7 +1,7 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { getParameters } from '../configuration';
 import { issuer } from '../utils/endpoints';
-import { decode } from 'base-64';
+import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 
 export const validateTokenSecurity = jwksResponse => {
   const { idToken, accessToken } = getParameters();
@@ -10,35 +10,16 @@ export const validateTokenSecurity = jwksResponse => {
   // const pubKey = new RSAKey();
   // pubKey.setPublic(jwksResponse.keys[0].n, jwksResponse.keys[0].e);
 
-  const base64ToHex = str => {
-    const raw = str;
-    let result = '';
-    for (let i = 0; i < raw.length; i += 1) {
-      const hex = raw.charCodeAt(i).toString(16);
-      result += hex.length === 2 ? hex : `0${hex}`;
-    }
-    return result.toUpperCase();
-  };
-
-  
-  // console.log(base64ToHex(decode(jwksResponse.keys[0].e)));
-  // const pubKey = KEYUTIL.getKey({
-  //   n: jwksResponse.keys[0].n,
-  //   e: base64ToHex(decode(jwksResponse.keys[0].e)),
-  // });
-  // console.log(pubKey);
-  const pubkey = KEYUTIL.getKey(`-----BEGIN PUBLIC KEY-----
-  MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDHGni+BdhlfT9+rtBLy/b95dr6
-  fTcGtR/UKBYjHCNcP3n/FAlkirVR2ISde+CHUEmHAQ2eXv60BfjxhZHlvsHhRN9A
-  KmPHdxZ4eDGqU8VvDyTKJZ+NV7pdMImKgv+p56eJ8Sl6JpTTFmxklCD0/1zuVVFi
-  YQQVlDf11IfgzFAlpQIDAQAB
-  -----END PUBLIC KEY-----
-  `);
-  console.log(pubkey);
-  const isValid = KJUR.jws.JWS.verifyJWT(idToken, pubkey, {
+  const pubKey = KEYUTIL.getKey({
+    n: base64ToHex(base64URLtoBase64(jwksResponse.keys[0].n)),
+    e: base64ToHex(jwksResponse.keys[0].e),
+  });
+  const isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
     alg: [jwksResponse.keys[0].alg],
     iss: [issuer],
     aud: [getParameters().clientId],
+    verifyAt: KJUR.jws.IntDate.getNow(), // Verifica validez comparada con la hora actual
+    jti: 'asas',
   });
   console.log(isValid);
   return Promise.resolve({ jwk: jwksResponse, error: 'Correcto' });
