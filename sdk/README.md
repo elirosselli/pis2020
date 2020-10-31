@@ -4,9 +4,10 @@
 
 - [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk#introducci%C3%B3n)
 - [Consideraciones previas](https://github.com/elirosselli/pis2020/tree/develop/sdk#consideraciones-previas)
-- [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
-- [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-- [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+- [Instalación y configuración]()
+  - [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
+  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
 - [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
 - [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
 - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
@@ -115,7 +116,9 @@ Cabe destacar que ante un posible error la *response* generada por el OP contien
 | *error_description* | Opcional  | Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. |
 | *state* | Recomendado | El valor exacto recibido del RP en el parámetro *state* del *request* correspondiente.
 
-## Instalación
+## Instalación y configuración 
+
+### Instalación
 
 El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
@@ -123,17 +126,17 @@ El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
 
 Este comando añade el SDK y las dependencias necesarias al proyecto.
 
-## Instalación de react-native-ssl-pinning
+### Instalación de react-native-ssl-pinning
 
 Para que el SDK funcione correctamente, debe instalar en su aplicación la librería [react-native-ssl-pinning](https://github.com/MaxToyberman/react-native-ssl-pinning). Esto se hace ejecutando el comando
 
 `$ npm install react-native-ssl-pinning --save`
 
-## Configuración de redirect URI
+### Configuración de redirect URI
 
 Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links).
 
-### Android
+#### Android
 
 En Android, esto implica editar el archivo `AndroidManifest.xml`, que se encuentra en el directorio
 app/android/app/src/main/ de su aplicación *React Native*. En particular, se debe agregar un [*intent filter*](https://developer.android.com/training/app-links/deep-linking#adding-filters) en una de sus *activities*, como se muestra a continuación:
@@ -162,7 +165,7 @@ app/android/app/src/main/ de su aplicación *React Native*. En particular, se de
 </activity>
 ```
 
-### iOS
+#### iOS
 
 En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en [este link](https://medium.com/@MdNiks/custom-url-scheme-deep-link-fa3e701a6295) y en la [documentación de XCode](https://developer.apple.com/documentation/xcode/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app)):
 

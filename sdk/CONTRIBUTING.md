@@ -292,7 +292,7 @@ Los comandos explicados a continuación pueden encontrarse definidos en el archi
 
 ### Pruebas unitarias
 
-Para ejecutar las pruebas unitarias, se deberá ejecutar el comando
+Para ejecutar las pruebas unitarias, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
 `npm run test`
 
@@ -304,7 +304,7 @@ Se observa que este comando también ejecuta las pruebas unitarias y devuelve su
 
 ### *Linter*
 
-Para ejecutar el *linter* se deberá ejecutar el comando
+Para ejecutar el *linter* se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
 `npm run lint`
 
