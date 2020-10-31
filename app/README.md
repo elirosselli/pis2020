@@ -68,7 +68,7 @@ Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es nuestro client id y client secret p
 
 ### 2. Instalación de paquetes
 
-Se deberá ejecutar el comando `npm install` en la carpeta /sdk y luego en la carpeta /app para instalar los paquetes necesarios. Si esta utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` dentro de la carpeta app y utilizar el comando `pod install`.
+Se deberá ejecutar el comando `npm install` en la carpeta /sdk y luego en la carpeta /app para instalar los paquetes necesarios. Si está utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` dentro de la carpeta app y utilizar el comando `pod install`.
 
 ### 3. Iniciar wml
 
