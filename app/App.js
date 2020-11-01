@@ -101,7 +101,7 @@ const App = () => {
                       sdkIdUClientSecret,
                       'sdkIdU.testing://redirect',
                     );
-                    setInitialized(1)
+                    setInitialized(1);
                   } catch (error) {
                     console.log(error);
                     setInitialized(-1);

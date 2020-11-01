@@ -4,7 +4,7 @@ import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
 
 const getUserInfo = async () => {
-  const { accessToken } = getParameters();
+  const { accessToken, sub } = getParameters();
   try {
     const response = await fetch(userInfoEndpoint, {
       method: 'GET',
@@ -27,8 +27,12 @@ const getUserInfo = async () => {
       return Promise.reject(responseJson);
     }
 
-    // Resuelvo promesa con la información del usuario.
-    return Promise.resolve(responseJson);
+    // Resuelvo promesa con la información del usuario si el sub
+    // correspondiente al token utilizado coincide con la respuesta
+    if (responseJson.sub === sub) {
+      return Promise.resolve(responseJson);
+    }
+    return Promise.reject(Error('Sub no coinciden'));
   } catch (error) {
     return Promise.reject(error);
   }

@@ -1,8 +1,10 @@
 import { Linking } from 'react-native';
 import { getParameters, clearParameters } from '../configuration';
 import { logoutEndpoint } from '../utils/endpoints';
+import { generateRandomState } from '../security';
 
 const logout = async () => {
+  generateRandomState(); // Se genera random state para la request
   const parameters = getParameters();
   const lowerCasePostLogoutRedirectUri = parameters.postLogoutRedirectUri.toLowerCase();
   const missingParamsMessage = 'Missing required parameter(s): ';
