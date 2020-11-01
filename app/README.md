@@ -49,19 +49,19 @@ const variables = {
     sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
   },
   production: {
-      sdkIdUClientId: "YOUR_CLIENT_ID",
-      sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
+    sdkIdUClientId: "YOUR_CLIENT_ID",
+    sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
   },
-  };
+};
 
-  const getEnvVariables = () => {
-    if (__DEV__) {
-      return variables.development; // return this if in development mode
-    }
-    return variables.production; // otherwise, return this
-  };
+const getEnvVariables = () => {
+  if (__DEV__) {
+    return variables.development; // return this if in development mode
+  }
+  return variables.production; // otherwise, return this
+};
 
-  export default getEnvVariables; // export a reference to the function
+export default getEnvVariables; // export a reference to the function
 ```
 
 Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es nuestro client id y client secret provisto por AGESIC. Este archivo .env no se versiona para proteger el client id y el client secret, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo.

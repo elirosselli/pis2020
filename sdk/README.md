@@ -12,7 +12,6 @@
 - [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
 - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
 
-
 ## Introducción
 
 En este documento se presentan las distintas funcionalidades brindadas por el componente SDK y una guía para lograr la integración del componente con la aplicación. Además, se exponen definiciones previas necesarias para entender el protocolo utilizado para la autenticación y autorización del usuario final.
@@ -116,7 +115,7 @@ Cabe destacar que ante un posible error la *response* generada por el OP contien
 | *error_description* | Opcional  | Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. |
 | *state* | Recomendado | El valor exacto recibido del RP en el parámetro *state* del *request* correspondiente.
 
-## Instalación y configuración 
+## Instalación y configuración
 
 ### Instalación
 
