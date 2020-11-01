@@ -350,4 +350,51 @@ describe('configuration module and make request type get user info integration',
     });
     expect.assertions(3);
   });
+
+  it('calls getUserInfo and fetch fails', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'code';
+    const redirectUri = 'redirectUri';
+    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    const error = Error('error');
+    fetch.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
 });

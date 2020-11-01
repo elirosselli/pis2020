@@ -288,4 +288,50 @@ describe('configuration module and make request type refresh token integration',
     });
     expect.assertions(3);
   });
+
+  it('calls refreshToken and fetch fails', async () => {
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+
+    setParameters({ clientId, clientSecret, refreshToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    const error = Error('error');
+    fetch.mockImplementation(() => Promise.reject(error));
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(error);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
 });
