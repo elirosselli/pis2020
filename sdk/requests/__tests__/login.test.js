@@ -59,23 +59,23 @@ describe('login', () => {
     expect.assertions(3);
   });
 
-  it('calls login with correct clientId and Linking.openUrl fails', async () => {
-    getParameters.mockReturnValue({
-      clientId: 'clientId',
-      redirectUri: 'redirectUri',
-      scope: 'scope',
-    });
-    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
-    mockAddEventListener.mockImplementation();
-    try {
-      await login();
-    } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
-    }
-    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(3);
-  });
+  // it('calls login with correct clientId and Linking.openUrl fails', async () => {
+  //   getParameters.mockReturnValue({
+  //     clientId: 'clientId',
+  //     redirectUri: 'redirectUri',
+  //     scope: 'scope',
+  //   });
+  //   mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+  //   mockAddEventListener.mockImplementation();
+  //   try {
+  //     await login();
+  //   } catch (error) {
+  //     expect(error).toMatchObject(Error("Couldn't make request"));
+  //   }
+  //   expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+  //   expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+  //   expect.assertions(3);
+  // });
 
   it('calls login with incorrect clientId', async () => {
     getParameters.mockReturnValue({

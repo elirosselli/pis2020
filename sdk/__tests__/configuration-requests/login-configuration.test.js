@@ -386,4 +386,53 @@ describe('configuration module and make request type login integration', () => {
     });
     expect.assertions(5);
   });
+
+  it('calls set parameters, makes a login request with correct parameters and Linking.openUrl fails', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
+    mockAddEventListener.mockImplementation();
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toMatchObject(Error("Couldn't make request"));
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect.assertions(5);
+  });
 });
