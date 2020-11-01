@@ -9,7 +9,7 @@
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-refreshtoken)
   - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-getuserinfo)
   - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-logout)
-- [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecución-de-pruebas-unitarias-y-linter)
+- [Ejecución de pruebas unitarias y *linter*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
 
 
 ## Introducción
@@ -300,7 +300,7 @@ En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la prome
 
 ## Ejecución de pruebas unitarias y *linter*
 
-Los comandos explicados a continuación pueden encontrarse definidos en el archivo `package.json`, en la sección *scripts*.
+Los comandos explicados a continuación se encuentran definidos en el archivo `package.json`, en la sección *scripts*.
 
 ### Pruebas unitarias
 
@@ -318,7 +318,7 @@ Se observa que este comando también ejecuta las pruebas unitarias y devuelve su
 
 Para ejecutar el *linter* se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
-`npm run lint`
+`npm run linter`
 
 Las reglas que aplica el *linter* se encuentran definidas en los archivos `.eslintrc.json` y `.prettierrc.js`.
 

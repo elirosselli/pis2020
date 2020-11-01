@@ -42,16 +42,16 @@ Este comando causa que cuando se ejecute wml, este detecte los cambios en la car
 
 Primero, debe crear un archivo `env.js` en esta carpeta (app), con el siguiente contenido:
 
-```
+```javascript
 const variables = {
-    development: {
+  development: {
+    sdkIdUClientId: "YOUR_CLIENT_ID",
+    sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
+  },
+  production: {
       sdkIdUClientId: "YOUR_CLIENT_ID",
       sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
-    },
-    production: {
-        sdkIdUClientId: "YOUR_CLIENT_ID",
-        sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
-    },
+  },
   };
 
   const getEnvVariables = () => {
