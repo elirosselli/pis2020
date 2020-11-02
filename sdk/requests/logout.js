@@ -26,9 +26,9 @@ const logout = async () => {
           if (state) return Promise.resolve(state[1]);
           return Promise.resolve();
         }
-        return Promise.reject(Error('Invalid post logout redirect uri'));
+        return Promise.reject(Error('Invalid returned url'));
       }
-      return Promise.reject();
+      return Promise.reject(Error('Response status not OK'));
     }
     if (parameters.postLogoutRedirectUri)
       return Promise.reject(Error(`${missingParamsMessage}idTokenHint`));
