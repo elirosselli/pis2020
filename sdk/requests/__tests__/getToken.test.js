@@ -75,39 +75,28 @@ describe('getToken', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'incorrectCode',
     });
-    const error = 'invalid_grant';
-    const errorDescription =
-      'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
 
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        json: () =>
-          Promise.resolve({
-            error,
-            error_description: errorDescription,
-          }),
+        json: () => Promise.resolve(ERRORS.INVALID_GRANT), // TODO REVISAR
       }),
     );
 
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toStrictEqual({
-        error,
-        error_description: errorDescription,
-      });
+      expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });
 
   it('calls getToken and fetch fails', async () => {
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_CLIENT)); // TODO REVISAR
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_CLIENT);
     }
     expect.assertions(1);
   });

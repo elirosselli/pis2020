@@ -42,6 +42,7 @@ const App = () => {
   const [scopeSel, setScopeSel] = useState('');
   const [updated, setUpdated] = useState(0);
   const [initialized, setInitialized] = useState(0);
+  const [refreshTokenLoading, setRefreshTokenLoading] = useState(false);
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
@@ -101,7 +102,7 @@ const App = () => {
                       sdkIdUClientSecret,
                       'sdkIdU.testing://redirect',
                     );
-                    setInitialized(1)
+                    setInitialized(1);
                   } catch (error) {
                     console.log(error);
                     setInitialized(-1);
@@ -230,8 +231,16 @@ const App = () => {
                   <TouchableOpacity
                     style={[styles.infoBtn]}
                     onPress={async () => {
-                      setToken(await getToken());
+                      try {
+                        const respGetToken = await getToken();
+                        setToken(respGetToken.accessToken);
+                      } catch (err) {
+                        console.log(err.errorCode, err.errorDescription);
+                      }
                     }}
+                    // onPress={async () => {
+                    //   setToken(await getToken());
+                    // }}
                   >
                     <Text style={styles.infoBtnText}>GET TOKEN</Text>
                   </TouchableOpacity>
@@ -257,8 +266,16 @@ const App = () => {
                           justifyContent: 'center',
                         }}
                         onPress={async () => {
-                          setToken(await refreshToken());
+                          try {
+                            setRefreshTokenLoading(true);
+                            const respRefreshToken = await refreshToken();
+                            setToken(respRefreshToken.refreshToken);
+                            setRefreshTokenLoading(false);
+                          } catch (err) {
+                            console.log(err.errorCode, err.errorDescription);
+                          }
                         }}
+                        disabled={refreshTokenLoading}
                       >
                         <Image
                           style={{ height: 15, width: 15, alignSelf: 'center' }}
@@ -287,7 +304,11 @@ const App = () => {
                   <TouchableOpacity
                     style={styles.infoBtn}
                     onPress={async () => {
-                      setUserInfo(await getUserInfo());
+                      try {
+                        setUserInfo(await getUserInfo());
+                      } catch (err) {
+                        console.log(err);
+                      }
                     }}
                   >
                     <Text style={styles.infoBtnText}>GET USER INFO</Text>

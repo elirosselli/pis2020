@@ -1,6 +1,6 @@
 import makeRequest from '../../requests';
 import { getToken } from '../index';
-import { REQUEST_TYPES } from '../../utils/constants';
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 
 jest.mock('../../requests');
 
@@ -17,11 +17,11 @@ describe('getToken', () => {
   });
 
   it('calls getToken incorrectly', async () => {
-    makeRequest.mockReturnValue(Promise.reject(Error()));
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_GRANT)); // ACA ESTA BIEN O ES INVALID_CLIENT
     try {
       await getToken();
     } catch (error) {
-      expect(error).toMatchObject(Error());
+      expect(error).toBe(ERRORS.INVALID_GRANT);
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_TOKEN);

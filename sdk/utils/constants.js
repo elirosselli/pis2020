@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
@@ -15,6 +16,9 @@ const errorCodes = {
   accessDenied: 'access_denied',
   invalidAuthorizationCode: 'gubuy_invalid_auhtorization_code',
   failedRequest: 'failed_request',
+  invalidGrant: 'invalid_grant',
+  invalidToken: 'invalid_token',
+  invalidClient: 'invalid_client',
 };
 
 const errorDescriptions = {
@@ -26,12 +30,34 @@ const errorDescriptions = {
   accessDenied: 'The resource owner or authorization server denied the request',
   invalidAuthorizationCode: 'Invalid authorization code',
   failedRequest: "Couldn't make request",
+  invalidGrant:
+    'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+  invalidToken:
+    'The access token provided is expired, revoked, malformed, or invalid for other reasons',
+  invalidClient:
+    'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
 };
 
-const noError = {
-  description: errorDescriptions.noError,
-  code: errorCodes.noError,
-};
+class ErrorNoError extends Error {
+  constructor(
+    errorCode = errorCodes.noError,
+    errorDescription = errorDescriptions.noError,
+    ...params
+  ) {
+    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre
+    super(...params);
+
+    // Mantiene un seguimiento adecuado de la pila para el lugar donde se lanzó nuestro error (solo disponible en V8)\q
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorNoError);
+    }
+
+    // Información de depuración personalizada
+    this.name = 'noError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
 
 class ErrorInvalidClientId extends Error {
   constructor(
@@ -39,69 +65,192 @@ class ErrorInvalidClientId extends Error {
     errorDescription = errorDescriptions.invalidClientId,
     ...params
   ) {
-    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre
     super(...params);
 
-    // Mantiene un seguimiento adecuado de la pila para el lugar donde se lanzó nuestro error (solo disponible en V8)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ErrorInvalidClientId);
     }
 
     this.name = 'invalidClientId';
-    // Información de depuración personalizada
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
 }
 
-// const invalidClientId = Error("descripcion");
-// invalidClientId.name = errorCodes.invalidClientId;
-// invalidClientId.state = "hola";
+class ErrorInvalidRedirectUri extends Error {
+  constructor(
+    errorCode = errorCodes.invalidRedirectUri,
+    errorDescription = errorDescriptions.invalidRedirectUri,
+    ...params
+  ) {
+    super(...params);
 
-// const invalidClientId = Error({
-//   description: errorDescriptions.invalidClientId,
-//   code: errorCodes.invalidClientId,
-// });
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidRedirectUri);
+    }
 
-const invalidRedirectUri = Error({
-  description: errorDescriptions.invalidRedirectUri,
-  code: errorCodes.invalidRedirectUri,
-});
+    this.name = 'invalidRedirectUri';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
 
-const invalidClientSecret = Error({
-  description: errorDescriptions.invalidClientSecret,
-  code: errorCodes.invalidClientSecret,
-});
+class ErrorInvalidClientSecret extends Error {
+  constructor(
+    errorCode = errorCodes.invalidClientSecret,
+    errorDescription = errorDescriptions.invalidClientSecret,
+    ...params
+  ) {
+    super(...params);
 
-const invalidPostLogoutRedirecrtUri = Error({
-  description: errorDescriptions.invalidPostLogoutRedirecrtUri,
-  code: errorCodes.invalidPostLogoutRedirecrtUri,
-});
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidClientSecret);
+    }
 
-const accessDenied = Error({
-  description: errorDescriptions.accessDenied,
-  code: errorCodes.accessDenied,
-});
+    this.name = 'invalidClientSecret';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
 
-const invalidAuthorizationCode = Error({
-  description: errorDescriptions.invalidAuthorizationCode,
-  code: errorCodes.invalidAuthorizationCode,
-});
+class ErrorInvalidPostLogoutRedirecrtUri extends Error {
+  constructor(
+    errorCode = errorCodes.invalidPostLogoutRedirecrtUri,
+    errorDescription = errorDescriptions.invalidPostLogoutRedirecrtUri,
+    ...params
+  ) {
+    super(...params);
 
-const failedRequest = Error({
-  description: errorDescriptions.failedRequest,
-  code: errorCodes.failedRequest,
-});
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidPostLogoutRedirecrtUri);
+    }
+
+    this.name = 'invalidPostLogoutRedirecrtUri';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorAccessDenied extends Error {
+  constructor(
+    errorCode = errorCodes.accessDenied,
+    errorDescription = errorDescriptions.accessDenied,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorAccessDenied);
+    }
+
+    this.name = 'accessDenied';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidAuthorizationCode extends Error {
+  constructor(
+    errorCode = errorCodes.invalidAuthorizationCode,
+    errorDescription = errorDescriptions.invalidAuthorizationCode,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidAuthorizationCode);
+    }
+
+    this.name = 'invalidAuthorizationCode';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorFailedRequest extends Error {
+  constructor(
+    errorCode = errorCodes.failedRequest,
+    errorDescription = errorDescriptions.failedRequest,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorFailedRequest);
+    }
+
+    this.name = 'failedRequest';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidGrant extends Error {
+  constructor(
+    errorCode = errorCodes.invalidGrant,
+    errorDescription = errorDescriptions.invalidGrant,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidGrant);
+    }
+
+    this.name = 'invalidGrant';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidToken extends Error {
+  constructor(
+    errorCode = errorCodes.invalidToken,
+    errorDescription = errorDescriptions.invalidToken,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidToken);
+    }
+
+    this.name = 'invalidToken';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidClient extends Error {
+  constructor(
+    errorCode = errorCodes.invalidClient,
+    errorDescription = errorDescriptions.invalidClient,
+    ...params
+  ) {
+    super(...params);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ErrorInvalidClient);
+    }
+
+    this.name = 'invalidClient';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
 
 const ERRORS = {
-  NO_ERROR: noError,
+  NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
-  INVALID_REDIRECT_URI: invalidRedirectUri,
-  INVALID_POST_LOGOUT_REDIRECT_URI: invalidPostLogoutRedirecrtUri,
-  INVALID_CLIENT_SECRET: invalidClientSecret,
-  ACCESS_DENIED: accessDenied,
-  INVALID_AUTHORIZATION_CODE: invalidAuthorizationCode,
-  FAILED_REQUEST: failedRequest,
+  INVALID_REDIRECT_URI: new ErrorInvalidRedirectUri(),
+  INVALID_CLIENT_SECRET: new ErrorInvalidClientSecret(),
+  INVALID_POST_LOGOUT_REDIRECT_URI: new ErrorInvalidPostLogoutRedirecrtUri(),
+  ACCESS_DENIED: new ErrorAccessDenied(),
+  INVALID_AUTHORIZATION_CODE: new ErrorInvalidAuthorizationCode(),
+  FAILED_REQUEST: new ErrorFailedRequest(),
+  INVALID_GRANT: new ErrorInvalidGrant(),
+  INVALID_TOKEN: new ErrorInvalidToken(),
+  INVALID_CLIENT: new ErrorInvalidClient(),
 };
 
 export { REQUEST_TYPES, ERRORS };

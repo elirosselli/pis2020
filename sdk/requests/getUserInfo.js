@@ -2,9 +2,13 @@ import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
+import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
   const { accessToken } = getParameters();
+  if (!accessToken) {
+    return Promise.reject(ERRORS.INVALID_TOKEN);
+  }
   try {
     const response = await fetch(userInfoEndpoint, {
       method: 'GET',

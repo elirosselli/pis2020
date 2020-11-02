@@ -1,7 +1,12 @@
 import makeRequest from '../requests';
 import { REQUEST_TYPES, ERRORS } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
-import { setParameters } from '../configuration';
+import {
+  setParameters,
+  getParameters,
+  clearParameters,
+  resetParameters,
+} from '../configuration';
 
 const initialize = (
   redirectUri,
@@ -45,4 +50,15 @@ const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
 const getUserInfo = () => makeRequest(REQUEST_TYPES.GET_USER_INFO);
 
-export { initialize, login, logout, getToken, getUserInfo, refreshToken };
+export {
+  initialize,
+  login,
+  logout,
+  getToken,
+  getUserInfo,
+  refreshToken,
+  setParameters,
+  getParameters,
+  clearParameters,
+  resetParameters,
+};

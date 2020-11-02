@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../../utils/endpoints';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
+import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
@@ -69,38 +70,46 @@ describe('getUserInfo', () => {
       code: 'incorrectAccesToken',
     });
 
-    const error = 'invalid_token';
-    const errorDescription = 'The Access Token expired';
-
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        json: () =>
-          Promise.resolve({
-            error,
-            error_description: errorDescription,
-          }),
+        json: () => Promise.resolve(ERRORS.INVALID_TOKEN),
       }),
     );
 
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toStrictEqual({
-        error,
-        error_description: errorDescription,
-      });
+      expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
     expect.assertions(1);
   });
 
   it('calls getUserInfo and fetch fails', async () => {
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_TOKEN));
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getUserInfo with empty access Token', async () => {
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const redirectUri = 'uri';
+    getParameters.mockReturnValue({
+      clientId: '898562',
+      clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
+      accessToken: '',
+      redirectUri,
+      code,
+    });
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
     expect.assertions(1);
   });

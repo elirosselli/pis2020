@@ -1,8 +1,6 @@
 import makeRequest from '../../requests';
 import { refreshToken } from '../index';
-import { REQUEST_TYPES } from '../../utils/constants';
-
-const requestFailedMessage = "Couldn't make request";
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 
 jest.mock('../../requests');
 
@@ -21,13 +19,11 @@ describe('refreshToken', () => {
   });
 
   it('calls refreshToken incorrectly', async () => {
-    makeRequest.mockReturnValue(
-      Promise.reject(new Error(requestFailedMessage)),
-    );
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_GRANT));
     try {
       await refreshToken();
     } catch (error) {
-      expect(error).toMatchObject(Error(requestFailedMessage));
+      expect(error).toBe(ERRORS.INVALID_GRANT);
     }
 
     expect(makeRequest).toHaveBeenCalledTimes(1);

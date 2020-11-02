@@ -56,7 +56,7 @@ describe('logout', () => {
     const response = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint2);
-    expect(response.error).toMatchObject(ERRORS.NO_ERROR);
+    expect(response.errorCode).toBe(ERRORS.NO_ERROR.errorCode);
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {

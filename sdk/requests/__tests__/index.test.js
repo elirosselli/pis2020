@@ -1,5 +1,5 @@
 import makeRequest from '../index';
-import { REQUEST_TYPES } from '../../utils/constants';
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 import login from '../login';
 import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';
@@ -42,12 +42,13 @@ describe('getToken', () => {
   });
 
   it('calls getToken and fails', async () => {
-    const error = Error('error');
-    getTokenOrRefresh.mockImplementation(() => Promise.reject(error));
+    getTokenOrRefresh.mockImplementation(() =>
+      Promise.reject(ERRORS.INVALID_GRANT),
+    );
     try {
       await makeRequest(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });
@@ -62,12 +63,13 @@ describe('refreshToken', () => {
   });
 
   it('calls refreshToken and fails', async () => {
-    const error = Error('error');
-    getTokenOrRefresh.mockImplementation(() => Promise.reject(error));
+    getTokenOrRefresh.mockImplementation(() =>
+      Promise.reject(ERRORS.INVALID_GRANT),
+    );
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });
@@ -100,13 +102,12 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo and fails', async () => {
-    const error = Error('An error occurred');
-    getUserInfo.mockImplementation(() => Promise.reject(error));
+    getUserInfo.mockImplementation(() => Promise.reject(ERRORS.INVALID_TOKEN));
 
     try {
       await makeRequest(REQUEST_TYPES.GET_USER_INFO);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
     expect.assertions(1);
   });

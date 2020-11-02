@@ -29,7 +29,11 @@ const logout = async () => {
     //  Si las url no coinciden, se rechaza la promise con un error.
     if (urlCheck === lowerCasePostLogoutRedirectUri) {
       clearParameters();
-      resolveFunction({ error: ERRORS.NO_ERROR });
+      resolveFunction({
+        name: 'Success',
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+      });
     } else if (
       urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
     ) {

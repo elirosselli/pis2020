@@ -12,7 +12,7 @@ jest.mock('react-native-ssl-pinning', () => ({
 
 describe('refreshToken', () => {
   it('calls refreshToken with correct refreshToken', async () => {
-    // Mockear la funcion fetch
+  // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -40,7 +40,7 @@ describe('refreshToken', () => {
     getParameters.mockReturnValue({
       clientId,
       clientSecret,
-      refreshToken,
+      refreshToken: '541a156232ac43c6b719c57b7217c9ea',
       postLogoutRedirectUri,
       redirectUri,
       code: 'correctCode',
@@ -86,28 +86,17 @@ describe('refreshToken', () => {
       code: 'incorrectCode',
     });
 
-    const error = 'invalid_grant';
-    const errorDescription =
-      'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
-
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        json: () =>
-          Promise.resolve({
-            error,
-            error_description: errorDescription,
-          }),
+        json: () => Promise.resolve(ERRORS.INVALID_GRANT),
       }),
     );
 
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toStrictEqual({
-        error,
-        error_description: errorDescription,
-      });
+      expect(err).toBe(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });
@@ -124,7 +113,7 @@ describe('refreshToken', () => {
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toMatchObject(ERRORS.INVALID_CLIENT_ID);
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
     }
     expect.assertions(1);
   });
@@ -137,12 +126,11 @@ describe('refreshToken', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'incorrectCode',
     });
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_GRANT));
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });

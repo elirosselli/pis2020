@@ -17,7 +17,8 @@ const getParameters = () => parameters;
 
 const setParameters = params => {
   Object.keys(params).forEach(key => {
-    if (params[key] !== '') parameters[key] = params[key];
+    // if (params[key] !== '') parameters[key] = params[key];
+    parameters[key] = params[key];
   });
 };
 

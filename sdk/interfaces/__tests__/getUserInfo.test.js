@@ -1,6 +1,6 @@
 import { getUserInfo } from '../index';
 import makeRequest from '../../requests';
-import { REQUEST_TYPES } from '../../utils/constants';
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 
 jest.mock('../../requests');
 
@@ -25,12 +25,11 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo and fails', async () => {
-    const error = Error('error');
-    makeRequest.mockReturnValue(Promise.reject(error));
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_TOKEN));
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_USER_INFO);

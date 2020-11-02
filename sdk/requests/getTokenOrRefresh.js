@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
 import { ERRORS, REQUEST_TYPES } from '../utils/constants';
-import { getTokenOrRefreshErrors } from '../utils/helpers';
+import { initializeErrors } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
   const parameters = getParameters();
@@ -12,19 +12,24 @@ const getTokenOrRefresh = async type => {
     !parameters.clientId ||
     !parameters.redirectUri ||
     !parameters.postLogoutRedirectUri ||
-    !parameters.clientSecret ||
-    !parameters.code
+    !parameters.clientSecret
   ) {
-    // TODO: se deberia chequear que al hacer refresh token (segun el parametro type) el parametro refresh token no sea vacio
-    const respError = getTokenOrRefreshErrors(
+    const respError = initializeErrors(
       parameters.clientId,
       parameters.redirectUri,
       parameters.postLogoutRedirectUri,
       parameters.clientSecret,
-      parameters.code,
     );
     return Promise.reject(respError);
   }
+
+  if (type === REQUEST_TYPES.GET_TOKEN && !parameters.code) {
+    return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
+  }
+
+  if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken)
+    return Promise.reject(ERRORS.INVALID_GRANT);
+
   // Codificar en base64 el clientId y el clientSecret,
   // siguiendo el esquema de autenticación HTTP Basic Auth.
   const encodedCredentials = encode(
@@ -72,7 +77,10 @@ const getTokenOrRefresh = async type => {
       tokenType: responseJson.token_type,
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
+      // Se borra el parámetro code una vez ejecutado el getToken
+      code: '',
     });
+    console.log(getParameters());
     // Además se retorna el access_token al RP
     return Promise.resolve({
       name: 'Success',

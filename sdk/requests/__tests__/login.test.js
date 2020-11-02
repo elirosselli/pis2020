@@ -38,7 +38,7 @@ describe('login', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect(resp.code).toBe('35773ab93b5b4658b81061ce3969efc2');
-    expect(resp.message).toMatchObject(ERRORS.NO_ERROR);
+    expect(resp.errorCode).toBe(ERRORS.NO_ERROR.errorCode);
   });
 
   it('calls login with correct clientId, correct redirectUri and return invalid code', async () => {
@@ -58,7 +58,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.INVALID_AUTHORIZATION_CODE);
+      expect(error).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
@@ -78,7 +78,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
@@ -93,7 +93,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.INVALID_CLIENT_ID);
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(2);
@@ -108,7 +108,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.INVALID_REDIRECT_URI);
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(2);
@@ -124,7 +124,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+      expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(2);
@@ -141,7 +141,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.INVALID_CLIENT_SECRET);
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
     expect.assertions(2);
@@ -165,7 +165,7 @@ describe('login', () => {
     try {
       await login();
     } catch (error) {
-      expect(error).toMatchObject(ERRORS.ACCESS_DENIED);
+      expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);

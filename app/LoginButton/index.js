@@ -30,11 +30,11 @@ const LoginButton = ({ handleCode, notActive }) => {
   };
   const handleLogin = async () => {
     try {
-      const code = await login();
-      handleCode(code);
+      const respLogin = await login();
+      handleCode(respLogin.code);
       // Guardo Info de usuario en la APP
     } catch (err) {
-      console.log(err);
+      console.log(err.errorCode, err.errorDescription);
       const parameters = getParameters();
       console.log(parameters);
     }

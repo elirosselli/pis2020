@@ -26,7 +26,7 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
-    expect(errorResp.message).toMatchObject(ERRORS.NO_ERROR);
+    expect(errorResp.message).toBe(ERRORS.NO_ERROR);
     const responseParameters = getParameters();
     expect(responseParameters.redirectUri).toStrictEqual(
       parameters.redirectUri,
@@ -53,8 +53,7 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
-    console.log(errorResp.code);
-    expect(errorResp).toMatchObject(ERRORS.INVALID_CLIENT_ID);
+    expect(errorResp).toBe(ERRORS.INVALID_CLIENT_ID);
     const responseParameters = getParameters();
     // Serán vacíos ya que no se setean
     expect(responseParameters.redirectUri).toStrictEqual('');
@@ -76,7 +75,7 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
-    expect(errorResp).toMatchObject(ERRORS.INVALID_REDIRECT_URI);
+    expect(errorResp).toBe(ERRORS.INVALID_REDIRECT_URI);
     const responseParameters = getParameters();
     // Serán vacíos ya que no se setean
     expect(responseParameters.redirectUri).toStrictEqual('');
@@ -98,9 +97,7 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
-    expect(errorResp).toMatchObject(
-      ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-    );
+    expect(errorResp).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
     const responseParameters = getParameters();
     // Serán vacíos ya que no se setean
     expect(responseParameters.redirectUri).toStrictEqual('');

@@ -23,7 +23,7 @@ const initializeErrors = (
   return response;
 };
 
-const getTokenOrRefreshErrors = (
+const getTokenErrors = (
   clientId,
   redirectUri,
   postLogoutRedirectUri,
@@ -43,4 +43,4 @@ const getTokenOrRefreshErrors = (
   return response;
 };
 
-export { initializeErrors, getTokenOrRefreshErrors };
+export { initializeErrors, getTokenErrors };
