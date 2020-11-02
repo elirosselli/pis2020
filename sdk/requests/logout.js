@@ -5,9 +5,9 @@ import { getParameters, clearParameters } from '../configuration';
 
 const logout = async () => {
   const parameters = getParameters();
-  const logoutEndpointWithParams = `${logoutEndpoint}?id_token_hint=${parameters.idToken}&post_logout_redirect_uri=${parameters.postLogoutRedirectUri}&state=${parameters.state}`;
+  // const logoutEndpointWithParams = `${logoutEndpoint}?id_token_hint=${parameters.idToken}&post_logout_redirect_uri=${parameters.postLogoutRedirectUri}&state=${parameters.state}`;
   try {
-    const response = await fetch(logoutEndpointWithParams, {
+    const response = await fetch(logoutEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
@@ -20,7 +20,7 @@ const logout = async () => {
 
     if (parameters.postLogoutRedirectUri && parameters.idToken) {
       if (status === 200) {
-        if (urlCheck === logoutEndpointWithParams) {
+        if (urlCheck === logoutEndpoint()) {
           const state = urlCheck.match(/&state=([^&]+)/);
           clearParameters();
           if (state) return Promise.resolve(state[1]);
