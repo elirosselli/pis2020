@@ -27,12 +27,10 @@ const logout = async () => {
     //  promise, retornando si corresponde el parámetro state.
     //  Si las url no coinciden, se rechaza la promise con un error.
     if (urlCheck === lowerCasePostLogoutRedirectUri) {
-      clearParameters();
       resolveFunction();
     } else if (
       urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
     ) {
-      clearParameters();
       const state = urlCheck.match(/\?state=([^&]+)/);
       resolveFunction(state[1]);
     } else rejectFunction(Error('Invalid post logout redirect uri'));
@@ -45,9 +43,10 @@ const logout = async () => {
     Linking.addEventListener('url', handleOpenUrl);
     // Si hay un idToken y una postLogoutRedirectUri setteados,
     // se abre el browser para realizar el logout con idUruguay.
-    if (parameters.idToken && parameters.postLogoutRedirectUri)
+    if (parameters.idToken && parameters.postLogoutRedirectUri) {
       await Linking.openURL(logoutEndpoint());
-    else {
+      clearParameters();
+    } else {
       // En caso de error, se elimina el handler y rechaza la promise.
       Linking.removeEventListener('url', handleOpenUrl);
       if (parameters.idToken)
