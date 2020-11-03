@@ -17,7 +17,7 @@ const getParameters = () => parameters;
 
 const setParameters = params => {
   Object.keys(params).forEach(key => {
-    // if (params[key] !== '') parameters[key] = params[key];
+    if (params[key] !== '') parameters[key] = params[key];
     parameters[key] = params[key];
   });
 };
@@ -40,4 +40,14 @@ const resetParameters = () => {
   });
 };
 
-export { getParameters, setParameters, clearParameters, resetParameters };
+const eraseCode = () => {
+  parameters.code = '';
+};
+
+export {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+  eraseCode,
+};

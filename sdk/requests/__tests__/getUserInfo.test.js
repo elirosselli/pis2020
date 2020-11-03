@@ -53,6 +53,10 @@ describe('getUserInfo', () => {
       },
     });
     expect(response).toStrictEqual({
+      name: 'Success',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -65,15 +69,22 @@ describe('getUserInfo', () => {
 
   it('calls getUserInfo with incorrect access token', async () => {
     getParameters.mockReturnValue({
-      clientId: '',
-      clientSecret: '',
-      code: 'incorrectAccesToken',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'incorrectAccessToken',
     });
 
     fetch.mockImplementation(() =>
       Promise.resolve({
-        status: 400,
-        json: () => Promise.resolve(ERRORS.INVALID_TOKEN),
+        status: 401,
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_token',
+            error_description:
+              'The access token provided is expired, revoked, malformed, or invalid for other reasons',
+          }),
       }),
     );
 
@@ -85,12 +96,41 @@ describe('getUserInfo', () => {
     expect.assertions(1);
   });
 
-  it('calls getUserInfo and fetch fails', async () => {
-    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_TOKEN));
+  it('calls getUserInfo and returns some error', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'correctAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'some_error',
+            error_description:
+              'This is some error, different from invalid_token',
+          }),
+      }),
+    );
+
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_TOKEN);
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getUserInfo and fetch fails', async () => {
+    fetch.mockImplementation(() => Promise.reject());
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

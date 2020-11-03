@@ -1,6 +1,7 @@
 import { initialize } from '../index';
 import { getParameters, resetParameters } from '../../configuration';
 import { ERRORS } from '../../utils/constants';
+import { initializeErrors } from '../../utils/helpers';
 
 jest.mock('../../requests');
 afterEach(() => jest.clearAllMocks());
@@ -104,5 +105,43 @@ describe('initialize', () => {
     expect(responseParameters.clientId).toStrictEqual('');
     expect(responseParameters.clientSecret).toStrictEqual('');
     expect(responseParameters.postLogoutRedirectUri).toStrictEqual('');
+  });
+
+  it('returns error when clientSecret is empty', () => {
+    const parameters = {
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+    };
+    const errorResp = initialize(
+      parameters.redirectUri,
+      parameters.clientId,
+      parameters.clientSecret,
+      parameters.postLogoutRedirectUri,
+    );
+    expect(errorResp).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    const responseParameters = getParameters();
+    // Serán vacíos ya que no se setean
+    expect(responseParameters.redirectUri).toStrictEqual('');
+    expect(responseParameters.clientId).toStrictEqual('');
+    expect(responseParameters.clientSecret).toStrictEqual('');
+    expect(responseParameters.postLogoutRedirectUri).toStrictEqual('');
+  });
+
+  it('returns error with all parameters empty', () => {
+    const parameters = {
+      redirectUri: 'asdasd',
+      clientId: 'asdad',
+      clientSecret: 'asda',
+      postLogoutRedirectUri: 'asdad',
+    };
+    const errorResp = initializeErrors(
+      parameters.redirectUri,
+      parameters.clientId,
+      parameters.clientSecret,
+      parameters.postLogoutRedirectUri,
+    );
+    expect(errorResp).toBe(undefined);
   });
 });

@@ -17,11 +17,11 @@ describe('getToken', () => {
   });
 
   it('calls getToken incorrectly', async () => {
-    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_GRANT)); // ACA ESTA BIEN O ES INVALID_CLIENT
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await getToken();
     } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_GRANT);
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_TOKEN);

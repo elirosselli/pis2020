@@ -27,6 +27,8 @@ const login = async () => {
       setParameters({ code: code[1] });
       // Se retorna el código y el error correspondiente (en este caso no hay error)
       resolveFunction({
+        name: 'Success',
+        message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],

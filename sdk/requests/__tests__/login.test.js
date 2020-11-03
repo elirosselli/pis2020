@@ -85,7 +85,7 @@ describe('login', () => {
     expect.assertions(3);
   });
 
-  it('calls login with incorrect clientId', async () => {
+  it('calls login with empty clientId', async () => {
     getParameters.mockReturnValue({
       clientId: '',
     });
@@ -99,7 +99,7 @@ describe('login', () => {
     expect.assertions(2);
   });
 
-  it('calls login with incorrect redirectUri', async () => {
+  it('calls login with empty redirectUri', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: '',
@@ -114,7 +114,7 @@ describe('login', () => {
     expect.assertions(2);
   });
 
-  it('calls login with incorrect postLogoutRedirectUri', async () => {
+  it('calls login with empty postLogoutRedirectUri', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
@@ -130,7 +130,7 @@ describe('login', () => {
     expect.assertions(2);
   });
 
-  it('calls login with incorrect clientSecret', async () => {
+  it('calls login with empty clientSecret', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',

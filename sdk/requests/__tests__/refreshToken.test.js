@@ -12,7 +12,7 @@ jest.mock('react-native-ssl-pinning', () => ({
 
 describe('refreshToken', () => {
   it('calls refreshToken with correct refreshToken', async () => {
-  // Mockear la funcion fetch
+    // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -77,26 +77,60 @@ describe('refreshToken', () => {
     expect(response.message).toBe(ERRORS.NO_ERROR);
   });
 
-  it('calls refreshToken with incorrect clientId or clientSecret or refreshToken', async () => {
+  it('calls refreshToken with incorrect clientId or clientSecret', async () => {
     getParameters.mockReturnValue({
       clientId: 'sdasd',
       clientSecret: 'asdasd',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'incorrectCode',
+      refreshToken: 'correctRefreshToken',
     });
 
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        json: () => Promise.resolve(ERRORS.INVALID_GRANT),
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_client',
+            error_description:
+              'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
+          }),
       }),
     );
 
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
+      expect(err).toBe(ERRORS.INVALID_CLIENT);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls refreshToken with invalid refresh token', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      refreshToken: 'incorrectRefreshToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_grant',
+            error_description:
+              'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+          }),
+      }),
+    );
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
     expect.assertions(1);
   });
@@ -104,10 +138,9 @@ describe('refreshToken', () => {
   it('calls refreshToken with empty clientId', async () => {
     getParameters.mockReturnValue({
       clientId: '',
-      clientSecret: 'asdasd',
+      clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'incorrectCode',
     });
 
     try {
@@ -118,19 +151,97 @@ describe('refreshToken', () => {
     expect.assertions(1);
   });
 
+  it('calls refreshToken with empty clientSecret', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: '',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls refreshToken with empty redirectUri', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls refreshToken with empty refreshToken', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      refreshToken: '',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_GRANT);
+    }
+    expect.assertions(1);
+  });
+
   it('calls refreshToken and fetch fails', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       clientSecret: 'asdasd',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'incorrectCode',
+      refreshToken: 'correctRefreshToken',
     });
-    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_GRANT));
+    fetch.mockImplementation(() => Promise.reject());
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls refreshToken and returns some error', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      refreshToken: 'correctRefreshToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'some_error',
+            error_description:
+              'This is some error, different from invalid_client or invalid_grant',
+          }),
+      }),
+    );
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

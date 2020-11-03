@@ -3,6 +3,7 @@ import {
   setParameters,
   clearParameters,
   resetParameters,
+  eraseCode,
 } from '../index';
 
 describe('configuration module', () => {
@@ -153,6 +154,52 @@ describe('configuration module', () => {
       postLogoutRedirectUri: '',
       state: '',
       scope: '',
+    });
+  });
+  it('eraseCode works correctly', () => {
+    const parameters7 = {
+      redirectUri: 'as',
+      clientId: 'as',
+      clientSecret: 'as',
+      code: 'as',
+      accessToken: 'as',
+      refreshToken: 'as',
+      tokenType: 'as',
+      expiresIn: 'as',
+      idToken: 'as',
+      postLogoutRedirectUri: 'as',
+      state: 'as',
+      scope: 'as',
+    };
+    setParameters(parameters7);
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'as',
+      clientId: 'as',
+      clientSecret: 'as',
+      code: 'as',
+      accessToken: 'as',
+      refreshToken: 'as',
+      tokenType: 'as',
+      expiresIn: 'as',
+      idToken: 'as',
+      postLogoutRedirectUri: 'as',
+      state: 'as',
+      scope: 'as',
+    });
+    eraseCode();
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'as',
+      clientId: 'as',
+      clientSecret: 'as',
+      code: '',
+      accessToken: 'as',
+      refreshToken: 'as',
+      tokenType: 'as',
+      expiresIn: 'as',
+      idToken: 'as',
+      postLogoutRedirectUri: 'as',
+      state: 'as',
+      scope: 'as',
     });
   });
 });

@@ -17,24 +17,30 @@ const getUserInfo = async () => {
         certs: ['certificate'],
       },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer pepe`,
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         Accept: 'application/json',
       },
     });
     const { status } = response;
     const responseJson = await response.json();
-
+    console.log(responseJson);
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      return Promise.reject(responseJson);
+      if (status === 401) return Promise.reject(ERRORS.INVALID_TOKEN); // TODO: revisar si hay otros errores con 401, y si hay obtener el dato del header
+      return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
     // Resuelvo promesa con la información del usuario.
+    responseJson.name = 'Success';
+    responseJson.message = ERRORS.NO_ERROR;
+    responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
+    responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
     return Promise.resolve(responseJson);
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(ERRORS.FAILED_REQUEST);
   }
 };
 

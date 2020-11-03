@@ -23,24 +23,5 @@ const initializeErrors = (
   return response;
 };
 
-const getTokenErrors = (
-  clientId,
-  redirectUri,
-  postLogoutRedirectUri,
-  clientSecret,
-  code,
-) => {
-  let response = initializeErrors(
-    clientId,
-    redirectUri,
-    postLogoutRedirectUri,
-    clientSecret,
-  );
-  if (!response && !code) {
-    // Si el client secret es vacio se retorna el error correspondiente
-    response = ERRORS.INVALID_AUTHORIZATION_CODE;
-  }
-  return response;
-};
-
-export { initializeErrors, getTokenErrors };
+// eslint-disable-next-line import/prefer-default-export
+export { initializeErrors };

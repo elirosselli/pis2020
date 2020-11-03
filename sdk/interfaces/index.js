@@ -18,12 +18,13 @@ const initialize = (
   let response;
   if (clientId && redirectUri && clientSecret && postLogoutRedirectUri) {
     // Si los parametros clientId, redirectUri y postLogoutRedirectUri no son vacíos se hace el set de los parametros
+    const scopeToSet = scope || ''; // Si no se pasa el scope como parametro, se toma como undefined, entonces se debe asignar el string vacio
     setParameters({
       redirectUri,
       clientId,
       clientSecret,
       postLogoutRedirectUri,
-      scope, // Puede ser vacio
+      scopeToSet, // Puede ser vacio
     });
     // Mensaje y código de éxito
     response = { name: 'Success', message: ERRORS.NO_ERROR };

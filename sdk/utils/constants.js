@@ -46,12 +46,6 @@ class ErrorNoError extends Error {
   ) {
     // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre
     super(...params);
-
-    // Mantiene un seguimiento adecuado de la pila para el lugar donde se lanzó nuestro error (solo disponible en V8)\q
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorNoError);
-    }
-
     // Información de depuración personalizada
     this.name = 'noError';
     this.errorCode = errorCode;
@@ -66,11 +60,6 @@ class ErrorInvalidClientId extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidClientId);
-    }
-
     this.name = 'invalidClientId';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -84,11 +73,6 @@ class ErrorInvalidRedirectUri extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidRedirectUri);
-    }
-
     this.name = 'invalidRedirectUri';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -102,11 +86,6 @@ class ErrorInvalidClientSecret extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidClientSecret);
-    }
-
     this.name = 'invalidClientSecret';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -120,11 +99,6 @@ class ErrorInvalidPostLogoutRedirecrtUri extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidPostLogoutRedirecrtUri);
-    }
-
     this.name = 'invalidPostLogoutRedirecrtUri';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -138,11 +112,6 @@ class ErrorAccessDenied extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorAccessDenied);
-    }
-
     this.name = 'accessDenied';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -156,11 +125,6 @@ class ErrorInvalidAuthorizationCode extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidAuthorizationCode);
-    }
-
     this.name = 'invalidAuthorizationCode';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -174,11 +138,6 @@ class ErrorFailedRequest extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorFailedRequest);
-    }
-
     this.name = 'failedRequest';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -192,11 +151,6 @@ class ErrorInvalidGrant extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidGrant);
-    }
-
     this.name = 'invalidGrant';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -210,11 +164,6 @@ class ErrorInvalidToken extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidToken);
-    }
-
     this.name = 'invalidToken';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
@@ -228,14 +177,10 @@ class ErrorInvalidClient extends Error {
     ...params
   ) {
     super(...params);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ErrorInvalidClient);
-    }
-
     this.name = 'invalidClient';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
+    this.stack = 'bla';
   }
 }
 

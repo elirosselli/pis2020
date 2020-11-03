@@ -73,13 +73,48 @@ describe('getToken', () => {
       clientSecret: 'asdasd',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'incorrectCode',
+      code: 'corrrectCode',
     });
 
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        json: () => Promise.resolve(ERRORS.INVALID_GRANT), // TODO REVISAR
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_client',
+            error_description:
+              'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
+          }),
+      }),
+    );
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_CLIENT);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken with expired or invalid code ', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: 'correctCode',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_grant',
+            error_description:
+              'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
+          }),
       }),
     );
 
@@ -92,11 +127,113 @@ describe('getToken', () => {
   });
 
   it('calls getToken and fetch fails', async () => {
-    fetch.mockImplementation(() => Promise.reject(ERRORS.INVALID_CLIENT)); // TODO REVISAR
+    fetch.mockImplementation(() => Promise.reject());
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken with empty clientId', async () => {
+    getParameters.mockReturnValue({
+      clientId: '',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: 'code',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken with empty clientSecret', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: '',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: 'code',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken with empty redirectUri', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: '',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: 'code',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken with empty code', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: '',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_AUTHORIZATION_CODE);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getToken and returns some error', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      code: 'correctCode',
+      accessToken: 'incorrectAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            error: 'some_error',
+            error_description:
+              'This is some error, different from invalid_client or invalid_grant',
+          }),
+      }),
+    );
+
+    try {
+      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

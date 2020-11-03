@@ -1,13 +1,14 @@
 import { encode } from 'base-64';
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { getParameters, setParameters } from '../configuration';
+import { getParameters, setParameters, eraseCode } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
 import { ERRORS, REQUEST_TYPES } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
   const parameters = getParameters();
+  // En caso de que algún parámetro sea vacío, se rechaza la promise y se retorna el error correspondiente.
   if (
     !parameters.clientId ||
     !parameters.redirectUri ||
@@ -23,10 +24,12 @@ const getTokenOrRefresh = async type => {
     return Promise.reject(respError);
   }
 
+  // En el caso de get token, se chequea que el code exista
   if (type === REQUEST_TYPES.GET_TOKEN && !parameters.code) {
     return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
   }
 
+  // En el caso de refresh token, se chequea que el refresh token exista
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken)
     return Promise.reject(ERRORS.INVALID_GRANT);
 
@@ -66,7 +69,14 @@ const getTokenOrRefresh = async type => {
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      return Promise.reject(responseJson);
+      switch (responseJson.error) {
+        case 'invalid_grant':
+          return Promise.reject(ERRORS.INVALID_GRANT);
+        case 'invalid_client':
+          return Promise.reject(ERRORS.INVALID_CLIENT);
+        default:
+          return Promise.reject(ERRORS.FAILED_REQUEST);
+      }
     }
 
     // En caso de una respuesta correcta se definen los
@@ -77,14 +87,15 @@ const getTokenOrRefresh = async type => {
       tokenType: responseJson.token_type,
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
-      // Se borra el parámetro code una vez ejecutado el getToken
-      code: '',
     });
-    console.log(getParameters());
-    // Además se retorna el access_token al RP
+    // Se borra el parámetro code una vez ejecutado el getToken
+    eraseCode();
+    // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito
     return Promise.resolve({
       name: 'Success',
       message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       accessToken: responseJson.access_token,
       refreshToken: responseJson.refresh_token,
       tokenType: responseJson.token_type,
@@ -95,7 +106,7 @@ const getTokenOrRefresh = async type => {
     // Si existe algun error, se
     // rechaza la promesa y se devuelve el
     // error.
-    return Promise.reject(error);
+    return Promise.reject(ERRORS.FAILED_REQUEST);
   }
 };
 
