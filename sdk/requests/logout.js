@@ -15,7 +15,7 @@ const logout = async () => {
       },
     });
     const { status } = response;
-    const urlCheck = await response.url;
+    const urlCheck = response.url;
     const missingParamsMessage = 'Missing required parameter(s): ';
 
     // Si los parámetros obligatorios para la request se encuentran
