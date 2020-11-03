@@ -14,7 +14,6 @@ const validateToken = async () => {
     },
   });
   const jwksResponseJson = await jwksResponse.json();
-  console.log(jwksResponseJson);
 
   return validateTokenSecurity(jwksResponseJson);
 };
