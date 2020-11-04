@@ -1,10 +1,10 @@
 import { decode } from 'base-64';
 
 const base64URLtoBase64 = input => {
-  // Replace non-url compatible chars with base64 standard chars
+  // Reemplazar caracteres no compatibles con base64.
   let res = input.replace(/-/g, '+').replace(/_/g, '/');
 
-  // Pad out with standard base64 required padding characters
+  // Rellenar con caracteres de relleno estandar de base64.
   const pad = input.length % 4;
   if (pad) {
     if (pad === 1) {
@@ -28,4 +28,4 @@ const base64ToHex = str => {
   return result.toUpperCase();
 };
 
-export { base64ToHex, base64URLtoBase64 }
+export { base64ToHex, base64URLtoBase64 };

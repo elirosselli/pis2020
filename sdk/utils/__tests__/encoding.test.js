@@ -29,6 +29,11 @@ describe('encoding', () => {
     }
     expect.assertions(1);
   });
+  it('calls base64URLtoBase64 empty string', () => {
+    const encoded = '';
+    const resp = base64URLtoBase64(encoded);
+    expect(resp).toBe('');
+  });
 
   it('calls base64ToHex', () => {
     decode.mockImplementation(

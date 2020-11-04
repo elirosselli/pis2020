@@ -43,19 +43,17 @@ describe('validateToken', () => {
 
   it('calls validateToken correctly but token is not valid', async () => {
     validateTokenSecurity.mockReturnValue(
-      Promise.resolve(new Error({ jwks: jwksResponse, error: false })),
+      Promise.resolve(Error({ jwks: jwksResponse, error: false })),
     );
 
     expect(validateTokenSecurity).toHaveBeenCalledWith(jwksResponse);
 
-    try {
-      await validateToken();
-    } catch (err) {
-      expect(err).toStrictEqual({
+    const resp = await validateToken();
+    expect(resp).toStrictEqual(
+      Error({
         jwks: jwksResponse,
         error: false,
-      });
-    }
-    expect.assertions(1);
+      }),
+    );
   });
 });

@@ -5,7 +5,6 @@ import { validateTokenSecurity } from '../security';
 const validateToken = async () => {
   const jwksResponse = await fetch(validateTokenEndpoint, {
     method: 'GET',
-    timeoutInterval: 10000, // milliseconds
     sslPinning: {
       certs: ['certificate'],
     },
