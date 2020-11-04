@@ -14,7 +14,10 @@ export const validateTokenSecurity = jwksResponse => {
     e: base64ToHex(jwksResponse.keys[0].e),
   });
 
-  // Se valida la firma, los campos alg, iss aud, y que no esté expirado.
+  // Se valida la firma, los campos alg, iss, aud, y que no esté expirado.
+  // alg: algoritmo de la firma.
+  // iss: quien creo y firmó el token.
+  // aud: para quien está destinado el token
   let isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
     alg: [jwksResponse.keys[0].alg],
     iss: [issuer],
