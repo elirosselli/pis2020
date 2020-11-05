@@ -27,7 +27,6 @@ const getUserInfo = async () => {
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      console.log('entro al 200');
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
@@ -38,7 +37,6 @@ const getUserInfo = async () => {
     responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
     return Promise.resolve(responseJson);
   } catch (error) {
-    console.log(error);
     const stringsHeaders = error.headers['Www-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)
       return Promise.reject(ERRORS.INVALID_TOKEN);

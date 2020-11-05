@@ -33,7 +33,7 @@ const login = async () => {
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],
       });
-    } else if (event.url.indexOf('error=access_denied') !== -1) {
+    } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso
       rejectFunction(ERRORS.ACCESS_DENIED);
     } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);

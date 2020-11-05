@@ -67,7 +67,7 @@ describe('getToken', () => {
     expect(response.message).toBe(ERRORS.NO_ERROR);
   });
 
-  it('calls getToken with incorrect clientId or clientSecret or returns incorrect code', async () => {
+  it('calls getToken with incorrect clientId or clientSecret ', async () => {
     getParameters.mockReturnValue({
       clientId: 'asdasd',
       clientSecret: 'asdasd',
@@ -77,15 +77,7 @@ describe('getToken', () => {
     });
 
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error: 'invalid_client',
-            error_description:
-              'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
-          }),
-      }),
+      Promise.reject({"bodyString": "{\"error\": \"invalid_client\", \"error_description\": \"Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)\"}", "headers": {"Cache-Control": "no-store", "Connection": "close", "Content-Length": "176", "Content-Type": "application/json", "Date": "Thu, 05 Nov 2020 18:06:45 GMT", "Pragma": "no-cache", "Server": "nginx/1.15.1", "X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY, SAMEORIGIN"}}),
     );
 
     try {
@@ -107,15 +99,7 @@ describe('getToken', () => {
     });
 
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error: 'invalid_grant',
-            error_description:
-              'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client',
-          }),
-      }),
+      Promise.reject({"bodyString": "{\"error\": \"invalid_grant\", \"error_description\": \"The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client\"}", "headers": {"Cache-Control": "no-store", "Connection": "close", "Content-Length": "232", "Content-Type": "application/json", "Date": "Thu, 05 Nov 2020 17:58:52 GMT", "Pragma": "no-cache", "Server": "nginx/1.15.1", "Set-Cookie": "4d98d0ba1af24ad3b3cc37c08f0d1124=727fb7ecab03f62ba5480a538f5129de; path=/; HttpOnly", "X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY, SAMEORIGIN"}}),
     );
 
     try {
@@ -127,7 +111,10 @@ describe('getToken', () => {
   });
 
   it('calls getToken and fetch fails', async () => {
-    fetch.mockImplementation(() => Promise.reject());
+    fetch.mockImplementation(() => Promise.resolve({
+      status: 400,
+      json: () => Promise.resolve(),
+    }));
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
@@ -219,14 +206,11 @@ describe('getToken', () => {
     });
 
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error: 'some_error',
-            error_description:
-              'This is some error, different from invalid_client or invalid_grant',
-          }),
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
       }),
     );
 

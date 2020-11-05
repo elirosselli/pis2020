@@ -177,7 +177,7 @@ it('calls getUserInfo and fetch fails', async () => {
 
   fetch.mockImplementation(() =>
     Promise.resolve({
-      status: 401,
+      status: 400,
       json: () => Promise.resolve(),
     }),
   );
