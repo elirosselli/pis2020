@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../../utils/endpoints';
@@ -77,14 +78,11 @@ describe('getUserInfo', () => {
     });
 
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 401,
-        json: () =>
-          Promise.resolve({
-            error: 'invalid_token',
-            error_description:
-              'The access token provided is expired, revoked, malformed, or invalid for other reasons',
-          }),
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
       }),
     );
 
@@ -106,14 +104,11 @@ describe('getUserInfo', () => {
     });
 
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error: 'some_error',
-            error_description:
-              'This is some error, different from invalid_token',
-          }),
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
       }),
     );
 
@@ -125,12 +120,28 @@ describe('getUserInfo', () => {
     expect.assertions(1);
   });
 
-  it('calls getUserInfo and fetch fails', async () => {
-    fetch.mockImplementation(() => Promise.reject());
+  it('calls getUserInfo and returns some error with www authenticate header', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'correctAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
+      }),
+    );
+
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(ERRORS.FAILED_REQUEST);
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -153,4 +164,28 @@ describe('getUserInfo', () => {
     }
     expect.assertions(1);
   });
+});
+
+it('calls getUserInfo and fetch fails', async () => {
+  getParameters.mockReturnValue({
+    clientId: 'clientId',
+    clientSecret: 'clientSecret',
+    redirectUri: 'redirectUri',
+    postLogoutRedirectUri: 'postLogoutRedirectUri',
+    accessToken: 'accessToken',
+  });
+
+  fetch.mockImplementation(() =>
+    Promise.resolve({
+      status: 401,
+      json: () => Promise.resolve(),
+    }),
+  );
+
+  try {
+    await getUserInfo();
+  } catch (err) {
+    expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
+  }
+  expect.assertions(1);
 });

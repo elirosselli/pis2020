@@ -17,19 +17,17 @@ const getUserInfo = async () => {
         certs: ['certificate'],
       },
       headers: {
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer pepe`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         Accept: 'application/json',
       },
     });
     const { status } = response;
     const responseJson = await response.json();
-    console.log(responseJson);
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      if (status === 401) return Promise.reject(ERRORS.INVALID_TOKEN); // TODO: revisar si hay otros errores con 401, y si hay obtener el dato del header
+      console.log('entro al 200');
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
@@ -40,6 +38,10 @@ const getUserInfo = async () => {
     responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
     return Promise.resolve(responseJson);
   } catch (error) {
+    console.log(error);
+    const stringsHeaders = error.headers['Www-Authenticate'];
+    if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)
+      return Promise.reject(ERRORS.INVALID_TOKEN);
     return Promise.reject(ERRORS.FAILED_REQUEST);
   }
 };

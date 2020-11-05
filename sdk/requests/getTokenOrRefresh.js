@@ -40,7 +40,7 @@ const getTokenOrRefresh = async type => {
   );
   // En caso de que el request sea GET_TOKEN el body de la request contendrá grant_type 'authorization_code', el code obtenido
   // durante el login, y la redirect uri correspondiente.
-  let bodyString = `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`;
+  let bodyString = `grant_type=authorization_code&code=${'bla'}&redirect_uri=${parameters.redirectUri}`;
   // En caso de que el request sea GET_REFRESH_TOKEN el body de la request contendrá grant_type 'refresh_token' y
   // el refresh token obtenido en get token
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN)
@@ -69,14 +69,8 @@ const getTokenOrRefresh = async type => {
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      switch (responseJson.error) {
-        case 'invalid_grant':
-          return Promise.reject(ERRORS.INVALID_GRANT);
-        case 'invalid_client':
-          return Promise.reject(ERRORS.INVALID_CLIENT);
-        default:
-          return Promise.reject(ERRORS.FAILED_REQUEST);
-      }
+      console.log('salgo aca');
+      return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
     // En caso de una respuesta correcta se definen los
@@ -106,6 +100,12 @@ const getTokenOrRefresh = async type => {
     // Si existe algun error, se
     // rechaza la promesa y se devuelve el
     // error.
+    console.log('salgo aca2');
+    console.log(error);
+    if (error.bodyString.indexOf('invalid_grant') !== -1)
+      return Promise.reject(ERRORS.INVALID_GRANT);
+    if (error.bodyString.indexOf('invalid_client') !== -1)
+      return Promise.reject(ERRORS.INVALID_CLIENT);
     return Promise.reject(ERRORS.FAILED_REQUEST);
   }
 };
