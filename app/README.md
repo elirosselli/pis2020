@@ -42,33 +42,33 @@ Este comando causa que cuando se ejecute wml, este detecte los cambios en la car
 
 Primero, debe crear un archivo `env.js` en esta carpeta (app), con el siguiente contenido:
 
-```
+```javascript
 const variables = {
-    development: {
-      sdkIdUClientId: "YOUR_CLIENT_ID",
-      sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
-    },
-    production: {
-        sdkIdUClientId: "YOUR_CLIENT_ID",
-        sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
-    },
-  };
+  development: {
+    sdkIdUClientId: "YOUR_CLIENT_ID",
+    sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
+  },
+  production: {
+    sdkIdUClientId: "YOUR_CLIENT_ID",
+    sdkIdUClientSecret: "YOUR_CLIENT_SECRET",
+  },
+};
 
-  const getEnvVariables = () => {
-    if (__DEV__) {
-      return variables.development; // return this if in development mode
-    }
-    return variables.production; // otherwise, return this
-  };
+const getEnvVariables = () => {
+  if (__DEV__) {
+    return variables.development; // return this if in development mode
+  }
+  return variables.production; // otherwise, return this
+};
 
-  export default getEnvVariables; // export a reference to the function
+export default getEnvVariables; // export a reference to the function
 ```
 
 Donde YOUR_CLIENT_ID y YOUR_CLIENT_SECRET es nuestro client id y client secret provisto por AGESIC. Este archivo .env no se versiona para proteger el client id y el client secret, con lo que es necesario que cada uno lo agregue a su ambiente de desarrollo.
 
 ### 2. Instalación de paquetes
 
-Se deberá ejecutar el comando `npm install` en la carpeta /sdk y luego en la carpeta /app para instalar los paquetes necesarios. Si esta utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` dentro de la carpeta app y utilizar el comando `pod install`.
+Se deberá ejecutar el comando `npm install` en la carpeta /sdk y luego en la carpeta /app para instalar los paquetes necesarios. Si está utilizando macOS, luego de utilizar el comando anterior deberá ir a la carpeta `ios` dentro de la carpeta app y utilizar el comando `pod install`.
 
 ### 3. Iniciar wml
 
