@@ -1,70 +1,59 @@
-import { Linking } from 'react-native';
-import { getParameters, clearParameters } from '../configuration';
+import { fetch } from 'react-native-ssl-pinning';
+import { Platform } from 'react-native';
 import { logoutEndpoint } from '../utils/endpoints';
+import { getParameters, clearParameters } from '../configuration';
 
 const logout = async () => {
   const parameters = getParameters();
-  const lowerCasePostLogoutRedirectUri = parameters.postLogoutRedirectUri.toLowerCase();
-  const missingParamsMessage = 'Missing required parameter(s): ';
-  let resolveFunction;
-  let rejectFunction;
-
-  // Se crea una promise para devolver, y se guardan
-  // referencias a sus funciones de reject y resolve.
-  const promise = new Promise((resolve, reject) => {
-    resolveFunction = resolve;
-    rejectFunction = reject;
-  });
-
-  // Handler para el evento url.
-  const handleOpenUrl = event => {
-    //  Obtiene la url a la que redirige el
-    //  browser luego de realizado el logout.
-    const urlCheck = event.url;
-    //  Si la url es igual a la postLogoutRedirectUri
-    //  setteada, se limpian los parámetros del componente
-    //  de configuración que correspondan y se resuelve la
-    //  promise, retornando si corresponde el parámetro state.
-    //  Si las url no coinciden, se rechaza la promise con un error.
-    if (urlCheck === lowerCasePostLogoutRedirectUri) {
-      resolveFunction();
-    } else if (
-      urlCheck === `${lowerCasePostLogoutRedirectUri}?state=${parameters.state}`
-    ) {
-      const state = urlCheck.match(/\?state=([^&]+)/);
-      resolveFunction(state[1]);
-    } else rejectFunction(Error('Invalid post logout redirect uri'));
-
-    // Se elimina el handler para los eventos url.
-    Linking.removeEventListener('url', handleOpenUrl);
-  };
-
   try {
-    Linking.addEventListener('url', handleOpenUrl);
-    // Si hay un idToken y una postLogoutRedirectUri setteados,
-    // se abre el browser para realizar el logout con idUruguay.
-    if (parameters.idToken && parameters.postLogoutRedirectUri) {
-      await Linking.openURL(logoutEndpoint());
-      clearParameters();
-    } else {
-      // En caso de error, se elimina el handler y rechaza la promise.
-      Linking.removeEventListener('url', handleOpenUrl);
-      if (parameters.idToken)
-        rejectFunction(Error(`${missingParamsMessage}postLogoutRedirectUri`));
-      else if (parameters.postLogoutRedirectUri)
-        rejectFunction(Error(`${missingParamsMessage}idTokenHint`));
-      else
-        rejectFunction(
-          Error(`${missingParamsMessage}idTokenHint, postLogoutRedirectUri`),
-        );
-    }
-  } catch (error) {
-    // En caso de error, se elimina el handler y rechaza la promise.
-    Linking.removeEventListener('url', handleOpenUrl);
-    rejectFunction(Error("Couldn't make request"));
-  }
+    // Se arma la solicitud a enviar al logoutEndpoint.
+    const response = await fetch(logoutEndpoint(), {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+    const { status } = response;
+    const urlCheck = response.url;
+    const missingParamsMessage = 'Missing required parameter(s): ';
 
-  return promise;
+    // Si los parámetros obligatorios para la request se encuentran
+    // inicializados, se procede a evaluar la respuesta del OP.
+    if (parameters.postLogoutRedirectUri && parameters.idToken) {
+      if (status === 200) {
+        if (urlCheck === logoutEndpoint()) {
+          const state = urlCheck.match(/&state=([^&]+)/);
+          clearParameters();
+          if (state) return Promise.resolve(state[1]);
+          return Promise.resolve();
+        }
+        // Si la url contenida en la respuesta no coincide con el
+        // logoutEnpoint, se rechaza la promesa retornando un error.
+        return Promise.reject(Error('Invalid returned url'));
+      }
+      // En caso de que el estado de la respuesta no sea 200,
+      // se rechaza la promesa retornando un error.
+      return Promise.reject(Error('Response status not OK'));
+    }
+    // Si alguno de los parámetros obligatorios para la request
+    // no se encuentra inicializado, se rechaza la promesa y se
+    // retorna un error que especifica cuál o cuáles parámetros
+    // faltaron.
+    if (parameters.postLogoutRedirectUri)
+      return Promise.reject(Error(`${missingParamsMessage}idTokenHint`));
+    if (parameters.idToken)
+      return Promise.reject(
+        Error(`${missingParamsMessage}postLogoutRedirectUri`),
+      );
+    return Promise.reject(
+      Error(`${missingParamsMessage}idTokenHint, postLogoutRedirectUri`),
+    );
+  } catch (error) {
+    // Si existe algun error, se rechaza la promesa y se
+    // retorna dicho error.
+    return Promise.reject(error);
+  }
 };
 
 export default logout;
