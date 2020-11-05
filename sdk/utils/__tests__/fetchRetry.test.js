@@ -1,5 +1,4 @@
 import { fetch } from 'react-native-ssl-pinning';
-import fetchWrapper from '../fetchRetry';
 import fetchRetry from '../fetchRetry';
 
 jest.mock('react-native-ssl-pinning', () => ({
@@ -24,7 +23,7 @@ describe('fetchRetry', () => {
     const numRetries = 5;
     fetch.mockImplementation(() => Promise.reject(new Error('Invalid')));
     try {
-      await fetchWrapper(url, config, numRetries);
+      await fetchRetry(url, config, numRetries);
     } catch (err) {
       expect(fetch).toHaveBeenCalledTimes(numRetries);
       expect(err).toStrictEqual(Error('Invalid'));
