@@ -4,11 +4,13 @@ import login from '../login';
 import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 import getUserInfo from '../getUserInfo';
+import validateToken from '../validateToken';
 
 jest.mock('../login');
 jest.mock('../logout');
 jest.mock('../getTokenOrRefresh');
 jest.mock('../getUserInfo');
+jest.mock('../validateToken');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
@@ -194,6 +196,31 @@ describe('logout', () => {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
+  });
+});
+
+describe('validateToken', () => {
+  it('calls validateToken with valid token', async () => {
+    const result = {
+      jwks: 'jwks',
+      error: true,
+    };
+    validateToken.mockReturnValue(Promise.resolve(result));
+
+    const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+
+    expect(response).toBe(result);
+  });
+  it('calls validateToken with invalid token', async () => {
+    const result = {
+      jwks: 'jwks',
+      error: false,
+    };
+    validateToken.mockReturnValue(Promise.resolve(result));
+
+    const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+
+    expect(response).toBe(result);
   });
 });
 
