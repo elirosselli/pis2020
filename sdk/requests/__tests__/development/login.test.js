@@ -1,7 +1,7 @@
-import login from '../login';
-import { getParameters } from '../../configuration';
+import login from '../../login';
+import { getParameters } from '../../../configuration';
 
-jest.mock('../../configuration');
+jest.mock('../../../configuration');
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());

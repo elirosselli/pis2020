@@ -1,17 +1,18 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { userInfoEndpoint } from '../../utils/endpoints';
-import getUserInfo from '../getUserInfo';
-import { getParameters } from '../../configuration';
+import getUserInfo from '../../getUserInfo';
+import { getParameters } from '../../../configuration';
 
-jest.mock('../../configuration');
+jest.mock('../../../configuration');
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
 describe('getUserInfo', () => {
-  it('calls getUserInfo with correct accesToken', async () => {
+  it('calls getUserInfo with correct accessToken', async () => {
+    const userInfoEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
@@ -39,7 +40,7 @@ describe('getUserInfo', () => {
     );
     const response = await getUserInfo();
 
-    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint(), {
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
@@ -66,7 +67,7 @@ describe('getUserInfo', () => {
     getParameters.mockReturnValue({
       clientId: '',
       clientSecret: '',
-      code: 'incorrectAccesToken',
+      code: 'incorrectAccessToken',
     });
 
     const error = 'invalid_token';

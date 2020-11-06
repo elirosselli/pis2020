@@ -1,27 +1,18 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../../utils/constants';
-import { getParameters } from '../../configuration';
-import getTokenOrRefresh from '../getTokenOrRefresh';
+import REQUEST_TYPES from '../../../utils/constants';
+import { getParameters } from '../../../configuration';
+import getTokenOrRefresh from '../../getTokenOrRefresh';
 
-jest.mock('../../configuration');
+jest.mock('../../../configuration');
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
-describe('getToken', () => {
-  it('calls getToken with correct code', async () => {
-    const code = 'f24df0c4fcb142328b843d49753946af';
-    const redirectUri = 'uri';
-    const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
-    getParameters.mockReturnValue({
-      clientId: '898562',
-      clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
-      redirectUri,
-      code,
-    });
-
+describe('refreshToken', () => {
+  it('calls refreshToken with correct refreshToken', async () => {
+    // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -37,11 +28,25 @@ describe('getToken', () => {
       }),
     );
 
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
+    const refreshToken = '541a156232ac43c6b719c57b7217c9ea';
+
+    // Mockear getParameters
+    getParameters.mockReturnValue({
+      clientId,
+      clientSecret,
+      refreshToken,
+    });
+
     const encodedCredentials =
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
-    const response = await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+    const response = await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
+    // Chequeo de parametros enviados
     expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',
@@ -53,18 +58,20 @@ describe('getToken', () => {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         Accept: 'application/json',
       },
-      body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
+      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
     });
 
+    // Chequeo de respuestas
     expect(response).toBe('c9747e3173544b7b870d48aeafa0f661');
   });
 
-  it('calls getToken with incorrect clientId or clientSecret or returns incorrect code', async () => {
+  it('calls refreshToken with incorrect clientId or clientSecret or refreshToken', async () => {
     getParameters.mockReturnValue({
       clientId: '',
       clientSecret: '',
       code: 'incorrectCode',
     });
+
     const error = 'invalid_grant';
     const errorDescription =
       'The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client';
@@ -81,7 +88,7 @@ describe('getToken', () => {
     );
 
     try {
-      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual({
         error,
@@ -91,11 +98,11 @@ describe('getToken', () => {
     expect.assertions(1);
   });
 
-  it('calls getToken and fetch fails', async () => {
+  it('calls refreshToken and fetch fails', async () => {
     const error = Error('error');
     fetch.mockImplementation(() => Promise.reject(error));
     try {
-      await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
+      await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
       expect(err).toBe(error);
     }
