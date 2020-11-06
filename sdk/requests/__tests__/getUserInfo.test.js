@@ -39,7 +39,7 @@ describe('getUserInfo', () => {
     );
     const response = await getUserInfo();
 
-    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {

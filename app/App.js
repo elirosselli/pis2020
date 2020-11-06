@@ -33,7 +33,7 @@ import scope from './scope';
 
 import ReloadIcon from './utils/reload.png';
 
-const sdkProduction = false;
+const sdkProduction = true;
 
 const envVariables = ENV();
 
