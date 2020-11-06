@@ -33,7 +33,20 @@ import scope from './scope';
 
 import ReloadIcon from './utils/reload.png';
 
-const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
+const sdkProduction = false;
+
+const envVariables = ENV();
+
+const { sdkIdUClientId, sdkIdUClientSecret } = sdkProduction
+  ? envVariables.production
+  : envVariables.development;
+const sdkRedirectUri = sdkProduction
+  ? 'sdkIdUy%3A%2F%2Fauth'
+  : 'sdkIdU.testing%3A%2F%2Fauth';
+const sdkPostLogoutRedirectUri = sdkProduction
+  ? 'sdkIdUy://logout'
+  : 'sdkIdU.testing://redirect';
+// const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
 const App = () => {
   const [code, setCode] = useState();
@@ -96,10 +109,11 @@ const App = () => {
                 onPress={() => {
                   try {
                     initialize(
-                      'sdkIdU.testing%3A%2F%2Fauth',
+                      sdkRedirectUri,
                       sdkIdUClientId,
                       sdkIdUClientSecret,
-                      'sdkIdU.testing://redirect',
+                      sdkPostLogoutRedirectUri,
+                      sdkProduction,
                     );
                     setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);

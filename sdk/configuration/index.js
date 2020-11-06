@@ -11,6 +11,7 @@ const parameters = {
   postLogoutRedirectUri: '',
   state: '',
   scope: '',
+  production: false,
 };
 
 const getParameters = () => parameters;
@@ -27,7 +28,8 @@ const clearParameters = () => {
       key !== 'redirectUri' &&
       key !== 'clientId' &&
       key !== 'clientSecret' &&
-      key !== 'postLogoutRedirectUri'
+      key !== 'postLogoutRedirectUri' &&
+      key !== 'production'
     )
       parameters[key] = '';
   });
@@ -35,8 +37,9 @@ const clearParameters = () => {
 
 const resetParameters = () => {
   Object.keys(parameters).forEach(key => {
-    parameters[key] = '';
+    if (key !== 'production') parameters[key] = '';
   });
+  parameters.production = false;
 };
 
 export { getParameters, setParameters, clearParameters, resetParameters };

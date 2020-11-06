@@ -6,7 +6,7 @@ import { getParameters } from '../configuration';
 const getUserInfo = async () => {
   const { accessToken } = getParameters();
   try {
-    const response = await fetch(userInfoEndpoint, {
+    const response = await fetch(userInfoEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
