@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
+  Switch,
 } from 'react-native';
 
 import CheckboxList from 'rn-checkbox-list';
@@ -33,19 +34,8 @@ import scope from './scope';
 
 import ReloadIcon from './utils/reload.png';
 
-const sdkProduction = true;
-
 const envVariables = ENV();
 
-const { sdkIdUClientId, sdkIdUClientSecret } = sdkProduction
-  ? envVariables.production
-  : envVariables.development;
-const sdkRedirectUri = sdkProduction
-  ? 'sdkIdUy%3A%2F%2Fauth'
-  : 'sdkIdU.testing%3A%2F%2Fauth';
-const sdkPostLogoutRedirectUri = sdkProduction
-  ? 'sdkIdUy://logout'
-  : 'sdkIdU.testing://redirect';
 // const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
 
 const App = () => {
@@ -55,6 +45,21 @@ const App = () => {
   const [scopeSel, setScopeSel] = useState('');
   const [updated, setUpdated] = useState(0);
   const [initialized, setInitialized] = useState(0);
+  const [sdkProduction, setIsEnabled] = useState(false);
+  const toggleSwitch = () => {
+    setInitialized(0);
+    setIsEnabled(previousState => !previousState);
+  };
+
+  const { sdkIdUClientId, sdkIdUClientSecret } = sdkProduction
+    ? envVariables.production
+    : envVariables.development;
+  const sdkRedirectUri = sdkProduction
+    ? 'sdkIdUy%3A%2F%2Fauth'
+    : 'sdkIdU.testing%3A%2F%2Fauth';
+  const sdkPostLogoutRedirectUri = sdkProduction
+    ? 'sdkIdUy://logout'
+    : 'sdkIdU.testing://redirect';
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
@@ -94,7 +99,26 @@ const App = () => {
             ]}
           >
             {/* INICIALIZAR SDK */}
-            <View style={{ alignItems: 'flex-end' }}>
+            <View
+              style={{
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+              }}
+            >
+              <View
+                style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}
+              >
+                <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>
+                  Producción
+                </Text>
+                <Switch
+                  trackColor={{ false: '#767577', true: '#3a6a8c' }}
+                  thumbColor={sdkProduction ? '#005492' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={sdkProduction}
+                />
+              </View>
               <TouchableOpacity
                 style={[
                   {
@@ -103,6 +127,8 @@ const App = () => {
                     borderColor: '#000',
                     borderWidth: 1,
                     borderRadius: 5,
+                    alignSelf: 'flex-end',
+                    flex: 1,
                   },
                   initializedColor,
                 ]}
