@@ -180,7 +180,6 @@ class ErrorInvalidClient extends Error {
     this.name = 'invalidClient';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
-    this.stack = 'bla';
   }
 }
 
