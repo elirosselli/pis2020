@@ -3,6 +3,10 @@ import { getParameters } from '../../configuration';
 
 jest.mock('../../configuration');
 
+jest.mock('../../security', () => ({
+  generateRandomState: jest.fn(),
+}));
+
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
 
@@ -12,8 +16,9 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-const correctLoginEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20scope&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+const mockState = '123456random-state';
+
+const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20scope&response_type=code&client_id=clientId&redirect_uri=redirectUri&state=${mockState}`;
 
 describe('login', () => {
   afterEach(() => jest.clearAllMocks());
@@ -23,12 +28,12 @@ describe('login', () => {
       clientId: 'clientId',
       redirectUri: 'redirectUri',
       scope: 'scope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url:
-            'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=TEST_STATE',
+          url: `redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=${mockState}`,
         });
     });
     const code = await login();
@@ -42,11 +47,12 @@ describe('login', () => {
       clientId: 'clientId',
       redirectUri: 'redirectUri',
       scope: 'scope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'redirectUri?code=&state=TEST_STATE',
+          url: 'redirectUri?code=&state=123456random-state',
         });
     });
     try {
@@ -64,6 +70,7 @@ describe('login', () => {
       clientId: 'clientId',
       redirectUri: 'redirectUri',
       scope: 'scope',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();

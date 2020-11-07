@@ -17,6 +17,7 @@ describe('configuration module and make request type default integration', () =>
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     await makeRequest('default');
@@ -34,6 +35,7 @@ describe('configuration module and make request type default integration', () =>
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
   });
 });

@@ -12,6 +12,17 @@ jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
+const mockSub = '5485';
+
+jest.mock('jsrsasign', () => ({
+  __esModule: true,
+  default: {
+    jws: {
+      JWS: { readSafeJSONString: jest.fn(() => ({ sub: mockSub })) },
+    },
+  },
+}));
+
 afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
@@ -41,7 +52,7 @@ const fetchMockImplementation = () =>
       }),
   });
 
-describe('configuration module and make request type get token integration', () => {
+describe('configuration & security modules and make request type get token integration', () => {
   it('calls setParameters and makes a get token request', async () => {
     const redirectUri = 'redirectUri';
     const clientId = '898562';
@@ -64,6 +75,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     fetch.mockImplementation(fetchMockImplementation);
@@ -102,6 +114,7 @@ describe('configuration module and make request type get token integration', () 
       idToken,
       state: '',
       scope: '',
+      sub: mockSub,
     });
   });
 
@@ -127,6 +140,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error = 'invalid_code';
@@ -166,6 +180,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     expect.assertions(3);
@@ -193,6 +208,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error2 = 'invalid_client_id';
@@ -231,6 +247,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     expect.assertions(3);
@@ -257,6 +274,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error3 = 'invalid_client_secret';
@@ -295,6 +313,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     expect.assertions(3);
@@ -322,6 +341,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     const error = Error('error');
     fetch.mockImplementation(() => Promise.reject(error));
@@ -344,6 +364,7 @@ describe('configuration module and make request type get token integration', () 
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     expect.assertions(3);
   });

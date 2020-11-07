@@ -3,6 +3,10 @@ import { getParameters } from '../../configuration';
 
 jest.mock('../../configuration');
 
+jest.mock('../../security', () => ({
+  generateRandomState: jest.fn(),
+}));
+
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
 const missingParamsMessage = 'Missing required parameter(s): ';
@@ -13,11 +17,11 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-const correctLogoutEndpoint1 =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri&state=2KVAEzPpazbGFD5';
+const mockState = '123456random-state';
 
-const correctLogoutEndpoint2 =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri&state=';
+const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri&state=${mockState}`;
+
+const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=idToken&post_logout_redirect_uri=post_logout_redirect_uri&state=`;
 
 describe('logout', () => {
   afterEach(() => jest.clearAllMocks());
@@ -26,18 +30,18 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: 'post_logout_redirect_uri',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'post_logout_redirect_uri?state=2KVAEzPpazbGFD5',
+          url: `post_logout_redirect_uri?state=${mockState}`,
         });
     });
     const state = await logout();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLogoutEndpoint1);
-    expect(state).toBe('2KVAEzPpazbGFD5');
+    expect(state).toBe(mockState);
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
@@ -62,7 +66,7 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: '',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -81,7 +85,7 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri: 'post_logout_redirect_uri',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -98,7 +102,7 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri: '',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -117,7 +121,7 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: 'post_logout_redirect_uri',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -135,7 +139,7 @@ describe('logout', () => {
     getParameters.mockReturnValue({
       idToken: 'idToken',
       postLogoutRedirectUri: 'post_logout_redirect_uri',
-      state: '2KVAEzPpazbGFD5',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')

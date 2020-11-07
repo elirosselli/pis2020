@@ -12,6 +12,17 @@ jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
+const mockSub = '5485';
+
+jest.mock('jsrsasign', () => ({
+  __esModule: true,
+  default: {
+    jws: {
+      JWS: { readSafeJSONString: jest.fn(() => ({ sub: mockSub })) },
+    },
+  },
+}));
+
 afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
@@ -41,7 +52,7 @@ const fetchMockImplementation = () =>
       }),
   });
 
-describe('configuration module and make request type refresh token integration', () => {
+describe('configuration & security modules and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     const clientId = '898562';
     const clientSecret =
@@ -62,6 +73,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     fetch.mockImplementation(fetchMockImplementation);
@@ -99,6 +111,7 @@ describe('configuration module and make request type refresh token integration',
       idToken,
       state: '',
       scope: '',
+      sub: mockSub,
     });
   });
 
@@ -127,6 +140,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error4 = 'invalid_refresh_token';
@@ -164,6 +178,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     expect.assertions(3);
   });
@@ -188,6 +203,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error6 = 'invalid_client_id';
@@ -225,6 +241,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     expect.assertions(3);
   });
@@ -248,6 +265,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
 
     const error5 = 'invalid_client_secret';
@@ -285,6 +303,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     expect.assertions(3);
   });
@@ -309,6 +328,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     const error = Error('error');
     fetch.mockImplementation(() => Promise.reject(error));
@@ -331,6 +351,7 @@ describe('configuration module and make request type refresh token integration',
       idToken: '',
       state: '',
       scope: '',
+      sub: '',
     });
     expect.assertions(3);
   });
