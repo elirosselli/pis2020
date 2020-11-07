@@ -1,3 +1,3 @@
-import { generateRandomState, setSub } from './validateResponse';
+import { generateRandomState, validateSub } from './validateResponse';
 
-export { generateRandomState, setSub };
+export { generateRandomState, validateSub };

@@ -3,7 +3,6 @@ import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
-import { setSub } from '../security';
 import REQUEST_TYPES from '../utils/constants';
 
 const getTokenOrRefresh = async type => {
@@ -57,7 +56,6 @@ const getTokenOrRefresh = async type => {
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
     });
-    setSub(responseJson.id_token);
     return Promise.resolve(responseJson.access_token);
   } catch (error) {
     // Si existe algun error, se

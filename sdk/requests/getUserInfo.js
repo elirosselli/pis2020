@@ -2,9 +2,10 @@ import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
+import { validateSub } from '../security';
 
 const getUserInfo = async () => {
-  const { accessToken, sub } = getParameters();
+  const { accessToken } = getParameters();
   try {
     const response = await fetch(userInfoEndpoint, {
       method: 'GET',
@@ -29,7 +30,7 @@ const getUserInfo = async () => {
 
     // Resuelvo promesa con la información del usuario si el sub
     // correspondiente al token utilizado coincide con la respuesta
-    if (responseJson.sub === sub) {
+    if (validateSub(responseJson.sub)) {
       return Promise.resolve(responseJson);
     }
     return Promise.reject(Error('Sub no coinciden'));
