@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
@@ -9,6 +10,8 @@ jest.mock('../../configuration');
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
+
+const contentType = 'application/json';
 
 describe('refreshToken', () => {
   it('calls refreshToken with correct refreshToken', async () => {
@@ -61,7 +64,7 @@ describe('refreshToken', () => {
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        Accept: contentType,
       },
       body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
     });
@@ -94,7 +97,7 @@ describe('refreshToken', () => {
           'Cache-Control': 'no-store',
           Connection: 'close',
           'Content-Length': '176',
-          'Content-Type': 'application/json',
+          'Content-Type': contentType,
           Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
           Pragma: 'no-cache',
           Server: 'nginx/1.15.1',
@@ -129,7 +132,7 @@ describe('refreshToken', () => {
           'Cache-Control': 'no-store',
           Connection: 'close',
           'Content-Length': '232',
-          'Content-Type': 'application/json',
+          'Content-Type': contentType,
           Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
           Pragma: 'no-cache',
           Server: 'nginx/1.15.1',

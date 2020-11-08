@@ -6,8 +6,6 @@ import logout from '../logout';
 
 jest.mock('../../configuration');
 
-const missingParamsMessage = 'Missing required parameter(s): ';
-
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));

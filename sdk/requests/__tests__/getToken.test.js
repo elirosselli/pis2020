@@ -11,6 +11,8 @@ jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
+const contentType = 'application/json';
+
 describe('getToken', () => {
   it('calls getToken with correct code', async () => {
     const code = 'f24df0c4fcb142328b843d49753946af';
@@ -53,7 +55,7 @@ describe('getToken', () => {
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
+        Accept: contentType,
       },
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
     });
@@ -85,7 +87,7 @@ describe('getToken', () => {
           'Cache-Control': 'no-store',
           Connection: 'close',
           'Content-Length': '176',
-          'Content-Type': 'application/json',
+          'Content-Type': contentType,
           Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
           Pragma: 'no-cache',
           Server: 'nginx/1.15.1',
@@ -121,7 +123,7 @@ describe('getToken', () => {
           'Cache-Control': 'no-store',
           Connection: 'close',
           'Content-Length': '232',
-          'Content-Type': 'application/json',
+          'Content-Type': contentType,
           Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
           Pragma: 'no-cache',
           Server: 'nginx/1.15.1',
