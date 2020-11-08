@@ -57,6 +57,9 @@ const login = async () => {
     else {
       // En caso de que algún parámetro sea vacío, se elimina el handler y rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
+      // FIXME: esto está bien? o sea en realidad si alguno fue setteado en vacío, todos lo fueron
+      // así que siempre va a tirar como que el clientID es vacío. Capaz que hay que tener error
+      // genérico tipo "invalid initialization"
       const errorResponse = initializeErrors(
         parameters.clientId,
         parameters.redirectUri,
