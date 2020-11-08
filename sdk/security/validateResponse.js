@@ -17,7 +17,7 @@ const generateRandomState = () => {
   // Se genera un random uuid
   const uuid = uuidv4();
   const seedArray = uuid.split('');
-  // Se cambian letras por codigo ascii y guiones por random number
+  // Se cambian letras por su codigo ascii y guiones por random number
   for (let i = 0; i < uuid.length; i += 1) {
     if (isLetter(seedArray[i])) {
       seedArray[i] = seedArray[i].charCodeAt(0).toString();

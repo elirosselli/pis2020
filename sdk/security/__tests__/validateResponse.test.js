@@ -1,18 +1,22 @@
-import MersenneTwister from 'mersenne-twister';
 import { generateRandomState, validateSub } from '../validateResponse';
 import { getParameters, setParameters } from '../../configuration';
 
 jest.mock('../../configuration');
 
-// jest.mock('uuid', () => 'b5be6251-9589-43bf-b12f-f6447dc179c0');
 jest.mock('uuid', () =>
   jest.fn().mockReturnValue('b5be6251-9589-43bf-b12f-f6447dc179c0'),
 );
-jest.mock('mersenne-twister/src/mersenne-twister', () => ({
-  random_int: jest.fn(() => '3035783770'),
-  MersenneTwister: jest.fn().mockImplementation(() => ({})),
-  constructor: jest.fn().mockImplementation(() => ({})),
-}));
+
+const mockState = 3035783770;
+jest.mock(
+  'mersenne-twister',
+  () =>
+    function mockMersenne() {
+      return {
+        random_int: jest.fn(() => mockState),
+      };
+    },
+);
 
 describe('validateResponse', () => {
   afterEach(() => {
@@ -20,13 +24,10 @@ describe('validateResponse', () => {
   });
 
   it('calls generateRandomState and sets state correctly', async () => {
-    const expectedParameters = { state: '3035783770' };
-    MersenneTwister.mockImplementation(() => ({}));
+    const expectedParameters = { state: mockState.toString() };
     generateRandomState();
     expect(setParameters).toHaveBeenCalledTimes(1);
     expect(setParameters).toHaveBeenCalledWith(expectedParameters);
-    const { state } = getParameters();
-    expect(state).toBe('3035783770');
   });
 
   it('calls validate sub and subs matches', async () => {
