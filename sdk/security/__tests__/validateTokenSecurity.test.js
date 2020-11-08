@@ -1,5 +1,5 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
-import { validateTokenSecurity } from '../../security/index';
+import { validateTokenSecurity } from '../index';
 import { getParameters } from '../../configuration';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 import { issuer } from '../../utils/endpoints';

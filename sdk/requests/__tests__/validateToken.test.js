@@ -1,7 +1,7 @@
 import { fetch } from 'react-native-ssl-pinning';
 
 import validateToken from '../validateToken';
-import validateTokenSecurity from '../../security/index';
+import { validateTokenSecurity } from '../../security';
 
 jest.mock('../../security');
 
