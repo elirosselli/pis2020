@@ -21,17 +21,24 @@ const getTokenOrRefresh = async type => {
       parameters.postLogoutRedirectUri,
       parameters.clientSecret,
     );
+    // Se borra el parámetro code una vez ejecutado el getToken
+    eraseCode();
     return Promise.reject(respError);
   }
 
   // En el caso de get token, se chequea que el code exista
   if (type === REQUEST_TYPES.GET_TOKEN && !parameters.code) {
+    // Se borra el parámetro code una vez ejecutado el getToken
+    eraseCode();
     return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
   }
 
   // En el caso de refresh token, se chequea que el refresh token exista
-  if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken)
+  if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken){
+    // Se borra el parámetro code una vez ejecutado el getToken
+    eraseCode();
     return Promise.reject(ERRORS.INVALID_GRANT);
+  }
 
   // Codificar en base64 el clientId y el clientSecret,
   // siguiendo el esquema de autenticación HTTP Basic Auth.
@@ -69,6 +76,8 @@ const getTokenOrRefresh = async type => {
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
+      // Se borra el parámetro code una vez ejecutado el getToken
+      eraseCode();
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
@@ -96,6 +105,8 @@ const getTokenOrRefresh = async type => {
       idToken: responseJson.id_token,
     });
   } catch (error) {
+    // Se borra el parámetro code una vez ejecutado el getToken
+    eraseCode();
     // Si existe algun error, se
     // rechaza la promesa y se devuelve el
     // error.
