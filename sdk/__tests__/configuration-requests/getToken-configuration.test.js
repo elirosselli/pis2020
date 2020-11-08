@@ -321,6 +321,68 @@ describe('configuration module and make request type get token integration', () 
     expect.assertions(3);
   });
 
+  it('calls setParameters, makes a get token request and returns some error', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
+      }),
+    );
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
   it('calls setParameters and makes a get token request with empty client id ', async () => {
     const redirectUri = 'redirectUri';
     const clientId = '';
