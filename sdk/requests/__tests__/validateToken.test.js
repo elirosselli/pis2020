@@ -22,14 +22,31 @@ const jwksResponse = {
     },
   ],
 };
-fetch.mockImplementation(() =>
-  Promise.resolve({
-    status: 200,
-    json: () => Promise.resolve(jwksResponse),
-  }),
-);
 
 describe('validateToken', () => {
+  fetch.mockImplementationOnce(() =>
+    Promise.resolve({
+      status: 200,
+      json: () => Promise.reject(Error('fetch rejection')),
+    }),
+  );
+
+  it('calls validateToken correctly but fetch rejects', async () => {
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(Error('fetch rejection'));
+    }
+    expect.assertions(1);
+  });
+
+  fetch.mockImplementation(() =>
+    Promise.resolve({
+      status: 200,
+      json: () => Promise.resolve(jwksResponse),
+    }),
+  );
+
   it('calls validateToken correctly and token is valid', async () => {
     validateTokenSecurity.mockReturnValue(
       Promise.resolve({ jwk: jwksResponse, error: true }),
@@ -41,17 +58,19 @@ describe('validateToken', () => {
 
   it('calls validateToken correctly but token is not valid', async () => {
     validateTokenSecurity.mockReturnValue(
-      Promise.resolve(Error({ jwks: jwksResponse, error: false })),
+      Promise.reject(Error({ jwks: jwksResponse, error: false })),
     );
 
-    expect(validateTokenSecurity).toHaveBeenCalledWith(jwksResponse);
-
-    const resp = await validateToken();
-    expect(resp).toStrictEqual(
-      Error({
-        jwks: jwksResponse,
-        error: false,
-      }),
-    );
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(
+        Error({
+          jwks: jwksResponse,
+          error: false,
+        }),
+      );
+    }
+    expect.assertions(1);
   });
 });

@@ -31,10 +31,13 @@ const validateTokenSecurity = jwksResponse => {
     decode(idToken.split('.')[0]),
   );
 
-  // Se valida el kid del token.
+  // Se valida el kid (identificador único) del token.
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
 
-  return Promise.resolve({ jwk: jwksResponse, error: isValid });
+  if (isValid) {
+    return Promise.resolve({ jwk: jwksResponse, error: isValid });
+  }
+  return Promise.reject(Error({ jwk: jwksResponse, error: isValid }));
 };
 
 export default validateTokenSecurity;

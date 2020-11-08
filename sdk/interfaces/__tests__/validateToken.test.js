@@ -23,8 +23,12 @@ describe('validateToken', () => {
       jwks: 'jwks',
       error: false,
     };
-    makeRequest.mockReturnValue(Promise.resolve(result));
-    const response = await validateToken();
-    expect(response).toBe(result);
+    makeRequest.mockReturnValue(Promise.reject(Error(result)));
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(Error(result));
+    }
+    expect.assertions(1);
   });
 });

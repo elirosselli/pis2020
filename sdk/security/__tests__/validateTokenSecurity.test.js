@@ -71,15 +71,18 @@ describe('validateToken', () => {
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
-    const result = await validateTokenSecurity(jwksResponse);
-
-    expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
-      alg: [jwksResponse.keys[0].alg],
-      iss: [issuer],
-      aud: [getParameters().clientId],
-      verifyAt: time,
-    });
-    expect(result).toStrictEqual({ jwk: jwksResponse, error: false });
+    try {
+      await validateTokenSecurity(jwksResponse);
+    } catch (error) {
+      expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
+        alg: [jwksResponse.keys[0].alg],
+        iss: [issuer],
+        aud: [getParameters().clientId],
+        verifyAt: time,
+      });
+      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+    }
+    expect.assertions(2);
   });
 
   it('not validates token (kid)', async () => {
@@ -95,14 +98,17 @@ describe('validateToken', () => {
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
-    const result = await validateTokenSecurity(jwksResponse);
-
-    expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
-      alg: [jwksResponse.keys[0].alg],
-      iss: [issuer],
-      aud: [getParameters().clientId],
-      verifyAt: time,
-    });
-    expect(result).toStrictEqual({ jwk: jwksResponse, error: false });
+    try {
+      await validateTokenSecurity(jwksResponse);
+    } catch (error) {
+      expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
+        alg: [jwksResponse.keys[0].alg],
+        iss: [issuer],
+        aud: [getParameters().clientId],
+        verifyAt: time,
+      });
+      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+    }
+    expect.assertions(2);
   });
 });
