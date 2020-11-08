@@ -102,6 +102,7 @@ const App = () => {
                       sdkIdUClientSecret,
                       'sdkIdU.testing://redirect',
                     );
+                    setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);
                   } catch (error) {
                     console.log(error);

@@ -19,6 +19,8 @@ const errorCodes = {
   invalidGrant: 'invalid_grant',
   invalidToken: 'invalid_token',
   invalidClient: 'invalid_client',
+  invalidIdTokenHint: 'invalid_id_token_hint',
+  invalidUrlLogout: 'invalid_url_logout',
 };
 
 const errorDescriptions = {
@@ -36,6 +38,8 @@ const errorDescriptions = {
     'The access token provided is expired, revoked, malformed, or invalid for other reasons',
   invalidClient:
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
+  invalidIdTokenHint: 'Parámetro id_token_hint inválido',
+  invalidUrlLogout: 'Invalid returned url for logout',
 };
 
 class ErrorNoError extends Error {
@@ -183,6 +187,32 @@ class ErrorInvalidClient extends Error {
   }
 }
 
+class ErrorInvalidIdTokenHint extends Error {
+  constructor(
+    errorCode = errorCodes.invalidIdTokenHint,
+    errorDescription = errorDescriptions.invalidIdTokenHint,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidTokenHint';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidUrlLogout extends Error {
+  constructor(
+    errorCode = errorCodes.invalidUrlLogout,
+    errorDescription = errorDescriptions.invalidUrlLogout,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidUrlLogout';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -195,6 +225,8 @@ const ERRORS = {
   INVALID_GRANT: new ErrorInvalidGrant(),
   INVALID_TOKEN: new ErrorInvalidToken(),
   INVALID_CLIENT: new ErrorInvalidClient(),
+  INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
+  INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
 };
 
 export { REQUEST_TYPES, ERRORS };
