@@ -1,9 +1,9 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import getUserInfo from '../../getUserInfo';
-import { getParameters } from '../../../configuration';
+import getUserInfo from '../getUserInfo';
+import { getParameters } from '../../configuration';
 
-jest.mock('../../../configuration');
+jest.mock('../../configuration');
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),

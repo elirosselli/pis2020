@@ -1,9 +1,9 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { getParameters } from '../../../configuration';
-import logout from '../../logout';
+import { getParameters } from '../../configuration';
+import logout from '../logout';
 
-jest.mock('../../../configuration');
+jest.mock('../../configuration');
 
 const missingParamsMessage = 'Missing required parameter(s): ';
 
@@ -13,10 +13,9 @@ jest.mock('react-native-ssl-pinning', () => ({
 
 const idToken = 'idToken';
 const state = '2KVAEzPpazbGFD5';
-const postLogoutRedirectUri = 'app://postLogout';
-const production = true;
-const correctLogoutEndpoint1 = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
-const correctLogoutEndpoint2 = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=`;
+const postLogoutRedirectUri = 'app.testing://postLogout';
+const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=`;
 afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
@@ -25,7 +24,6 @@ describe('logout', () => {
       idToken,
       postLogoutRedirectUri,
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -50,7 +48,6 @@ describe('logout', () => {
       idToken,
       postLogoutRedirectUri,
       state: '',
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -71,12 +68,11 @@ describe('logout', () => {
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
-    const incorrectLogoutEndpoint = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
+    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
     getParameters.mockReturnValue({
       idToken,
       postLogoutRedirectUri: '',
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -103,12 +99,11 @@ describe('logout', () => {
   });
 
   it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
-    const incorrectLogoutEndpoint = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri,
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -133,12 +128,11 @@ describe('logout', () => {
   });
 
   it('calls logout with state but without idTokenHint and postLogoutRedirectUri', async () => {
-    const incorrectLogoutEndpoint = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=&state=${state}`;
+    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=&state=${state}`;
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri: '',
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -169,7 +163,6 @@ describe('logout', () => {
       idToken,
       postLogoutRedirectUri,
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -198,7 +191,6 @@ describe('logout', () => {
       idToken,
       postLogoutRedirectUri,
       state,
-      production,
     });
     fetch.mockImplementation(() =>
       Promise.resolve({ status: 200, url: Error('Invalid returned url') }),
@@ -224,7 +216,6 @@ describe('logout', () => {
       idToken,
       postLogoutRedirectUri,
       state,
-      production,
     });
     const err = Error('error');
     fetch.mockImplementation(() => Promise.reject(err));
