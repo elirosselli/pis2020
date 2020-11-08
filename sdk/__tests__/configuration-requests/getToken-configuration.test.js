@@ -493,61 +493,6 @@ describe('configuration module and make request type get token integration', () 
     expect.assertions(3);
   });
 
-  // it('calls setParameters and makes a get token request with invalid redirectUri ', async () => {
-  //   const redirectUri = 'invalidRedirectUri';
-  //   const clientId = 'clientId';
-  //   const clientSecret = 'clientSecret';
-  //   const code = 'f24df0c4fcb142328b843d49753946af';
-  //   const postLogoutRedirectUri = 'postLogoutRedirectUri';
-
-  //   setParameters({
-  //     clientId,
-  //     clientSecret,
-  //     redirectUri,
-  //     code,
-  //     postLogoutRedirectUri,
-  //   });
-  //   let parameters = getParameters();
-  //   expect(parameters).toStrictEqual({
-  //     redirectUri,
-  //     clientId,
-  //     clientSecret,
-  //     postLogoutRedirectUri,
-  //     code,
-  //     accessToken: '',
-  //     refreshToken: '',
-  //     tokenType: '',
-  //     expiresIn: '',
-  //     idToken: '',
-  //     state: '',
-  //     scope: '',
-  //   });
-
-  //   try {
-  //     await makeRequest(REQUEST_TYPES.GET_TOKEN);
-  //   } catch (err) {
-  //     expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
-  //   }
-
-  //   parameters = getParameters();
-  //   expect(parameters).toStrictEqual({
-  //     redirectUri,
-  //     clientId,
-  //     clientSecret,
-  //     postLogoutRedirectUri,
-  //     code: '',
-  //     accessToken: '',
-  //     refreshToken: '',
-  //     tokenType: '',
-  //     expiresIn: '',
-  //     idToken: '',
-  //     state: '',
-  //     scope: '',
-  //   });
-
-  //   expect.assertions(3);
-  // });
-
   it('calls setParameters and makes a get token request with empty redirectUri ', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
