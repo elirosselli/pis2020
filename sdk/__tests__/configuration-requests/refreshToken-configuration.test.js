@@ -32,6 +32,8 @@ const redirectUri = 'app://redirect';
 const postLogoutRedirectUri = 'app://postLogout';
 const clientId = '898562';
 const clientSecret = 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+const server = 'nginx/1.15.1';
+const xFrameOptions = 'DENY, SAMEORIGIN';
 const fetchMockImplementation = () =>
   Promise.resolve({
     status: 200,
@@ -43,6 +45,24 @@ const fetchMockImplementation = () =>
         refresh_token: refreshToken,
         token_type: tokenType,
       }),
+  });
+const fetchMockImplementationWithInvalidOrEmptyToken = () =>
+  Promise.reject({
+    bodyString:
+      '{"error": "invalid_grant", "error_description": "The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client"}',
+    headers: {
+      'Cache-Control': 'no-store',
+      Connection: 'close',
+      'Content-Length': '232',
+      'Content-Type': contentType,
+      Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
+      Pragma: 'no-cache',
+      Server: server,
+      'Set-Cookie':
+        '4d98d0ba1af24ad3b3cc37c08f0d1124=727fb7ecab03f62ba5480a538f5129de; path=/; HttpOnly',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': xFrameOptions,
+    },
   });
 
 describe('configuration module and make request type refresh token integration', () => {
@@ -139,25 +159,7 @@ describe('configuration module and make request type refresh token integration',
       scope: '',
     });
 
-    fetch.mockImplementation(() =>
-      Promise.reject({
-        bodyString:
-          '{"error": "invalid_grant", "error_description": "The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client"}',
-        headers: {
-          'Cache-Control': 'no-store',
-          Connection: 'close',
-          'Content-Length': '232',
-          'Content-Type': contentType,
-          Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
-          Pragma: 'no-cache',
-          Server: 'nginx/1.15.1',
-          'Set-Cookie':
-            '4d98d0ba1af24ad3b3cc37c08f0d1124=727fb7ecab03f62ba5480a538f5129de; path=/; HttpOnly',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY, SAMEORIGIN',
-        },
-      }),
-    );
+    fetch.mockImplementation(fetchMockImplementationWithInvalidOrEmptyToken);
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
@@ -205,25 +207,7 @@ describe('configuration module and make request type refresh token integration',
       scope: '',
     });
 
-    fetch.mockImplementation(() =>
-      Promise.reject({
-        bodyString:
-          '{"error": "invalid_grant", "error_description": "The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client"}',
-        headers: {
-          'Cache-Control': 'no-store',
-          Connection: 'close',
-          'Content-Length': '232',
-          'Content-Type': contentType,
-          Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
-          Pragma: 'no-cache',
-          Server: 'nginx/1.15.1',
-          'Set-Cookie':
-            '4d98d0ba1af24ad3b3cc37c08f0d1124=727fb7ecab03f62ba5480a538f5129de; path=/; HttpOnly',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY, SAMEORIGIN',
-        },
-      }),
-    );
+    fetch.mockImplementation(fetchMockImplementationWithInvalidOrEmptyToken);
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
@@ -283,9 +267,9 @@ describe('configuration module and make request type refresh token integration',
           'Content-Type': contentType,
           Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
           Pragma: 'no-cache',
-          Server: 'nginx/1.15.1',
+          Server: server,
           'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY, SAMEORIGIN',
+          'X-Frame-Options': xFrameOptions,
         },
       }),
     );
