@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
 import { validateTokenEndpoint } from '../utils/endpoints';
 import { validateTokenSecurity } from '../security';
@@ -5,6 +6,7 @@ import { validateTokenSecurity } from '../security';
 const validateToken = async () => {
   const jwksResponse = await fetch(validateTokenEndpoint, {
     method: 'GET',
+    pkPinning: Platform.OS === 'ios',
     sslPinning: {
       certs: ['certificate'],
     },
