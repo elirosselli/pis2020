@@ -24,7 +24,7 @@ const initialize = (
       clientId,
       clientSecret,
       postLogoutRedirectUri,
-      scopeToSet, // Puede ser vacio
+      scope: scopeToSet, // Puede ser vacio
     });
     // Mensaje y código de éxito
     response = { name: 'Success', message: ERRORS.NO_ERROR };
