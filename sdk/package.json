@@ -63,6 +63,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-native": "^0.63.2",
-    "react-native-ssl-pinning": "^1.5.1"
+    "react-native-ssl-pinning": "^1.5.2"
   }
 }

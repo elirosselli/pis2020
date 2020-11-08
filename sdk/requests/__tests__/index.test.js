@@ -206,20 +206,17 @@ describe('validateToken', () => {
       error: true,
     };
     validateToken.mockReturnValue(Promise.resolve(result));
-
     const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
-
     expect(response).toBe(result);
   });
+
   it('calls validateToken with invalid token', async () => {
     const result = {
       jwks: 'jwks',
       error: false,
     };
     validateToken.mockReturnValue(Promise.resolve(result));
-
     const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
-
     expect(response).toBe(result);
   });
 });
