@@ -22,17 +22,18 @@ jest.mock('jsrsasign', () => ({
   },
 }));
 
+const idToken = 'idToken';
+const clientId = 'clientId';
+const kid = 'kid';
+const wrongKid = 'wrongKid';
+const alg = 'alg';
+const time = 'time';
+const jwksResponse = {
+  keys: [{ kid, alg }],
+};
+const pubKey = 'pubKey';
+
 describe('validateToken', () => {
-  const idToken = 'idToken';
-  const clientId = 'clientId';
-  const kid = 'kid';
-  const wrongKid = 'wrongKid';
-  const alg = 'alg';
-  const time = 'time';
-  const jwksResponse = {
-    keys: [{ kid, alg }],
-  };
-  const pubKey = 'pubKey';
   it('validates token correctly', async () => {
     getParameters.mockReturnValue({
       idToken,
