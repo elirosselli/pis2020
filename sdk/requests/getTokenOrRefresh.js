@@ -1,7 +1,11 @@
 import { encode } from 'base-64';
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+<<<<<<< HEAD
 import { getParameters, setParameters, eraseCode } from '../configuration';
+=======
+import { fetch } from '../utils/helpers';
+import { getParameters, setParameters } from '../configuration';
+>>>>>>> helpers file
 import { tokenEndpoint } from '../utils/endpoints';
 import { ERRORS, REQUEST_TYPES } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
@@ -59,19 +63,23 @@ const getTokenOrRefresh = async type => {
   try {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
     // los datos de autenticación codificados
-    const response = await fetch(tokenEndpoint(), {
-      method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    const response = await fetch(
+      tokenEndpoint,
+      {
+        method: 'POST',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
+        body: bodyString,
       },
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-      body: bodyString,
-    });
+      5,
+    );
 
     const { status } = response;
     const responseJson = await response.json();

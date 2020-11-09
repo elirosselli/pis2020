@@ -1,5 +1,5 @@
-import { fetch } from 'react-native-ssl-pinning';
-import fetchRetry from '../fetchRetry';
+import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
+import fetch from '../helpers';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -11,35 +11,41 @@ describe('fetchRetry', () => {
     const url = 'url';
     const config = {};
     const numRetries = 5;
-    fetch.mockImplementation(() => Promise.resolve('Valid'));
-    const response = await fetchRetry(url, config, numRetries);
+    fetchSslPinning.mockImplementation(() => Promise.resolve('Valid'));
+    const response = await fetch(url, config, numRetries);
 
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetchSslPinning).toHaveBeenCalledTimes(1);
     expect(response).toBe('Valid');
   });
+
   it('calls fetch incorrectly', async () => {
     const url = 'url';
     const config = {};
     const numRetries = 5;
-    fetch.mockImplementation(() => Promise.reject(new Error('Invalid')));
+    fetchSslPinning.mockImplementation(() =>
+      Promise.reject(new Error('Invalid')),
+    );
     try {
-      await fetchRetry(url, config, numRetries);
+      await fetch(url, config, numRetries);
     } catch (err) {
-      expect(fetch).toHaveBeenCalledTimes(numRetries);
+      expect(fetchSslPinning).toHaveBeenCalledTimes(numRetries);
       expect(err).toStrictEqual(Error('Invalid'));
     }
     expect.assertions(2);
   });
+
   it('calls fetch correctly after recursion', async () => {
     const url = 'url';
     const config = {};
     const numRetries = 5;
-    fetch.mockImplementationOnce(() => Promise.reject(new Error('Invalid')));
-    fetch.mockImplementationOnce(() => Promise.resolve('Valid'));
+    fetchSslPinning.mockImplementationOnce(() =>
+      Promise.reject(new Error('Invalid')),
+    );
+    fetchSslPinning.mockImplementationOnce(() => Promise.resolve('Valid'));
 
-    const response = await fetchRetry(url, config, numRetries);
+    const response = await fetch(url, config, numRetries);
 
-    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetchSslPinning).toHaveBeenCalledTimes(2);
     expect(response).toBe('Valid');
   });
 });

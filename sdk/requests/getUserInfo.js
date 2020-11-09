@@ -1,17 +1,15 @@
-// import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
-import fetchWrapper from '../utils/fetchRetry';
+import { fetch } from '../utils/helpers';
 
 const getUserInfo = async () => {
-  let { accessToken } = getParameters();
+  const { accessToken } = getParameters();
   try {
-    const response = await fetchWrapper(
+    const response = await fetch(
       userInfoEndpoint,
       {
         method: 'GET',
-        timeoutInterval: 10000,
         pkPinning: Platform.OS === 'ios',
         sslPinning: {
           certs: ['certificate'],
