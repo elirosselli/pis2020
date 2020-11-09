@@ -27,7 +27,11 @@ const initialize = (
       scope: scopeToSet, // Puede ser vacio
     });
     // Mensaje y código de éxito
-    response = { name: 'Success', message: ERRORS.NO_ERROR };
+    response = {
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      message: ERRORS.NO_ERROR,
+    };
   } else {
     // Si alguno de los parametros es vacío se retorna el error correspondiente
     response = initializeErrors(

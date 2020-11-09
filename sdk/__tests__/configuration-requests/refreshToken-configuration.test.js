@@ -110,12 +110,16 @@ describe('configuration module and make request type refresh token integration',
       body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
     });
 
-    expect(response.accessToken).toBe(accessToken);
-    expect(response.refreshToken).toBe(refreshToken);
-    expect(response.expiresIn).toBe(expiresIn);
-    expect(response.idToken).toBe(idToken);
-    expect(response.tokenType).toBe(tokenType);
-    expect(response.message).toBe(ERRORS.NO_ERROR);
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken,
+      tokenType,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,

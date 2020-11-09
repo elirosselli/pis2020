@@ -51,7 +51,7 @@ describe('configuration module and make request type logout integration', () => 
         url: correctLogoutEndpoint1,
       }),
     );
-    const { state } = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const resp = await makeRequest(REQUEST_TYPES.LOGOUT);
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
@@ -60,7 +60,12 @@ describe('configuration module and make request type logout integration', () => 
         certs: ['certificate'],
       },
     });
-    expect(state).toBe(expectedState);
+    expect(resp).toStrictEqual({
+      state: expectedState,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
 
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -104,7 +109,7 @@ describe('configuration module and make request type logout integration', () => 
         url: correctLogoutEndpoint2,
       }),
     );
-    const { state } = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const resp = await makeRequest(REQUEST_TYPES.LOGOUT);
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
       method: 'GET',
@@ -113,7 +118,11 @@ describe('configuration module and make request type logout integration', () => 
         certs: ['certificate'],
       },
     });
-    expect(state).toBe(undefined);
+    expect(resp).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',

@@ -15,6 +15,10 @@ const contentType = 'application/json';
 
 describe('refreshToken', () => {
   it('calls refreshToken with correct refreshToken', async () => {
+    const expiresIn = 3600;
+    const idToken =
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
+    const tokenType = 'bearer';
     // Mockear la funcion fetch
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -22,11 +26,10 @@ describe('refreshToken', () => {
         json: () =>
           Promise.resolve({
             access_token: 'c9747e3173544b7b870d48aeafa0f661',
-            expires_in: 3600,
-            id_token:
-              'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw',
+            expires_in: expiresIn,
+            id_token: idToken,
             refresh_token: '041a156232ac43c6b719c57b7217c9ee',
-            token_type: 'bearer',
+            token_type: tokenType,
           }),
       }),
     );
@@ -43,7 +46,7 @@ describe('refreshToken', () => {
     getParameters.mockReturnValue({
       clientId,
       clientSecret,
-      refreshToken: '541a156232ac43c6b719c57b7217c9ea',
+      refreshToken,
       postLogoutRedirectUri,
       redirectUri,
       code: 'correctCode',
@@ -70,14 +73,16 @@ describe('refreshToken', () => {
     });
 
     // Chequeo de respuestas
-    expect(response.accessToken).toBe('c9747e3173544b7b870d48aeafa0f661');
-    expect(response.refreshToken).toBe('041a156232ac43c6b719c57b7217c9ee');
-    expect(response.expiresIn).toBe(3600);
-    expect(response.idToken).toBe(
-      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw',
-    );
-    expect(response.tokenType).toBe('bearer');
-    expect(response.message).toBe(ERRORS.NO_ERROR);
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken: 'c9747e3173544b7b870d48aeafa0f661',
+      expiresIn,
+      idToken,
+      refreshToken: '041a156232ac43c6b719c57b7217c9ee',
+      tokenType,
+    });
   });
 
   it('calls refreshToken with incorrect clientId or clientSecret', async () => {

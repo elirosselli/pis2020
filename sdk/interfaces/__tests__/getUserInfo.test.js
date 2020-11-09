@@ -9,6 +9,9 @@ afterEach(() => jest.clearAllMocks());
 describe('getUserInfo', () => {
   it('calls getUserInfo and works correctly', async () => {
     const userInfo = {
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -25,11 +28,11 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo and fails', async () => {
-    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_TOKEN));
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_TOKEN);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect(makeRequest).toHaveBeenCalledTimes(1);
     expect(makeRequest).toHaveBeenCalledWith(REQUEST_TYPES.GET_USER_INFO);

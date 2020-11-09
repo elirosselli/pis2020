@@ -94,7 +94,6 @@ const getTokenOrRefresh = async type => {
     eraseCode();
     // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito
     return Promise.resolve({
-      name: 'Success',
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,

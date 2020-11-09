@@ -27,11 +27,11 @@ const login = async () => {
       setParameters({ code: code[1] });
       // Se retorna el código y el error correspondiente (en este caso no hay error)
       resolveFunction({
-        name: 'Success',
         message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],
+        // TODO: return state
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso
@@ -57,9 +57,6 @@ const login = async () => {
     else {
       // En caso de que algún parámetro sea vacío, se elimina el handler y rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
-      // FIXME: esto está bien? o sea en realidad si alguno fue setteado en vacío, todos lo fueron
-      // así que siempre va a tirar como que el clientID es vacío. Capaz que hay que tener error
-      // genérico tipo "invalid initialization"
       const errorResponse = initializeErrors(
         parameters.clientId,
         parameters.redirectUri,

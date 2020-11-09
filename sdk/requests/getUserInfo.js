@@ -31,7 +31,6 @@ const getUserInfo = async () => {
     }
 
     // Resuelvo promesa con la información del usuario.
-    responseJson.name = 'Success';
     responseJson.message = ERRORS.NO_ERROR;
     responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
     responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;

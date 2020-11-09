@@ -54,7 +54,6 @@ describe('getUserInfo', () => {
       },
     });
     expect(response).toStrictEqual({
-      name: 'Success',
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,

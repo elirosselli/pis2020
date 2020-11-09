@@ -27,7 +27,11 @@ describe('initialize', () => {
       parameters.clientSecret,
       parameters.postLogoutRedirectUri,
     );
-    expect(errorResp.message).toBe(ERRORS.NO_ERROR);
+    expect(errorResp).toStrictEqual({
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      message: ERRORS.NO_ERROR,
+    });
     const responseParameters = getParameters();
     expect(responseParameters.redirectUri).toStrictEqual(
       parameters.redirectUri,

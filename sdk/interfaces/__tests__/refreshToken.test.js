@@ -10,20 +10,43 @@ describe('refreshToken', () => {
   afterEach(() => jest.clearAllMocks());
 
   it('calls refreshToken correctly', async () => {
-    const newToken = '041a156232ac43c6b719c57b7217c9ee';
-    makeRequest.mockReturnValue(Promise.resolve(newToken));
+    const token = 'token';
+    const expiresIn = 3600;
+    const idToken = 'idToken';
+    const tokenType = 'tokenType';
+    makeRequest.mockReturnValue(
+      Promise.resolve({
+        token: 'token',
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+        expiresIn: 3600,
+        idToken: 'idToken',
+        refreshToken: 'refreshToken',
+        tokenType: 'tokenType',
+      }),
+    );
 
     const response = await refreshToken();
 
-    expect(response).toBe(newToken);
+    expect(response).toStrictEqual({
+      token,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      expiresIn,
+      idToken,
+      refreshToken: 'refreshToken',
+      tokenType,
+    });
   });
 
   it('calls refreshToken incorrectly', async () => {
-    makeRequest.mockReturnValue(Promise.reject(ERRORS.INVALID_GRANT));
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await refreshToken();
     } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_GRANT);
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
 
     expect(makeRequest).toHaveBeenCalledTimes(1);

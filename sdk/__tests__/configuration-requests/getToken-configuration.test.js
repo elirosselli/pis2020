@@ -91,9 +91,16 @@ describe('configuration module and make request type get token integration', () 
       },
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
-
-    expect(response.accessToken).toBe(accessToken);
-    expect(response.message).toBe(ERRORS.NO_ERROR);
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken,
+      tokenType,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,

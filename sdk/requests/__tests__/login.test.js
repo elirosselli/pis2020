@@ -37,8 +37,12 @@ describe('login', () => {
     const resp = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(resp.code).toBe('35773ab93b5b4658b81061ce3969efc2');
-    expect(resp.errorCode).toBe(ERRORS.NO_ERROR.errorCode);
+    expect(resp).toStrictEqual({
+      code: '35773ab93b5b4658b81061ce3969efc2',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls login with correct clientId, correct redirectUri and return invalid code', async () => {

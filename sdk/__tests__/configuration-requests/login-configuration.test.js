@@ -62,17 +62,22 @@ describe('configuration module and make request type login integration', () => {
           url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2`,
         });
     });
-    const { code } = await makeRequest(REQUEST_TYPES.LOGIN);
+    const resp = await makeRequest(REQUEST_TYPES.LOGIN);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(resp).toStrictEqual({
+      code: '35773ab93b5b4658b81061ce3969efc2',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
       postLogoutRedirectUri,
-      code,
+      code: resp.code,
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -115,17 +120,22 @@ describe('configuration module and make request type login integration', () => {
           url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=${parameters.state}`,
         });
     });
-    const { code } = await makeRequest(REQUEST_TYPES.LOGIN);
+    const resp = await makeRequest(REQUEST_TYPES.LOGIN);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(resp).toStrictEqual({
+      code: '35773ab93b5b4658b81061ce3969efc2',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
       postLogoutRedirectUri,
-      code,
+      code: resp.code,
       accessToken: '',
       refreshToken: '',
       tokenType: '',

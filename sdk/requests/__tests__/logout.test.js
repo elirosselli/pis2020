@@ -39,8 +39,12 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect(result.state).toBe(state);
-    expect(result.message).toBe(ERRORS.NO_ERROR);
+    expect(result).toStrictEqual({
+      state,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
@@ -64,8 +68,11 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect(result.state).toBe(undefined);
-    expect(result.message).toBe(ERRORS.NO_ERROR);
+    expect(result).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
