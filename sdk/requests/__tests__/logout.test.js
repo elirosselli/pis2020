@@ -1,11 +1,10 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { getParameters } from '../../configuration';
+import { ERRORS } from '../../utils/constants';
 import logout from '../logout';
 
 jest.mock('../../configuration');
-
-const missingParamsMessage = 'Missing required parameter(s): ';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -31,7 +30,7 @@ describe('logout', () => {
         url: correctLogoutEndpoint1,
       }),
     );
-    const returnedState = await logout();
+    const result = await logout();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
@@ -40,7 +39,12 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect(returnedState).toBe(state);
+    expect(result).toStrictEqual({
+      state,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
@@ -55,7 +59,7 @@ describe('logout', () => {
         url: correctLogoutEndpoint2,
       }),
     );
-    const returnedState = await logout();
+    const result = await logout();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
       method: 'GET',
@@ -64,98 +68,37 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect(returnedState).toBe(undefined);
+    expect(result).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
-    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
     getParameters.mockReturnValue({
       idToken,
       postLogoutRedirectUri: '',
       state,
     });
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        url: Error(`${missingParamsMessage}postLogoutRedirectUri`),
-      }),
-    );
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(
-        Error(`${missingParamsMessage}postLogoutRedirectUri`),
-      );
+      expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
     }
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(incorrectLogoutEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-    });
-    expect.assertions(3);
   });
 
   it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
-    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
     getParameters.mockReturnValue({
       idToken: '',
       postLogoutRedirectUri,
       state,
     });
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        url: Error(`${missingParamsMessage}idTokenHint`),
-      }),
-    );
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(Error(`${missingParamsMessage}idTokenHint`));
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(incorrectLogoutEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-    });
-    expect.assertions(3);
-  });
-
-  it('calls logout with state but without idTokenHint and postLogoutRedirectUri', async () => {
-    const incorrectLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=&state=${state}`;
-    getParameters.mockReturnValue({
-      idToken: '',
-      postLogoutRedirectUri: '',
-      state,
-    });
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        url: Error(`${missingParamsMessage}idTokenHint, postLogoutRedirectUri`),
-      }),
-    );
-    try {
-      await logout();
-    } catch (error) {
-      expect(error).toMatchObject(
-        Error(`${missingParamsMessage}idTokenHint, postLogoutRedirectUri`),
-      );
-    }
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(incorrectLogoutEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-    });
-    expect.assertions(3);
   });
 
   it('calls logout with required parameters and response not OK', async () => {
@@ -167,23 +110,14 @@ describe('logout', () => {
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
-        url: Error('Response status not OK'),
+        url: 'something',
       }),
     );
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(Error('Response status not OK'));
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-    });
-    expect.assertions(3);
   });
 
   it('calls logout with required parameters and returns invalid url', async () => {
@@ -193,12 +127,12 @@ describe('logout', () => {
       state,
     });
     fetch.mockImplementation(() =>
-      Promise.resolve({ status: 200, url: Error('Invalid returned url') }),
+      Promise.resolve({ status: 200, url: 'badUrl' }),
     );
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(Error('Invalid returned url'));
+      expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
     }
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
@@ -217,12 +151,11 @@ describe('logout', () => {
       postLogoutRedirectUri,
       state,
     });
-    const err = Error('error');
-    fetch.mockImplementation(() => Promise.reject(err));
+    fetch.mockImplementation(() => Promise.reject());
     try {
       await logout();
     } catch (error) {
-      expect(error).toMatchObject(error);
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {

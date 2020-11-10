@@ -1,6 +1,7 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../../utils/constants';
+import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
   getParameters,
@@ -20,8 +21,7 @@ beforeEach(() => {
 
 const correctTokenEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
-const contentType = 'application/x-www-form-urlencoded;charset=UTF-8';
-const accept = 'application/json';
+const contentType = 'application/json';
 const tokenType = 'bearer';
 const expiresIn = 3600;
 const idToken =
@@ -48,14 +48,21 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    setParameters({ clientId, clientSecret, redirectUri, code });
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      postLogoutRedirectUri,
+      code,
+    });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri,
       code,
       accessToken: '',
       refreshToken: '',
@@ -70,9 +77,7 @@ describe('configuration module and make request type get token integration', () 
 
     const encodedCredentials =
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-
     const response = await makeRequest(REQUEST_TYPES.GET_TOKEN);
-
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',
@@ -81,20 +86,28 @@ describe('configuration module and make request type get token integration', () 
       },
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': contentType,
-        Accept: accept,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: contentType,
       },
-      body: `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`,
+      body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
-
-    expect(response).toBe(accessToken);
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken,
+      tokenType,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
-      code,
+      postLogoutRedirectUri,
+      code: '',
       accessToken,
       refreshToken,
       tokenType,
@@ -110,15 +123,22 @@ describe('configuration module and make request type get token integration', () 
     const clientId = '898562';
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'invalidCode';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    setParameters({ clientId, clientSecret, redirectUri, code });
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri,
       code,
       accessToken: '',
       refreshToken: '',
@@ -129,27 +149,30 @@ describe('configuration module and make request type get token integration', () 
       scope: '',
     });
 
-    const error = 'invalid_code';
-    const errorDescription =
-      'The provided authorization code is invalid or expired';
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error,
-            error_description: errorDescription,
-          }),
+      Promise.reject({
+        bodyString:
+          '{"error": "invalid_grant", "error_description": "The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client"}',
+        headers: {
+          'Cache-Control': 'no-store',
+          Connection: 'close',
+          'Content-Length': '232',
+          'Content-Type': contentType,
+          Date: 'Thu, 05 Nov 2020 17:58:52 GMT',
+          Pragma: 'no-cache',
+          Server: 'nginx/1.15.1',
+          'Set-Cookie':
+            '4d98d0ba1af24ad3b3cc37c08f0d1124=727fb7ecab03f62ba5480a538f5129de; path=/; HttpOnly',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY, SAMEORIGIN',
+        },
       }),
     );
 
     try {
       await makeRequest(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toStrictEqual({
-        error,
-        error_description: errorDescription,
-      });
+      expect(err).toBe(ERRORS.INVALID_GRANT);
     }
 
     parameters = getParameters();
@@ -157,8 +180,8 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
-      code,
+      postLogoutRedirectUri,
+      code: '',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -171,20 +194,27 @@ describe('configuration module and make request type get token integration', () 
     expect.assertions(3);
   });
 
-  it('calls setParameters and makes a get token request with invalid client id', async () => {
+  it('calls setParameters and makes a get token request with invalid client id or client secret', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'invalidClientId';
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    setParameters({ clientId, clientSecret, redirectUri, code });
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri,
       code,
       accessToken: '',
       refreshToken: '',
@@ -195,26 +225,27 @@ describe('configuration module and make request type get token integration', () 
       scope: '',
     });
 
-    const error2 = 'invalid_client_id';
-    const errorDescription = 'The provided client_id is invalid';
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error2,
-            error_description: errorDescription,
-          }),
+      Promise.reject({
+        bodyString:
+          '{"error": "invalid_client", "error_description": "Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)"}',
+        headers: {
+          'Cache-Control': 'no-store',
+          Connection: 'close',
+          'Content-Length': '176',
+          'Content-Type': contentType,
+          Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+          Pragma: 'no-cache',
+          Server: 'nginx/1.15.1',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY, SAMEORIGIN',
+        },
       }),
     );
-
     try {
       await makeRequest(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toStrictEqual({
-        error2,
-        error_description: errorDescription,
-      });
+      expect(err).toBe(ERRORS.INVALID_CLIENT);
     }
 
     parameters = getParameters();
@@ -222,72 +253,8 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
-      code,
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a get token request with invalid client secret', async () => {
-    const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret = 'invalidClientSecret';
-    const code = 'f24df0c4fcb142328b843d49753946af';
-
-    setParameters({ clientId, clientSecret, redirectUri, code });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri: '',
-      code,
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    const error3 = 'invalid_client_secret';
-    const errorDescription = 'The provided client_secret is invalid';
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error3,
-            error_description: errorDescription,
-          }),
-      }),
-    );
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_TOKEN);
-    } catch (err) {
-      expect(err).toStrictEqual({
-        error3,
-        error_description: errorDescription,
-      });
-    }
-
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri: '',
-      code,
+      postLogoutRedirectUri,
+      code: '',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -306,14 +273,21 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    setParameters({ clientId, clientSecret, redirectUri, code });
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri,
       code,
       accessToken: '',
       refreshToken: '',
@@ -323,19 +297,57 @@ describe('configuration module and make request type get token integration', () 
       state: '',
       scope: '',
     });
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () => Promise.resolve(),
+      }),
+    );
     try {
       await makeRequest(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters, makes a get token request and returns some error', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = '898562';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
       code,
       accessToken: '',
       refreshToken: '',
@@ -345,6 +357,309 @@ describe('configuration module and make request type get token integration', () 
       state: '',
       scope: '',
     });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
+      }),
+    );
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a get token request with empty client id ', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = '';
+    const clientSecret =
+      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a get token request with empty client secret ', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = '';
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a get token request with empty redirectUri ', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a get token request with empty code ', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = '';
+    const postLogoutRedirectUri = 'postLogoutRedirectUri';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a get token request with empty postLogoutRedirectUri ', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'code';
+    const postLogoutRedirectUri = '';
+
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code,
+      postLogoutRedirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
     expect.assertions(3);
   });
 });
