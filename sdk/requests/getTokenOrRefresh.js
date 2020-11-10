@@ -21,16 +21,22 @@ const getTokenOrRefresh = async type => {
       parameters.postLogoutRedirectUri,
       parameters.clientSecret,
     );
+    // Se borra el parámetro code una vez ejecutado el getToken.
+    eraseCode();
     return Promise.reject(errorResponse);
   }
 
   // En el caso de get token, se chequea que el code exista.
   if (type === REQUEST_TYPES.GET_TOKEN && !parameters.code) {
+    // Se borra el parámetro code una vez ejecutado el getToken.
+    eraseCode();
     return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
   }
 
   // En el caso de refresh token, se chequea que el refresh token exista.
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken) {
+    // Se borra el parámetro code una vez ejecutado el getToken.
+    eraseCode();
     return Promise.reject(ERRORS.INVALID_GRANT);
   }
 
