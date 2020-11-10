@@ -17,23 +17,23 @@ const initialize = (
 ) => {
   let response;
   if (clientId && redirectUri && clientSecret && postLogoutRedirectUri) {
-    // Si los parametros clientId, redirectUri y postLogoutRedirectUri no son vacíos se hace el set de los parametros
-    const scopeToSet = scope || ''; // Si no se pasa el scope como parametro, se toma como undefined, entonces se debe asignar el string vacio
+    // Si los parámetros clientId, clientSecret, redirectUri y postLogoutRedirectUri no son vacíos se hace el set de los parámetros.
+    const scopeToSet = scope || ''; // Si no se pasa el scope como parámetro, se toma como undefined, entonces se debe asignar el string vacío.
     setParameters({
       redirectUri,
       clientId,
       clientSecret,
       postLogoutRedirectUri,
-      scope: scopeToSet, // Puede ser vacio
+      scope: scopeToSet, // Puede ser vacío.
     });
-    // Mensaje y código de éxito
+    // Mensaje y código de éxito.
     response = {
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
       message: ERRORS.NO_ERROR,
     };
   } else {
-    // Si alguno de los parametros es vacío se retorna el error correspondiente
+    // Si alguno de los parámetros es vacío se retorna el error correspondiente.
     response = initializeErrors(
       clientId,
       redirectUri,
@@ -41,7 +41,7 @@ const initialize = (
       clientSecret,
     );
   }
-  // Se retorna el error y el mensaje correspondiente
+  // Se retorna el error y el mensaje correspondiente.
   return response;
 };
 

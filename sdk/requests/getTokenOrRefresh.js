@@ -15,27 +15,27 @@ const getTokenOrRefresh = async type => {
     !parameters.postLogoutRedirectUri ||
     !parameters.clientSecret
   ) {
-    const respError = initializeErrors(
+    const errorResponse = initializeErrors(
       parameters.clientId,
       parameters.redirectUri,
       parameters.postLogoutRedirectUri,
       parameters.clientSecret,
     );
-    // Se borra el parámetro code una vez ejecutado el getToken
+    // Se borra el parámetro code una vez ejecutado el getToken.
     eraseCode();
-    return Promise.reject(respError);
+    return Promise.reject(errorResponse);
   }
 
-  // En el caso de get token, se chequea que el code exista
+  // En el caso de get token, se chequea que el code exista.
   if (type === REQUEST_TYPES.GET_TOKEN && !parameters.code) {
-    // Se borra el parámetro code una vez ejecutado el getToken
+    // Se borra el parámetro code una vez ejecutado el getToken.
     eraseCode();
     return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
   }
 
-  // En el caso de refresh token, se chequea que el refresh token exista
-  if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken){
-    // Se borra el parámetro code una vez ejecutado el getToken
+  // En el caso de refresh token, se chequea que el refresh token exista.
+  if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken) {
+    // Se borra el parámetro code una vez ejecutado el getToken.
     eraseCode();
     return Promise.reject(ERRORS.INVALID_GRANT);
   }
@@ -49,13 +49,13 @@ const getTokenOrRefresh = async type => {
   // durante el login, y la redirect uri correspondiente.
   let bodyString = `grant_type=authorization_code&code=${parameters.code}&redirect_uri=${parameters.redirectUri}`;
   // En caso de que el request sea GET_REFRESH_TOKEN el body de la request contendrá grant_type 'refresh_token' y
-  // el refresh token obtenido en get token
+  // el refresh token obtenido en get token.
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN)
     bodyString = `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`;
 
   try {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
-    // los datos de autenticación codificados en base64
+    // los datos de autenticación codificados en base64.
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',
@@ -76,7 +76,7 @@ const getTokenOrRefresh = async type => {
     // En caso de error se devuelve la respuesta,
     // rechazando la promesa.
     if (status !== 200) {
-      // Se borra el parámetro code una vez ejecutado el getToken
+      // Se borra el parámetro code una vez ejecutado el getToken.
       eraseCode();
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
@@ -90,9 +90,9 @@ const getTokenOrRefresh = async type => {
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
     });
-    // Se borra el parámetro code una vez ejecutado el getToken
+    // Se borra el parámetro code una vez ejecutado el getToken.
     eraseCode();
-    // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito
+    // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito.
     return Promise.resolve({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -104,7 +104,7 @@ const getTokenOrRefresh = async type => {
       idToken: responseJson.id_token,
     });
   } catch (error) {
-    // Se borra el parámetro code una vez ejecutado el getToken
+    // Se borra el parámetro code una vez ejecutado el getToken.
     eraseCode();
     // Si existe algun error, se
     // rechaza la promesa y se devuelve el

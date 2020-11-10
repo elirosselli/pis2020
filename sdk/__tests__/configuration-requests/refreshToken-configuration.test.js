@@ -439,6 +439,52 @@ describe('configuration module and make request type refresh token integration',
     expect.assertions(3);
   });
 
+  it('calls setParameters and makes a refresh token request with empty postLogoutRedirectUri', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      refreshToken,
+      redirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
   it('calls setParameters, makes a refreshToken request and fetch fails', async () => {
     setParameters({
       clientId,

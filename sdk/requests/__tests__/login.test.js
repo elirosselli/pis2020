@@ -34,10 +34,10 @@ describe('login', () => {
             'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=TEST_STATE',
         });
     });
-    const resp = await login();
+    const response = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(resp).toStrictEqual({
+    expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,

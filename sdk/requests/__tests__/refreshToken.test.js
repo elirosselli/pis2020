@@ -87,8 +87,8 @@ describe('refreshToken', () => {
 
   it('calls refreshToken with incorrect clientId or clientSecret', async () => {
     getParameters.mockReturnValue({
-      clientId: 'sdasd',
-      clientSecret: 'asdasd',
+      clientId: 'incorrectClientId',
+      clientSecret: 'incorrectClientSecret',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
@@ -225,7 +225,7 @@ describe('refreshToken', () => {
   it('calls refreshToken and fetch fails', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
-      clientSecret: 'asdasd',
+      clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
@@ -257,7 +257,7 @@ describe('refreshToken', () => {
       Promise.reject({
         headers: {
           'some-error':
-            'error="some_error", error_description="Error different from invalid access token"',
+            'error="some_error", error_description="Error different from invalid grant or invalid client"',
         },
       }),
     );

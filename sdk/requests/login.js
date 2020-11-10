@@ -25,16 +25,16 @@ const login = async () => {
     // si no, se rechaza la promise con un error.
     if (code) {
       setParameters({ code: code[1] });
-      // Se retorna el código y el error correspondiente (en este caso no hay error)
+      // Se retorna el código y el error correspondiente (en este caso no hay error).
       resolveFunction({
         message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],
-        // TODO: return state
+        // TODO: return state.
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
-      // Cuando el usuario niega el acceso
+      // Cuando el usuario niega el acceso.
       rejectFunction(ERRORS.ACCESS_DENIED);
     } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
 
@@ -45,7 +45,7 @@ const login = async () => {
   try {
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
-    // Si hay un clientId, redirectUri y postLogoutRedirectUri setteado, se abre el browser
+    // Si hay un clientId, clientSecret, redirectUri y postLogoutRedirectUri setteado, se abre el browser
     // para realizar la autenticación y autorización con idUruguay.
     if (
       parameters.clientId &&

@@ -239,9 +239,6 @@ const App = () => {
                         console.log(err.errorCode, err.errorDescription);
                       }
                     }}
-                    // onPress={async () => {
-                    //   setToken(await getToken());
-                    // }}
                   >
                     <Text style={styles.infoBtnText}>GET TOKEN</Text>
                   </TouchableOpacity>

@@ -1,4 +1,3 @@
-  
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 // istanbul ignore file
@@ -30,8 +29,8 @@ const LoginButton = ({ handleCode, notActive }) => {
   };
   const handleLogin = async () => {
     try {
-      const respLogin = await login();
-      handleCode(respLogin.code);
+      const loginResponse = await login();
+      handleCode(loginResponse.code);
       // Guardo Info de usuario en la APP
     } catch (err) {
       console.log(err.errorCode, err.errorDescription);

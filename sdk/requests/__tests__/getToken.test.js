@@ -80,8 +80,8 @@ describe('getToken', () => {
 
   it('calls getToken with incorrect clientId or clientSecret ', async () => {
     getParameters.mockReturnValue({
-      clientId: 'asdasd',
-      clientSecret: 'asdasd',
+      clientId: 'invalidClientId',
+      clientSecret: 'invalidClientSecret',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'corrrectCode',
@@ -173,7 +173,7 @@ describe('getToken', () => {
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
-      accessToken: 'incorrectAccessToken',
+      accessToken: 'accessToken',
     });
 
     try {
@@ -191,7 +191,7 @@ describe('getToken', () => {
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
-      accessToken: 'incorrectAccessToken',
+      accessToken: 'accessToken',
     });
 
     try {
@@ -209,7 +209,7 @@ describe('getToken', () => {
       redirectUri: '',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
-      accessToken: 'incorrectAccessToken',
+      accessToken: 'accessToken',
     });
 
     try {
@@ -227,7 +227,7 @@ describe('getToken', () => {
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: '',
-      accessToken: 'incorrectAccessToken',
+      accessToken: 'accessToken',
     });
 
     try {
@@ -245,14 +245,14 @@ describe('getToken', () => {
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'correctCode',
-      accessToken: 'incorrectAccessToken',
+      accessToken: 'accessToken',
     });
 
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
           'some-error':
-            'error="some_error", error_description="Error different from invalid access token"',
+            'error="some_error", error_description="Error different from invalid grant or invalid client"',
         },
       }),
     );

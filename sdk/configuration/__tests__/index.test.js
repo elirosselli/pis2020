@@ -6,6 +6,9 @@ import {
   eraseCode,
 } from '../index';
 
+afterEach(() => jest.clearAllMocks());
+beforeEach(() => resetParameters());
+
 describe('configuration module', () => {
   it('works correctly', () => {
     const parameters1 = {
@@ -82,8 +85,7 @@ describe('configuration module', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
-      // code: 'code',
-      code: '',
+      code: 'code',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -98,8 +100,7 @@ describe('configuration module', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
-      // code: 'code',
-      code: '',
+      code: 'code',
       accessToken: 'accessToken',
       refreshToken: 'refreshToken',
       tokenType: 'tokenType',
@@ -114,8 +115,7 @@ describe('configuration module', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId2',
       clientSecret: 'clientSecret',
-      // code: 'code',
-      code: '',
+      code: 'code',
       accessToken: 'accessToken',
       refreshToken: 'refreshToken',
       tokenType: 'tokenType',
@@ -158,48 +158,48 @@ describe('configuration module', () => {
   });
   it('eraseCode works correctly', () => {
     const parameters7 = {
-      redirectUri: 'as',
-      clientId: 'as',
-      clientSecret: 'as',
-      code: 'as',
-      accessToken: 'as',
-      refreshToken: 'as',
-      tokenType: 'as',
-      expiresIn: 'as',
-      idToken: 'as',
-      postLogoutRedirectUri: 'as',
-      state: 'as',
-      scope: 'as',
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      code: 'code',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: 'state',
+      scope: 'scope',
     };
     setParameters(parameters7);
     expect(getParameters()).toStrictEqual({
-      redirectUri: 'as',
-      clientId: 'as',
-      clientSecret: 'as',
-      code: 'as',
-      accessToken: 'as',
-      refreshToken: 'as',
-      tokenType: 'as',
-      expiresIn: 'as',
-      idToken: 'as',
-      postLogoutRedirectUri: 'as',
-      state: 'as',
-      scope: 'as',
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      code: 'code',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: 'state',
+      scope: 'scope',
     });
     eraseCode();
     expect(getParameters()).toStrictEqual({
-      redirectUri: 'as',
-      clientId: 'as',
-      clientSecret: 'as',
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
       code: '',
-      accessToken: 'as',
-      refreshToken: 'as',
-      tokenType: 'as',
-      expiresIn: 'as',
-      idToken: 'as',
-      postLogoutRedirectUri: 'as',
-      state: 'as',
-      scope: 'as',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 'expiresIn',
+      idToken: 'idToken',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      state: 'state',
+      scope: 'scope',
     });
   });
 });

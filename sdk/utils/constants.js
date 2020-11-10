@@ -48,9 +48,9 @@ class ErrorNoError extends Error {
     errorDescription = errorDescriptions.noError,
     ...params
   ) {
-    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre
+    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre.
     super(...params);
-    // Información de depuración personalizada
+    // Información de depuración personalizada.
     this.name = 'noError';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
