@@ -156,6 +156,7 @@ describe('configuration module', () => {
       scope: '',
     });
   });
+
   it('eraseCode works correctly', () => {
     const parameters7 = {
       redirectUri: 'redirectUri',

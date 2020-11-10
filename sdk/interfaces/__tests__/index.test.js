@@ -32,7 +32,6 @@ describe('initialize', () => {
       errorDescription: ERRORS.NO_ERROR.errorDescription,
       message: ERRORS.NO_ERROR,
     });
-    // const responseParameters = getParameters();
     const {
       redirectUri,
       clientId,
@@ -155,7 +154,7 @@ describe('initialize', () => {
     expect(postLogoutRedirectUri).toStrictEqual('');
   });
 
-  it('returns error with all parameters setted', () => {
+  it('does not return error when all parameters are setted', () => {
     const parameters = {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
