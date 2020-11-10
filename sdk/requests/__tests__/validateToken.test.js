@@ -1,5 +1,4 @@
 import { fetch } from 'react-native-ssl-pinning';
-
 import validateToken from '../validateToken';
 import { validateTokenSecurity } from '../../security';
 
