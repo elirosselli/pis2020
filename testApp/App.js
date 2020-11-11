@@ -36,7 +36,10 @@ const App: () => React$Node = () => {
     console.log("Inicializando sdk");
     var now = require("performance-now")
     var start = now();
-    initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+    const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+    Object.keys(init).forEach(key => {
+      console.log(`${key}: ${init[key]}`);
+    });
     setParameters({scope: "personal_info"});
     console.log("Inicializado");
     var end = now();
