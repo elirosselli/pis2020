@@ -48,7 +48,9 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const code = await login();
-      console.log(`Code: ${code}`);
+      Object.keys(code).forEach(key => {
+        console.log(`${key}: ${code[key]}`);
+      });
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
@@ -62,7 +64,9 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const token = await getToken();
-      console.log(`Token: ${token}`);
+      Object.keys(token).forEach(key => {
+        console.log(`${key}: ${token[key]}`);
+      });
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
@@ -77,7 +81,9 @@ const App: () => React$Node = () => {
       var start = now();
       
       const rfToken = await refreshToken();
-      console.log(`Token: ${rfToken}`);
+      Object.keys(rfToken).forEach(key => {
+        console.log(`${key}: ${rfToken[key]}`);
+      });
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
@@ -108,7 +114,7 @@ const App: () => React$Node = () => {
   handleLogout = async() => {
     var now = require("performance-now")
     var start = now();
-    setParameters({idToken: "iewfwoie121"});
+    
     try{
       await logout();
       var end = now();
