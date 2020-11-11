@@ -16,7 +16,7 @@ const validateTokenSecurity = jwksResponse => {
   if (!clientId) {
     return Promise.reject(ERRORS.INVALID_CLIENT_ID);
   }
-  // Se construye la clave publica para verificar la firma del token.
+  // Se construye la clave pública para verificar la firma del token.
   const pubKey = KEYUTIL.getKey({
     n: base64ToHex(base64URLtoBase64(jwksResponse.keys[0].n)),
     e: base64ToHex(jwksResponse.keys[0].e),
