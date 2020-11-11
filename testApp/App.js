@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters} from 'sdk-gubuy-test';
+import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters, resetParameters} from 'sdk-gubuy-test';
 import styles from './styles';
 import React from 'react';
 import {
@@ -29,6 +29,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
 
 const App: () => React$Node = () => {
 
@@ -130,6 +131,109 @@ const App: () => React$Node = () => {
       console.log(`Error: ${error}`)
     }
   }
+
+  handleProfiler = async() => {
+    var cantEjecuciones = 10;
+    console.log(``);
+    console.log(``);
+    console.log(`---------Iniciando Profiler---------`);
+    console.log(`Promedio de ${cantEjecuciones} ejecuciones.`);
+    console.log(`Se requerira que inicie sesion en el navegador para poder realizar las pruebas.`);
+    try {
+      initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+      setParameters({scope: 'personal_info'});
+      await login();
+      console.log(`Login realizado.`);
+      console.log(`Comienzo de ejecucion de las pruebas.`);
+      
+      resetParameters();
+      var tTotal = 0;
+      var prom = 0;
+      var now = require("performance-now");
+      var start, end;
+
+      //Prueba para inicializar
+      for (let index = 0; index < cantEjecuciones; index++) {
+        start = now();
+        initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+        end = now();
+        tTotal = tTotal + (end - start);
+        //sleep(100);
+        resetParameters();
+      }
+      prom = tTotal / 10;
+      console.log(`Initialize:    ${prom} ms`);
+
+      initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+      setParameters({scope: 'personal_info'});
+      sleep(100);
+      //Prueba para login
+      tTotal = 0;
+      for (let index = 0; index < cantEjecuciones; index++) {
+        const resp = await login();
+        tTotal = tTotal + resp.tiempo;
+        sleep(200);
+      }
+      prom = tTotal / 10;
+      console.log(`Login:    ${prom} ms`);
+
+      //Prueba para getToken
+      tTotal = 0;
+      for (let index = 0; index < cantEjecuciones; index++) {
+        const resp = await getToken();
+        tTotal = tTotal + resp.tiempo;
+        sleep(200);
+        await login();
+      }
+      prom = tTotal / 10;
+      console.log(`getToken:    ${prom} ms`);
+
+      //Prueba para refreshToken
+      await getToken();
+      tTotal = 0;
+      for (let index = 0; index < cantEjecuciones; index++) {
+        const resp = await refreshToken();
+        tTotal = tTotal + resp.tiempo;
+        sleep(200);
+      }
+      prom = tTotal / 10;
+      console.log(`refreshToken:    ${prom} ms`);
+
+      //Prueba para getUserInfo
+      tTotal = 0;
+      for (let index = 0; index < cantEjecuciones; index++) {
+        const resp = await getUserInfo();
+        tTotal = tTotal + resp.tiempo;
+        sleep(200);
+      }
+      prom = tTotal / 10;
+      console.log(`getUserInfo:    ${prom} ms`);
+
+      //Prueba para logout
+      tTotal = 0;
+      await login();
+      await getToken();
+      for (let index = 0; index < cantEjecuciones; index++) {
+        const resp = await logout();
+        tTotal = tTotal + resp.tiempo;
+        sleep(200);
+        await login();
+        await getToken();
+      }
+      prom = tTotal / 10;
+      console.log(`logout:    ${prom} ms`);
+
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      console.log(`Hubo un error en la ejecucion del profiler, intentelo nuevamente.`);
+    }
+    
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   return (
     <>
       <View>
@@ -150,6 +254,9 @@ const App: () => React$Node = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogout}>
           <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleProfiler}>
+          <Text style={styles.buttonText}>Analizar tiempos</Text>
         </TouchableOpacity>
       </View>
     </>
