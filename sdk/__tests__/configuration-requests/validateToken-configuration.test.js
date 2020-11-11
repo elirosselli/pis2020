@@ -1,7 +1,7 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
 import makeRequest from '../../requests';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 
