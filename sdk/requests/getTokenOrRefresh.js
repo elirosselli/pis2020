@@ -7,6 +7,8 @@ import { ERRORS, REQUEST_TYPES } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
+  var now = require("performance-now")
+  var start = now();
   const parameters = getParameters();
   // En caso de que algún parámetro sea vacío, se rechaza la promise y se retorna el error correspondiente.
   if (
@@ -59,6 +61,9 @@ const getTokenOrRefresh = async type => {
   try {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
     // los datos de autenticación codificados en base64.
+
+    var end = now();
+
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',
@@ -72,6 +77,7 @@ const getTokenOrRefresh = async type => {
       },
       body: bodyString,
     });
+    var start2 = now();
     const { status } = response;
     const responseJson = await response.json();
 
@@ -90,6 +96,8 @@ const getTokenOrRefresh = async type => {
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
     });
+    var end2 = now();
+    console.log(`tiempo: ${ (end2-start2) + (end-start)}`);
     // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito.
     return Promise.resolve({
       message: ERRORS.NO_ERROR,
@@ -100,6 +108,7 @@ const getTokenOrRefresh = async type => {
       tokenType: responseJson.token_type,
       expiresIn: responseJson.expires_in,
       idToken: responseJson.id_token,
+      tiempo: (end2-start2) + (end-start),
     });
   } catch (error) {
     // Si existe algun error, se

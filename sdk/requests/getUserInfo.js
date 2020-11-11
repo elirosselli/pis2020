@@ -5,11 +5,14 @@ import { getParameters } from '../configuration';
 import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
+  var now = require("performance-now")
+  var start = now();
   const { accessToken } = getParameters();
   if (!accessToken) {
     return Promise.reject(ERRORS.INVALID_TOKEN);
   }
   try {
+    var end = now();
     const response = await fetch(userInfoEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -22,6 +25,7 @@ const getUserInfo = async () => {
         Accept: 'application/json',
       },
     });
+    var start2 = now();
     const { status } = response;
     const responseJson = await response.json();
     // En caso de error se devuelve la respuesta,
@@ -34,6 +38,8 @@ const getUserInfo = async () => {
     responseJson.message = ERRORS.NO_ERROR;
     responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
     responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
+    var end2 = now();
+    responseJson.tiempo=(end2 - start2) + (end-start);
     return Promise.resolve(responseJson);
   } catch (error) {
     const stringsHeaders = error.headers['Www-Authenticate'];
@@ -44,3 +50,4 @@ const getUserInfo = async () => {
 };
 
 export default getUserInfo;
+

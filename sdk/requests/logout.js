@@ -5,6 +5,8 @@ import { ERRORS } from '../utils/constants';
 import { getParameters, clearParameters } from '../configuration';
 
 const logout = async () => {
+  var now = require("performance-now")
+  var start = now();
   const parameters = getParameters();
   try {
     // Si alguno de los parámetros obligatorios para la request
@@ -17,6 +19,7 @@ const logout = async () => {
       return Promise.reject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
 
     // Se arma la solicitud a enviar al logoutEndpoint.
+    var end = now();
     const response = await fetch(logoutEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -24,6 +27,7 @@ const logout = async () => {
         certs: ['certificate'],
       },
     });
+    var start2 = now();
     const { status } = response;
     const urlCheck = response.url;
 
@@ -33,17 +37,22 @@ const logout = async () => {
       if (urlCheck === logoutEndpoint()) {
         const state = urlCheck.match(/&state=([^&]+)/);
         clearParameters();
-        if (state)
+        if (state){
+          var end2 = now();
           return Promise.resolve({
             message: ERRORS.NO_ERROR,
             errorCode: ERRORS.NO_ERROR.errorCode,
             errorDescription: ERRORS.NO_ERROR.errorDescription,
             state: state[1],
+            tiempo: (end2-start2) + (end-start),
           });
+        }
+        var end3=now();
         return Promise.resolve({
           message: ERRORS.NO_ERROR,
           errorCode: ERRORS.NO_ERROR.errorCode,
           errorDescription: ERRORS.NO_ERROR.errorDescription,
+          tiempo: (end3-start2) + (end-start),
         });
       }
       // Si la url contenida en la respuesta no coincide con el
