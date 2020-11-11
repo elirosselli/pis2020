@@ -119,8 +119,11 @@ const App: () => React$Node = () => {
     var start = now();
     
     try{
-      await logout();
+      const resp = await logout();
       var end = now();
+      Object.keys(resp).forEach(key => {
+        console.log(`${key}: ${resp[key]}`);
+      });
       console.log(`Sesión cerrada.`)
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error){

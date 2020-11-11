@@ -72,7 +72,6 @@ const getTokenOrRefresh = async type => {
       },
       body: bodyString,
     });
-
     const { status } = response;
     const responseJson = await response.json();
 
