@@ -1,6 +1,5 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { KJUR, KEYUTIL } from 'jsrsasign';
-import { Platform } from 'react-native';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
@@ -63,7 +62,26 @@ const jwksResponse = {
 };
 
 describe('configuration module and make request type validate token integration', () => {
-  fetch.mockImplementationOnce(() => Promise.reject(Error('fetch rejection')));
+  fetch.mockImplementationOnce(() =>
+    Promise.reject(
+      Error({
+        status: 404,
+        bodyString:
+          '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
+        headers: {
+          'Cache-Control': 'no-store',
+          Connection: 'close',
+          'Content-Length': '176',
+          'Content-Type': 'text/html; charset=UTF-8',
+          Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+          Pragma: 'no-cache',
+          Server: 'nginx/1.15.1',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY, SAMEORIGIN',
+        },
+      }),
+    ),
+  );
   it('calls setParameters and makes a validate token request but fetch fails', async () => {
     try {
       await await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
@@ -199,5 +217,57 @@ describe('configuration module and make request type validate token integration'
       });
       expect.assertions(3);
     }
+  });
+
+  it('calls setParameters and makes a validate token request, with invalid token (empty)', async () => {
+    setParameters({ clientId });
+    const parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(2);
+  });
+
+  it('calls setParameters and makes a validate token request, with invalid clientId (empty)', async () => {
+    setParameters({ idToken });
+    const parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      postLogoutRedirectUri: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+    }
+    expect.assertions(2);
   });
 });

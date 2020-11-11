@@ -23,6 +23,8 @@ const errorCodes = {
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
   invalidIdToken: 'invalid_id_token',
+  invalidLengthError: 'base64URL_to_base64_invalid_length_error',
+  invalidBase64ToHexConversion: 'invalid_base64_to_hex_conversion',
 };
 
 const errorDescriptions = {
@@ -43,6 +45,8 @@ const errorDescriptions = {
   invalidIdTokenHint: 'Parámetro id_token_hint inválido',
   invalidUrlLogout: 'Invalid returned url for logout',
   invalidIdToken: 'Invalid id token',
+  invalidLengthError: 'Input base64url string is the wrong length to determine padding',
+  invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
 };
 
 class ErrorNoError extends Error {
@@ -229,6 +233,32 @@ class ErrorInvalidIdToken extends Error {
   }
 }
 
+class ErrorBase64InvalidLength extends Error {
+  constructor(
+    errorCode = errorCodes.invalidLengthError,
+    errorDescription = errorDescriptions.invalidLengthError,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidLengthError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorBase64ToHexConversion extends Error {
+  constructor(
+    errorCode = errorCodes.invalidBase64ToHexConversion,
+    errorDescription = errorDescriptions.invalidBase64ToHexConversion,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidBase64ToHexConversion';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -244,6 +274,8 @@ const ERRORS = {
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
   INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
+  INVALID_BASE64_LENGTH: new ErrorBase64InvalidLength(),
+  INVALID_BASE64_TO_HEX_CONVERSION: new ErrorBase64ToHexConversion(),
 };
 
 export { REQUEST_TYPES, ERRORS };

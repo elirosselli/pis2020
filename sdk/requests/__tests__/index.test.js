@@ -203,7 +203,9 @@ describe('validateToken', () => {
   it('calls validateToken with valid token', async () => {
     const result = {
       jwks: 'jwks',
-      error: true,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
     };
     validateToken.mockReturnValue(Promise.resolve(result));
     const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
@@ -211,15 +213,21 @@ describe('validateToken', () => {
   });
 
   it('calls validateToken with invalid token', async () => {
-    const result = {
-      jwks: 'jwks',
-      error: false,
-    };
-    validateToken.mockReturnValue(Promise.reject(Error(result)));
+    validateToken.mockReturnValue(Promise.reject(ERRORS.INVALID_ID_TOKEN));
     try {
       await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (err) {
-      expect(err).toStrictEqual(Error(result));
+      expect(err).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls validateToken but fetch fails', async () => {
+    validateToken.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

@@ -1,4 +1,5 @@
 import { decode } from 'base-64';
+import { ERRORS } from './constants';
 
 const base64URLtoBase64 = input => {
   // Reemplazar caracteres no compatibles con base64.
@@ -8,9 +9,7 @@ const base64URLtoBase64 = input => {
   const pad = input.length % 4;
   if (pad) {
     if (pad === 1) {
-      throw new Error(
-        'InvalidLengthError: Input base64url string is the wrong length to determine padding',
-      );
+      throw ERRORS.INVALID_BASE64_LENGTH;
     }
     res += new Array(5 - pad).join('=');
   }
@@ -19,13 +18,17 @@ const base64URLtoBase64 = input => {
 };
 
 const base64ToHex = str => {
-  const raw = decode(str);
-  let result = '';
-  for (let i = 0; i < raw.length; i += 1) {
-    const hex = raw.charCodeAt(i).toString(16);
-    result += hex.length === 2 ? hex : `0${hex}`;
+  try {
+    const raw = decode(str);
+    let result = '';
+    for (let i = 0; i < raw.length; i += 1) {
+      const hex = raw.charCodeAt(i).toString(16);
+      result += hex.length === 2 ? hex : `0${hex}`;
+    }
+    return result.toUpperCase();
+  } catch (error) {
+    throw ERRORS.INVALID_BASE64_TO_HEX_CONVERSION;
   }
-  return result.toUpperCase();
 };
 
 export { base64ToHex, base64URLtoBase64 };

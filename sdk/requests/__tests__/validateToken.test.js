@@ -25,12 +25,25 @@ const jwksResponse = {
 
 describe('validateToken', () => {
   fetch.mockImplementationOnce(() =>
-    Promise.resolve({
-      status: 200,
-      json: () => Promise.reject(Error('fetch rejection')),
-    }),
+    Promise.reject(
+      Error({
+        status: 404,
+        bodyString:
+          '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
+        headers: {
+          'Cache-Control': 'no-store',
+          Connection: 'close',
+          'Content-Length': '176',
+          'Content-Type': 'text/html; charset=UTF-8',
+          Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+          Pragma: 'no-cache',
+          Server: 'nginx/1.15.1',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY, SAMEORIGIN',
+        },
+      }),
+    ),
   );
-
   it('calls validateToken correctly but fetch rejects', async () => {
     try {
       await validateToken();

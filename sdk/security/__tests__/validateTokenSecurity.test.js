@@ -117,4 +117,30 @@ describe('validateToken', () => {
     }
     expect.assertions(2);
   });
+
+  it('not validates token (clientId empty)', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+    });
+
+    try {
+      await validateTokenSecurity(jwksResponse);
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+    }
+    expect.assertions(1);
+  });
+
+  it('not validates token (idToken empty)', async () => {
+    getParameters.mockReturnValue({
+      clientId,
+    });
+
+    try {
+      await validateTokenSecurity(jwksResponse);
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(1);
+  });
 });
