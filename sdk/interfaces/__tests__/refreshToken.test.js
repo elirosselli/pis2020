@@ -1,8 +1,6 @@
 import makeRequest from '../../requests';
 import { refreshToken } from '../index';
-import REQUEST_TYPES from '../../utils/constants';
-
-const requestFailedMessage = "Couldn't make request";
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 
 jest.mock('../../requests');
 
@@ -12,22 +10,43 @@ describe('refreshToken', () => {
   afterEach(() => jest.clearAllMocks());
 
   it('calls refreshToken correctly', async () => {
-    const newToken = '041a156232ac43c6b719c57b7217c9ee';
-    makeRequest.mockReturnValue(Promise.resolve(newToken));
+    const token = 'token';
+    const expiresIn = 3600;
+    const idToken = 'idToken';
+    const tokenType = 'tokenType';
+    makeRequest.mockReturnValue(
+      Promise.resolve({
+        token: 'token',
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+        expiresIn: 3600,
+        idToken: 'idToken',
+        refreshToken: 'refreshToken',
+        tokenType: 'tokenType',
+      }),
+    );
 
     const response = await refreshToken();
 
-    expect(response).toBe(newToken);
+    expect(response).toStrictEqual({
+      token,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      expiresIn,
+      idToken,
+      refreshToken: 'refreshToken',
+      tokenType,
+    });
   });
 
   it('calls refreshToken incorrectly', async () => {
-    makeRequest.mockReturnValue(
-      Promise.reject(new Error(requestFailedMessage)),
-    );
+    makeRequest.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await refreshToken();
     } catch (error) {
-      expect(error).toMatchObject(Error(requestFailedMessage));
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
 
     expect(makeRequest).toHaveBeenCalledTimes(1);

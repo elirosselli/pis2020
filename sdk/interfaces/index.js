@@ -1,6 +1,12 @@
 import makeRequest from '../requests';
-import REQUEST_TYPES from '../utils/constants';
-import { setParameters } from '../configuration';
+import { REQUEST_TYPES, ERRORS } from '../utils/constants';
+import { initializeErrors } from '../utils/helpers';
+import {
+  setParameters,
+  getParameters,
+  clearParameters,
+  resetParameters,
+} from '../configuration';
 
 const initialize = (
   redirectUri,
@@ -8,14 +14,37 @@ const initialize = (
   clientSecret,
   postLogoutRedirectUri,
   production,
+  scope,
 ) => {
-  setParameters({
-    redirectUri,
-    clientId,
-    clientSecret,
-    postLogoutRedirectUri,
-    production,
-  });
+  let response;
+  if (clientId && redirectUri && clientSecret && postLogoutRedirectUri) {
+    // Si los parámetros clientId, clientSecret, redirectUri y postLogoutRedirectUri no son vacíos se hace el set de los parámetros.
+    const scopeToSet = scope || ''; // Si no se pasa el scope como parámetro, se toma como undefined, entonces se debe asignar el string vacío.
+    setParameters({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      production,
+      scope: scopeToSet, // Puede ser vacío.
+    });
+    // Mensaje y código de éxito.
+    response = {
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      message: ERRORS.NO_ERROR,
+    };
+  } else {
+    // Si alguno de los parámetros es vacío se retorna el error correspondiente.
+    response = initializeErrors(
+      clientId,
+      redirectUri,
+      postLogoutRedirectUri,
+      clientSecret,
+    );
+  }
+  // Se retorna el error y el mensaje correspondiente.
+  return response;
 };
 
 const login = () => makeRequest(REQUEST_TYPES.LOGIN);
@@ -28,4 +57,15 @@ const refreshToken = () => makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
 const getUserInfo = () => makeRequest(REQUEST_TYPES.GET_USER_INFO);
 
-export { initialize, login, logout, getToken, getUserInfo, refreshToken };
+export {
+  initialize,
+  login,
+  logout,
+  getToken,
+  getUserInfo,
+  refreshToken,
+  setParameters,
+  getParameters,
+  clearParameters,
+  resetParameters,
+};

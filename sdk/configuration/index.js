@@ -42,4 +42,14 @@ const resetParameters = () => {
   parameters.production = false;
 };
 
-export { getParameters, setParameters, clearParameters, resetParameters };
+const eraseCode = () => {
+  parameters.code = '';
+};
+
+export {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+  eraseCode,
+};
