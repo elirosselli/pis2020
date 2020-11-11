@@ -14,7 +14,7 @@
     "react": "16.13.1",
     "react-native": "0.63.3",
     "rn-ssl-pinning": "^1.2.1",
-    "sdk-gubuy-test": "^1.0.9"
+    "sdk-gubuy-test": "^1.0.10"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
