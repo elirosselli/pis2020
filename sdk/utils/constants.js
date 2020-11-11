@@ -45,7 +45,8 @@ const errorDescriptions = {
   invalidIdTokenHint: 'Parámetro id_token_hint inválido',
   invalidUrlLogout: 'Invalid returned url for logout',
   invalidIdToken: 'Invalid id token',
-  invalidLengthError: 'Input base64url string is the wrong length to determine padding',
+  invalidLengthError:
+    'Input base64url string is the wrong length to determine padding',
   invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
 };
 
