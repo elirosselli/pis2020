@@ -1,6 +1,6 @@
 {
   "name": "sdk-gubuy-test",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "Sdk Pis 2020",
   "main": "index.js",
   "scripts": {
@@ -25,8 +25,8 @@
       "global": {
         "branches": 100,
         "functions": 100,
-        "lines": 90,
-        "statements": 90
+        "lines": 100,
+        "statements": 100
       }
     }
   },

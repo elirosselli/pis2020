@@ -1,5 +1,22 @@
 // istanbul ignore file
-import { initialize, login, getToken, refreshToken } from './interfaces';
-import { getParameters } from './configuration';
+import {
+  initialize,
+  login,
+  logout,
+  getToken,
+  getUserInfo,
+  refreshToken,
+} from './interfaces';
+import { getParameters, setParameters, resetParameters } from './configuration';
 
-export { initialize, login, getToken, getParameters, refreshToken };
+export {
+  initialize,
+  login,
+  logout,
+  getParameters,
+  setParameters,
+  getToken,
+  getUserInfo,
+  refreshToken,
+  resetParameters,
+};

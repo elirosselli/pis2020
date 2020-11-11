@@ -8,6 +8,9 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
+  postLogoutRedirectUri: '',
+  state: '',
+  scope: '',
 };
 
 const getParameters = () => parameters;
@@ -30,4 +33,20 @@ const clearParameters = () => {
   });
 };
 
-export { getParameters, setParameters, clearParameters };
+const resetParameters = () => {
+  Object.keys(parameters).forEach(key => {
+    parameters[key] = '';
+  });
+};
+
+const eraseCode = () => {
+  parameters.code = '';
+};
+
+export {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+  eraseCode,
+};

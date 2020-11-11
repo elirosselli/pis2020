@@ -1,6 +1,8 @@
 import login from './login';
+import logout from './logout';
+import getUserInfo from './getUserInfo';
 import getTokenOrRefresh from './getTokenOrRefresh';
-import REQUEST_TYPES from '../utils/constants';
+import { REQUEST_TYPES } from '../utils/constants';
 
 const makeRequest = async type => {
   switch (type) {
@@ -10,6 +12,12 @@ const makeRequest = async type => {
     case REQUEST_TYPES.GET_TOKEN:
     case REQUEST_TYPES.GET_REFRESH_TOKEN: {
       return getTokenOrRefresh(type);
+    }
+    case REQUEST_TYPES.LOGOUT: {
+      return logout();
+    }
+    case REQUEST_TYPES.GET_USER_INFO: {
+      return getUserInfo();
     }
     default:
       return 'default value';

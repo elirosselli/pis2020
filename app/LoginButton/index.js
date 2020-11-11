@@ -2,38 +2,65 @@
 /* eslint-disable no-console */
 // istanbul ignore file
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { login, getToken, refreshToken, getParameters } from 'sdk-gubuy-test';
+import PropTypes from 'prop-types';
+import { Image, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { login, logout, getParameters } from 'sdk-gubuy-test';
 
 import styles from './styles';
 import LogoAgesicSimple from './images/logoAgesicSimple.png';
 
-const LoginButton = () => {
+const LoginButton = ({ handleCode, notActive }) => {
+  const handleButton = async () => {
+    if (notActive) {
+      Alert.alert(
+        'SDK Alert',
+        'SDK no inicializado',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: true },
+      );
+    } else {
+      const parameters = getParameters();
+      if (parameters.code === '') await handleLogin();
+      else {
+        await handleLogout();
+        handleCode('');
+      }
+    }
+  };
   const handleLogin = async () => {
     try {
-      const code = await login();
-      console.log(`Code: ${code}`);
-      const token = await getToken();
-      console.log(`Token: ${token}`);
-      const newToken = await refreshToken();
-      console.log(`New Token: ${newToken}`);
-      const parameters = getParameters();
-      console.log(parameters);
+      const loginResponse = await login();
+      handleCode(loginResponse.code);
+      // Guardo Info de usuario en la APP
     } catch (err) {
-      console.log(err);
+      console.log(err.errorCode, err.errorDescription);
       const parameters = getParameters();
       console.log(parameters);
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const state = await logout();
+      if (state) console.log(`State: ${state}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
+    <TouchableOpacity style={styles.buttonContainer} onPress={handleButton}>
       <View style={styles.buttonSeparator}>
         <Image source={LogoAgesicSimple} style={styles.buttonLogo} />
       </View>
       <Text style={styles.buttonText}>Login con USUARIO gub.uy</Text>
     </TouchableOpacity>
   );
+};
+
+LoginButton.propTypes = {
+  handleCode: PropTypes.func.isRequired,
+  notActive: PropTypes.bool.isRequired,
 };
 
 export default LoginButton;
