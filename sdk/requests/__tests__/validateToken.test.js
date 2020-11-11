@@ -44,6 +44,7 @@ describe('validateToken', () => {
       }),
     ),
   );
+
   it('calls validateToken correctly but fetch rejects', async () => {
     try {
       await validateToken();
