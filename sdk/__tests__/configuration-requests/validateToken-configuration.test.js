@@ -1,7 +1,7 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { Platform } from 'react-native';
-import { REQUEST_TYPES } from '../../utils/constants';
+import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 
@@ -68,7 +68,7 @@ describe('configuration module and make request type validate token integration'
     try {
       await await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
-      expect(error).toStrictEqual(Error('fetch rejection'));
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -107,7 +107,12 @@ describe('configuration module and make request type validate token integration'
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     const result = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
-    expect(result).toStrictEqual({ jwk: jwksResponse, error: true });
+    expect(result).toStrictEqual({
+      jwk: jwksResponse,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
       iss: [issuer],
@@ -145,7 +150,7 @@ describe('configuration module and make request type validate token integration'
     try {
       await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
-      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
         iss: [issuer],
@@ -185,7 +190,7 @@ describe('configuration module and make request type validate token integration'
     try {
       await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
-      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
         iss: [issuer],

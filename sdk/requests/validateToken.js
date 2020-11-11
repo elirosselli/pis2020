@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
 import { validateTokenEndpoint } from '../utils/endpoints';
 import { validateTokenSecurity } from '../security';
+import { ERRORS } from '../utils/constants';
 
 const validateToken = async () => {
   try {
@@ -24,7 +25,7 @@ const validateToken = async () => {
     // Validar el token en el módulo de seguridad a partir de la jwk.
     return validateTokenSecurity(jwksResponseJson);
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(ERRORS.FAILED_REQUEST);
   }
 };
 

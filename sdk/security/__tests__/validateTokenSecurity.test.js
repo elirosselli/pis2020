@@ -3,6 +3,7 @@ import { validateTokenSecurity } from '../index';
 import { getParameters } from '../../configuration';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 import { issuer } from '../../utils/endpoints';
+import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 jest.mock('../../utils/encoding', () => ({
@@ -55,7 +56,12 @@ describe('validateToken', () => {
       aud: [getParameters().clientId],
       verifyAt: time,
     });
-    expect(result).toStrictEqual({ jwk: jwksResponse, error: true });
+    expect(result).toStrictEqual({
+      jwk: jwksResponse,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('not validates token (payload)', async () => {
@@ -80,7 +86,7 @@ describe('validateToken', () => {
         aud: [getParameters().clientId],
         verifyAt: time,
       });
-      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
     expect.assertions(2);
   });
@@ -107,7 +113,7 @@ describe('validateToken', () => {
         aud: [getParameters().clientId],
         verifyAt: time,
       });
-      expect(error).toStrictEqual(Error({ jwk: jwksResponse, error: false }));
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
     expect.assertions(2);
   });

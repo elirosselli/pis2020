@@ -2,6 +2,7 @@ import { KJUR, KEYUTIL } from 'jsrsasign';
 import { decode } from 'base-64';
 import { getParameters } from '../configuration';
 import { issuer } from '../utils/endpoints';
+import { ERRORS } from '../utils/constants';
 
 import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 
@@ -35,9 +36,14 @@ const validateTokenSecurity = jwksResponse => {
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
 
   if (isValid) {
-    return Promise.resolve({ jwk: jwksResponse, error: isValid });
+    return Promise.resolve({
+      jwk: jwksResponse,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   }
-  return Promise.reject(Error({ jwk: jwksResponse, error: isValid }));
+  return Promise.reject(ERRORS.INVALID_ID_TOKEN);
 };
 
 export default validateTokenSecurity;

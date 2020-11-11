@@ -22,6 +22,7 @@ const errorCodes = {
   invalidClient: 'invalid_client',
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
+  invalidIdToken: 'invalid_id_token',
 };
 
 const errorDescriptions = {
@@ -41,6 +42,7 @@ const errorDescriptions = {
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
   invalidIdTokenHint: 'Parámetro id_token_hint inválido',
   invalidUrlLogout: 'Invalid returned url for logout',
+  invalidIdToken: 'Invalid id token',
 };
 
 class ErrorNoError extends Error {
@@ -214,6 +216,19 @@ class ErrorInvalidUrlLogout extends Error {
   }
 }
 
+class ErrorInvalidIdToken extends Error {
+  constructor(
+    errorCode = errorCodes.invalidIdToken,
+    errorDescription = errorDescriptions.invalidIdToken,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidIdToken';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -228,6 +243,7 @@ const ERRORS = {
   INVALID_CLIENT: new ErrorInvalidClient(),
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
+  INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
 };
 
 export { REQUEST_TYPES, ERRORS };

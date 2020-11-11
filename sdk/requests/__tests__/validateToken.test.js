@@ -1,6 +1,7 @@
 import { fetch } from 'react-native-ssl-pinning';
 import validateToken from '../validateToken';
 import { validateTokenSecurity } from '../../security';
+import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../security');
 
@@ -34,7 +35,7 @@ describe('validateToken', () => {
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toStrictEqual(Error('fetch rejection'));
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -48,27 +49,32 @@ describe('validateToken', () => {
 
   it('calls validateToken correctly and token is valid', async () => {
     validateTokenSecurity.mockReturnValue(
-      Promise.resolve({ jwk: jwksResponse, error: true }),
+      Promise.resolve({
+        jwk: jwksResponse,
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+      }),
     );
     const result = await validateToken();
     expect(validateTokenSecurity).toHaveBeenCalledWith(jwksResponse);
-    expect(result).toStrictEqual({ jwk: jwksResponse, error: true });
+    expect(result).toStrictEqual({
+      jwk: jwksResponse,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls validateToken correctly but token is not valid', async () => {
     validateTokenSecurity.mockReturnValue(
-      Promise.reject(Error({ jwks: jwksResponse, error: false })),
+      Promise.reject(ERRORS.INVALID_ID_TOKEN),
     );
 
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toStrictEqual(
-        Error({
-          jwks: jwksResponse,
-          error: false,
-        }),
-      );
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
     }
     expect.assertions(1);
   });
