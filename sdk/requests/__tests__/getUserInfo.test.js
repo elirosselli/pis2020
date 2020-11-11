@@ -1,6 +1,8 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../../utils/endpoints';
+import { ERRORS } from '../../utils/constants';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { validateSub } from '../../security';
@@ -67,6 +69,9 @@ describe('getUserInfo', () => {
     expect(validateSub).toHaveBeenCalledWith(sub);
 
     expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -79,32 +84,52 @@ describe('getUserInfo', () => {
 
   it('calls getUserInfo with incorrect access token', async () => {
     getParameters.mockReturnValue({
-      clientId: '',
-      clientSecret: '',
-      code: 'incorrectAccesToken',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'incorrectAccessToken',
     });
 
-    const error = 'invalid_token';
-    const errorDescription = 'The Access Token expired';
-
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error,
-            error_description: errorDescription,
-          }),
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
       }),
     );
 
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toStrictEqual({
-        error,
-        error_description: errorDescription,
-      });
+      expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls getUserInfo and returns some error', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'correctAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
+      }),
+    );
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
 
     expect(validateSub).not.toHaveBeenCalled();
@@ -151,14 +176,72 @@ describe('getUserInfo', () => {
     expect.assertions(1);
   });
 
-  it('calls getUserInfo and fetch fails', async () => {
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+  it('calls getUserInfo and returns some error with www authenticate header', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      postLogoutRedirectUri: 'postLogoutRedirectUri',
+      accessToken: 'correctAccessToken',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
+      }),
+    );
+
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
+
+  it('calls getUserInfo with empty access Token', async () => {
+    const code = 'f24df0c4fcb142328b843d49753946af';
+    const redirectUri = 'uri';
+    getParameters.mockReturnValue({
+      clientId: '898562',
+      clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
+      accessToken: '',
+      redirectUri,
+      code,
+    });
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+});
+
+it('calls getUserInfo and fetch fails', async () => {
+  getParameters.mockReturnValue({
+    clientId: 'clientId',
+    clientSecret: 'clientSecret',
+    redirectUri: 'redirectUri',
+    postLogoutRedirectUri: 'postLogoutRedirectUri',
+    accessToken: 'accessToken',
+  });
+
+  fetch.mockImplementation(() =>
+    Promise.resolve({
+      status: 400,
+      json: () => Promise.resolve(),
+    }),
+  );
+
+  try {
+    await getUserInfo();
+  } catch (err) {
+    expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
+  }
+  expect.assertions(1);
 });

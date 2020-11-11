@@ -2,9 +2,12 @@ import { Linking } from 'react-native';
 import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
+import { ERRORS } from '../utils/constants';
+import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
-  generateRandomState(); // Se genera random state para la request
+  // Se genera un random state para el pedido al endpoint de login.
+  generateRandomState();
   const parameters = getParameters();
   let resolveFunction;
   let rejectFunction;
@@ -18,7 +21,7 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
-    // Obtiene el auth code a partir de la url a la que
+    // Obtiene el code a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
     const returnedState = event.url.match(/&state=([^&]+)/);
@@ -27,9 +30,18 @@ const login = async () => {
     // si no, se rechaza la promise con un error.
     if (code && returnedState[1] === parameters.state) {
       setParameters({ code: code[1] });
-      resolveFunction(code[1]);
-    } else if (!code) rejectFunction(Error('Invalid authorization code'));
-    else rejectFunction(Error('Returned state does not match'));
+      // Se retorna el código y el error correspondiente (en este caso no hay error).
+      resolveFunction({
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+        code: code[1],
+        // TODO: return state.
+      });
+    } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
+      // Cuando el usuario niega el acceso.
+      rejectFunction(ERRORS.ACCESS_DENIED);
+    } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
 
     // Se elimina el handler para los eventos url.
     Linking.removeEventListener('url', handleOpenUrl);
@@ -38,19 +50,30 @@ const login = async () => {
   try {
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
-    // Si hay un clientId setteado, se abre el browser
-    // para realizar la autenticación con idUruguay.
-    // Se utiliza un state random para verificar en la respuesta
-    if (parameters.clientId) await Linking.openURL(loginEndpoint());
+    // Si hay un clientId, clientSecret, redirectUri y postLogoutRedirectUri setteado, se abre el browser
+    // para realizar la autenticación y autorización con idUruguay.
+    if (
+      parameters.clientId &&
+      parameters.redirectUri &&
+      parameters.postLogoutRedirectUri &&
+      parameters.clientSecret
+    )
+      await Linking.openURL(loginEndpoint());
     else {
-      // En caso de error, se elimina el handler y rechaza la promise.
+      // En caso de que algún parámetro sea vacío, se elimina el handler y rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
-      rejectFunction(Error("Couldn't make request"));
+      const errorResponse = initializeErrors(
+        parameters.clientId,
+        parameters.redirectUri,
+        parameters.postLogoutRedirectUri,
+        parameters.clientSecret,
+      );
+      rejectFunction(errorResponse);
     }
   } catch (error) {
     // En caso de error, se elimina el handler y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
-    rejectFunction(Error("Couldn't make request"));
+    rejectFunction(ERRORS.FAILED_REQUEST);
   }
   return promise;
 };

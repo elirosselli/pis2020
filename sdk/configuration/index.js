@@ -39,4 +39,14 @@ const resetParameters = () => {
   });
 };
 
-export { getParameters, setParameters, clearParameters, resetParameters };
+const eraseCode = () => {
+  parameters.code = '';
+};
+
+export {
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
+  eraseCode,
+};
