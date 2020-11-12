@@ -24,11 +24,11 @@ const errorCodes = {
 };
 
 const errorDescriptions = {
-  noError: 'No hay error',
-  invalidClientId: 'Parámetro client_id inválido',
-  invalidRedirectUri: 'Parámetro redirect_uri inválido',
-  invalidClientSecret: 'Parámetro client_secret inválido',
-  invalidPostLogoutRedirecrtUri: 'Parámetro post_logout_redirect_uri inválido',
+  noError: 'No error',
+  invalidClientId: 'Invalid client_id parameter',
+  invalidRedirectUri: 'Invalid redirect_uri parameter',
+  invalidClientSecret: 'Invalid client_secret parameter',
+  invalidPostLogoutRedirecrtUri: 'Invalid post_logout_redirect_uri parameter',
   accessDenied: 'The resource owner or authorization server denied the request',
   invalidAuthorizationCode: 'Invalid authorization code',
   failedRequest: "Couldn't make request",
@@ -38,7 +38,7 @@ const errorDescriptions = {
     'The access token provided is expired, revoked, malformed, or invalid for other reasons',
   invalidClient:
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
-  invalidIdTokenHint: 'Parámetro id_token_hint inválido',
+  invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
 };
 
