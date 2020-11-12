@@ -21,13 +21,15 @@ describe('endpoints', () => {
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = true;
-    const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const state = '123456';
+    const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
       scope,
       clientId,
       redirectUri,
       production,
+      state,
     });
 
     const returnedLoginEndpoint = loginEndpoint();
@@ -39,12 +41,14 @@ describe('endpoints', () => {
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = false;
-    const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const state = '123456';
+    const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
       scope,
       clientId,
       redirectUri,
+      state,
       production,
     });
 
