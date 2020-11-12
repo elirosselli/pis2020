@@ -18,6 +18,12 @@ describe('security module validate NQCHAR parameters', () => {
     scope = 'auth_info';
     sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
     expect(sanitaizedScope).toBe(scope);
+    scope = 'profile document email';
+    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(sanitaizedScope).toBe('profile%20document%20email');
+    scope = 'profile%20document%20email';
+    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(sanitaizedScope).toBe(scope);
   });
 
   it('NQCHAR: empty', () => {
@@ -94,25 +100,19 @@ describe('security module validate NQCHAR parameters', () => {
     } catch (ErrorNQCHAR) {
       expect(ErrorNQCHAR).toStrictEqual(ERRORS.INVALID_SCOPE);
     }
-    NQCHAR = ' ';
-    try {
-      validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    } catch (ErrorNQCHAR) {
-      expect(ErrorNQCHAR).toStrictEqual(ERRORS.INVALID_SCOPE);
-    }
     NQCHAR = '^@';
     try {
       validateNQCHAR(PARAMETERS.scope, NQCHAR);
     } catch (ErrorNQCHAR) {
       expect(ErrorNQCHAR).toStrictEqual(ERRORS.INVALID_SCOPE);
     }
-    expect.assertions(4);
+    expect.assertions(3);
   });
 
   it('NQCHAR: with special caracters (valids)', () => {
-    let NQCHAR = '12 34';
+    let NQCHAR = ' ';
     let sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    expect(sanitaizedNQCHAR).toBe('1234');
+    expect(sanitaizedNQCHAR).toBe('%20');
     NQCHAR = '.';
     sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
     expect(sanitaizedNQCHAR).toBe(NQCHAR);

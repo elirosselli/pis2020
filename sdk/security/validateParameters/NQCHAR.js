@@ -13,9 +13,10 @@ const validateNQCHAR = (type, value) => {
     validNQCHAR &&
     value
       .replace(
-        /[^\x21\x23-\x5B\x5D-\x7E]*(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)*/g,
+        /[^\x21\x23-\x5B\x5D-\x7E ]*(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)*/g,
         '',
       )
+      .replace(/ /g, '%20')
       .trim();
   if (!validNQCHAR && type === PARAMETERS.scope) {
     throw ERRORS.INVALID_SCOPE;
