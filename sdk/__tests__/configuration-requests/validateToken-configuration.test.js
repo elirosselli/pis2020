@@ -114,6 +114,7 @@ describe('configuration module and make request type validate token integration'
       idToken,
       state: '',
       scope: '',
+      production: false,
     });
 
     base64ToHex.mockImplementation(() => {});
@@ -155,6 +156,7 @@ describe('configuration module and make request type validate token integration'
       idToken,
       state: '',
       scope: '',
+      production: false,
     });
 
     base64ToHex.mockImplementation(() => {});
@@ -195,6 +197,7 @@ describe('configuration module and make request type validate token integration'
       idToken,
       state: '',
       scope: '',
+      production: false,
     });
 
     base64ToHex.mockImplementation(() => {});
@@ -235,6 +238,7 @@ describe('configuration module and make request type validate token integration'
       idToken: '',
       state: '',
       scope: '',
+      production: false,
     });
 
     try {
@@ -261,6 +265,7 @@ describe('configuration module and make request type validate token integration'
       idToken,
       state: '',
       scope: '',
+      production: false,
     });
 
     try {

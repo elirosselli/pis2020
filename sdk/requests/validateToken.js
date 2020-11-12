@@ -10,7 +10,7 @@ const validateToken = async () => {
     // JSON Web Key (JWK): estandar de representación de una clave criptográfica en formato JSON.
     // JSON Web Key Set (JWKS): conjunto de JWKs.
     // JWKS Endpoint: expone las claves y algoritmos que el OP usa. Útil para verificar la autenticidad de los tokens emitidos.
-    const jwksResponse = await fetch(validateTokenEndpoint, {
+    const jwksResponse = await fetch(validateTokenEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {

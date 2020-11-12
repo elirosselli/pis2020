@@ -29,7 +29,7 @@ const validateTokenSecurity = jwksResponse => {
   // verifyAt: Verifica validez comparada con la hora actual.
   let isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
     alg: [jwksResponse.keys[0].alg],
-    iss: [issuer],
+    iss: [issuer()],
     aud: [clientId],
     verifyAt: KJUR.jws.IntDate.getNow(),
   });

@@ -52,7 +52,7 @@ describe('validateToken', () => {
 
     expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
-      iss: [issuer],
+      iss: [issuer()],
       aud: [getParameters().clientId],
       verifyAt: time,
     });
@@ -82,7 +82,7 @@ describe('validateToken', () => {
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
-        iss: [issuer],
+        iss: [issuer()],
         aud: [getParameters().clientId],
         verifyAt: time,
       });
@@ -109,7 +109,7 @@ describe('validateToken', () => {
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
-        iss: [issuer],
+        iss: [issuer()],
         aud: [getParameters().clientId],
         verifyAt: time,
       });

@@ -50,7 +50,7 @@ const App = () => {
   const [refreshTokenLoading, setRefreshTokenLoading] = useState(false);
   const [sdkProduction, setIsEnabled] = useState(false);
   const [validateTokenResult, setValidateTokenResult] = useState(0);
-  
+
   const toggleSwitch = () => {
     setInitialized(0);
     setIsEnabled(previousState => !previousState);
