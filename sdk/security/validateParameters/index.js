@@ -13,7 +13,8 @@ const validateParameters = (type, value) => {
     case PARAMETERS.code:
     case PARAMETERS.accessToken:
     case PARAMETERS.refreshToken:
-    case PARAMETERS.state: {
+    case PARAMETERS.state:
+    case PARAMETERS.idToken: {
       return validateVSCHAR(type, value);
     }
 
@@ -33,12 +34,6 @@ const validateParameters = (type, value) => {
     // Validar parámetros de tipo DIGIT.
     case PARAMETERS.expiresIn: {
       return validateDIGIT(type, value);
-    }
-
-    // TODO:
-    case PARAMETERS.idToken: {
-      // return validateIdToken(type, value);
-      return value;
     }
 
     // Validar parámetros de tipo BOOLEAN.

@@ -204,6 +204,15 @@ describe('security module', () => {
     expect(sanitaizedIdToken).toBe(idToken);
   });
 
+  it('idToken: invalid', () => {
+    const idToken = '';
+    try {
+      validateParameters(PARAMETERS.idToken, idToken);
+    } catch (ErrorIdToken) {
+      expect(ErrorIdToken).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+  });
+
   it('production: valid', () => {
     const production = true;
     const sanitaizedProduction = validateParameters(
