@@ -659,5 +659,4 @@ describe('configuration module and make request type refresh token integration',
     });
     expect.assertions(3);
   });
-
 });
