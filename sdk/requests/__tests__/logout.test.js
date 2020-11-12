@@ -6,9 +6,11 @@ import logout from '../logout';
 
 jest.mock('../../configuration');
 
-jest.mock('../../utils/helpers', () => ({
-  fetch: jest.fn(),
-}));
+jest.unmock('../../utils/helpers');
+
+const myModule = require('../../utils/helpers');
+
+myModule.fetch = jest.fn();
 
 const idToken = 'idToken';
 const state = '2KVAEzPpazbGFD5';

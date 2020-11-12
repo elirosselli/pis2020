@@ -7,9 +7,11 @@ import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
-jest.mock('../../utils/helpers', () => ({
-  fetch: jest.fn(),
-}));
+jest.unmock('../../utils/helpers');
+
+const myModule = require('../../utils/helpers');
+
+myModule.fetch = jest.fn();
 
 describe('getUserInfo', () => {
   it('calls getUserInfo with correct accessToken', async () => {
@@ -151,7 +153,7 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo with empty access Token', async () => {
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'jeje';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
       clientId: '898562',

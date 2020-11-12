@@ -9,9 +9,11 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
-jest.mock('../../utils/helpers', () => ({
-  fetch: jest.fn(),
-}));
+jest.unmock('../../utils/helpers');
+
+const myModule = require('../../utils/helpers');
+
+myModule.fetch = jest.fn();
 
 afterEach(() => jest.clearAllMocks());
 

@@ -7,9 +7,11 @@ import getTokenOrRefresh from '../getTokenOrRefresh';
 
 jest.mock('../../configuration');
 
-jest.mock('../../utils/helpers', () => ({
-  fetch: jest.fn(),
-}));
+jest.unmock('../../utils/helpers');
+
+const myModule = require('../../utils/helpers');
+
+myModule.fetch = jest.fn();
 
 const contentType = 'application/json';
 

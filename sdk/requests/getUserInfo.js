@@ -6,6 +6,9 @@ import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
   const { accessToken } = getParameters();
+  if (!accessToken) {
+    return Promise.reject(ERRORS.INVALID_TOKEN);
+  }
   try {
     const response = await fetch(
       userInfoEndpoint(),

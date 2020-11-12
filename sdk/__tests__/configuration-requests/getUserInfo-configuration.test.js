@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from '../../utils/helpers';
 import { Platform } from 'react-native';
+import { fetch } from '../../utils/helpers';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
@@ -18,9 +18,11 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-jest.mock('../../utils/helpers', () => ({
-  fetch: jest.fn(),
-}));
+jest.unmock('../../utils/helpers');
+
+const myModule = require('../../utils/helpers');
+
+myModule.fetch = jest.fn();
 
 afterEach(() => jest.clearAllMocks());
 
