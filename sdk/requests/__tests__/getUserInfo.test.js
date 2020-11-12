@@ -153,7 +153,7 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo with empty access Token', async () => {
-    const code = 'jeje';
+    const code = 'code';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
       clientId: '898562',
