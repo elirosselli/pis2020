@@ -79,6 +79,7 @@ describe('configuration module and get token integration', () => {
     const encodedCredentials =
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
     const response = await getToken();
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',

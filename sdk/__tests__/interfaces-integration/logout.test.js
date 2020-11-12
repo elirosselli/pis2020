@@ -1,12 +1,12 @@
 import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { ERRORS } from '../../utils/constants';
 import {
   getParameters,
   setParameters,
   resetParameters,
 } from '../../configuration';
-import makeRequest from '../../requests';
+import { logout } from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -25,8 +25,8 @@ const postLogoutRedirectUri = 'app.testing://postLogout';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${expectedState}`;
 const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=`;
 
-describe('configuration module and make request type logout integration', () => {
-  it('calls set parameters and makes a logout request which returns non-empty state', async () => {
+describe('configuration module and logout integration', () => {
+  it('calls set parameters and logout which returns non-empty state', async () => {
     setParameters({ idToken, postLogoutRedirectUri, state: expectedState });
 
     let parameters = getParameters();
@@ -52,7 +52,7 @@ describe('configuration module and make request type logout integration', () => 
         url: correctLogoutEndpoint1,
       }),
     );
-    const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const response = await logout();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
@@ -86,7 +86,7 @@ describe('configuration module and make request type logout integration', () => 
     });
   });
 
-  it('calls set parameters and makes a logout request which returns empty state', async () => {
+  it('calls set parameters and logout which returns empty state', async () => {
     setParameters({ idToken, postLogoutRedirectUri });
 
     let parameters = getParameters();
@@ -112,7 +112,7 @@ describe('configuration module and make request type logout integration', () => 
         url: correctLogoutEndpoint2,
       }),
     );
-    const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    const response = await logout();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
       method: 'GET',
@@ -144,7 +144,7 @@ describe('configuration module and make request type logout integration', () => 
     });
   });
 
-  it('calls set parameters with empty postLogoutRedirectUri and makes a logout request which returns error', async () => {
+  it('calls set parameters with empty postLogoutRedirectUri and then calls logout which returns error', async () => {
     setParameters({ idToken, state: expectedState });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -164,7 +164,7 @@ describe('configuration module and make request type logout integration', () => 
     });
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
     }
@@ -189,7 +189,7 @@ describe('configuration module and make request type logout integration', () => 
     expect.assertions(4);
   });
 
-  it('calls set parameters with empty idTokenHint and postLogoutRedirectUri, and makes a logout request which returns error', async () => {
+  it('calls set parameters with empty idTokenHint and postLogoutRedirectUri, and then calls logout which returns error', async () => {
     setParameters({ state: expectedState });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -209,7 +209,7 @@ describe('configuration module and make request type logout integration', () => 
     });
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
@@ -235,7 +235,7 @@ describe('configuration module and make request type logout integration', () => 
     expect.assertions(4);
   });
 
-  it('calls set parameters with empty idTokenHint and makes a logout request which returns error', async () => {
+  it('calls set parameters with empty idTokenHint and then calls logout which returns error', async () => {
     setParameters({ postLogoutRedirectUri, state: expectedState });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -255,7 +255,7 @@ describe('configuration module and make request type logout integration', () => 
     });
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
@@ -280,7 +280,7 @@ describe('configuration module and make request type logout integration', () => 
     expect.assertions(4);
   });
 
-  it('calls set parameters, makes a logout request with required parameters and response not OK', async () => {
+  it('calls set parameters and logout with required parameters, response not OK', async () => {
     setParameters({ idToken, postLogoutRedirectUri, state: expectedState });
 
     let parameters = getParameters();
@@ -306,7 +306,7 @@ describe('configuration module and make request type logout integration', () => 
       }),
     );
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
@@ -337,7 +337,7 @@ describe('configuration module and make request type logout integration', () => 
     expect.assertions(5);
   });
 
-  it('calls set parameters, makes a logout request with required parameters and returns invalid url', async () => {
+  it('calls set parameters and logout with required parameters, returns invalid url', async () => {
     setParameters({ idToken, postLogoutRedirectUri, state: expectedState });
 
     let parameters = getParameters();
@@ -360,7 +360,7 @@ describe('configuration module and make request type logout integration', () => 
       Promise.resolve({ status: 200, url: Error('Invalid returned url') }),
     );
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
     }
@@ -391,7 +391,7 @@ describe('configuration module and make request type logout integration', () => 
     expect.assertions(5);
   });
 
-  it('calls set parameters, makes a logout request with required parameters and fails', async () => {
+  it('calls set parameters and logout with required parameters, fails', async () => {
     setParameters({ idToken, postLogoutRedirectUri, state: expectedState });
 
     let parameters = getParameters();
@@ -413,7 +413,7 @@ describe('configuration module and make request type logout integration', () => 
     const err = Error('error');
     fetch.mockImplementation(() => Promise.reject(err));
     try {
-      await makeRequest(REQUEST_TYPES.LOGOUT);
+      await logout();
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
