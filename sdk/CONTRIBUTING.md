@@ -4,6 +4,7 @@
 
 - [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#introducci%C3%B3n)
 - [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
+  - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-refreshtoken)
@@ -18,6 +19,47 @@ Este documento presenta documentación técnica detallada sobre la implementaci�
 ## Funcionalidades del componente SDK
 
 Esta sección presenta las funcionalidades brindadas por el componente SDK. Para cada funcionalidad se explica su utilidad y la forma en la que se encuentra implementada. Puede resultar útil para aquellos desarrolladores que busquen entender con mayor detalle el funcionamiento del componente y realizar modificaciones.
+
+### Funcionalidad de *initialize*
+
+#### Generalidades
+
+La funcionalidad de **initialize** se encarga de establecer los parámetros necesarios para la comunicación del componente con el OP. Estos parámetros son utilizados en la mayoría de las comunicaciones entre el componente y el OP, por lo que establecerlos una única vez le brinda a la aplicación móvil RP mayor comodidad en el uso del componente. Observar que esta función es un facilitador, ya que es posible establecer estos parámetros mediante la función **setParameters**.
+
+En particular, los parámetros mencionados son:
+
+- *clientId*
+- *clientSecret*
+- *redirectUri*
+- *postLogoutRedirectUri*
+- *scope* (es el único parámetro de *initialize* que puede ser vacío)
+
+El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por el *scope*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacío entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+
+#### Archivos y parámetros
+
+La implementación de la funcionalidad de **initialize** involucra los siguientes archivos:
+
+- **sdk/interfaces/index.js**: Donde se implementa la función **initialize**.
+- **sdk/configuration/index.js**: Donde se implementa la función **setParameters** utilizada para *setear* los parámetros.
+- **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
+- **sdk/utils/constants.js**: Donde se encuentran implementados los errores a retornar.
+
+La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *postLogoutRedirectUri* y *scope*, y retorna mensajes de éxito o de error según corresponda.
+
+#### Código
+
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *postLogoutRedirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre.
+
+#### Errores
+
+Los códigos de error devueltos en cada caso son:
+
+- En caso de éxito: "gubuy_no_error"
+- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
+- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
+- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
+- Cuando el parámetro *postLogoutRedirectUri* es vacío: "gubuy_invalid_post_logout_redirect_uri"
 
 ### Funcionalidad de *login*
 
