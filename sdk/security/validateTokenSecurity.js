@@ -1,21 +1,10 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { decode } from 'base-64';
-import { getParameters } from '../configuration';
-import { issuer } from '../utils/endpoints';
 import { ERRORS } from '../utils/constants';
 
 import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 
-const validateTokenSecurity = jwksResponse => {
-  const { idToken, clientId } = getParameters();
-
-  if (!idToken) {
-    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
-  }
-
-  if (!clientId) {
-    return Promise.reject(ERRORS.INVALID_CLIENT_ID);
-  }
+const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
   // Se construye la clave pública para verificar la firma del token.
   const pubKey = KEYUTIL.getKey({
     n: base64ToHex(base64URLtoBase64(jwksResponse.keys[0].n)),
@@ -29,7 +18,7 @@ const validateTokenSecurity = jwksResponse => {
   // verifyAt: Verifica validez comparada con la hora actual.
   let isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
     alg: [jwksResponse.keys[0].alg],
-    iss: [issuer()],
+    iss: [issuer],
     aud: [clientId],
     verifyAt: KJUR.jws.IntDate.getNow(),
   });

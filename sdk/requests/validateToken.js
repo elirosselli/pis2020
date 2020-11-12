@@ -1,10 +1,24 @@
-import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
-import { validateTokenEndpoint } from '../utils/endpoints';
-import { validateTokenSecurity } from '../security';
+import { Platform } from 'react-native';
+import { validateTokenEndpoint, issuer } from '../utils/endpoints';
 import { ERRORS } from '../utils/constants';
+import { getParameters } from '../configuration';
+import { validateTokenSecurity } from '../security';
 
 const validateToken = async () => {
+  const { idToken, clientId } = getParameters();
+
+  // Si alguno de los parámetros obligatorios para la request
+  // no se encuentra inicializado, se rechaza la promesa y se
+  // retorna un error que especifica cuál parámetro
+  // faltó.
+  if (!idToken) {
+    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
+  }
+  if (!clientId) {
+    return Promise.reject(ERRORS.INVALID_CLIENT_ID);
+  }
+
   try {
     // Obtener la jwk del jwks endpoint.
     // JSON Web Key (JWK): estandar de representación de una clave criptográfica en formato JSON.
@@ -23,7 +37,7 @@ const validateToken = async () => {
     // Convertir a formato json.
     const jwksResponseJson = await jwksResponse.json();
     // Validar el token en el módulo de seguridad a partir de la jwk.
-    return validateTokenSecurity(jwksResponseJson);
+    return validateTokenSecurity(jwksResponseJson, idToken, clientId, issuer());
   } catch (error) {
     return Promise.reject(ERRORS.FAILED_REQUEST);
   }

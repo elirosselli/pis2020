@@ -77,20 +77,14 @@ describe('configuration module and make request type validate token integration'
     ),
   );
   it('calls setParameters and makes a validate token request but fetch fails', async () => {
+    setParameters({ clientId, idToken });
     try {
-      await await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
-
-  fetch.mockImplementation(() =>
-    Promise.resolve({
-      status: 200,
-      json: () => Promise.resolve(jwksResponse),
-    }),
-  );
 
   it('calls setParameters and makes a validate token request, with valid token', async () => {
     setParameters({ clientId, idToken });
@@ -110,6 +104,13 @@ describe('configuration module and make request type validate token integration'
       scope: '',
       production: false,
     });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve(jwksResponse),
+      }),
+    );
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
