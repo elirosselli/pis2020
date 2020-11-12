@@ -19,6 +19,7 @@ import {
   refreshToken,
   logout,
   setParameters,
+  validateToken,
 } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
@@ -32,6 +33,9 @@ import ENV from './env';
 
 import scope from './scope';
 
+import CheckIcon from './utils/check.png';
+import CorrectIcon from './utils/correct.png';
+import WrongIcon from './utils/wrong.png';
 import ReloadIcon from './utils/reload.png';
 
 const envVariables = ENV();
@@ -45,6 +49,8 @@ const App = () => {
   const [initialized, setInitialized] = useState(0);
   const [refreshTokenLoading, setRefreshTokenLoading] = useState(false);
   const [sdkProduction, setIsEnabled] = useState(false);
+  const [validateTokenResult, setValidateTokenResult] = useState(0);
+
   const toggleSwitch = () => {
     setInitialized(0);
     setIsEnabled(previousState => !previousState);
@@ -78,6 +84,11 @@ const App = () => {
     (initialized === 0 && { backgroundColor: '#222' }) ||
     (initialized === 1 && { backgroundColor: '#2ecc71' }) ||
     (initialized === -1 && { backgroundColor: '#e74c3c' });
+
+  const validateStatus =
+    (validateTokenResult === 0 && CheckIcon) ||
+    (validateTokenResult === 1 && CorrectIcon) ||
+    (validateTokenResult === -1 && WrongIcon);
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -291,7 +302,8 @@ const App = () => {
                   >
                     <View
                       style={{
-                        flex: 1,
+                        flex: 3,
+                        flexDirection: 'row',
                       }}
                     >
                       <TouchableOpacity
@@ -300,6 +312,32 @@ const App = () => {
                           height: '100%',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          flex: 1,
+                        }}
+                        onPress={async () => {
+                          try {
+                            const respValidateToken = await validateToken();
+                            console.log(respValidateToken);
+                            setValidateTokenResult(1);
+                          } catch (err) {
+                            setValidateTokenResult(-1);
+                            console.log(err.errorCode, err.errorDescription);
+                          }
+                        }}
+                      >
+                        <Image
+                          style={{ height: 15, width: 15, alignSelf: 'center' }}
+                          source={validateStatus}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#ecf0f1',
+                          flex: 1,
                         }}
                         onPress={async () => {
                           try {
@@ -307,6 +345,7 @@ const App = () => {
                             const respRefreshToken = await refreshToken();
                             setToken(respRefreshToken.refreshToken);
                             setRefreshTokenLoading(false);
+                            setValidateTokenResult(0);
                           } catch (err) {
                             console.log(err.errorCode, err.errorDescription);
                           }
