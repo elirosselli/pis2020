@@ -1,11 +1,9 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { validateTokenSecurity } from '../index';
-import { getParameters } from '../../configuration';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 import { issuer } from '../../utils/endpoints';
 import { ERRORS } from '../../utils/constants';
 
-jest.mock('../../configuration');
 jest.mock('../../utils/encoding', () => ({
   base64ToHex: jest.fn(),
   base64URLtoBase64: jest.fn(),
@@ -36,10 +34,6 @@ const pubKey = 'pubKey';
 
 describe('validateToken', () => {
   it('validates token correctly', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      clientId,
-    });
     base64ToHex.mockImplementation(() => {});
     base64URLtoBase64.mockReturnValue(() => {});
 
@@ -48,12 +42,12 @@ describe('validateToken', () => {
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
-    const result = await validateTokenSecurity(jwksResponse);
+    const result = await validateTokenSecurity(jwksResponse, idToken, clientId);
 
     expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
       iss: [issuer()],
-      aud: [getParameters().clientId],
+      aud: [clientId],
       verifyAt: time,
     });
     expect(result).toStrictEqual({
@@ -65,10 +59,6 @@ describe('validateToken', () => {
   });
 
   it('not validates token (payload)', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      clientId,
-    });
     base64ToHex.mockImplementation(() => {});
     base64URLtoBase64.mockReturnValue(() => {});
 
@@ -78,12 +68,12 @@ describe('validateToken', () => {
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     try {
-      await validateTokenSecurity(jwksResponse);
+      await validateTokenSecurity(jwksResponse, idToken, clientId);
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
         iss: [issuer()],
-        aud: [getParameters().clientId],
+        aud: [clientId],
         verifyAt: time,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
@@ -92,10 +82,6 @@ describe('validateToken', () => {
   });
 
   it('not validates token (kid)', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      clientId,
-    });
     base64ToHex.mockImplementation(() => {});
     base64URLtoBase64.mockReturnValue(() => {});
 
@@ -105,42 +91,16 @@ describe('validateToken', () => {
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     try {
-      await validateTokenSecurity(jwksResponse);
+      await validateTokenSecurity(jwksResponse, idToken, clientId);
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
         iss: [issuer()],
-        aud: [getParameters().clientId],
+        aud: [clientId],
         verifyAt: time,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
     expect.assertions(2);
-  });
-
-  it('not validates token (clientId empty)', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-    });
-
-    try {
-      await validateTokenSecurity(jwksResponse);
-    } catch (error) {
-      expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
-    }
-    expect.assertions(1);
-  });
-
-  it('not validates token (idToken empty)', async () => {
-    getParameters.mockReturnValue({
-      clientId,
-    });
-
-    try {
-      await validateTokenSecurity(jwksResponse);
-    } catch (error) {
-      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
-    }
-    expect.assertions(1);
   });
 });

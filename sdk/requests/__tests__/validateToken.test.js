@@ -1,9 +1,11 @@
 import { fetch } from 'react-native-ssl-pinning';
+import { ERRORS } from '../../utils/constants';
+import { getParameters } from '../../configuration';
 import validateToken from '../validateToken';
 import { validateTokenSecurity } from '../../security';
-import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../security');
+jest.mock('../../configuration');
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -22,6 +24,9 @@ const jwksResponse = {
     },
   ],
 };
+
+const idToken = 'idToken';
+const clientId = 'clientId';
 
 describe('validateToken', () => {
   fetch.mockImplementationOnce(() =>
@@ -46,6 +51,11 @@ describe('validateToken', () => {
   );
 
   it('calls validateToken correctly but fetch rejects', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+      clientId,
+    });
+
     try {
       await validateToken();
     } catch (error) {
@@ -62,6 +72,11 @@ describe('validateToken', () => {
   );
 
   it('calls validateToken correctly and token is valid', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+      clientId,
+    });
+
     validateTokenSecurity.mockReturnValue(
       Promise.resolve({
         jwk: jwksResponse,
@@ -71,7 +86,11 @@ describe('validateToken', () => {
       }),
     );
     const result = await validateToken();
-    expect(validateTokenSecurity).toHaveBeenCalledWith(jwksResponse);
+    expect(validateTokenSecurity).toHaveBeenCalledWith(
+      jwksResponse,
+      idToken,
+      clientId,
+    );
     expect(result).toStrictEqual({
       jwk: jwksResponse,
       message: ERRORS.NO_ERROR,
@@ -81,6 +100,11 @@ describe('validateToken', () => {
   });
 
   it('calls validateToken correctly but token is not valid', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+      clientId,
+    });
+
     validateTokenSecurity.mockReturnValue(
       Promise.reject(ERRORS.INVALID_ID_TOKEN),
     );
