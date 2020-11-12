@@ -44,7 +44,7 @@ describe('fetchRetry', () => {
       await fetch(url, config);
     } catch (err) {
       expect(fetchSslPinning).toHaveBeenCalledTimes(3);
-      expect(err).toStrictEqual(Error('Invalid'));
+      expect(err).toStrictEqual(Error('Invalid')); 
     }
     expect.assertions(2);
   });
