@@ -38,9 +38,6 @@ const generateRandomState = () => {
 
 const validateSub = sub => {
   const { idToken } = getParameters();
-  if (!idToken) {
-    return false;
-  }
   const payloadObj = KJUR.jws.JWS.readSafeJSONString(
     decode(idToken.split('.')[1]),
   );

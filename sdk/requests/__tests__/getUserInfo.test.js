@@ -1,6 +1,5 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
-import { userInfoEndpoint } from '../../utils/endpoints';
 import { ERRORS } from '../../utils/constants';
 import { fetch } from '../../utils/helpers';
 import getUserInfo from '../getUserInfo';
