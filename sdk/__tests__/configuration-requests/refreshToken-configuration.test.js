@@ -13,17 +13,6 @@ jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
-const mockSub = '5485';
-
-jest.mock('jsrsasign', () => ({
-  __esModule: true,
-  default: {
-    jws: {
-      JWS: { readSafeJSONString: jest.fn(() => ({ sub: mockSub })) },
-    },
-  },
-}));
-
 afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
@@ -99,7 +88,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
 
     fetch.mockImplementation(fetchMockImplementation);
@@ -146,7 +134,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken,
       state: '',
       scope: '',
-      sub: mockSub,
     });
   });
 
@@ -174,7 +161,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
 
     fetch.mockImplementation(fetchMockImplementationWithInvalidOrEmptyToken);
@@ -198,7 +184,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
     expect.assertions(3);
   });
@@ -273,7 +258,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
 
     fetch.mockImplementation(() =>
@@ -313,7 +297,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
     expect.assertions(3);
   });
@@ -477,7 +460,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
 
     try {
@@ -551,7 +533,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
     expect.assertions(3);
   });
@@ -578,7 +559,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
     fetch.mockImplementation(() =>
       Promise.reject({
@@ -607,7 +587,6 @@ describe('configuration & security modules and make request type refresh token i
       idToken: '',
       state: '',
       scope: '',
-      sub: '',
     });
     expect.assertions(3);
   });

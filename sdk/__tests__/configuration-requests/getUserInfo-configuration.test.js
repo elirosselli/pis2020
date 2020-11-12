@@ -9,17 +9,19 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
-const mockAddEventListener = jest.fn();
-const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
-
-jest.mock('react-native/Libraries/Linking/Linking', () => ({
-  addEventListener: mockAddEventListener,
-  removeEventListener: jest.fn(),
-  openURL: mockLinkingOpenUrl,
-}));
-
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
+}));
+
+const mockSub = '5485';
+
+jest.mock('jsrsasign', () => ({
+  __esModule: true,
+  default: {
+    jws: {
+      JWS: { readSafeJSONString: jest.fn(() => ({ sub: mockSub })) },
+    },
+  },
 }));
 
 afterEach(() => jest.clearAllMocks());
@@ -69,7 +71,7 @@ describe('configuration module and make request type get user info integration',
             primer_nombre: 'testNombre',
             segundo_apellido: 'testApellido',
             segundo_nombre: 'testSegundoNombre',
-            sub: '5968',
+            sub: mockSub,
             uid: userId,
             name: 'name',
             given_name: 'given_name',
@@ -111,7 +113,7 @@ describe('configuration module and make request type get user info integration',
       primer_nombre: 'testNombre',
       segundo_apellido: 'testApellido',
       segundo_nombre: 'testSegundoNombre',
-      sub: '5968',
+      sub: mockSub,
       uid: userId,
       name: 'name',
       given_name: 'given_name',
@@ -176,7 +178,7 @@ describe('configuration module and make request type get user info integration',
             primer_nombre: 'testNombre',
             segundo_apellido: 'testApellido',
             segundo_nombre: 'testSegundoNombre',
-            sub: '5968',
+            sub: mockSub,
             uid: userId,
             rid: 'rid',
           }),
@@ -208,7 +210,7 @@ describe('configuration module and make request type get user info integration',
       primer_nombre: 'testNombre',
       segundo_apellido: 'testApellido',
       segundo_nombre: 'testSegundoNombre',
-      sub: '5968',
+      sub: mockSub,
       uid: userId,
       rid: 'rid',
     });

@@ -4,8 +4,10 @@ import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
+const mockState = '123456random-state';
+
 jest.mock('../../security', () => ({
-  generateRandomState: jest.fn(),
+  generateRandomState: jest.fn(() => mockState),
 }));
 
 const mockAddEventListener = jest.fn();
@@ -16,8 +18,6 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   removeEventListener: jest.fn(),
   openURL: mockLinkingOpenUrl,
 }));
-
-const mockState = '123456random-state';
 
 const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20scope&response_type=code&client_id=clientId&redirect_uri=redirectUri&state=${mockState}`;
 
@@ -44,6 +44,7 @@ describe('login', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
+      state: mockState,
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
@@ -99,6 +100,7 @@ describe('login', () => {
   it('calls login with empty clientId', async () => {
     getParameters.mockReturnValue({
       clientId: '',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -130,6 +132,7 @@ describe('login', () => {
       clientId: 'clientId',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: '',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -147,6 +150,7 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: '',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -165,6 +169,7 @@ describe('login', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
       scope: 'scope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')

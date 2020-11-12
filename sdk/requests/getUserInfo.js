@@ -31,15 +31,15 @@ const getUserInfo = async () => {
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
-    // Resuelvo promesa con la información del usuario si el sub
-    // correspondiente al token utilizado coincide con la respuesta.
+    // Resuelvo promesa con la información del usuario si el sub correspondiente 
+    // al token utilizado coincide con el sub de la respuesta.
     if (validateSub(responseJson.sub)) {
       responseJson.message = ERRORS.NO_ERROR;
       responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
       responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
       return Promise.resolve(responseJson);
     }
-    return Promise.reject(Error('Sub no coinciden'));
+    return Promise.reject(ERRORS.INVALID_SUB);
   } catch (error) {
     const stringsHeaders = error.headers['Www-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)

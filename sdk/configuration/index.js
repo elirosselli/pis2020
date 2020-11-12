@@ -43,10 +43,15 @@ const eraseCode = () => {
   parameters.code = '';
 };
 
+const eraseState = () => {
+  parameters.state = '';
+};
+
 export {
   getParameters,
   setParameters,
   clearParameters,
   resetParameters,
   eraseCode,
+  eraseState,
 };

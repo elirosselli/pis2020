@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { logoutEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
 import { ERRORS } from '../utils/constants';
-import { getParameters, clearParameters } from '../configuration';
+import { getParameters, clearParameters, eraseState } from '../configuration';
 
 const logout = async () => {
   generateRandomState(); // Se genera random state para la request
@@ -13,10 +13,14 @@ const logout = async () => {
     // no se encuentra inicializado, se rechaza la promesa y se
     // retorna un error que especifica cuál parámetro
     // faltó.
-    if (!parameters.idToken)
+    if (!parameters.idToken) {
+      eraseState();
       return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);
-    if (!parameters.postLogoutRedirectUri)
+    }
+    if (!parameters.postLogoutRedirectUri) {
+      eraseState();
       return Promise.reject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+    }
 
     // Se arma la solicitud a enviar al logoutEndpoint.
     const response = await fetch(logoutEndpoint(), {

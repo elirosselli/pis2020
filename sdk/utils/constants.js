@@ -21,6 +21,7 @@ const errorCodes = {
   invalidClient: 'invalid_client',
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
+  invalidSub: 'invalid_sub',
 };
 
 const errorDescriptions = {
@@ -40,6 +41,8 @@ const errorDescriptions = {
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
   invalidIdTokenHint: 'Parámetro id_token_hint inválido',
   invalidUrlLogout: 'Invalid returned url for logout',
+  invalidSub:
+    'El sub devuelto por la API no coincide con el sub contenido en la token',
 };
 
 class ErrorNoError extends Error {
@@ -213,6 +216,19 @@ class ErrorInvalidUrlLogout extends Error {
   }
 }
 
+class ErrorInvalidSub extends Error {
+  constructor(
+    errorCode = errorCodes.invalidSub,
+    errorDescription = errorDescriptions.invalidSub,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidSub';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -227,6 +243,7 @@ const ERRORS = {
   INVALID_CLIENT: new ErrorInvalidClient(),
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
+  INVALID_SUB: new ErrorInvalidSub(),
 };
 
 export { REQUEST_TYPES, ERRORS };

@@ -33,7 +33,6 @@ describe('getUserInfo', () => {
       accessToken: 'c9747e3173544b7b870d48aeafa0f661',
       redirectUri,
       code,
-      sub,
     });
 
     fetch.mockImplementation(() =>
@@ -77,8 +76,8 @@ describe('getUserInfo', () => {
       primer_nombre: 'testNombre',
       segundo_apellido: 'testApellido',
       segundo_nombre: 'testSegundoNombre',
-      sub: '5968',
       uid,
+      sub,
     });
   });
 
@@ -148,7 +147,6 @@ describe('getUserInfo', () => {
       accessToken: 'c9747e3173544b7b870d48aeafa0f661',
       redirectUri,
       code,
-      sub,
     });
 
     fetch.mockImplementation(() =>
@@ -161,19 +159,20 @@ describe('getUserInfo', () => {
             primer_nombre: 'testNombre',
             segundo_apellido: 'testApellido',
             segundo_nombre: 'testSegundoNombre',
-            sub: '5968',
+            sub,
             uid: 'uy-cid-12345678',
           }),
       }),
     );
 
-    const error = Error('Sub no coinciden');
     try {
       await getUserInfo();
     } catch (err) {
-      expect(err).toStrictEqual(error);
+      expect(err).toBe(ERRORS.INVALID_SUB);
     }
-    expect.assertions(1);
+
+    expect(validateSub).toHaveBeenCalledWith(sub);
+    expect.assertions(2);
   });
 
   it('calls getUserInfo and returns some error with www authenticate header', async () => {

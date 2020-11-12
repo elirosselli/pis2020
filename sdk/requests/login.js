@@ -1,5 +1,5 @@
 import { Linking } from 'react-native';
-import { getParameters, setParameters } from '../configuration';
+import { getParameters, setParameters, eraseState } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
 import { ERRORS } from '../utils/constants';
@@ -36,12 +36,14 @@ const login = async () => {
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],
-        // TODO: return state.
+        state: returnedState[1],
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
       rejectFunction(ERRORS.ACCESS_DENIED);
-    } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
+    } else {
+      rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
+    }
 
     // Se elimina el handler para los eventos url.
     Linking.removeEventListener('url', handleOpenUrl);
@@ -68,11 +70,13 @@ const login = async () => {
         parameters.postLogoutRedirectUri,
         parameters.clientSecret,
       );
+      eraseState();
       rejectFunction(errorResponse);
     }
   } catch (error) {
     // En caso de error, se elimina el handler y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
+    eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
   }
   return promise;
