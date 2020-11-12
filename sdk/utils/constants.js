@@ -5,6 +5,7 @@ const REQUEST_TYPES = {
   GET_REFRESH_TOKEN: 'getRefreshToken',
   GET_USER_INFO: 'getUserInfo',
   LOGOUT: 'logout',
+  VALIDATE_TOKEN: 'validateToken',
 };
 
 const errorCodes = {
@@ -21,6 +22,9 @@ const errorCodes = {
   invalidClient: 'invalid_client',
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
+  invalidIdToken: 'invalid_id_token',
+  invalidLengthError: 'base64URL_to_base64_invalid_length_error',
+  invalidBase64ToHexConversion: 'invalid_base64_to_hex_conversion',
 };
 
 const errorDescriptions = {
@@ -40,6 +44,10 @@ const errorDescriptions = {
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
   invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
+  invalidIdToken: 'Invalid id token',
+  invalidLengthError:
+    'Input base64url string is the wrong length to determine padding',
+  invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
 };
 
 class ErrorNoError extends Error {
@@ -213,6 +221,45 @@ class ErrorInvalidUrlLogout extends Error {
   }
 }
 
+class ErrorInvalidIdToken extends Error {
+  constructor(
+    errorCode = errorCodes.invalidIdToken,
+    errorDescription = errorDescriptions.invalidIdToken,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidIdToken';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorBase64InvalidLength extends Error {
+  constructor(
+    errorCode = errorCodes.invalidLengthError,
+    errorDescription = errorDescriptions.invalidLengthError,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidLengthError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorBase64ToHexConversion extends Error {
+  constructor(
+    errorCode = errorCodes.invalidBase64ToHexConversion,
+    errorDescription = errorDescriptions.invalidBase64ToHexConversion,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidBase64ToHexConversion';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -227,6 +274,9 @@ const ERRORS = {
   INVALID_CLIENT: new ErrorInvalidClient(),
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
+  INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
+  INVALID_BASE64_LENGTH: new ErrorBase64InvalidLength(),
+  INVALID_BASE64_TO_HEX_CONVERSION: new ErrorBase64ToHexConversion(),
 };
 
 export { REQUEST_TYPES, ERRORS };

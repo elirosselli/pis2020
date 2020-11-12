@@ -3,48 +3,26 @@ import {
   logoutEndpoint,
   tokenEndpoint,
   userInfoEndpoint,
+  validateTokenEndpoint,
+  issuer,
 } from '../endpoints';
 import { getParameters } from '../../configuration';
 
 jest.mock('../../configuration');
 
+const productionPrefix = 'https://auth.iduruguay.gub.uy/oidc/v1';
+const developmentPrefix = 'https://auth-testing.iduruguay.gub.uy/oidc/v1';
+
+afterEach(() => jest.clearAllMocks());
+
 describe('endpoints', () => {
-  it('calls tokenEndpoint in production', () => {
-    getParameters.mockReturnValue();
-    const tokenEndpointValue = 'https://auth.iduruguay.gub.uy/oidc/v1/token';
-    const production = true;
-
-    // Mockear getParameters
-    getParameters.mockReturnValue({
-      production,
-    });
-
-    const returnedTokenEndpoint = tokenEndpoint();
-    expect(returnedTokenEndpoint).toBe(tokenEndpointValue);
-  });
-  it('calls tokenEndpoint in developmet', () => {
-    getParameters.mockReturnValue();
-    const tokenEndpointValue =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
-    const production = false;
-
-    // Mockear getParameters
-    getParameters.mockReturnValue({
-      production,
-    });
-
-    const returnedTokenEndpoint = tokenEndpoint();
-    expect(returnedTokenEndpoint).toBe(tokenEndpointValue);
-  });
   it('calls login in production', () => {
-    getParameters.mockReturnValue();
     const scope = 'scope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
-    const loginEndpointValue = `https://auth.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
     const production = true;
+    const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       scope,
       clientId,
@@ -55,15 +33,14 @@ describe('endpoints', () => {
     const returnedLoginEndpoint = loginEndpoint();
     expect(returnedLoginEndpoint).toBe(loginEndpointValue);
   });
+
   it('calls login in development', () => {
-    getParameters.mockReturnValue();
     const scope = 'scope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
-    const loginEndpointValue = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
     const production = false;
+    const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       scope,
       clientId,
@@ -74,12 +51,35 @@ describe('endpoints', () => {
     const returnedLoginEndpoint = loginEndpoint();
     expect(returnedLoginEndpoint).toBe(loginEndpointValue);
   });
+
+  it('calls tokenEndpoint in production', () => {
+    const production = true;
+    const tokenEndpointValue = `${productionPrefix}/token`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedTokenEndpoint = tokenEndpoint();
+    expect(returnedTokenEndpoint).toBe(tokenEndpointValue);
+  });
+
+  it('calls tokenEndpoint in developmet', () => {
+    const production = false;
+    const tokenEndpointValue = `${developmentPrefix}/token`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedTokenEndpoint = tokenEndpoint();
+    expect(returnedTokenEndpoint).toBe(tokenEndpointValue);
+  });
+
   it('calls userInfoEndpoint in production', () => {
-    getParameters.mockReturnValue();
-    const userInfoEndpointValue = `https://auth.iduruguay.gub.uy/oidc/v1/userinfo`;
     const production = true;
+    const userInfoEndpointValue = `${productionPrefix}/userinfo`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       production,
     });
@@ -87,12 +87,11 @@ describe('endpoints', () => {
     const returnedUserInfoEndpoint = userInfoEndpoint();
     expect(returnedUserInfoEndpoint).toBe(userInfoEndpointValue);
   });
+
   it('calls userInfoEndpoint in development', () => {
-    getParameters.mockReturnValue();
-    const userInfoEndpointValue = `https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo`;
     const production = false;
+    const userInfoEndpointValue = `${developmentPrefix}/userinfo`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       production,
     });
@@ -100,15 +99,14 @@ describe('endpoints', () => {
     const returnedUserInfoEndpoint = userInfoEndpoint();
     expect(returnedUserInfoEndpoint).toBe(userInfoEndpointValue);
   });
+
   it('calls logoutEndpoint in production', () => {
-    getParameters.mockReturnValue();
     const idToken = 'idToken';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const state = 'state';
-    const logoutEndpointValue = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
     const production = true;
+    const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       production,
       idToken,
@@ -119,15 +117,14 @@ describe('endpoints', () => {
     const returnedLogoutEndpoint = logoutEndpoint();
     expect(returnedLogoutEndpoint).toBe(logoutEndpointValue);
   });
+
   it('calls logoutEndpoint in development', () => {
-    getParameters.mockReturnValue();
     const idToken = 'idToken';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const state = 'state';
-    const logoutEndpointValue = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
     const production = false;
+    const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 
-    // Mockear getParameters
     getParameters.mockReturnValue({
       production,
       idToken,
@@ -137,5 +134,53 @@ describe('endpoints', () => {
 
     const returnedLogoutEndpoint = logoutEndpoint();
     expect(returnedLogoutEndpoint).toBe(logoutEndpointValue);
+  });
+
+  it('calls jwks in production', () => {
+    const production = true;
+    const jwksEndpointValue = `${productionPrefix}/jwks`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedJWKSEndpoint = validateTokenEndpoint();
+    expect(returnedJWKSEndpoint).toBe(jwksEndpointValue);
+  });
+
+  it('calls jwks in developmet', () => {
+    const production = false;
+    const jwksEndpointValue = `${developmentPrefix}/jwks`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedJWKSEndpoint = validateTokenEndpoint();
+    expect(returnedJWKSEndpoint).toBe(jwksEndpointValue);
+  });
+
+  it('calls issuer in production', () => {
+    const production = true;
+    const issuerValue = `${productionPrefix}`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedIssuer = issuer();
+    expect(returnedIssuer).toBe(issuerValue);
+  });
+
+  it('calls issuer in developmet', () => {
+    const production = false;
+    const issuerValue = `${developmentPrefix}`;
+
+    getParameters.mockReturnValue({
+      production,
+    });
+
+    const returnedIssuer = issuer();
+    expect(returnedIssuer).toBe(issuerValue);
   });
 });
