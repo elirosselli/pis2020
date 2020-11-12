@@ -6,6 +6,7 @@ const initializeErrors = (
   redirectUri,
   postLogoutRedirectUri,
   clientSecret,
+  production,
 ) => {
   let response;
   if (!clientId) {
@@ -20,6 +21,9 @@ const initializeErrors = (
   } else if (!clientSecret) {
     // Si el client secret es vacío se retorna el error correspondiente.
     response = ERRORS.INVALID_CLIENT_SECRET;
+  } else if (typeof production !== 'boolean') {
+    // Si production no es booleano se retorna el error correspondiente.
+    response = ERRORS.INVALID_PRODUCTION;
   }
   return response;
 };

@@ -140,7 +140,7 @@ describe('configuration module and make request type refresh token integration',
   });
 
   it('calls setParameters and makes a refresh token request with invalid refresh token', async () => {
-    const invalidRefreshToken = 'invalid_refresh_token';
+    const invalidRefreshToken = 'invalidRefreshToken';
 
     setParameters({
       clientId,
@@ -617,7 +617,7 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       redirectUri,
       postLogoutRedirectUri,
-      code: 'code',
+      code: 'correctCode',
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -626,7 +626,7 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       postLogoutRedirectUri,
       production: false,
-      code: 'code',
+      code: 'correctCode',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -648,7 +648,7 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       postLogoutRedirectUri,
       production: false,
-      code: 'code',
+      code: 'correctCode',
       accessToken: '',
       refreshToken: '',
       tokenType: '',

@@ -630,7 +630,7 @@ describe('configuration module and make request type get token integration', () 
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const postLogoutRedirectUri = '';
 
     setParameters({

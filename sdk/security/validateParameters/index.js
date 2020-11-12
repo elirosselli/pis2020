@@ -26,7 +26,8 @@ const validateParameters = (type, value) => {
 
     // Validar parámetros de tipo *NQCHAR.
     case PARAMETERS.scope: {
-      return validateNQCHAR(type, value);
+      if (value) return validateNQCHAR(type, value);
+      return '';
     }
 
     // Validar parámetros de tipo DIGIT.
