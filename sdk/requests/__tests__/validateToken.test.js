@@ -1,4 +1,4 @@
-import { fetch } from 'react-native-ssl-pinning';
+import { fetch } from '../../utils/helpers';
 import { ERRORS } from '../../utils/constants';
 import { issuer } from '../../utils/endpoints';
 import { getParameters } from '../../configuration';
@@ -8,7 +8,8 @@ import { validateTokenSecurity } from '../../security';
 jest.mock('../../security');
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 

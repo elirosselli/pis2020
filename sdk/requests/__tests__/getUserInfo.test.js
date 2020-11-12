@@ -1,13 +1,14 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from '../../utils/helpers';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
@@ -42,18 +43,22 @@ describe('getUserInfo', () => {
     );
     const response = await getUserInfo();
 
-    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      userInfoEndpoint,
+      {
+        method: 'GET',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Bearer c9747e3173544b7b870d48aeafa0f661`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
       },
-      headers: {
-        Authorization: `Bearer c9747e3173544b7b870d48aeafa0f661`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-    });
+      5,
+    );
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -147,7 +152,7 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo with empty access Token', async () => {
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'code';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
       clientId: '898562',

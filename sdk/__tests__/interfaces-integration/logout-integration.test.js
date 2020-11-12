@@ -1,5 +1,5 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   getParameters,
@@ -417,7 +417,7 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',

@@ -14,6 +14,7 @@ jest.mock('../validateToken');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
+
 const getTokenOrRefreshMockImpl = () =>
   Promise.resolve({
     token: 'token',

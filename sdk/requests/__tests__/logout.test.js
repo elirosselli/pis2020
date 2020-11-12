@@ -1,12 +1,13 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from '../../utils/helpers';
 import { getParameters } from '../../configuration';
 import { ERRORS } from '../../utils/constants';
 import logout from '../logout';
 
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
