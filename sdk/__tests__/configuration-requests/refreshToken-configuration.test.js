@@ -99,19 +99,23 @@ describe('configuration module and make request type refresh token integration',
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
-      method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      correctTokenEndpoint,
+      {
+        method: 'POST',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: contentType,
+        },
+        body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
       },
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: contentType,
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
-    });
+      5,
+    );
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,

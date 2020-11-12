@@ -34,6 +34,21 @@ describe('fetchRetry', () => {
     expect.assertions(2);
   });
 
+  it('calls fetch incorrectly (default retries)', async () => {
+    const url = 'url';
+    const config = {};
+    fetchSslPinning.mockImplementation(() =>
+      Promise.reject(new Error('Invalid')),
+    );
+    try {
+      await fetch(url, config);
+    } catch (err) {
+      expect(fetchSslPinning).toHaveBeenCalledTimes(3);
+      expect(err).toStrictEqual(Error('Invalid'));
+    }
+    expect.assertions(2);
+  });
+
   it('calls fetch correctly after recursion', async () => {
     const url = 'url';
     const config = {};

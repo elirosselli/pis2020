@@ -102,7 +102,8 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    });
+    },
+    5);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
@@ -201,7 +202,8 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    });
+    },
+    5);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
@@ -281,7 +283,8 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    });
+    },
+    5);
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
