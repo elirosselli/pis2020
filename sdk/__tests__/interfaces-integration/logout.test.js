@@ -417,6 +417,7 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -440,6 +441,6 @@ describe('configuration module and make request type logout integration', () => 
       state: expectedState,
       scope: '',
     });
-    expect.assertions(4);
+    expect.assertions(5);
   });
 });
