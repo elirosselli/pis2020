@@ -322,13 +322,13 @@ La función `validateToken()` permite al usuario validar el idToken provisto dur
 
 Al llamar a la función se valida que el idToken, se obtiene del JWKS Endpoint las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el idToken sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida firma del token, además de los siguientes campos:
 
-| Parámetro 	| Valor                               	|
-|-----------	|-------------------------------------	|
-| alg       	| Algoritmo de la firma.              	|
-| iss       	| Quien creó y firmó el token.        	|
-| aud       	| Para quién está destinado el token. 	|
-| exp       	| Tiempo de expiración.               	|
-| kid       	| Identificador único.                	|
+| Parámetro | Valor                               |
+|-----------|-------------------------------------|
+| alg       | Algoritmo de la firma.              |
+| iss       | Quien creó y firmó el token.        |
+| aud       | Para quién está destinado el token. |
+| exp       | Tiempo de expiración.               |
+| kid       | Identificador único.                |
 
 En caso de que el token se inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
 

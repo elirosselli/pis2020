@@ -24,9 +24,10 @@ Esta sección presenta las funcionalidades brindadas por el componente SDK. Para
 
 #### Generalidades
 
-La funcionalidad de **initialize** se encarga de establecer los parámetros necesarios para la comunicación del componente con el OP. Estos parámetros son utilizados en la mayoría las comunicaciones entre el componente y el OP, por lo que establecerlos una única vez le brinda a la Aplicación móvil RP mayor comodidad en el uso del componente. Observar que esta función es un facilitador, ya que es posible establecer estos parámetros mediante la función **setParameters**. 
+La funcionalidad de **initialize** se encarga de establecer los parámetros necesarios para la comunicación del componente con el OP. Estos parámetros son utilizados en la mayoría las comunicaciones entre el componente y el OP, por lo que establecerlos una única vez le brinda a la Aplicación móvil RP mayor comodidad en el uso del componente. Observar que esta función es un facilitador, ya que es posible establecer estos parámetros mediante la función **setParameters**.
 
 En particular, los parámetros mencionados son:
+
 - *client id*
 - *client secret*
 - *redirect uri*
@@ -44,13 +45,16 @@ La implementación de la funcionalidad de *initialize* involucra los siguientes 
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/constants.js**: Donde se encuentran implementados los errores a retornar.
 
-La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *postLogoutRedirectUri* y *scope* y retorna mensajes de éxito o de error, según corresponda. 
+La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *postLogoutRedirectUri* y *scope* y retorna mensajes de éxito o de error, según corresponda.
 
 #### Código
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *postLogoutRedirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendría valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **getParameters**, y se retorna un objeto de indicando que no hay error, que incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que incluye el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se llama a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre. 
+
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *postLogoutRedirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendría valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **getParameters**, y se retorna un objeto de indicando que no hay error, que incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que incluye el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se llama a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre.
 
 #### Errores
+
 Los códigos de error devueltos en cada caso son:
+
 - En caso de éxito: "gubuy_no_error"
 - Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
 - Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
