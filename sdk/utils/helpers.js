@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
 import { ERRORS } from './constants';
 
 const initializeErrors = (
@@ -24,4 +24,12 @@ const initializeErrors = (
   return response;
 };
 
-export { initializeErrors };
+const fetch = (url, options, n = 3) => {
+  const fetchOptions = { ...options };
+  return fetchSslPinning(url, fetchOptions).catch(error => {
+    if (n === 1) throw error;
+    return fetch(url, fetchOptions, n - 1);
+  });
+};
+
+export { initializeErrors, fetch };

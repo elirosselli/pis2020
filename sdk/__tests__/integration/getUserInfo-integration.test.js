@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,

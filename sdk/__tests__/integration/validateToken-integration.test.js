@@ -1,5 +1,5 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { KJUR, KEYUTIL } from 'jsrsasign';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
 
