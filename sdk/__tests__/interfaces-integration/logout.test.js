@@ -53,6 +53,7 @@ describe('configuration module and make request type logout integration', () => 
       }),
     );
     const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -112,6 +113,7 @@ describe('configuration module and make request type logout integration', () => 
       }),
     );
     const response = await makeRequest(REQUEST_TYPES.LOGOUT);
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -308,6 +310,7 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -331,7 +334,7 @@ describe('configuration module and make request type logout integration', () => 
       state: expectedState,
       scope: '',
     });
-    expect.assertions(4);
+    expect.assertions(5);
   });
 
   it('calls set parameters, makes a logout request with required parameters and returns invalid url', async () => {
@@ -361,6 +364,7 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
     }
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -384,7 +388,7 @@ describe('configuration module and make request type logout integration', () => 
       state: expectedState,
       scope: '',
     });
-    expect.assertions(4);
+    expect.assertions(5);
   });
 
   it('calls set parameters, makes a logout request with required parameters and fails', async () => {
@@ -413,7 +417,6 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
@@ -437,6 +440,6 @@ describe('configuration module and make request type logout integration', () => 
       state: expectedState,
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(4);
   });
 });
