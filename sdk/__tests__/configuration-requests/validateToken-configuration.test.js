@@ -2,7 +2,6 @@ import { fetch } from 'react-native-ssl-pinning';
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
-import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 
 import {
   setParameters,
@@ -12,11 +11,6 @@ import {
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
-}));
-
-jest.mock('../../utils/encoding', () => ({
-  base64ToHex: jest.fn(),
-  base64URLtoBase64: jest.fn(),
 }));
 
 jest.mock('jsrsasign', () => ({
@@ -117,9 +111,6 @@ describe('configuration module and make request type validate token integration'
       production: false,
     });
 
-    base64ToHex.mockImplementation(() => {});
-    base64URLtoBase64.mockReturnValue(() => {});
-
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
@@ -159,9 +150,6 @@ describe('configuration module and make request type validate token integration'
       production: false,
     });
 
-    base64ToHex.mockImplementation(() => {});
-    base64URLtoBase64.mockReturnValue(() => {});
-
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => false);
     KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
@@ -199,9 +187,6 @@ describe('configuration module and make request type validate token integration'
       scope: '',
       production: false,
     });
-
-    base64ToHex.mockImplementation(() => {});
-    base64URLtoBase64.mockReturnValue(() => {});
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ wrongKid }));
