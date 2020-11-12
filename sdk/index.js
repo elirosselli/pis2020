@@ -6,6 +6,7 @@ import {
   getToken,
   getUserInfo,
   refreshToken,
+  validateToken,
 } from './interfaces';
 import { getParameters, setParameters, resetParameters } from './configuration';
 
@@ -19,4 +20,5 @@ export {
   getUserInfo,
   refreshToken,
   resetParameters,
+  validateToken,
 };

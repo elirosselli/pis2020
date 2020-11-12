@@ -35,8 +35,6 @@ const getTokenOrRefresh = async type => {
 
   // En el caso de refresh token, se chequea que el refresh token exista.
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken) {
-    // Se borra el parámetro code una vez ejecutado el getToken.
-    eraseCode();
     return Promise.reject(ERRORS.INVALID_GRANT);
   }
 
@@ -58,8 +56,8 @@ const getTokenOrRefresh = async type => {
 
   try {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
-    // los datos de autenticación codificados en base64.
-    const response = await fetch(tokenEndpoint, {
+    // los datos de autenticación codificados
+    const response = await fetch(tokenEndpoint(), {
       method: 'POST',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {

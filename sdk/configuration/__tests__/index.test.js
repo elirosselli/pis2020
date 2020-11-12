@@ -24,6 +24,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: '',
       state: '',
       scope: '',
+      production: false,
     };
     const parameters2 = {
       redirectUri: 'redirectUri',
@@ -47,6 +48,7 @@ describe('configuration module', () => {
     };
     const parameters6 = {
       scope: 'scope',
+      production: true,
     };
     const parameters = getParameters();
     expect(parameters).toStrictEqual(parameters1);
@@ -64,6 +66,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: '',
+      production: false,
     });
     setParameters(parameters3);
     expect(getParameters()).toStrictEqual({
@@ -79,6 +82,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: '',
+      production: false,
     });
     setParameters(parameters4);
     expect(getParameters()).toStrictEqual({
@@ -94,6 +98,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: '',
+      production: false,
     });
     setParameters(parameters5);
     expect(getParameters()).toStrictEqual({
@@ -109,6 +114,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: '',
+      production: false,
     });
     setParameters(parameters6);
     expect(getParameters()).toStrictEqual({
@@ -124,6 +130,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: 'scope',
+      production: true,
     });
     clearParameters();
     expect(getParameters()).toStrictEqual({
@@ -139,6 +146,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: 'postLogoutRedirectUri',
       state: '',
       scope: '',
+      production: true,
     });
     resetParameters();
     expect(getParameters()).toStrictEqual({
@@ -154,6 +162,7 @@ describe('configuration module', () => {
       postLogoutRedirectUri: '',
       state: '',
       scope: '',
+      production: false,
     });
   });
 
@@ -169,6 +178,7 @@ describe('configuration module', () => {
       expiresIn: 'expiresIn',
       idToken: 'idToken',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
+      production: true,
       state: 'state',
       scope: 'scope',
     };
@@ -184,6 +194,7 @@ describe('configuration module', () => {
       expiresIn: 'expiresIn',
       idToken: 'idToken',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
+      production: true,
       state: 'state',
       scope: 'scope',
     });
@@ -199,6 +210,7 @@ describe('configuration module', () => {
       expiresIn: 'expiresIn',
       idToken: 'idToken',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
+      production: true,
       state: 'state',
       scope: 'scope',
     });

@@ -229,6 +229,7 @@ const LoginButton = () => {
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `logout()`                                                    | Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al *post_logout_redirect_uri* especificado en `initialize` una vez cerrada la sesión.                                                                                                                                          |
+| `validateToken()`                                                    | Verifica que el idToken recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 
 ### Función initialize
 
@@ -314,6 +315,22 @@ Al llamar a esta función, se abre un navegador web en el dispositivo del usuari
 ```javascript
 await logout();
 ```
+
+### Función validateToken
+
+La función `validateToken()` permite al usuario validar el idToken provisto durante la llamada a `getToken()` o `refreshToken()`.
+
+Al llamar a la función se valida que el idToken, se obtiene del JWKS Endpoint las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el idToken sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida firma del token, además de los siguientes campos:
+
+| Parámetro 	| Valor                               	|
+|-----------	|-------------------------------------	|
+| alg       	| Algoritmo de la firma.              	|
+| iss       	| Quien creó y firmó el token.        	|
+| aud       	| Para quién está destinado el token. 	|
+| exp       	| Tiempo de expiración.               	|
+| kid       	| Identificador único.                	|
+
+En caso de que el token se inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
 
 ## Certificado *self-signed* en modo *testing*
 
