@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
-import { fetch } from '../../utils/helpers';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
@@ -9,11 +9,9 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('react-native-ssl-pinning', () => ({
+  fetch: jest.fn(),
+}));
 
 afterEach(() => jest.clearAllMocks());
 
@@ -99,23 +97,19 @@ describe('configuration module and make request type refresh token integration',
       'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    expect(fetch).toHaveBeenCalledWith(
-      correctTokenEndpoint,
-      {
-        method: 'POST',
-        pkPinning: Platform.OS === 'ios',
-        sslPinning: {
-          certs: ['certificate'],
-        },
-        headers: {
-          Authorization: `Basic ${encodedCredentials}`,
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          Accept: contentType,
-        },
-        body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
       },
-      5,
-    );
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+    });
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,

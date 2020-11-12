@@ -8,11 +8,10 @@ import { validateTokenSecurity } from '../../security';
 jest.mock('../../security');
 jest.mock('../../configuration');
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
+  fetch: jest.fn(),
+}));
 
 const jwksResponse = {
   keys: [

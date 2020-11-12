@@ -1,5 +1,5 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
-import { fetch } from '../../utils/helpers';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
 
@@ -9,11 +9,9 @@ import {
   resetParameters,
 } from '../../configuration';
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('react-native-ssl-pinning', () => ({
+  fetch: jest.fn(),
+}));
 
 jest.mock('jsrsasign', () => ({
   KEYUTIL: {

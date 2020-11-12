@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
-import { fetch } from '../../utils/helpers';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
@@ -18,11 +18,9 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('react-native-ssl-pinning', () => ({
+  fetch: jest.fn(),
+}));
 
 afterEach(() => jest.clearAllMocks());
 
@@ -102,8 +100,7 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    },
-    5);
+    });
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
@@ -202,8 +199,7 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    },
-    5);
+    });
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
@@ -283,8 +279,7 @@ describe('configuration module and make request type get user info integration',
         'Content-Type': contentType,
         Accept: accept,
       },
-    },
-    5);
+    });
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,

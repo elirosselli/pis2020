@@ -5,13 +5,12 @@ import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
-
 jest.mock('../../configuration');
+
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
+  fetch: jest.fn(),
+}));
 
 const contentType = 'application/json';
 

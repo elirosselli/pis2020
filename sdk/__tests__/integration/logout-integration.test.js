@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { fetch } from '../../utils/helpers';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   getParameters,
@@ -8,11 +8,9 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('react-native-ssl-pinning', () => ({
+  fetch: jest.fn(),
+}));
 
 afterEach(() => jest.clearAllMocks());
 
@@ -419,7 +417,7 @@ describe('configuration module and make request type logout integration', () => 
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',

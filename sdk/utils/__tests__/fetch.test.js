@@ -5,7 +5,7 @@ jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
 
-describe('fetchRetry', () => {
+describe('fetch', () => {
   afterEach(() => jest.clearAllMocks());
   const fetchResolve = {
     status: 200,

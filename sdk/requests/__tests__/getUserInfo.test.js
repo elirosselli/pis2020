@@ -7,11 +7,10 @@ import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
-jest.unmock('../../utils/helpers');
-
-const myModule = require('../../utils/helpers');
-
-myModule.fetch = jest.fn();
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
+  fetch: jest.fn(),
+}));
 
 describe('getUserInfo', () => {
   it('calls getUserInfo with correct accessToken', async () => {
