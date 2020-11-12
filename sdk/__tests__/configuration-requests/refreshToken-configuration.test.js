@@ -610,4 +610,54 @@ describe('configuration module and make request type refresh token integration',
     });
     expect.assertions(3);
   });
+
+  it('refreshToken does not erase code from parameters', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      postLogoutRedirectUri,
+      code: 'code',
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      production: false,
+      code: 'code',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_GRANT);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      production: false,
+      code: 'code',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
 });
