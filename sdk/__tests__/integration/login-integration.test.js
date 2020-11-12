@@ -48,7 +48,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      false,
+    );
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -56,6 +62,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -88,6 +95,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: response.code,
       accessToken: '',
       refreshToken: '',
@@ -111,6 +119,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -126,6 +135,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      false,
     );
     expect(result).toBe(ERRORS.INVALID_CLIENT_ID);
 
@@ -137,6 +147,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -160,6 +171,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -184,6 +196,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -199,6 +212,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      false,
     );
     expect(result).toBe(ERRORS.INVALID_CLIENT_SECRET);
 
@@ -210,6 +224,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -233,6 +248,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -250,13 +266,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -272,6 +288,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      false,
     );
 
     expect(result).toBe(ERRORS.INVALID_REDIRECT_URI);
@@ -283,6 +300,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -305,6 +323,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -330,6 +349,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -345,6 +365,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      false,
     );
     expect(result).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
 
@@ -356,6 +377,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -379,6 +401,7 @@ describe('configuration module and make request type login integration', () => {
       clientId: '',
       clientSecret: '',
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -397,7 +420,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'invalidClientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      false,
+    );
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -405,6 +434,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -430,6 +460,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -448,7 +479,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      false,
+    );
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -456,6 +493,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -481,6 +519,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -498,7 +537,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      false,
+    );
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -506,6 +551,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -536,6 +582,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -553,7 +600,13 @@ describe('configuration module and make request type login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      false,
+    );
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -561,6 +614,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -583,6 +637,7 @@ describe('configuration module and make request type login integration', () => {
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',

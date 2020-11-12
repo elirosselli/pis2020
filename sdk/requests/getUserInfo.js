@@ -1,8 +1,8 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { getParameters } from '../configuration';
 import { validateSub } from '../security';
 import { userInfoEndpoint } from '../utils/endpoints';
+import { fetch } from '../utils/helpers';
 import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
@@ -14,18 +14,22 @@ const getUserInfo = async () => {
     return Promise.reject(ERRORS.INVALID_ID_TOKEN);
   }
   try {
-    const response = await fetch(userInfoEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    const response = await fetch(
+      userInfoEndpoint(),
+      {
+        method: 'GET',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
       },
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-    });
+      5,
+    );
     const { status } = response;
     const responseJson = await response.json();
     // En caso de error se devuelve la respuesta,

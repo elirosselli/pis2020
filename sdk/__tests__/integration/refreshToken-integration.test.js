@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
@@ -80,6 +80,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -126,6 +127,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken,
       refreshToken,
@@ -153,6 +155,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: invalidRefreshToken,
@@ -176,6 +179,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: invalidRefreshToken,
@@ -201,6 +205,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -224,6 +229,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -250,6 +256,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -289,6 +296,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -314,6 +322,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId: '',
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -335,6 +344,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId: '',
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -360,6 +370,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret: '',
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -381,6 +392,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret: '',
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -406,6 +418,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -427,6 +440,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -452,6 +466,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -473,6 +488,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -499,6 +515,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -525,6 +542,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -551,6 +569,7 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -579,9 +598,59 @@ describe('configuration & security modules and make request type refresh token i
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('refreshToken does not erase code from parameters', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      postLogoutRedirectUri,
+      code: 'code',
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      production: false,
+      code: 'code',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_GRANT);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      postLogoutRedirectUri,
+      production: false,
+      code: 'code',
+      accessToken: '',
+      refreshToken: '',
       tokenType: '',
       expiresIn: '',
       idToken: '',

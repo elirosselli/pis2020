@@ -1,8 +1,8 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../../utils/endpoints';
 import { ERRORS } from '../../utils/constants';
+import { fetch } from '../../utils/helpers';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { validateSub } from '../../security';
@@ -13,7 +13,8 @@ jest.mock('../../security', () => ({
   validateSub: jest.fn(() => true),
 }));
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
@@ -26,6 +27,8 @@ const idToken =
 
 describe('getUserInfo', () => {
   it('calls getUserInfo with correct accessToken', async () => {
+    const userInfoEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';
     const sub = '5968';
@@ -56,21 +59,23 @@ describe('getUserInfo', () => {
     );
     const response = await getUserInfo();
 
-    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      userInfoEndpoint,
+      {
+        method: 'GET',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Bearer c9747e3173544b7b870d48aeafa0f661`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
       },
-      headers: {
-        Authorization: `Bearer c9747e3173544b7b870d48aeafa0f661`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: 'application/json',
-      },
-    });
-
+      5,
+    );
     expect(validateSub).toHaveBeenCalledWith(sub);
-
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -210,7 +215,7 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo with empty access Token', async () => {
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'code';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
       clientId: '898562',

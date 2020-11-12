@@ -1,13 +1,14 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from '../../utils/helpers';
 import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
@@ -62,19 +63,23 @@ describe('refreshToken', () => {
     const response = await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
     // Chequeo de parametros enviados
-    expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
-      method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      tokenEndpoint,
+      {
+        method: 'POST',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: contentType,
+        },
+        body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
       },
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: contentType,
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
-    });
+      5,
+    );
 
     // Chequeo de respuestas
     expect(response).toStrictEqual({

@@ -5,6 +5,7 @@ const REQUEST_TYPES = {
   GET_REFRESH_TOKEN: 'getRefreshToken',
   GET_USER_INFO: 'getUserInfo',
   LOGOUT: 'logout',
+  VALIDATE_TOKEN: 'validateToken',
 };
 
 const errorCodes = {
@@ -23,14 +24,16 @@ const errorCodes = {
   invalidUrlLogout: 'invalid_url_logout',
   invalidSub: 'gubuy_invalid_sub',
   invalidIdToken: 'gubuy_invalid_id_token',
+  invalidLengthError: 'base64URL_to_base64_invalid_length_error',
+  invalidBase64ToHexConversion: 'invalid_base64_to_hex_conversion',
 };
 
 const errorDescriptions = {
-  noError: 'No hay error',
-  invalidClientId: 'Parámetro client_id inválido',
-  invalidRedirectUri: 'Parámetro redirect_uri inválido',
-  invalidClientSecret: 'Parámetro client_secret inválido',
-  invalidPostLogoutRedirecrtUri: 'Parámetro post_logout_redirect_uri inválido',
+  noError: 'No error',
+  invalidClientId: 'Invalid client_id parameter',
+  invalidRedirectUri: 'Invalid redirect_uri parameter',
+  invalidClientSecret: 'Invalid client_secret parameter',
+  invalidPostLogoutRedirecrtUri: 'Invalid post_logout_redirect_uri parameter',
   accessDenied: 'The resource owner or authorization server denied the request',
   invalidAuthorizationCode: 'Invalid authorization code',
   failedRequest: "Couldn't make request",
@@ -40,11 +43,13 @@ const errorDescriptions = {
     'The access token provided is expired, revoked, malformed, or invalid for other reasons',
   invalidClient:
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
-  invalidIdTokenHint: 'Parámetro id_token_hint inválido',
+  invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
-  invalidSub:
-    'El sub devuelto por la API no coincide con el sub contenido en la token',
-  invalidIdToken: 'Stored Id Token is empty or invalid',
+  invalidSub: 'Sub returned by API does not match given sub',  
+  invalidIdToken: 'Id token is missing or invalid',
+  invalidLengthError:
+    'Input base64url string is the wrong length to determine padding',
+  invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
 };
 
 class ErrorNoError extends Error {
@@ -244,6 +249,32 @@ class ErrorInvalidIdToken extends Error {
   }
 }
 
+class ErrorBase64InvalidLength extends Error {
+  constructor(
+    errorCode = errorCodes.invalidLengthError,
+    errorDescription = errorDescriptions.invalidLengthError,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidLengthError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorBase64ToHexConversion extends Error {
+  constructor(
+    errorCode = errorCodes.invalidBase64ToHexConversion,
+    errorDescription = errorDescriptions.invalidBase64ToHexConversion,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidBase64ToHexConversion';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -260,6 +291,8 @@ const ERRORS = {
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
   INVALID_SUB: new ErrorInvalidSub(),
   INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
+  INVALID_BASE64_LENGTH: new ErrorBase64InvalidLength(),
+  INVALID_BASE64_TO_HEX_CONVERSION: new ErrorBase64ToHexConversion(),
 };
 
 export { REQUEST_TYPES, ERRORS };

@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from 'react-native-ssl-pinning';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
   setParameters,
@@ -60,6 +60,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -143,6 +144,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -174,6 +176,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -237,6 +240,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -268,6 +272,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -317,6 +322,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -348,6 +354,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -379,6 +386,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -391,7 +399,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls getUserInfo and fetch fails', async () => {
+  it('calls set parameters, makes a get user info request and fetch fails', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -411,6 +419,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -437,6 +446,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -449,7 +459,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls getUserInfo and returns some error', async () => {
+  it('calls set parameters, makes a get user info request and returns some error', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -469,6 +479,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -497,6 +508,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -509,7 +521,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls getUserInfo and returns some error with www authenticate header', async () => {
+  it('calls set parameters, makes a get user info request and returns some error with www authenticate header', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -529,6 +541,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -557,6 +570,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -569,7 +583,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls getUserInfo with empty access token', async () => {
+  it('calls set parameters and makes a get user info request with empty access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'code';
@@ -589,6 +603,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken: '',
       refreshToken: '',
@@ -609,6 +624,7 @@ describe('configuration module and make request type get user info integration',
       clientId,
       clientSecret,
       postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken: '',
       refreshToken: '',
