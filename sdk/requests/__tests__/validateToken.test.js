@@ -1,5 +1,6 @@
 import { fetch } from 'react-native-ssl-pinning';
 import { ERRORS } from '../../utils/constants';
+import { issuer } from '../../utils/endpoints';
 import { getParameters } from '../../configuration';
 import validateToken from '../validateToken';
 import { validateTokenSecurity } from '../../security';
@@ -90,6 +91,7 @@ describe('validateToken', () => {
       jwksResponse,
       idToken,
       clientId,
+      issuer(),
     );
     expect(result).toStrictEqual({
       jwk: jwksResponse,

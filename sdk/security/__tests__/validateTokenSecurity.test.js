@@ -42,7 +42,12 @@ describe('validateToken', () => {
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
-    const result = await validateTokenSecurity(jwksResponse, idToken, clientId);
+    const result = await validateTokenSecurity(
+      jwksResponse,
+      idToken,
+      clientId,
+      issuer(),
+    );
 
     expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
@@ -68,7 +73,7 @@ describe('validateToken', () => {
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     try {
-      await validateTokenSecurity(jwksResponse, idToken, clientId);
+      await validateTokenSecurity(jwksResponse, idToken, clientId, issuer());
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
@@ -91,7 +96,7 @@ describe('validateToken', () => {
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     try {
-      await validateTokenSecurity(jwksResponse, idToken, clientId);
+      await validateTokenSecurity(jwksResponse, idToken, clientId, issuer());
     } catch (error) {
       expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
         alg: [jwksResponse.keys[0].alg],
