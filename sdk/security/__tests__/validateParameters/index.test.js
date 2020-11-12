@@ -204,6 +204,24 @@ describe('security module', () => {
     expect(sanitaizedIdToken).toBe(idToken);
   });
 
+  it('production: valid', () => {
+    const production = true;
+    const sanitaizedProduction = validateParameters(
+      PARAMETERS.production,
+      production,
+    );
+    expect(sanitaizedProduction).toBe(production);
+  });
+
+  it('production: invalid', () => {
+    const production = '';
+    try {
+      validateParameters(PARAMETERS.production, production);
+    } catch (ErrorProduction) {
+      expect(ErrorProduction).toStrictEqual(ERRORS.INVALID_PRODUCTION);
+    }
+  });
+
   it('calles validateParameters with wrong type: invalid', () => {
     try {
       validateParameters('wrong type', 'value');

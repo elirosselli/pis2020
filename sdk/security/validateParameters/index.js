@@ -3,6 +3,7 @@ import validateVSCHAR from './VSCHAR';
 import validateNQCHAR from './NQCHAR';
 import validateURIReference from './URIReference';
 import validateDIGIT from './DIGIT';
+import validateBOOLEAN from './BOOLEAN';
 
 const validateParameters = (type, value) => {
   switch (type) {
@@ -37,6 +38,11 @@ const validateParameters = (type, value) => {
     case PARAMETERS.idToken: {
       // return validateIdToken(type, value);
       return value;
+    }
+
+    // Validar parámetros de tipo BOOLEAN.
+    case PARAMETERS.production: {
+      return validateBOOLEAN(type, value);
     }
 
     default:

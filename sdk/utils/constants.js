@@ -29,6 +29,7 @@ const errorCodes = {
   invalidTokenType: 'invalid_token_type',
   invalidScope: 'invalid_scope',
   invalidExpiresIn: 'invalid_expires_in',
+  invalidProduction: 'invalid_production',
 };
 
 const errorDescriptions = {
@@ -56,6 +57,7 @@ const errorDescriptions = {
   invalidTokenType: 'Invalid token_type parameter',
   invalidScope: 'Invalid scope parameter',
   invalidExpiresIn: 'Invalid expires_in parameter',
+  invalidProduction: 'Invalid production parameter',
 };
 
 class ErrorNoError extends Error {
@@ -320,6 +322,19 @@ class ErrorInvalidExpiresIn extends Error {
   }
 }
 
+class ErrorInvalidProduction extends Error {
+  constructor(
+    errorCode = errorCodes.invalidProduction,
+    errorDescription = errorDescriptions.invalidProduction,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidProduction';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -341,6 +356,7 @@ const ERRORS = {
   INVALID_TOKEN_TYPE: new ErrorInvalidTokenType(),
   INVALID_SCOPE: new ErrorInvalidScope(),
   INVALID_EXPIRES_IN: new ErrorInvalidExpiresIn(),
+  INVALID_PRODUCTION: new ErrorInvalidProduction(),
 };
 
 const PARAMETERS = {
@@ -356,6 +372,7 @@ const PARAMETERS = {
   postLogoutRedirectUri: 'postLogoutRedirectUri',
   state: 'state',
   scope: 'scope',
+  production: 'production',
 };
 
 export { REQUEST_TYPES, ERRORS, PARAMETERS };
