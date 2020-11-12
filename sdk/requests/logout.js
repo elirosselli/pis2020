@@ -1,5 +1,5 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from '../utils/helpers';
 import { logoutEndpoint } from '../utils/endpoints';
 import { ERRORS } from '../utils/constants';
 import { getParameters, clearParameters } from '../configuration';

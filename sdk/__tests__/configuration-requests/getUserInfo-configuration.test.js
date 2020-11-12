@@ -1,5 +1,5 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
+import { fetch } from '../../utils/helpers';
 import { Platform } from 'react-native';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import {
@@ -18,7 +18,7 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 

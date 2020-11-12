@@ -1,14 +1,9 @@
 import { encode } from 'base-64';
 import { Platform } from 'react-native';
-<<<<<<< HEAD
 import { getParameters, setParameters, eraseCode } from '../configuration';
-=======
-import { fetch } from '../utils/helpers';
-import { getParameters, setParameters } from '../configuration';
->>>>>>> helpers file
 import { tokenEndpoint } from '../utils/endpoints';
 import { ERRORS, REQUEST_TYPES } from '../utils/constants';
-import { initializeErrors } from '../utils/helpers';
+import { initializeErrors, fetch } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
   const parameters = getParameters();
@@ -64,7 +59,7 @@ const getTokenOrRefresh = async type => {
     // Se arma la solicitud a enviar al tokenEndpoint, tomando
     // los datos de autenticación codificados
     const response = await fetch(
-      tokenEndpoint,
+      tokenEndpoint(),
       {
         method: 'POST',
         pkPinning: Platform.OS === 'ios',

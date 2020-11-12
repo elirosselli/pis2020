@@ -1,5 +1,5 @@
 import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
-import fetch from '../helpers';
+import { fetch } from '../helpers';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),

@@ -2,12 +2,13 @@ import { Platform } from 'react-native';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
 import { fetch } from '../utils/helpers';
+import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
   const { accessToken } = getParameters();
   try {
     const response = await fetch(
-      userInfoEndpoint,
+      userInfoEndpoint(),
       {
         method: 'GET',
         pkPinning: Platform.OS === 'ios',

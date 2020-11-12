@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
-import { Platform } from 'react-native';
-=======
 import { Platform } from 'react-native';
 import { fetch } from '../../utils/helpers';
-import { userInfoEndpoint } from '../../utils/endpoints';
->>>>>>> helpers file
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { ERRORS } from '../../utils/constants';

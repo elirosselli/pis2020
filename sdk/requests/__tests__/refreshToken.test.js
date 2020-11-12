@@ -1,6 +1,7 @@
+/* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
 import { fetch } from '../../utils/helpers';
-import REQUEST_TYPES from '../../utils/constants';
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
@@ -68,7 +69,7 @@ describe('refreshToken', () => {
         headers: {
           Authorization: `Basic ${encodedCredentials}`,
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          Accept: 'application/json',
+          Accept: contentType,
         },
         body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
       },
