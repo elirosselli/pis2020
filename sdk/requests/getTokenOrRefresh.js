@@ -34,8 +34,6 @@ const getTokenOrRefresh = async type => {
 
   // En el caso de refresh token, se chequea que el refresh token exista.
   if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken) {
-    // Se borra el parámetro code una vez ejecutado el getToken.
-    eraseCode();
     return Promise.reject(ERRORS.INVALID_GRANT);
   }
 
