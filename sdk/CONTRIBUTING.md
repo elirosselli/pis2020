@@ -49,6 +49,13 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 #### Código
 En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *postLogoutRedirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendría valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **getParameters**, y se retorna un objeto de indicando que no hay error, que incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que incluye el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se llama a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre. 
 
+#### Errores
+Los códigos de error devueltos en cada caso son:
+- En caso de éxito: "gubuy_no_error"
+- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
+- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
+- Cuando el parámetro *postLogoutRedirectUri* es vacío: "gubuy_invalid_post_logout_redirect_uri"
+
 ### Funcionalidad de *login*
 
 #### Generalidades
