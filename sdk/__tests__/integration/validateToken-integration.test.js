@@ -1,5 +1,5 @@
-import { fetch } from '../../utils/helpers';
 import { KJUR, KEYUTIL } from 'jsrsasign';
+import { fetch } from '../../utils/helpers';
 import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
 import makeRequest from '../../requests';
 
