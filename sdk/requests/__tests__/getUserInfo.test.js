@@ -1,7 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { userInfoEndpoint } from '../../utils/endpoints';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { ERRORS } from '../../utils/constants';
@@ -13,7 +12,9 @@ jest.mock('react-native-ssl-pinning', () => ({
 }));
 
 describe('getUserInfo', () => {
-  it('calls getUserInfo with correct accesToken', async () => {
+  it('calls getUserInfo with correct accessToken', async () => {
+    const userInfoEndpoint =
+      'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({

@@ -1,18 +1,30 @@
 import { getParameters } from '../configuration';
 
-const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
+const productionPrefix = 'https://auth.iduruguay.gub.uy/oidc/v1/';
+const developmentPrefix = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/';
 
-const loginEndpoint = () => {
-  const { redirectUri, clientId, scope } = getParameters();
-  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+const tokenEndpoint = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}token`;
 };
 
-const userInfoEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
+const loginEndpoint = () => {
+  const { production, redirectUri, clientId, scope } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+};
+
+const userInfoEndpoint = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}userinfo`;
+};
 
 const logoutEndpoint = () => {
-  const { idToken, postLogoutRedirectUri, state } = getParameters();
-  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+  const { production, idToken, postLogoutRedirectUri, state } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 };
 
 export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint };

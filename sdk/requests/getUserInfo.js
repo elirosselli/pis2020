@@ -10,7 +10,7 @@ const getUserInfo = async () => {
     return Promise.reject(ERRORS.INVALID_TOKEN);
   }
   try {
-    const response = await fetch(userInfoEndpoint, {
+    const response = await fetch(userInfoEndpoint(), {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
       sslPinning: {

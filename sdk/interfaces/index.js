@@ -13,6 +13,7 @@ const initialize = (
   clientId,
   clientSecret,
   postLogoutRedirectUri,
+  production,
   scope,
 ) => {
   let response;
@@ -24,6 +25,7 @@ const initialize = (
       clientId,
       clientSecret,
       postLogoutRedirectUri,
+      production,
       scope: scopeToSet, // Puede ser vacío.
     });
     // Mensaje y código de éxito.
