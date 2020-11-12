@@ -21,7 +21,8 @@ const errorCodes = {
   invalidClient: 'invalid_client',
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
-  invalidSub: 'invalid_sub',
+  invalidSub: 'gubuy_invalid_sub',
+  invalidIdToken: 'gubuy_invalid_id_token',
 };
 
 const errorDescriptions = {
@@ -43,6 +44,7 @@ const errorDescriptions = {
   invalidUrlLogout: 'Invalid returned url for logout',
   invalidSub:
     'El sub devuelto por la API no coincide con el sub contenido en la token',
+  invalidIdToken: 'Stored Id Token is empty or invalid',
 };
 
 class ErrorNoError extends Error {
@@ -229,6 +231,19 @@ class ErrorInvalidSub extends Error {
   }
 }
 
+class ErrorInvalidIdToken extends Error {
+  constructor(
+    errorCode = errorCodes.invalidIdToken,
+    errorDescription = errorDescriptions.invalidIdToken,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidIdToken';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -244,6 +259,7 @@ const ERRORS = {
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
   INVALID_SUB: new ErrorInvalidSub(),
+  INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
 };
 
 export { REQUEST_TYPES, ERRORS };

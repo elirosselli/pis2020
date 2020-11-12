@@ -6,9 +6,12 @@ import { userInfoEndpoint } from '../utils/endpoints';
 import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
-  const { accessToken } = getParameters();
+  const { accessToken, idToken } = getParameters();
   if (!accessToken) {
     return Promise.reject(ERRORS.INVALID_TOKEN);
+  }
+  if (!idToken) {
+    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
   }
   try {
     const response = await fetch(userInfoEndpoint, {
@@ -31,7 +34,7 @@ const getUserInfo = async () => {
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
-    // Resuelvo promesa con la información del usuario si el sub correspondiente 
+    // Resuelvo promesa con la información del usuario si el sub correspondiente
     // al token utilizado coincide con el sub de la respuesta.
     if (validateSub(responseJson.sub)) {
       responseJson.message = ERRORS.NO_ERROR;
