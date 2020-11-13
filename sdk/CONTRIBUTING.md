@@ -1,4 +1,4 @@
-# Documentación técnica y otra información relevante
+# Documentación técnica
 
 ## Índice
 
