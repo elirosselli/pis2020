@@ -63,9 +63,6 @@ const App = () => {
   const sdkRedirectUri = sdkProduction
     ? 'sdkIdUy%3A%2F%2Fauth'
     : 'sdkIdU.testing%3A%2F%2Fauth';
-  const sdkPostLogoutRedirectUri = sdkProduction
-    ? 'sdkIdUy://logout'
-    : 'sdkIdU.testing://redirect';
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
@@ -149,7 +146,6 @@ const App = () => {
                       sdkRedirectUri,
                       sdkIdUClientId,
                       sdkIdUClientSecret,
-                      sdkPostLogoutRedirectUri,
                       sdkProduction,
                     );
                     setParameters({ state: '9JoSGrmWYy' });
