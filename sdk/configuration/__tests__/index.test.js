@@ -242,7 +242,7 @@ describe('configuration module', () => {
     };
     const parameters3 = {
       clientSecret: 'client_secret',
-      code: 'code',
+      code: 'correctCode',
     };
     const parameters4 = {
       clientId: '',

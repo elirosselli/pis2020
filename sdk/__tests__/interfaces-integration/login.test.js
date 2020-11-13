@@ -100,7 +100,7 @@ describe('configuration module and login integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    const state = 'state';
+    const state = 'correctState';
     initialize(
       redirectUri,
       clientId,

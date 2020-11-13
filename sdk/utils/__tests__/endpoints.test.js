@@ -17,7 +17,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('endpoints', () => {
   it('calls login in production', () => {
-    const scope = 'scope';
+    const scope = 'correctScope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = true;
@@ -35,7 +35,7 @@ describe('endpoints', () => {
   });
 
   it('calls login in development', () => {
-    const scope = 'scope';
+    const scope = 'correctScope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = false;
@@ -103,7 +103,7 @@ describe('endpoints', () => {
   it('calls logoutEndpoint in production', () => {
     const idToken = 'idToken';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    const state = 'state';
+    const state = 'correctState';
     const production = true;
     const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 
@@ -121,7 +121,7 @@ describe('endpoints', () => {
   it('calls logoutEndpoint in development', () => {
     const idToken = 'idToken';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    const state = 'state';
+    const state = 'correctState';
     const production = false;
     const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
 

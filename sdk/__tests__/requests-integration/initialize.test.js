@@ -51,7 +51,7 @@ describe('configuration module and initialize integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    const scope = 'scope';
+    const scope = 'correctScope';
 
     const response = initialize(
       redirectUri,

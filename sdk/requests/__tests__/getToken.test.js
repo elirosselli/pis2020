@@ -177,7 +177,7 @@ describe('getToken', () => {
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -195,7 +195,7 @@ describe('getToken', () => {
       clientSecret: '',
       redirectUri: 'redirectUri',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -213,7 +213,7 @@ describe('getToken', () => {
       clientSecret: 'clientSecret',
       redirectUri: '',
       postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 

@@ -631,7 +631,7 @@ describe('configuration module and get token integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const postLogoutRedirectUri = '';
 
     setParameters({
