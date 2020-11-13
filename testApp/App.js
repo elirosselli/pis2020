@@ -38,11 +38,12 @@ const App: () => React$Node = () => {
     var now = require("performance-now")
     var start = now();
     const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
-    Object.keys(init).forEach(key => {
-      console.log(`${key}: ${init[key]}`);
-    });
+    console.log(`ErrorName: ${init.name}`)
+    console.log(`ErrorCode: ${init.errorCode}`)
+    console.log(`ErrorDescription: ${init.errorDescription}`)
+    console.log(`ErrorMessage: ${init.message}`)
+    
     setParameters({scope: "personal_info"});
-    console.log("Inicializado");
     var end = now();
     console.log(`Tiempo de ejec: ${end-start} ms`);
   }
@@ -58,8 +59,10 @@ const App: () => React$Node = () => {
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
-      console.log(error);
-      console.log("Error");
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
     }
   }
 
@@ -74,8 +77,11 @@ const App: () => React$Node = () => {
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
-      console.log(error);
-      console.log("Error");
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
+      
     }
   }
 
@@ -91,8 +97,10 @@ const App: () => React$Node = () => {
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
-      console.log(error);
-      console.log("Error");
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
     }
   }
 
@@ -108,8 +116,10 @@ const App: () => React$Node = () => {
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error) {
-      console.log(error);
-      console.log("Error");
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
     }
   }
 
@@ -128,7 +138,10 @@ const App: () => React$Node = () => {
       console.log(`Sesión cerrada.`)
       console.log(`Tiempo de ejec: ${end-start} ms`);
     } catch (error){
-      console.log(`Error: ${error}`)
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
     }
   }
 
