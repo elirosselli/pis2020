@@ -13,16 +13,14 @@ jest.mock('../../utils/helpers', () => ({
 
 const idToken = 'idToken';
 const state = '2KVAEzPpazbGFD5';
-const postLogoutRedirectUri = 'app.testing://postLogout';
-const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
-const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=`;
+const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
+const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=`;
 afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
-  it('calls logout with idTokenHint, postLogoutRedirectUri and state', async () => {
+  it('calls logout with idTokenHint and state', async () => {
     getParameters.mockReturnValue({
       idToken,
-      postLogoutRedirectUri,
       state,
     });
     fetch.mockImplementation(() =>
@@ -48,10 +46,9 @@ describe('logout', () => {
     });
   });
 
-  it('calls logout with idTokenHint and postLogoutRedirectUri but without state', async () => {
+  it('calls logout with idTokenHint but without state', async () => {
     getParameters.mockReturnValue({
       idToken,
-      postLogoutRedirectUri,
       state: '',
     });
     fetch.mockImplementation(() =>
@@ -76,23 +73,9 @@ describe('logout', () => {
     });
   });
 
-  it('calls logout with idTokenHint and state but without postLogoutRedirectUri', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      postLogoutRedirectUri: '',
-      state,
-    });
-    try {
-      await logout();
-    } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    }
-  });
-
-  it('calls logout with postLogoutRedirectUri and state but without idTokenHint', async () => {
+  it('calls logout without idTokenHint', async () => {
     getParameters.mockReturnValue({
       idToken: '',
-      postLogoutRedirectUri,
       state,
     });
     try {
@@ -105,7 +88,6 @@ describe('logout', () => {
   it('calls logout with required parameters and response not OK', async () => {
     getParameters.mockReturnValue({
       idToken,
-      postLogoutRedirectUri,
       state,
     });
     fetch.mockImplementation(() =>
@@ -124,7 +106,6 @@ describe('logout', () => {
   it('calls logout with required parameters and returns invalid url', async () => {
     getParameters.mockReturnValue({
       idToken,
-      postLogoutRedirectUri,
       state,
     });
     fetch.mockImplementation(() =>
@@ -149,7 +130,6 @@ describe('logout', () => {
   it('calls logout with required parameters and fails', async () => {
     getParameters.mockReturnValue({
       idToken,
-      postLogoutRedirectUri,
       state,
     });
     fetch.mockImplementation(() => Promise.reject());

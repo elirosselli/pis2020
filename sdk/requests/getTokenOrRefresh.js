@@ -11,13 +11,11 @@ const getTokenOrRefresh = async type => {
   if (
     !parameters.clientId ||
     !parameters.redirectUri ||
-    !parameters.postLogoutRedirectUri ||
     !parameters.clientSecret
   ) {
     const errorResponse = initializeErrors(
       parameters.clientId,
       parameters.redirectUri,
-      parameters.postLogoutRedirectUri,
       parameters.clientSecret,
     );
     // Se borra el parámetro code una vez ejecutado el getToken.

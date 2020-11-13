@@ -13,8 +13,6 @@ const logout = async () => {
     // faltó.
     if (!parameters.idToken)
       return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);
-    if (!parameters.postLogoutRedirectUri)
-      return Promise.reject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
 
     // Se arma la solicitud a enviar al logoutEndpoint.
     const response = await fetch(logoutEndpoint(), {

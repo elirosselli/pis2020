@@ -23,7 +23,6 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
       scope: 'scope',
     });
@@ -49,7 +48,6 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
       scope: 'scope',
     });
@@ -73,7 +71,6 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
       scope: 'scope',
     });
@@ -118,27 +115,10 @@ describe('login', () => {
     expect.assertions(2);
   });
 
-  it('calls login with empty postLogoutRedirectUri', async () => {
-    getParameters.mockReturnValue({
-      clientId: 'clientId',
-      redirectUri: 'redirectUri',
-      postLogoutRedirectUri: '',
-    });
-    mockAddEventListener.mockImplementation();
-    try {
-      await login();
-    } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    }
-    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(2);
-  });
-
   it('calls login with empty clientSecret', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: '',
     });
     mockAddEventListener.mockImplementation();
@@ -155,7 +135,6 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
       scope: 'scope',
     });

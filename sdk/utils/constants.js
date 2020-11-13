@@ -13,7 +13,6 @@ const errorCodes = {
   invalidClientId: 'gubuy_invalid_client_id',
   invalidRedirectUri: 'gubuy_invalid_redirect_uri',
   invalidClientSecret: 'gubuy_invalid_client_secret',
-  invalidPostLogoutRedirecrtUri: 'gubuy_invalid_post_logout_redirect_uri',
   accessDenied: 'access_denied',
   invalidAuthorizationCode: 'gubuy_invalid_auhtorization_code',
   failedRequest: 'failed_request',
@@ -32,7 +31,6 @@ const errorDescriptions = {
   invalidClientId: 'Invalid client_id parameter',
   invalidRedirectUri: 'Invalid redirect_uri parameter',
   invalidClientSecret: 'Invalid client_secret parameter',
-  invalidPostLogoutRedirecrtUri: 'Invalid post_logout_redirect_uri parameter',
   accessDenied: 'The resource owner or authorization server denied the request',
   invalidAuthorizationCode: 'Invalid authorization code',
   failedRequest: "Couldn't make request",
@@ -99,19 +97,6 @@ class ErrorInvalidClientSecret extends Error {
   ) {
     super(...params);
     this.name = 'invalidClientSecret';
-    this.errorCode = errorCode;
-    this.errorDescription = errorDescription;
-  }
-}
-
-class ErrorInvalidPostLogoutRedirecrtUri extends Error {
-  constructor(
-    errorCode = errorCodes.invalidPostLogoutRedirecrtUri,
-    errorDescription = errorDescriptions.invalidPostLogoutRedirecrtUri,
-    ...params
-  ) {
-    super(...params);
-    this.name = 'invalidPostLogoutRedirecrtUri';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
@@ -265,7 +250,6 @@ const ERRORS = {
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
   INVALID_REDIRECT_URI: new ErrorInvalidRedirectUri(),
   INVALID_CLIENT_SECRET: new ErrorInvalidClientSecret(),
-  INVALID_POST_LOGOUT_REDIRECT_URI: new ErrorInvalidPostLogoutRedirecrtUri(),
   ACCESS_DENIED: new ErrorAccessDenied(),
   INVALID_AUTHORIZATION_CODE: new ErrorInvalidAuthorizationCode(),
   FAILED_REQUEST: new ErrorFailedRequest(),

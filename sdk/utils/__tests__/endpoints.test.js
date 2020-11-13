@@ -102,15 +102,13 @@ describe('endpoints', () => {
 
   it('calls logoutEndpoint in production', () => {
     const idToken = 'idToken';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const state = 'state';
     const production = true;
-    const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+    const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 
     getParameters.mockReturnValue({
       production,
       idToken,
-      postLogoutRedirectUri,
       state,
     });
 
@@ -120,15 +118,13 @@ describe('endpoints', () => {
 
   it('calls logoutEndpoint in development', () => {
     const idToken = 'idToken';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const state = 'state';
     const production = false;
-    const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+    const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 
     getParameters.mockReturnValue({
       production,
       idToken,
-      postLogoutRedirectUri,
       state,
     });
 

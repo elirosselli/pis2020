@@ -30,7 +30,6 @@ describe('getToken', () => {
       clientId: '898562',
       clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
       redirectUri,
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code,
     });
 
@@ -88,7 +87,6 @@ describe('getToken', () => {
       clientId: 'invalidClientId',
       clientSecret: 'invalidClientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'corrrectCode',
     });
 
@@ -123,7 +121,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'correctCode',
       accessToken: 'incorrectAccessToken',
     });
@@ -176,7 +173,6 @@ describe('getToken', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
       accessToken: 'accessToken',
     });
@@ -194,7 +190,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: '',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
       accessToken: 'accessToken',
     });
@@ -212,7 +207,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'code',
       accessToken: 'accessToken',
     });
@@ -230,7 +224,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: '',
       accessToken: 'accessToken',
     });
@@ -248,7 +241,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'correctCode',
       accessToken: 'accessToken',
     });
