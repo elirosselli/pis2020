@@ -20,7 +20,6 @@ const validateParameters = (type, value) => {
 
     // Validar parámetros de tipo URI-reference.
     case PARAMETERS.redirectUri:
-    case PARAMETERS.postLogoutRedirectUri:
     case PARAMETERS.tokenType: {
       return validateURIReference(type, value);
     }

@@ -11,7 +11,6 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
-  postLogoutRedirectUri: '',
   state: '',
   scope: '',
   production: false,
@@ -56,7 +55,6 @@ const clearParameters = () => {
       key !== 'redirectUri' &&
       key !== 'clientId' &&
       key !== 'clientSecret' &&
-      key !== 'postLogoutRedirectUri' &&
       key !== 'production'
     )
       parameters[key] = '';

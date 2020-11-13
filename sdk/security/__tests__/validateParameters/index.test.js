@@ -123,29 +123,6 @@ describe('security module', () => {
     }
   });
 
-  it('postLogoutRedirectUri: valid', () => {
-    const postLogoutRedirectUri = 'sdkIdU.testing://logout';
-    const sanitaizedPostLogoutRedirectUri = validateParameters(
-      PARAMETERS.postLogoutRedirectUri,
-      postLogoutRedirectUri,
-    );
-    expect(sanitaizedPostLogoutRedirectUri).toBe(postLogoutRedirectUri);
-  });
-
-  it('postLogoutRedirectUri: invalid', () => {
-    const postLogoutRedirectUri = '';
-    try {
-      validateParameters(
-        PARAMETERS.postLogoutRedirectUri,
-        postLogoutRedirectUri,
-      );
-    } catch (ErrorPostLogoutRedirectUri) {
-      expect(ErrorPostLogoutRedirectUri).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-  });
-
   it('tokenType: valid', () => {
     const tokenType = 'bearer';
     const sanitaizedTokenType = validateParameters(

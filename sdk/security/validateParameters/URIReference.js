@@ -24,9 +24,6 @@ const validateURIReference = (type, value) => {
       case PARAMETERS.redirectUri: {
         throw ERRORS.INVALID_REDIRECT_URI;
       }
-      case PARAMETERS.postLogoutRedirectUri: {
-        throw ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI;
-      }
       case PARAMETERS.tokenType: {
         throw ERRORS.INVALID_TOKEN_TYPE;
       }

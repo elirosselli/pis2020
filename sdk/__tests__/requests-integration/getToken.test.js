@@ -48,13 +48,11 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
-      postLogoutRedirectUri,
       code,
     });
     let parameters = getParameters();
@@ -62,7 +60,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -107,7 +104,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken,
@@ -126,21 +122,18 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'invalidCode';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -183,7 +176,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -204,21 +196,18 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -258,7 +247,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -279,21 +267,18 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -321,7 +306,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -341,21 +325,18 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -385,7 +366,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -405,21 +385,18 @@ describe('configuration module and make request type get token integration', () 
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -442,7 +419,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -462,21 +438,18 @@ describe('configuration module and make request type get token integration', () 
     const clientId = 'clientId';
     const clientSecret = '';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -499,7 +472,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -518,20 +490,17 @@ describe('configuration module and make request type get token integration', () 
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'f24df0c4fcb142328b843d49753946af';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -554,7 +523,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri: '',
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -574,21 +542,18 @@ describe('configuration module and make request type get token integration', () 
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = '';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
     setParameters({
       clientId,
       clientSecret,
       redirectUri,
       code,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code,
       accessToken: '',
@@ -611,64 +576,6 @@ describe('configuration module and make request type get token integration', () 
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a get token request with empty postLogoutRedirectUri ', async () => {
-    const redirectUri = 'redirectUri';
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const code = 'correctCode';
-    const postLogoutRedirectUri = '';
-
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-      postLogoutRedirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      production: false,
-      code,
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    }
-
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',

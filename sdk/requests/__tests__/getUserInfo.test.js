@@ -78,7 +78,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'incorrectAccessToken',
     });
 
@@ -104,7 +103,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'correctAccessToken',
     });
 
@@ -130,7 +128,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'correctAccessToken',
     });
 
@@ -176,7 +173,6 @@ it('calls getUserInfo and fetch fails', async () => {
     clientId: 'clientId',
     clientSecret: 'clientSecret',
     redirectUri: 'redirectUri',
-    postLogoutRedirectUri: 'postLogoutRedirectUri',
     accessToken: 'accessToken',
   });
 

@@ -19,14 +19,12 @@ describe('initialize', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
       clientSecret: 'clientSecret',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: false,
     };
     const errorResponse = initialize(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toStrictEqual({
@@ -34,18 +32,10 @@ describe('initialize', () => {
       errorDescription: ERRORS.NO_ERROR.errorDescription,
       message: ERRORS.NO_ERROR,
     });
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
+    const { redirectUri, clientId, clientSecret } = getParameters();
     expect(redirectUri).toStrictEqual(parameters.redirectUri);
     expect(clientId).toStrictEqual(parameters.clientId);
     expect(clientSecret).toStrictEqual(clientSecret);
-    expect(postLogoutRedirectUri).toStrictEqual(
-      parameters.postLogoutRedirectUri,
-    );
   });
 
   it('returns error when clientId is empty', () => {
@@ -53,28 +43,20 @@ describe('initialize', () => {
       redirectUri: 'redirectUri',
       clientId: '',
       clientSecret: 'clientSecret',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: false,
     };
     const errorResponse = initialize(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_ID);
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
+    const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
-    expect(postLogoutRedirectUri).toStrictEqual('');
   });
 
   it('returns error when redirectUri is empty', () => {
@@ -82,57 +64,20 @@ describe('initialize', () => {
       redirectUri: '',
       clientId: 'clientId',
       clientSecret: 'clientSecret',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: false,
     };
     const errorResponse = initialize(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toBe(ERRORS.INVALID_REDIRECT_URI);
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
+    const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
-    expect(postLogoutRedirectUri).toStrictEqual('');
-  });
-
-  it('returns error when postLogoutRedirectUri is empty', () => {
-    const parameters = {
-      redirectUri: 'redirectUri',
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      postLogoutRedirectUri: '',
-      production: false,
-    };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
-    // Serán vacíos ya que no se setean
-    expect(redirectUri).toStrictEqual('');
-    expect(clientId).toStrictEqual('');
-    expect(clientSecret).toStrictEqual('');
-    expect(postLogoutRedirectUri).toStrictEqual('');
   });
 
   it('returns error when clientSecret is empty', () => {
@@ -140,28 +85,20 @@ describe('initialize', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
       clientSecret: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: false,
     };
     const errorResponse = initialize(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_SECRET);
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
+    const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
-    expect(postLogoutRedirectUri).toStrictEqual('');
   });
 
   it('returns error when production is empty', () => {
@@ -169,28 +106,20 @@ describe('initialize', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
       clientSecret: 'clientSecret',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: '',
     };
     const errorResponse = initialize(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toBe(ERRORS.INVALID_PRODUCTION);
-    const {
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-    } = getParameters();
+    const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
-    expect(postLogoutRedirectUri).toStrictEqual('');
   });
 
   it('does not return error when all parameters are setted', () => {
@@ -198,14 +127,12 @@ describe('initialize', () => {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
       clientSecret: 'clientSecret',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       production: false,
     };
     const errorResponse = initializeErrors(
       parameters.redirectUri,
       parameters.clientId,
       parameters.clientSecret,
-      parameters.postLogoutRedirectUri,
       parameters.production,
     );
     expect(errorResponse).toBe(undefined);

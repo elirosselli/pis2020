@@ -17,21 +17,6 @@ describe('security module validate URIReference parameters', () => {
     expect(sanitaizedRedirectUri).toBe(redirectUri);
   });
 
-  it('postLogoutRedirectUri: valid', () => {
-    let postLogoutRedirectUri = 'sdkIdU.testing://logout';
-    let sanitaizedPostLogoutRedirectUri = validateURIReference(
-      PARAMETERS.postLogoutRedirectUri,
-      postLogoutRedirectUri,
-    );
-    expect(sanitaizedPostLogoutRedirectUri).toBe(postLogoutRedirectUri);
-    postLogoutRedirectUri = 'sdkIdU.testing%3A%2F%2Flogout';
-    sanitaizedPostLogoutRedirectUri = validateURIReference(
-      PARAMETERS.postLogoutRedirectUri,
-      postLogoutRedirectUri,
-    );
-    expect(sanitaizedPostLogoutRedirectUri).toBe(postLogoutRedirectUri);
-  });
-
   it('tokenType: valid', () => {
     let tokenType = 'bearer';
     let sanitaizedTokenType = validateURIReference(
@@ -64,18 +49,11 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
     }
-    expect.assertions(3);
+    expect.assertions(2);
   });
 
   it('URIReference: null', () => {
@@ -86,18 +64,11 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
     }
-    expect.assertions(3);
+    expect.assertions(2);
   });
 
   it('URIReference: undefined', () => {
@@ -108,18 +79,11 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
     }
-    expect.assertions(3);
+    expect.assertions(2);
   });
 
   it('URIReference: not a string', () => {
@@ -128,13 +92,6 @@ describe('security module validate URIReference parameters', () => {
       validateURIReference(PARAMETERS.redirectUri, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
-    }
-    try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
     }
     try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
@@ -148,13 +105,6 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
@@ -166,18 +116,11 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
     }
-    expect.assertions(9);
+    expect.assertions(6);
   });
 
   it('URIReference: query parameters', () => {
@@ -189,15 +132,6 @@ describe('security module validate URIReference parameters', () => {
     );
     expect(sanitaizedURIReference).toBe(
       'sdkIdU.testing://auth?=1&=2&=3&=4&=5&=6&=7&=8&=9&=10&=11&=12&=13&=14&=15&=16&=17&=18',
-    );
-    URIReference =
-      'sdkIdU.testing://logout?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.postLogoutRedirectUri,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(
-      'sdkIdU.testing://logout?=1&=2&=3&=4&=5&=6&=7&=8&=9&=10&=11&=12&=13&=14&=15&=16&=17&=18',
     );
     URIReference =
       'bearer?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
@@ -218,13 +152,6 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
@@ -234,13 +161,6 @@ describe('security module validate URIReference parameters', () => {
       validateURIReference(PARAMETERS.redirectUri, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
-    }
-    try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
     }
     try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
@@ -254,13 +174,6 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
@@ -270,13 +183,6 @@ describe('security module validate URIReference parameters', () => {
       validateURIReference(PARAMETERS.redirectUri, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
-    }
-    try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
     }
     try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
@@ -290,29 +196,17 @@ describe('security module validate URIReference parameters', () => {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
     try {
-      validateURIReference(PARAMETERS.postLogoutRedirectUri, URIReference);
-    } catch (ErrorURIReference) {
-      expect(ErrorURIReference).toStrictEqual(
-        ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI,
-      );
-    }
-    try {
       validateURIReference(PARAMETERS.tokenType, URIReference);
     } catch (ErrorURIReference) {
       expect(ErrorURIReference).toStrictEqual(ERRORS.INVALID_TOKEN_TYPE);
     }
-    expect.assertions(15);
+    expect.assertions(10);
   });
 
   it('URIReference: with special caracters (valids)', () => {
     let URIReference = '12 34';
     let sanitaizedURIReference = validateURIReference(
       PARAMETERS.redirectUri,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe('1234');
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.postLogoutRedirectUri,
       URIReference,
     );
     expect(sanitaizedURIReference).toBe('1234');
@@ -324,11 +218,6 @@ describe('security module validate URIReference parameters', () => {
     URIReference = '.';
     sanitaizedURIReference = validateURIReference(
       PARAMETERS.redirectUri,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(URIReference);
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.postLogoutRedirectUri,
       URIReference,
     );
     expect(sanitaizedURIReference).toBe(URIReference);

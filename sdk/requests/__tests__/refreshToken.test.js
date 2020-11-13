@@ -40,7 +40,6 @@ describe('refreshToken', () => {
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
     const refreshToken = '541a156232ac43c6b719c57b7217c9ea';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const redirectUri = 'redirectUri';
 
     // Mockear getParameters
@@ -48,7 +47,6 @@ describe('refreshToken', () => {
       clientId,
       clientSecret,
       refreshToken,
-      postLogoutRedirectUri,
       redirectUri,
       code: 'correctCode',
     });
@@ -95,7 +93,6 @@ describe('refreshToken', () => {
       clientId: 'incorrectClientId',
       clientSecret: 'incorrectClientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
 
@@ -130,7 +127,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'incorrectRefreshToken',
     });
 
@@ -167,7 +163,6 @@ describe('refreshToken', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -183,7 +178,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: '',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -199,7 +193,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -215,7 +208,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: '',
     });
 
@@ -232,7 +224,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
     fetch.mockImplementation(() =>
@@ -254,7 +245,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
 

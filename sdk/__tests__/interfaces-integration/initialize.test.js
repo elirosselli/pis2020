@@ -13,15 +13,8 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    const response = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      false,
-    );
+    const response = initialize(redirectUri, clientId, clientSecret, false);
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
@@ -33,7 +26,6 @@ describe('configuration module and initialize integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -50,14 +42,12 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const scope = 'correctScope';
 
     const response = initialize(
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       false,
       scope,
     );
@@ -72,7 +62,6 @@ describe('configuration module and initialize integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production: false,
       code: '',
       accessToken: '',
@@ -89,15 +78,8 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = '';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    const response = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      false,
-    );
+    const response = initialize(redirectUri, clientId, clientSecret, false);
 
     expect(response).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
 
@@ -106,7 +88,6 @@ describe('configuration module and initialize integration', () => {
       redirectUri: '',
       clientId: '',
       clientSecret: '',
-      postLogoutRedirectUri: '',
       production: false,
       code: '',
       accessToken: '',
@@ -123,15 +104,8 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = '';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    const response = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      false,
-    );
+    const response = initialize(redirectUri, clientId, clientSecret, false);
 
     expect(response).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
 
@@ -140,7 +114,6 @@ describe('configuration module and initialize integration', () => {
       redirectUri: '',
       clientId: '',
       clientSecret: '',
-      postLogoutRedirectUri: '',
       production: false,
       code: '',
       accessToken: '',
@@ -157,15 +130,8 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = '';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
 
-    const response = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      false,
-    );
+    const response = initialize(redirectUri, clientId, clientSecret, false);
 
     expect(response).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
 
@@ -174,41 +140,6 @@ describe('configuration module and initialize integration', () => {
       redirectUri: '',
       clientId: '',
       clientSecret: '',
-      postLogoutRedirectUri: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-  });
-
-  it('calls initialize with empty postLogoutRedirectUri', async () => {
-    const redirectUri = 'redirectUri';
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = '';
-
-    const response = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      false,
-    );
-
-    expect(response).toStrictEqual(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-
-    // Los parámetros no se deberían setear.
-    expect(getParameters()).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
-      postLogoutRedirectUri: '',
       production: false,
       code: '',
       accessToken: '',
