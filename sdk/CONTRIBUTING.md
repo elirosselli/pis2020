@@ -34,7 +34,7 @@ En particular, los parámetros mencionados son:
 - *postLogoutRedirectUri*
 - *scope* (es el único parámetro de *initialize* que puede ser vacío)
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por el *scope*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacío entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por el *scope*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
 
 #### Archivos y parámetros
 
@@ -75,7 +75,7 @@ En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final
 
 La implementación de la funcionalidad de *login* involucra los siguientes archivos:
 
-- **sdk/requests/logout.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
+- **sdk/requests/login.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **login**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
 - **sdk/configuration/index.js**: Módulo de configuración de dónde se obtienen los parámetros necesarios.
@@ -98,7 +98,7 @@ El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaSc
 Linking.addEventListener('url', handleOpenUrl);
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intentaabrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
 
 ```javascript
 Linking.openURL(loginEndpoint())
@@ -112,7 +112,7 @@ https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_ty
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
-Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
+Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
 Adicionalmente, se intenta obtener el *code* a través de una expresión regular. En caso de encontrarse, se resuelve la promesa retornando dicho parámetro. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
 
@@ -180,7 +180,7 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 
 La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
-A continuación se presentará una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
+A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
 
 Scope: openId:
 
