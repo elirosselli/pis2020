@@ -141,7 +141,7 @@ describe('configuration module and make request type login integration', () => {
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -218,7 +218,7 @@ describe('configuration module and make request type login integration', () => {
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -294,7 +294,7 @@ describe('configuration module and make request type login integration', () => {
     expect(result).toBe(ERRORS.INVALID_REDIRECT_URI);
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -371,7 +371,7 @@ describe('configuration module and make request type login integration', () => {
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',

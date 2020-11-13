@@ -4,7 +4,7 @@ import { ERRORS } from '../../utils/constants';
 
 jest.mock('../../configuration');
 
-const mockState = '123456random-state';
+const mockState = '3035783770';
 
 jest.mock('../../security', () => ({
   generateRandomState: jest.fn(() => mockState),
@@ -63,7 +63,7 @@ describe('login', () => {
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'redirectUri?code=&state=123456random-state',
+          url: 'redirectUri?code=&state=3035783770',
         });
     });
     try {

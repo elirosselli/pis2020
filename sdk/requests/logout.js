@@ -6,13 +6,15 @@ import { ERRORS } from '../utils/constants';
 import { getParameters, clearParameters, eraseState } from '../configuration';
 
 const logout = async () => {
-  generateRandomState(); // Se genera random state para la request
+  // Se genera un random state para el pedido al endpoint de logout,
+  // que además se settea en los parámetros mediante una llamada a setParameters.
+  generateRandomState();
   const parameters = getParameters();
   try {
     // Si alguno de los parámetros obligatorios para la request
-    // no se encuentra inicializado, se rechaza la promesa y se
-    // retorna un error que especifica cuál parámetro
-    // faltó.
+    // no se encuentra inicializado, se borra el state,
+    // se rechaza la promesa y se retorna un error que especifica
+    // cuál parámetro faltó.
     if (!parameters.idToken) {
       eraseState();
       return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);

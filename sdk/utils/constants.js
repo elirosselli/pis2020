@@ -46,7 +46,7 @@ const errorDescriptions = {
   invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
   invalidSub: 'Sub returned by API does not match given sub',  
-  invalidIdToken: 'Id token is missing or invalid',
+  invalidIdToken: 'Invalid id_token parameter',
   invalidLengthError:
     'Input base64url string is the wrong length to determine padding',
   invalidBase64ToHexConversion: 'Error while decoding base64 to hex',

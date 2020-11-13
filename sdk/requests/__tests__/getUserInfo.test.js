@@ -210,7 +210,9 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect.assertions(1);
+
+    expect(validateSub).not.toHaveBeenCalled();
+    expect.assertions(2);
   });
 
   it('calls getUserInfo with empty access Token', async () => {
@@ -229,7 +231,9 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
-    expect.assertions(1);
+
+    expect(validateSub).not.toHaveBeenCalled();
+    expect.assertions(2);
   });
 });
 
@@ -250,7 +254,9 @@ it('calls getUserInfo with empty Id Token', async () => {
   } catch (err) {
     expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
   }
-  expect.assertions(1);
+
+  expect(validateSub).not.toHaveBeenCalled();
+  expect.assertions(2);
 });
 
 it('calls getUserInfo and fetch fails', async () => {
@@ -275,5 +281,6 @@ it('calls getUserInfo and fetch fails', async () => {
   } catch (err) {
     expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
   }
-  expect.assertions(1);
+  expect(validateSub).not.toHaveBeenCalled();
+  expect.assertions(2);
 });

@@ -18,7 +18,7 @@ jest.mock('../../security', () => ({
 }));
 
 const idToken = 'idToken';
-const mockState = '123456random-state';
+const mockState = '3035783770';
 const postLogoutRedirectUri = 'app.testing://postLogout';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${mockState}`;
 const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=`;
