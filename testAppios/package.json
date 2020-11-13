@@ -1,5 +1,5 @@
 {
-  "name": "testApp",
+  "name": "testAppios",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,12 +10,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "perf_hooks": "0.0.1",
     "react": "16.13.1",
     "react-native": "0.63.3",
     "react-native-ssl-pinning": "^1.5.2",
-    "rn-ssl-pinning": "^1.2.1",
-    "sdk-gubuy-test": "file://../sdk/sdk-gubuy-test-1.0.9.tgz"
+    "sdk-gubuy-test": "^1.0.10"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -25,7 +23,6 @@
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
-    "react-devtools": "^4.9.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
