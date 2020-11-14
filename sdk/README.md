@@ -242,7 +242,7 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros _redirect_uri_, _client_id_, _client_secret_, _production_ y _scope_, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
+| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
@@ -252,7 +252,7 @@ const LoginButton = () => {
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: _redirect_uri_, _client_id_, _client_secret_, _production_ y _scope_. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en _true_ en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en _false_, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro _scope_ que requiere la _Authentication Request_
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*.
 
 ```javascript
 initialize(
