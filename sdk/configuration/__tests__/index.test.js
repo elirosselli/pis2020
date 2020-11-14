@@ -232,6 +232,10 @@ describe('configuration module', () => {
       code: 'correctCode',
     };
     const parameters4 = {
+      clientId: 'client_code',
+      clientSecret: 'client_secret',
+    };
+    const parameters5 = {
       clientId: '',
       clientSecret: 'clientSecret',
     };
@@ -246,6 +250,9 @@ describe('configuration module', () => {
     expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
     expect(getParameters()).toStrictEqual(emptyParameters);
     error = setParameters(parameters4);
+    expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    expect(getParameters()).toStrictEqual(emptyParameters);
+    error = setParameters(parameters5);
     expect(error).toBe(ERRORS.NO_ERROR);
     expect(getParameters()).toStrictEqual({
       redirectUri: '',

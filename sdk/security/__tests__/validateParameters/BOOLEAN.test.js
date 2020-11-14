@@ -4,14 +4,11 @@ import { PARAMETERS, ERRORS } from '../../../utils/constants';
 describe('security module validate BOOLEAN parameters', () => {
   it('production: valid', () => {
     let production = true;
-    let sanitaizedProduction = validateBOOLEAN(
-      PARAMETERS.production,
-      production,
-    );
-    expect(sanitaizedProduction).toBe(production);
+    let validProduction = validateBOOLEAN(PARAMETERS.production, production);
+    expect(validProduction).toBe(production);
     production = false;
-    sanitaizedProduction = validateBOOLEAN(PARAMETERS.production, production);
-    expect(sanitaizedProduction).toBe(production);
+    validProduction = validateBOOLEAN(PARAMETERS.production, production);
+    expect(validProduction).toBe(production);
   });
 
   it('BOOLEAN: empty', () => {

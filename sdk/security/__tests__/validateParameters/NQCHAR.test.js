@@ -4,26 +4,26 @@ import { PARAMETERS, ERRORS } from '../../../utils/constants';
 describe('security module validate NQCHAR parameters', () => {
   it('scope: valid', () => {
     let scope = 'personal_info';
-    let sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    let validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
     scope = 'profile';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
     scope = 'document';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
     scope = 'email';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
     scope = 'auth_info';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
     scope = 'profile document email';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe('profile%20document%20email');
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe('profile%20document%20email');
     scope = 'profile%20document%20email';
-    sanitaizedScope = validateNQCHAR(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    validScope = validateNQCHAR(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
   });
 
   it('NQCHAR: empty', () => {
@@ -81,10 +81,12 @@ describe('security module validate NQCHAR parameters', () => {
   it('NQCHAR: query parameters', () => {
     const NQCHAR =
       'personal_info?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
-    const sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    expect(sanitaizedNQCHAR).toBe(
-      'personal_info?=1&=2&=3&=4&=5&=6&=7&=8&=9&=10&=11&=12&=13&=14&=15&=16&=17&=18',
-    );
+    try {
+      validateNQCHAR(PARAMETERS.scope, NQCHAR);
+    } catch (ErrorNQCHAR) {
+      expect(ErrorNQCHAR).toBe(ERRORS.INVALID_SCOPE);
+    }
+    expect.assertions(1);
   });
 
   it('NQCHAR: with special caracters (invalids)', () => {
@@ -111,13 +113,13 @@ describe('security module validate NQCHAR parameters', () => {
 
   it('NQCHAR: with special caracters (valids)', () => {
     let NQCHAR = ' ';
-    let sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    expect(sanitaizedNQCHAR).toBe('%20');
+    let validNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
+    expect(validNQCHAR).toBe('%20');
     NQCHAR = '.';
-    sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    expect(sanitaizedNQCHAR).toBe(NQCHAR);
+    validNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
+    expect(validNQCHAR).toBe(NQCHAR);
     NQCHAR = ',';
-    sanitaizedNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
-    expect(sanitaizedNQCHAR).toBe(NQCHAR);
+    validNQCHAR = validateNQCHAR(PARAMETERS.scope, NQCHAR);
+    expect(validNQCHAR).toBe(NQCHAR);
   });
 });

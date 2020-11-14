@@ -19,17 +19,14 @@ const parameters = {
 const getParameters = () => parameters;
 
 const setParameters = params => {
-  const sanitaizedParameters = {};
+  const validParameters = {};
   let error;
 
   // Se validan los parámetros con el módulo de seguridad.
   Object.keys(params).forEach(key => {
     if (params[key] !== '') {
       try {
-        sanitaizedParameters[key] = validateParameters(
-          PARAMETERS[key],
-          params[key],
-        );
+        validParameters[key] = validateParameters(PARAMETERS[key], params[key]);
       } catch (err) {
         if (!error) error = err;
       }
@@ -41,8 +38,8 @@ const setParameters = params => {
 
   // Si no hay errores, se settean los parámetros con los valores
   // devueltos por el módulo de seguridad.
-  Object.keys(sanitaizedParameters).forEach(key => {
-    parameters[key] = sanitaizedParameters[key];
+  Object.keys(validParameters).forEach(key => {
+    parameters[key] = validParameters[key];
   });
 
   // Se devuelve un mensaje de éxito.

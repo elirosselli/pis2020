@@ -4,41 +4,38 @@ import { PARAMETERS, ERRORS } from '../../../utils/constants';
 describe('security module validate URIReference parameters', () => {
   it('redirectUri: valid', () => {
     let redirectUri = 'sdkIdU.testing://auth';
-    let sanitaizedRedirectUri = validateURIReference(
+    let validRedirectUri = validateURIReference(
       PARAMETERS.redirectUri,
       redirectUri,
     );
-    expect(sanitaizedRedirectUri).toBe(redirectUri);
+    expect(validRedirectUri).toBe(redirectUri);
     redirectUri = 'sdkIdU.testing%3A%2F%2Fauth';
-    sanitaizedRedirectUri = validateURIReference(
+    validRedirectUri = validateURIReference(
       PARAMETERS.redirectUri,
       redirectUri,
     );
-    expect(sanitaizedRedirectUri).toBe(redirectUri);
+    expect(validRedirectUri).toBe(redirectUri);
   });
 
   it('tokenType: valid', () => {
     let tokenType = 'bearer';
-    let sanitaizedTokenType = validateURIReference(
-      PARAMETERS.tokenType,
-      tokenType,
-    );
-    expect(sanitaizedTokenType).toBe(tokenType);
+    let validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
     tokenType = 'Bearer';
-    sanitaizedTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
-    expect(sanitaizedTokenType).toBe(tokenType);
+    validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
     tokenType = 'Basic';
-    sanitaizedTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
-    expect(sanitaizedTokenType).toBe(tokenType);
+    validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
     tokenType = 'Digest';
-    sanitaizedTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
-    expect(sanitaizedTokenType).toBe(tokenType);
+    validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
     tokenType = 'OAuth';
-    sanitaizedTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
-    expect(sanitaizedTokenType).toBe(tokenType);
+    validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
     tokenType = 'SCRAM-SHA-1';
-    sanitaizedTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
-    expect(sanitaizedTokenType).toBe(tokenType);
+    validTokenType = validateURIReference(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
   });
 
   it('URIReference: empty', () => {
@@ -126,22 +123,19 @@ describe('security module validate URIReference parameters', () => {
   it('URIReference: query parameters', () => {
     let URIReference =
       'sdkIdU.testing://auth?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
-    let sanitaizedURIReference = validateURIReference(
-      PARAMETERS.redirectUri,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(
-      'sdkIdU.testing://auth?=1&=2&=3&=4&=5&=6&=7&=8&=9&=10&=11&=12&=13&=14&=15&=16&=17&=18',
-    );
+    try {
+      validateURIReference(PARAMETERS.redirectUri, URIReference);
+    } catch (ErrorURIReference) {
+      expect(ErrorURIReference).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
     URIReference =
       'bearer?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.tokenType,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(
-      'bearer?=1&=2&=3&=4&=5&=6&=7&=8&=9&=10&=11&=12&=13&=14&=15&=16&=17&=18',
-    );
+    try {
+      validateURIReference(PARAMETERS.tokenType, URIReference);
+    } catch (ErrorURIReference) {
+      expect(ErrorURIReference).toBe(ERRORS.INVALID_TOKEN_TYPE);
+    }
+    expect.assertions(2);
   });
 
   it('URIReference: with special caracters (invalids)', () => {
@@ -204,27 +198,11 @@ describe('security module validate URIReference parameters', () => {
   });
 
   it('URIReference: with special caracters (valids)', () => {
-    let URIReference = '12 34';
-    let sanitaizedURIReference = validateURIReference(
+    const URIReference = '.';
+    const validURIReference = validateURIReference(
       PARAMETERS.redirectUri,
       URIReference,
     );
-    expect(sanitaizedURIReference).toBe('1234');
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.tokenType,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe('1234');
-    URIReference = '.';
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.redirectUri,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(URIReference);
-    sanitaizedURIReference = validateURIReference(
-      PARAMETERS.tokenType,
-      URIReference,
-    );
-    expect(sanitaizedURIReference).toBe(URIReference);
+    expect(validURIReference).toBe(URIReference);
   });
 });

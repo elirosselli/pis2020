@@ -13,12 +13,10 @@ const validateURIReference = (type, value) => {
   // sensibles de caracteres.
   validURIReference =
     validURIReference &&
-    value
-      .replace(
-        /[^a-zA-Z0-9_.\-/:&?=%]*(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)*/g,
-        '',
-      )
-      .trim();
+    !value.match(/[^a-zA-Z0-9_.\-/:&?=%]/) &&
+    !value.match(
+      /(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
+    );
   if (!validURIReference) {
     switch (type) {
       case PARAMETERS.redirectUri: {
@@ -29,7 +27,7 @@ const validateURIReference = (type, value) => {
       }
     }
   }
-  return validURIReference;
+  return value;
 };
 
 export default validateURIReference;

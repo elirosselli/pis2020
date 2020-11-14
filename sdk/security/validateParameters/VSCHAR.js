@@ -12,12 +12,10 @@ const validateVSCHAR = (type, value) => {
   // no contenga secuencias sensibles de caracteres.
   validVSCHAR =
     validVSCHAR &&
-    value
-      .replace(
-        /[^\x20-\x7E]*(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)*/g,
-        '',
-      )
-      .trim();
+    !value.match(/[^\x20-\x7E]/) &&
+    !value.match(
+      /(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
+    );
   if (!validVSCHAR) {
     switch (type) {
       case PARAMETERS.clientId: {
@@ -41,7 +39,7 @@ const validateVSCHAR = (type, value) => {
       }
     }
   }
-  return validVSCHAR;
+  return value;
 };
 
 export default validateVSCHAR;

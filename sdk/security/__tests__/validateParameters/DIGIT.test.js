@@ -4,14 +4,14 @@ import { PARAMETERS, ERRORS } from '../../../utils/constants';
 describe('security module validate DIGIT parameters', () => {
   it('expiresIn: valid', () => {
     let expiresIn = 132531;
-    let sanitaizedExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
-    expect(sanitaizedExpiresIn).toBe(expiresIn);
+    let validExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
+    expect(validExpiresIn).toBe(expiresIn);
     expiresIn = 123;
-    sanitaizedExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
-    expect(sanitaizedExpiresIn).toBe(expiresIn);
+    validExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
+    expect(validExpiresIn).toBe(expiresIn);
     expiresIn = 5124;
-    sanitaizedExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
-    expect(sanitaizedExpiresIn).toBe(expiresIn);
+    validExpiresIn = validateDIGIT(PARAMETERS.expiresIn, expiresIn);
+    expect(validExpiresIn).toBe(expiresIn);
   });
 
   it('DIGIT: empty', () => {
@@ -68,6 +68,16 @@ describe('security module validate DIGIT parameters', () => {
 
   it('DIGIT: to big', () => {
     const DIGIT = 31536000123;
+    try {
+      validateDIGIT(PARAMETERS.expiresIn, DIGIT);
+    } catch (ErrorDIGIT) {
+      expect(ErrorDIGIT).toStrictEqual(ERRORS.INVALID_EXPIRES_IN);
+    }
+    expect.assertions(1);
+  });
+
+  it('DIGIT: float', () => {
+    const DIGIT = 12.3;
     try {
       validateDIGIT(PARAMETERS.expiresIn, DIGIT);
     } catch (ErrorDIGIT) {

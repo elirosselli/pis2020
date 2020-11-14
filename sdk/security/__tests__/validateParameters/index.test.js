@@ -4,11 +4,8 @@ import { PARAMETERS, ERRORS } from '../../../utils/constants';
 describe('security module', () => {
   it('clientId: valid', () => {
     const clientId = '898562';
-    const sanitaizedClientId = validateParameters(
-      PARAMETERS.clientId,
-      clientId,
-    );
-    expect(sanitaizedClientId).toBe(clientId);
+    const validClientId = validateParameters(PARAMETERS.clientId, clientId);
+    expect(validClientId).toBe(clientId);
   });
 
   it('clientId: invalid', () => {
@@ -23,11 +20,11 @@ describe('security module', () => {
   it('clientSecret: valid', () => {
     const clientSecret =
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const sanitaizedClientSecret = validateParameters(
+    const validClientSecret = validateParameters(
       PARAMETERS.clientSecret,
       clientSecret,
     );
-    expect(sanitaizedClientSecret).toBe(clientSecret);
+    expect(validClientSecret).toBe(clientSecret);
   });
 
   it('clientSecret: invalid', () => {
@@ -41,8 +38,8 @@ describe('security module', () => {
 
   it('code: valid', () => {
     const code = '35773ab93b5b4658b81061ce3969efc2';
-    const sanitaizedCode = validateParameters(PARAMETERS.code, code);
-    expect(sanitaizedCode).toBe(code);
+    const validCode = validateParameters(PARAMETERS.code, code);
+    expect(validCode).toBe(code);
   });
 
   it('code: invalid', () => {
@@ -56,11 +53,11 @@ describe('security module', () => {
 
   it('accessToken: valid', () => {
     const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
-    const sanitaizedAccessToken = validateParameters(
+    const validAccessToken = validateParameters(
       PARAMETERS.accessToken,
       accessToken,
     );
-    expect(sanitaizedAccessToken).toBe(accessToken);
+    expect(validAccessToken).toBe(accessToken);
   });
 
   it('accessToken: invalid', () => {
@@ -74,11 +71,11 @@ describe('security module', () => {
 
   it('refreshToken: valid', () => {
     const refreshToken = '041a156232ac43c6b719c57b7217c9ee';
-    const sanitaizedRefreshToken = validateParameters(
+    const validRefreshToken = validateParameters(
       PARAMETERS.refreshToken,
       refreshToken,
     );
-    expect(sanitaizedRefreshToken).toBe(refreshToken);
+    expect(validRefreshToken).toBe(refreshToken);
   });
 
   it('refreshToken: invalid', () => {
@@ -92,8 +89,8 @@ describe('security module', () => {
 
   it('state: valid', () => {
     const state = '0cf37136-efbb-44d0-993f-fb1e8b928e47';
-    const sanitaizedState = validateParameters(PARAMETERS.state, state);
-    expect(sanitaizedState).toBe(state);
+    const validState = validateParameters(PARAMETERS.state, state);
+    expect(validState).toBe(state);
   });
 
   it('state: invalid', () => {
@@ -107,11 +104,11 @@ describe('security module', () => {
 
   it('redirectUri: valid', () => {
     const redirectUri = 'sdkIdU.testing://auth';
-    const sanitaizedRedirectUri = validateParameters(
+    const validRedirectUri = validateParameters(
       PARAMETERS.redirectUri,
       redirectUri,
     );
-    expect(sanitaizedRedirectUri).toBe(redirectUri);
+    expect(validRedirectUri).toBe(redirectUri);
   });
 
   it('redirectUri: invalid', () => {
@@ -125,11 +122,8 @@ describe('security module', () => {
 
   it('tokenType: valid', () => {
     const tokenType = 'bearer';
-    const sanitaizedTokenType = validateParameters(
-      PARAMETERS.tokenType,
-      tokenType,
-    );
-    expect(sanitaizedTokenType).toBe(tokenType);
+    const validTokenType = validateParameters(PARAMETERS.tokenType, tokenType);
+    expect(validTokenType).toBe(tokenType);
   });
 
   it('tokenType: invalid', () => {
@@ -143,8 +137,8 @@ describe('security module', () => {
 
   it('scope: valid', () => {
     const scope = 'personal_info';
-    const sanitaizedScope = validateParameters(PARAMETERS.scope, scope);
-    expect(sanitaizedScope).toBe(scope);
+    const validScope = validateParameters(PARAMETERS.scope, scope);
+    expect(validScope).toBe(scope);
   });
 
   it('scope: invalid', () => {
@@ -158,11 +152,8 @@ describe('security module', () => {
 
   it('expiresIn: valid', () => {
     const expiresIn = 132531;
-    const sanitaizedExpiresIn = validateParameters(
-      PARAMETERS.expiresIn,
-      expiresIn,
-    );
-    expect(sanitaizedExpiresIn).toBe(expiresIn);
+    const validExpiresIn = validateParameters(PARAMETERS.expiresIn, expiresIn);
+    expect(validExpiresIn).toBe(expiresIn);
   });
 
   it('expiresIn: invalid', () => {
@@ -177,8 +168,8 @@ describe('security module', () => {
   it('idToken: valid', () => {
     const idToken =
       'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
-    const sanitaizedIdToken = validateParameters(PARAMETERS.idToken, idToken);
-    expect(sanitaizedIdToken).toBe(idToken);
+    const validIdToken = validateParameters(PARAMETERS.idToken, idToken);
+    expect(validIdToken).toBe(idToken);
   });
 
   it('idToken: invalid', () => {
@@ -192,11 +183,11 @@ describe('security module', () => {
 
   it('production: valid', () => {
     const production = true;
-    const sanitaizedProduction = validateParameters(
+    const validProduction = validateParameters(
       PARAMETERS.production,
       production,
     );
-    expect(sanitaizedProduction).toBe(production);
+    expect(validProduction).toBe(production);
   });
 
   it('production: invalid', () => {
