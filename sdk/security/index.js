@@ -1,5 +1,5 @@
-/* eslint-disable import/prefer-default-export */
 // istanbul ignore file
 import validateTokenSecurity from './validateTokenSecurity';
+import validateParameters from './validateParameters';
 
-export { validateTokenSecurity };
+export { validateTokenSecurity, validateParameters };

@@ -32,6 +32,16 @@
 				<string>sdkidu.testing</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>sdkIdUy</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sdkIdUy</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>

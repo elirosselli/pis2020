@@ -90,7 +90,7 @@ describe('configuration module and login integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const state = 'state';
+    const state = 'correctState';
     initialize(redirectUri, clientId, clientSecret, false);
 
     setParameters({ state });
