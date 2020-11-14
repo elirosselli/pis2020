@@ -115,6 +115,59 @@ Cabe destacar que ante un posible error la *response* generada por el OP contien
 | *error_description* | Opcional  | Descripción del error que provee información para ayudar a los desarrolladores a entender el error ocurrido. |
 | *state* | Recomendado | El valor exacto recibido del RP en el parámetro *state* del *request* correspondiente.
 
+## Errores
+
+De forma de establecer un modelo de errores consistente dentro del SDK, se define que cada error devuelto debe tener una estructura específica, definida en el archivo `constants.js`.
+
+Cada error es una extensión de la clase `Error` de `javascript`, y tiene la siguiente estructura:
+
+```javascript
+class NewError extends Error {
+  constructor(
+    errorCode = 'newErrorCode',
+    errorDescription = 'newErrorDescription',
+    ...params
+  ) {
+    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre.
+    super(...params);
+    // Información de depuración personalizada.
+    this.name = 'NewError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+```
+
+Se agregan los campos:
+
+| Campo           	| Descripción                       	|
+|------------------	|-----------------------------------	|
+| Name             	| Nombre del error.                 	|
+| errorCode        	| Código identificatorio del error. 	|
+| errorDescription 	| Descripción del error.            	|
+
+
+Los errores definidos son:
+
+| Nombre                       	| Clase                           	| Código                                   	| Descripción                                                                                                                                                                            	| ¿Cuándo ocurre?                                                                                                        	| Posible solución                                                                           	|
+|------------------------------	|---------------------------------	|------------------------------------------	|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|------------------------------------------------------------------------------------------------------------------------	|--------------------------------------------------------------------------------------------	|
+| noError                      	| `ErrorNoError`                  	| gubuy_no_error                           	| No error                                                                                                                                                                               	| Cuando la función cumple correctamente su objetivo.                                                                    	| No aplica.                                                                                 	|
+| invalidClientId              	| `ErrorInvalidClientId`          	| gubuy_invalid_client_id                  	| Invalid client_id parameter.                                                                                                                                                           	| Cuando el valor del client_id definido para el sdk no es correcto.                                                     	| Revisar que el client_id definido corresponda con el designado por IDUruguay.              	|
+| invalidRedirectUri           	| `ErrorInvalidRedirectUri`       	| gubuy_invalid_redirect_uri               	| Invalid redirect_uri parameter.                                                                                                                                                        	| Cuando la redirect_uri definida para el sdk no es válida.                                                              	| Revisar que la redirect_uri definida corresponda con la designada por IDUruguay.           	|
+| invalidClientSecret          	| `ErrorInvalidClientSecret`      	| gubuy_invalid_client_secret              	| Invalid client_secret parameter.                                                                                                                                                       	| Cuando el client_secret definido para el sdk no es válido.                                                             	| Revisar que el client_secret definido corresponda con el designado por IDUruguay.          	|
+| accessDenied                 	| `ErrorAccessDenied`             	| access_denied                            	| The resource owner or authorization server denied the request.                                                                                                                         	| Cuando el usuario final rechaza el login.                                                                              	| No aplica.                                                                                 	|
+| invalidAuthorizationCode     	| `ErrorInvalidAuthorizationCode` 	| gubuy_invalid_auhtorization_code         	| Invalid authorization code.                                                                                                                                                            	| Cuando el code definido en el sdk no es válido.                                                                        	| Revisar que el code actual corresponde al devuelto por la función Login().                 	|
+| failedRequest                	| `ErrorFailedRequest`            	| failed_request                           	| Couldn't make request.                                                                                                                                                                 	| Cuando la request no pudo ser completada satisfactoriamente.                                                           	| Revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.  	|
+| invalidGrant                 	| `ErrorInvalidGrant`             	| invalid_grant                            	| The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client. 	| Cuando el code o refresh_token son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria. 	| Comprobar la validez del code o refresh_token según corresponda.                           	|
+| invalidToken                 	| `ErrorInvalidToken`             	| invalid_token                            	| The access token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                	| Cuando el access_token es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                 	| Comprobar la validez del access_token.                                                     	|
+| invalidClient                	| `ErrorInvalidClient`            	| invalid_client                           	| Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                           	| Cuando no se pudo obtener un nuevo token de forma correcta.                                                            	| Verificar que el client_secret y client_id correspondan con los registrados por IDUruguay. 	|
+| invalidTokenHint             	| `ErrorInvalidIdTokenHint`       	| invalid_id_token_hint                    	| Invalid id_token_hint parameter.                                                                                                                                                       	| Cuando el parámetro id_token_hint es inválido o no existe a la hora de llamar a Logout.                                	| Comprobar la existencia y validez del id_token_hint.                                       	|
+| invalidUrlLogout             	| `ErrorInvalidUrlLogout`         	| invalid_url_logout                       	| Invalid returned url for logout.                                                                                                                                                       	| Cuando la URL de logout es inválida.                                                                                   	| Comprobar la validez de la URL de logout.                                                  	|
+| invalidIdToken               	| `ErrorInvalidIdToken`           	| invalid_id_token                         	| Invalid id token.                                                                                                                                                                      	| Cuando el idToken registrado en el sdk es inválido.                                                                    	| Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.            	|
+| invalidLengthError           	| `ErrorBase64InvalidLength`      	| base64URL_to_base64_invalid_length_error 	| Input base64url string is the wrong length to determine padding.                                                                                                                       	| Cuando el n (modulous) del idToken es inválido.                                                                        	| Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.              	|
+| invalidBase64ToHexConversion 	| `ErrorBase64ToHexConversion`    	| invalid_base64_to_hex_conversion         	| Error while decoding base64 to hex.                                                                                                                                                    	| Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                   	| Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.              	|
+
 ## Instalación y configuración
 
 ### Instalación
