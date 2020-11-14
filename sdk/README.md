@@ -184,10 +184,10 @@ import { initialize, login } from 'sdk-gubyuy-test';
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
-initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miLogoutRedirectUri');
+initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction');
 ```
 
-Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP.
+Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *production*, que indica el modo en el cual se quiere utilizar el SDK.
 
 Una vez inicializado el componente, se puede realizar el *login* con ID Uruguay mediante una llamada a la función `login`:
 
@@ -223,20 +223,20 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, y *post_logout_redirect_uri*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
+| `initialize (redirectUri, clientId, clientSecret, production)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret* y *production*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
-| `logout()`                                                    | Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al *post_logout_redirect_uri* especificado en `initialize` una vez cerrada la sesión.                                                                                                                                          |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
 | `validateToken()`                                                    | Verifica que el idToken recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *post_logout_redirect_uri* para luego del logout.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *production*. Este último parámetro es opcional, y es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing.
 
 ```javascript
-initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miPostLogoutRedirectUri');
+initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction');
 ```
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
@@ -309,8 +309,6 @@ Esta función devuelve un objeto con el siguiente formato:
 ### Función logout
 
 La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
-
-Al llamar a esta función, se abre un navegador web en el dispositivo del usuario con la URL de cierre de sesión de ID Uruguay, que muestra al usuario final que se está realizando el cierre de sesión. Una vez finalizado el cierre de sesión, se redirige al *post_logout_redirect_uri* especificado al inicializar el SDK.
 
 ```javascript
 await logout();
