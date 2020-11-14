@@ -1,4 +1,4 @@
-import { PARAMETERS } from '../../utils/constants';
+import { PARAMETERS, ERRORS } from '../../utils/constants';
 import validateVSCHAR from './VSCHAR';
 import validateNQCHAR from './NQCHAR';
 import validateURIReference from './URIReference';
@@ -41,7 +41,7 @@ const validateParameters = (type, value) => {
     }
 
     default:
-      throw Error('Invalid parameter type');
+      throw ERRORS.INVALID_PARAMETER_TYPE;
   }
 };
 

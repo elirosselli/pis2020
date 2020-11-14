@@ -212,7 +212,7 @@ describe('security module', () => {
     try {
       validateParameters('wrong type', 'value');
     } catch (error) {
-      expect(error).toStrictEqual(Error('Invalid parameter type'));
+      expect(error).toStrictEqual(ERRORS.INVALID_PARAMETER_TYPE);
     }
   });
 });

@@ -29,6 +29,7 @@ const errorCodes = {
   invalidScope: 'invalid_scope',
   invalidExpiresIn: 'invalid_expires_in',
   invalidProduction: 'invalid_production',
+  invalidParameterType: 'invalid_parameter_type',
 };
 
 const errorDescriptions = {
@@ -56,6 +57,7 @@ const errorDescriptions = {
   invalidScope: 'Invalid scope parameter',
   invalidExpiresIn: 'Invalid expires_in parameter',
   invalidProduction: 'Invalid production parameter',
+  invalidParameterType: 'Invalid parameter type',
 };
 
 class ErrorNoError extends Error {
@@ -320,6 +322,19 @@ class ErrorInvalidProduction extends Error {
   }
 }
 
+class ErrorInvalidParameterType extends Error {
+  constructor(
+    errorCode = errorCodes.invalidParameterType,
+    errorDescription = errorDescriptions.invalidParameterType,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidParameterType';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
@@ -341,6 +356,7 @@ const ERRORS = {
   INVALID_SCOPE: new ErrorInvalidScope(),
   INVALID_EXPIRES_IN: new ErrorInvalidExpiresIn(),
   INVALID_PRODUCTION: new ErrorInvalidProduction(),
+  INVALID_PARAMETER_TYPE: new ErrorInvalidParameterType(),
 };
 
 const PARAMETERS = {
