@@ -94,7 +94,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'incorrectAccessToken',
       idToken,
     });
@@ -121,7 +120,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'correctAccessToken',
       idToken,
     });
@@ -191,7 +189,6 @@ describe('getUserInfo', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       accessToken: 'correctAccessToken',
       idToken,
     });
@@ -216,7 +213,7 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo with empty access Token', async () => {
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'uri';
     getParameters.mockReturnValue({
       clientId: '898562',
@@ -264,7 +261,6 @@ it('calls getUserInfo and fetch fails', async () => {
     clientId: 'clientId',
     clientSecret: 'clientSecret',
     redirectUri: 'redirectUri',
-    postLogoutRedirectUri: 'postLogoutRedirectUri',
     accessToken: 'accessToken',
     idToken,
   });

@@ -13,7 +13,6 @@ const errorCodes = {
   invalidClientId: 'gubuy_invalid_client_id',
   invalidRedirectUri: 'gubuy_invalid_redirect_uri',
   invalidClientSecret: 'gubuy_invalid_client_secret',
-  invalidPostLogoutRedirecrtUri: 'gubuy_invalid_post_logout_redirect_uri',
   accessDenied: 'access_denied',
   invalidAuthorizationCode: 'gubuy_invalid_auhtorization_code',
   failedRequest: 'failed_request',
@@ -26,6 +25,12 @@ const errorCodes = {
   invalidIdToken: 'gubuy_invalid_id_token',
   invalidLengthError: 'base64URL_to_base64_invalid_length_error',
   invalidBase64ToHexConversion: 'invalid_base64_to_hex_conversion',
+  invalidState: 'invalid_state',
+  invalidTokenType: 'invalid_token_type',
+  invalidScope: 'invalid_scope',
+  invalidExpiresIn: 'invalid_expires_in',
+  invalidProduction: 'invalid_production',
+  invalidParameterType: 'invalid_parameter_type',
 };
 
 const errorDescriptions = {
@@ -33,7 +38,6 @@ const errorDescriptions = {
   invalidClientId: 'Invalid client_id parameter',
   invalidRedirectUri: 'Invalid redirect_uri parameter',
   invalidClientSecret: 'Invalid client_secret parameter',
-  invalidPostLogoutRedirecrtUri: 'Invalid post_logout_redirect_uri parameter',
   accessDenied: 'The resource owner or authorization server denied the request',
   invalidAuthorizationCode: 'Invalid authorization code',
   failedRequest: "Couldn't make request",
@@ -45,11 +49,17 @@ const errorDescriptions = {
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
   invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
-  invalidSub: 'Sub returned by API does not match given sub',  
+  invalidSub: 'Sub returned by API does not match given sub',
   invalidIdToken: 'Invalid id_token parameter',
   invalidLengthError:
     'Input base64url string is the wrong length to determine padding',
   invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
+  invalidState: 'Invalid state parameter',
+  invalidTokenType: 'Invalid token_type parameter',
+  invalidScope: 'Invalid scope parameter',
+  invalidExpiresIn: 'Invalid expires_in parameter',
+  invalidProduction: 'Invalid production parameter',
+  invalidParameterType: 'Invalid parameter type',
 };
 
 class ErrorNoError extends Error {
@@ -101,19 +111,6 @@ class ErrorInvalidClientSecret extends Error {
   ) {
     super(...params);
     this.name = 'invalidClientSecret';
-    this.errorCode = errorCode;
-    this.errorDescription = errorDescription;
-  }
-}
-
-class ErrorInvalidPostLogoutRedirecrtUri extends Error {
-  constructor(
-    errorCode = errorCodes.invalidPostLogoutRedirecrtUri,
-    errorDescription = errorDescriptions.invalidPostLogoutRedirecrtUri,
-    ...params
-  ) {
-    super(...params);
-    this.name = 'invalidPostLogoutRedirecrtUri';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
@@ -249,6 +246,19 @@ class ErrorInvalidIdToken extends Error {
   }
 }
 
+class ErrorInvalidState extends Error {
+  constructor(
+    errorCode = errorCodes.invalidState,
+    errorDescription = errorDescriptions.invalidState,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidState';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 class ErrorBase64InvalidLength extends Error {
   constructor(
     errorCode = errorCodes.invalidLengthError,
@@ -257,6 +267,19 @@ class ErrorBase64InvalidLength extends Error {
   ) {
     super(...params);
     this.name = 'invalidLengthError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidTokenType extends Error {
+  constructor(
+    errorCode = errorCodes.invalidTokenType,
+    errorDescription = errorDescriptions.invalidTokenType,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidTokenType';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
@@ -275,12 +298,63 @@ class ErrorBase64ToHexConversion extends Error {
   }
 }
 
+class ErrorInvalidScope extends Error {
+  constructor(
+    errorCode = errorCodes.invalidScope,
+    errorDescription = errorDescriptions.invalidScope,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidScope';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidExpiresIn extends Error {
+  constructor(
+    errorCode = errorCodes.invalidExpiresIn,
+    errorDescription = errorDescriptions.invalidExpiresIn,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidExpiresIn';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidProduction extends Error {
+  constructor(
+    errorCode = errorCodes.invalidProduction,
+    errorDescription = errorDescriptions.invalidProduction,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidProduction';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidParameterType extends Error {
+  constructor(
+    errorCode = errorCodes.invalidParameterType,
+    errorDescription = errorDescriptions.invalidParameterType,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidParameterType';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 const ERRORS = {
   NO_ERROR: new ErrorNoError(),
   INVALID_CLIENT_ID: new ErrorInvalidClientId(),
   INVALID_REDIRECT_URI: new ErrorInvalidRedirectUri(),
   INVALID_CLIENT_SECRET: new ErrorInvalidClientSecret(),
-  INVALID_POST_LOGOUT_REDIRECT_URI: new ErrorInvalidPostLogoutRedirecrtUri(),
   ACCESS_DENIED: new ErrorAccessDenied(),
   INVALID_AUTHORIZATION_CODE: new ErrorInvalidAuthorizationCode(),
   FAILED_REQUEST: new ErrorFailedRequest(),
@@ -293,6 +367,27 @@ const ERRORS = {
   INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
   INVALID_BASE64_LENGTH: new ErrorBase64InvalidLength(),
   INVALID_BASE64_TO_HEX_CONVERSION: new ErrorBase64ToHexConversion(),
+  INVALID_STATE: new ErrorInvalidState(),
+  INVALID_TOKEN_TYPE: new ErrorInvalidTokenType(),
+  INVALID_SCOPE: new ErrorInvalidScope(),
+  INVALID_EXPIRES_IN: new ErrorInvalidExpiresIn(),
+  INVALID_PRODUCTION: new ErrorInvalidProduction(),
+  INVALID_PARAMETER_TYPE: new ErrorInvalidParameterType(),
 };
 
-export { REQUEST_TYPES, ERRORS };
+const PARAMETERS = {
+  redirectUri: 'redirectUri',
+  clientId: 'clientId',
+  clientSecret: 'clientSecret',
+  code: 'code',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenType: 'tokenType',
+  expiresIn: 'expiresIn',
+  idToken: 'idToken',
+  state: 'state',
+  scope: 'scope',
+  production: 'production',
+};
+
+export { REQUEST_TYPES, ERRORS, PARAMETERS };

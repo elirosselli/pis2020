@@ -54,12 +54,11 @@ const login = async () => {
   try {
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
-    // Si hay un clientId, clientSecret, redirectUri y postLogoutRedirectUri setteado, se abre el browser
+    // Si hay un clientId, clientSecret y redirectUri setteado, se abre el browser
     // para realizar la autenticación y autorización con idUruguay.
     if (
       parameters.clientId &&
       parameters.redirectUri &&
-      parameters.postLogoutRedirectUri &&
       parameters.clientSecret
     )
       await Linking.openURL(loginEndpoint());
@@ -70,7 +69,6 @@ const login = async () => {
       const errorResponse = initializeErrors(
         parameters.clientId,
         parameters.redirectUri,
-        parameters.postLogoutRedirectUri,
         parameters.clientSecret,
       );
       eraseState();

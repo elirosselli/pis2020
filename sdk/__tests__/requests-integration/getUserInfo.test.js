@@ -43,7 +43,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters and makes a get user info request with all scopes', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -59,7 +59,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -143,7 +142,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -159,7 +157,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters and makes a get user info request with personal_info scope', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -175,7 +173,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -239,7 +236,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -255,7 +251,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters and makes a get user info request with no claims', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -271,7 +267,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -321,7 +316,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -337,7 +331,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters and makes a get user info request with expired access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -353,7 +347,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -385,7 +378,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -402,7 +394,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters, makes a get user info request and fetch fails', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -418,7 +410,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -445,7 +436,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -462,7 +452,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters, makes a get user info request and returns some error', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -478,7 +468,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -507,7 +496,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -524,7 +512,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters, makes a get user info request and returns some error with www authenticate header', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -540,7 +528,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -569,7 +556,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken,
@@ -586,7 +572,7 @@ describe('configuration module and make request type get user info integration',
   it('calls set parameters and makes a get user info request with empty access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({
       clientId,
@@ -602,7 +588,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken: '',
@@ -623,7 +608,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       production: false,
       code,
       accessToken: '',
@@ -638,10 +622,10 @@ describe('configuration module and make request type get user info integration',
   });
 
   it('calls getUserInfo with empty id token', async () => {
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const code = 'code';
-    const redirectUri = 'redirectUri';
+    const clientId = 'clienttt';
+    const clientSecret = 'secrettest';
+    const code = 'test';
+    const redirectUri = 'redirecttesturi';
     setParameters({
       clientId,
       clientSecret,
@@ -656,7 +640,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       code,
       accessToken,
       production: false,
@@ -677,7 +660,6 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
       code,
       production: false,
       accessToken,

@@ -22,9 +22,9 @@ const userInfoEndpoint = () => {
 };
 
 const logoutEndpoint = () => {
-  const { production, idToken, postLogoutRedirectUri, state } = getParameters();
+  const { production, idToken, state } = getParameters();
   const endpointPrefix = production ? productionPrefix : developmentPrefix;
-  return `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+  return `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 };
 
 const validateTokenEndpoint = () => {

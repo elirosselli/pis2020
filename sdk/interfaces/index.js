@@ -8,23 +8,21 @@ import {
   resetParameters,
 } from '../configuration';
 
-const initialize = (
-  redirectUri,
-  clientId,
-  clientSecret,
-  postLogoutRedirectUri,
-  production,
-  scope,
-) => {
+const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
   let response;
-  if (clientId && redirectUri && clientSecret && postLogoutRedirectUri) {
-    // Si los parámetros clientId, clientSecret, redirectUri y postLogoutRedirectUri no son vacíos se hace el set de los parámetros.
+  if (
+    clientId &&
+    redirectUri &&
+    clientSecret &&
+    typeof production === 'boolean'
+  ) {
+    // Si los parámetros clientId, clientSecret y redirectUri no son vacíos
+    // y production es de tipo booleano se hace el set de los parámetros.
     const scopeToSet = scope || ''; // Si no se pasa el scope como parámetro, se toma como undefined, entonces se debe asignar el string vacío.
     setParameters({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
       production,
       scope: scopeToSet, // Puede ser vacío.
     });
@@ -39,8 +37,8 @@ const initialize = (
     response = initializeErrors(
       clientId,
       redirectUri,
-      postLogoutRedirectUri,
       clientSecret,
+      production,
     );
   }
   // Se retorna el error y el mensaje correspondiente.
