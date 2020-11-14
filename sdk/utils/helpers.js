@@ -1,7 +1,7 @@
 import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
 import { ERRORS } from './constants';
 
-const initializeErrors = (clientId, redirectUri, clientSecret) => {
+const initializeErrors = (clientId, redirectUri, clientSecret, production) => {
   let response;
   if (!clientId) {
     // Si el client id es vacío se retorna el error correspondiente.
@@ -12,6 +12,9 @@ const initializeErrors = (clientId, redirectUri, clientSecret) => {
   } else if (!clientSecret) {
     // Si el client secret es vacío se retorna el error correspondiente.
     response = ERRORS.INVALID_CLIENT_SECRET;
+  } else if (typeof production !== 'boolean') {
+    // Si production no es booleano se retorna el error correspondiente.
+    response = ERRORS.INVALID_PRODUCTION;
   }
   return response;
 };

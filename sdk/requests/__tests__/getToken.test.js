@@ -173,7 +173,7 @@ describe('getToken', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -190,7 +190,7 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: '',
       redirectUri: 'redirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -207,7 +207,7 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: '',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 

@@ -136,7 +136,7 @@ describe('configuration module and refresh token integration', () => {
   });
 
   it('calls setParameters and refresh token with invalid refresh token', async () => {
-    const invalidRefreshToken = 'invalid_refresh_token';
+    const invalidRefreshToken = 'invalidRefreshToken';
 
     setParameters({
       clientId,
@@ -540,7 +540,7 @@ describe('configuration module and refresh token integration', () => {
       clientId,
       clientSecret,
       redirectUri,
-      code: 'code',
+      code: 'correctCode',
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -548,7 +548,7 @@ describe('configuration module and refresh token integration', () => {
       clientId,
       clientSecret,
       production: false,
-      code: 'code',
+      code: 'correctCode',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -569,7 +569,7 @@ describe('configuration module and refresh token integration', () => {
       clientId,
       clientSecret,
       production: false,
-      code: 'code',
+      code: 'correctCode',
       accessToken: '',
       refreshToken: '',
       tokenType: '',

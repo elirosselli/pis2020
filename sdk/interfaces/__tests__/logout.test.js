@@ -8,7 +8,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
   it('calls logout and works correctly', async () => {
-    const state = 'state';
+    const state = 'correctState';
     makeRequest.mockReturnValue(
       Promise.resolve({
         state,

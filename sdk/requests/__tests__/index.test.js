@@ -29,7 +29,7 @@ const getTokenOrRefreshMockImpl = () =>
 
 describe('login', () => {
   it('calls login and works correctly', async () => {
-    const code = 'code';
+    const code = 'correctCode';
     login.mockImplementation(() =>
       Promise.resolve({
         code,
@@ -177,7 +177,7 @@ describe('logout', () => {
         message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
-        state: 'state',
+        state: 'correctState',
       }),
     );
     const response = await makeRequest(REQUEST_TYPES.LOGOUT);
@@ -185,7 +185,7 @@ describe('logout', () => {
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
-      state: 'state',
+      state: 'correctState',
     });
   });
 
