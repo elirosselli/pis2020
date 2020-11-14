@@ -316,7 +316,7 @@ La función de **logout** es declarada como una función asincrónica de la sigu
 const logout = async () => {
 ```
 
-El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. 
+El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*. 
 
 En el cuerpo de la función, se verifica que el parámetro necesario para realizar el cierre de sesión se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *url* con la que se envía esta solicitud contiene el *id_token_hint*, y opcionalmente *state*. Esto se puede ver a continuación
 
@@ -324,25 +324,28 @@ En el cuerpo de la función, se verifica que el parámetro necesario para realiz
 Linking.openURL(logoutEndpoint())
 ```
 
-Donde *logoutEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
+Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *url* que se corresponde con la utilizada para realizar el request.
+
+En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+
+## Endpoints de producción y testing
+
+Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
 
 ```javascript
-${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}
+`${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`
 ```
-El *endpointPrefix* se define como
-
-```javascript
-'https://auth.iduruguay.gub.uy/oidc/v1'
-```
-en caso de que el parámetro *production* del módulo de configuración se encuentre inicializado en *true*. En caso contrario, se define como
+donde *endpointPrefix* tendrá el valor
 
 ```javascript
 'https://auth-testing.iduruguay.gub.uy/oidc/v1'
 ```
+si el SDK se encuentra en modo testing, con el parámetro *production* en *false*, y
 
-Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *url* que se corresponde con la utilizada para realizar el request.
-
-En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+```javascript
+'https://auth.iduruguay.gub.uy/oidc/v1'
+```
+en caso de que dicho parámetro se encuentre inicializado en *true*.
 
 ## Ejecución de pruebas unitarias y *linter*
 
