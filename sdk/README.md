@@ -184,10 +184,10 @@ import { initialize, login } from 'sdk-gubyuy-test';
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
-initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction');
+initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction', 'miScope');
 ```
 
-Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *production*, que indica el modo en el cual se quiere utilizar el SDK.
+Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *production* y *scope*.
 
 Una vez inicializado el componente, se puede realizar el *login* con ID Uruguay mediante una llamada a la función `login`:
 
@@ -223,7 +223,7 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `initialize (redirectUri, clientId, clientSecret, production)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret* y *production*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
+| `initialize (redirectUri, clientId, clientSecret, production, scope)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
@@ -233,10 +233,10 @@ const LoginButton = () => {
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *production*. Este último parámetro es opcional, y es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*
 
 ```javascript
-initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction');
+initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miProduction', 'miScope');
 ```
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
