@@ -28,8 +28,41 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
     decode(idToken.split('.')[0]),
   );
 
+  // Se obtiene el campo head del token.
+  const payloadObj = KJUR.jws.JWS.readSafeJSONString(
+    decode(idToken.split('.')[1]),
+  );
+
   // Se valida el kid (identificador único) del token.
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
+
+  // Lista de acr (Authentication Methods References) definidos por IDUruguay.
+  const acrList = [
+    'urn:iduruguay:nid:0',
+    'urn:iduruguay:nid:1',
+    'urn:iduruguay:nid:2',
+    'urn:iduruguay:nid:3',
+  ];
+
+  // Lista de amr (Authentication Methods References) definidos por IDUruguay.
+  const amrList = [
+    'urn:iduruguay:am:password',
+    'urn:iduruguay:am:totp',
+    'urn:iduruguay:am:ci',
+    'urn:iduruguay:am:idp:ae:0',
+    'urn:iduruguay:am:idp:ae:1',
+    'urn:iduruguay:am:idp:ae:2',
+    'urn:iduruguay:am:idp:ae:3',
+  ];
+
+  // Se valida que el acr esté incluido en los definidos por IDUruguay.
+  isValid = isValid && acrList.includes(payloadObj.acr);
+
+  // Se valida que los amr estén incluido en los definidos por IDUruguay.
+  isValid =
+    isValid &&
+    Array.isArray(payloadObj.amr) &&
+    payloadObj.amr.every(v => amrList.includes(v));
 
   if (isValid) {
     return Promise.resolve({
