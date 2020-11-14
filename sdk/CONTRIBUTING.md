@@ -316,7 +316,7 @@ La función de **logout** es declarada como una función asincrónica de la sigu
 const logout = async () => {
 ```
 
-El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*. 
+El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*.
 
 En el cuerpo de la función, se verifica que el parámetro necesario para realizar el cierre de sesión se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *url* con la que se envía esta solicitud contiene el *id_token_hint*, y opcionalmente *state*. Esto se puede ver a continuación
 
@@ -335,16 +335,19 @@ Todas las funcionalidades descritas en la sección anterior obtienen la *url* qu
 ```javascript
 `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`
 ```
+
 donde *endpointPrefix* tendrá el valor
 
 ```javascript
 'https://auth-testing.iduruguay.gub.uy/oidc/v1'
 ```
+
 si el SDK se encuentra en modo testing, con el parámetro *production* en *false*, y
 
 ```javascript
 'https://auth.iduruguay.gub.uy/oidc/v1'
 ```
+
 en caso de que dicho parámetro se encuentre inicializado en *true*.
 
 ## Ejecución de pruebas unitarias y *linter*
