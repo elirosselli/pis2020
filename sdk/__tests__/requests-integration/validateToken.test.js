@@ -222,7 +222,7 @@ describe('configuration module and make request type validate token integration'
     }
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (acr)', async () => {
+  it('calls setParameters and makes a validate token request, with invalid token (amr)', async () => {
     setParameters({ clientId, idToken });
     const parameters = getParameters();
     expect(parameters).toStrictEqual({
