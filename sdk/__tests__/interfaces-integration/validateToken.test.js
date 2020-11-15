@@ -41,6 +41,11 @@ const time = 'time';
 const issuer = 'https://auth-testing.iduruguay.gub.uy/oidc/v1';
 const pubKey = 'pubKey';
 
+const acr = 'urn:iduruguay:nid:0';
+const acrWrong = 'WRONG_urn:iduruguay:nid:0';
+const amr = ['urn:iduruguay:am:password', 'urn:iduruguay:am:totp'];
+const amrWrong = ['urn:iduruguay:am:password', 'WRONG_urn:iduruguay:am:totp'];
+
 const jwksResponse = {
   keys: [
     {
@@ -112,7 +117,11 @@ describe('configuration module and validate token integration', () => {
     );
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
-    KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amr,
+    }));
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
@@ -146,7 +155,7 @@ describe('configuration module and validate token integration', () => {
     });
   });
 
-  it('calls setParameters and validateToken with valid client id and invalid token (payload), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid client id and invalid token (alg, iss, aud, expiration)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -165,7 +174,11 @@ describe('configuration module and validate token integration', () => {
     });
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => false);
-    KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amr,
+    }));
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
@@ -179,26 +192,26 @@ describe('configuration module and validate token integration', () => {
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      parameters = getParameters();
-      expect(parameters).toStrictEqual({
-        redirectUri: '',
-        clientId,
-        clientSecret: '',
-        code: '',
-        accessToken: '',
-        refreshToken: '',
-        tokenType: '',
-        expiresIn: '',
-        idToken,
-        state: '',
-        scope: '',
-        production: false,
-      });
-      expect.assertions(4);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (kid), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (acr)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -217,7 +230,125 @@ describe('configuration module and validate token integration', () => {
     });
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
-    KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ wrongKid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acrWrong,
+      amr,
+    }));
+    KJUR.jws.IntDate.getNow.mockImplementation(() => time);
+    KEYUTIL.getKey.mockImplementation(() => pubKey);
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+      expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
+        alg: [jwksResponse.keys[0].alg],
+        iss: [issuer],
+        aud: [parameters.clientId],
+        verifyAt: time,
+      });
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validateToken with valid clientId and invalid token (amr)', async () => {
+    setParameters({ clientId, idToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amrWrong,
+    }));
+    KJUR.jws.IntDate.getNow.mockImplementation(() => time);
+    KEYUTIL.getKey.mockImplementation(() => pubKey);
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+      expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
+        alg: [jwksResponse.keys[0].alg],
+        iss: [issuer],
+        aud: [parameters.clientId],
+        verifyAt: time,
+      });
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validateToken with valid clientId and invalid token (kid)', async () => {
+    setParameters({ clientId, idToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      wrongKid,
+    }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amr,
+    }));
     KJUR.jws.IntDate.getNow.mockImplementation(() => time);
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
@@ -231,23 +362,23 @@ describe('configuration module and validate token integration', () => {
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      parameters = getParameters();
-      expect(parameters).toStrictEqual({
-        redirectUri: '',
-        clientId,
-        clientSecret: '',
-        code: '',
-        accessToken: '',
-        refreshToken: '',
-        tokenType: '',
-        expiresIn: '',
-        idToken,
-        state: '',
-        scope: '',
-        production: false,
-      });
-      expect.assertions(4);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
   it('calls setParameters and validateToken with valid clientId and invalid token (empty), fetch not called', async () => {
@@ -291,7 +422,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(3);
   });
 
-  it('calls setParameters and validateToken, with invalid clientId (empty)', async () => {
+  it('calls setParameters and validateToken with invalid clientId (empty), fetch not called', async () => {
     setParameters({ idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({

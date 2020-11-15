@@ -390,4 +390,23 @@ const PARAMETERS = {
   production: 'production',
 };
 
-export { REQUEST_TYPES, ERRORS, PARAMETERS };
+// Lista de acr (Authentication Methods References) definidos por IDUruguay.
+const ACR_LIST = [
+  'urn:iduruguay:nid:0',
+  'urn:iduruguay:nid:1',
+  'urn:iduruguay:nid:2',
+  'urn:iduruguay:nid:3',
+];
+
+// Lista de amr (Authentication Methods References) definidos por IDUruguay.
+const AMR_LIST = [
+  'urn:iduruguay:am:password',
+  'urn:iduruguay:am:totp',
+  'urn:iduruguay:am:ci',
+  'urn:iduruguay:am:idp:ae:0',
+  'urn:iduruguay:am:idp:ae:1',
+  'urn:iduruguay:am:idp:ae:2',
+  'urn:iduruguay:am:idp:ae:3',
+];
+
+export { REQUEST_TYPES, ERRORS, PARAMETERS, ACR_LIST, AMR_LIST };

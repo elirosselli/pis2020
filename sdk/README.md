@@ -337,13 +337,28 @@ La función `validateToken` permite al usuario validar el *id_token* provisto du
 
 Al llamar a la función se valida el *id_token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *id_token* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
 
-| Parámetro | Valor                               |
-|-----------|-------------------------------------|
-| alg       | Algoritmo de la firma.              |
-| iss       | Quien creó y firmó el token.        |
-| aud       | Para quién está destinado el token. |
-| exp       | Tiempo de expiración.               |
-| kid       | Identificador único.                |
+| Parámetro | Valor                                 |
+|-----------|---------------------------------------|
+| alg       | Algoritmo de la firma.                |
+| iss       | Quien creó y firmó el token.          |
+| aud       | Para quién está destinado el token.   |
+| exp       | Tiempo de expiración.                 |
+| kid       | Identificador único.                  |
+| acr       | Authentication Context Class Reference|
+| amr       | Authentication Methods References     |
+
+Para llamar a la función se debe utilizar la función:
+
+```javascript
+try {
+  const respValidateToken = await validateToken();
+  // Procesar respuesta
+  ...
+} catch (err) {
+  // Procesar error
+  ...
+}
+```
 
 En caso de que el *token* sea inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
 
