@@ -9,6 +9,7 @@ import {
   ScrollView,
   Linking,
   Switch,
+  Platform,
 } from 'react-native';
 
 import CheckboxList from 'rn-checkbox-list';
@@ -111,12 +112,19 @@ const App = () => {
               style={{
                 alignItems: 'flex-end',
                 flexDirection: 'row',
+                marginBottom: 10,
               }}
             >
               <View
                 style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}
               >
-                <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 17,
+                  }}
+                >
                   Producción
                 </Text>
                 <Switch
@@ -125,6 +133,11 @@ const App = () => {
                   ios_backgroundColor="#3e3e3e"
                   onValueChange={toggleSwitch}
                   value={sdkProduction}
+                  style={
+                    Platform.OS === 'ios'
+                      ? styles.switchiOS
+                      : styles.switchAndroid
+                  }
                 />
               </View>
               <TouchableOpacity
@@ -170,14 +183,19 @@ const App = () => {
               Scope
             </Text>
             <View style={styles.informationSeparator} />
-            <View style={{ minHeight: '35%' }}>
+            <View style={{ minHeight: '40%' }}>
               <CheckboxList
                 listItems={scope}
-                listItemStyle={{
-                  padding: 0,
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#eee',
-                }}
+                listItemStyle={
+                  Platform.OS === 'ios'
+                    ? styles.checkboxiOS
+                    : styles.checkboxAndroid
+                }
+                checkboxProp={
+                  Platform.OS === 'ios'
+                    ? styles.checkItemiOS
+                    : styles.checkItemAndroid
+                }
                 onChange={({ items }) => {
                   doUpdate(() => {
                     if (Array.isArray(items) && items.length > 0) {
