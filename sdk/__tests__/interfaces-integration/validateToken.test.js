@@ -381,7 +381,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with invalid token (empty), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (empty), fetch not called', async () => {
     setParameters({ clientId });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
