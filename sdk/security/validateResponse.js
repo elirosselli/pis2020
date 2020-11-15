@@ -29,7 +29,7 @@ const generateRandomState = () => {
   // Se corta en 16 digitos la semilla.
   const randomSeed = parseInt(seedArray.join('').slice(0, 15), 10);
   // Se genera un Mersenne Twister generator con la semilla aleatoria.
-  // Mersenne Twister es un algoritmo que genera numeros pseudo aleatorios muy utilizado por su buena calidad.
+  // Mersenne Twister es un algoritmo que genera números pseudo aleatorios muy utilizado por su buena calidad.
   const randomGenerator = new MersenneTwister(randomSeed);
   // Se genera el state aleatorio basado en el algoritmo Mersenne Twister.
   const randomInt = randomGenerator.random_int();
