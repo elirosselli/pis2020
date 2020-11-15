@@ -8,6 +8,7 @@ const REQUEST_TYPES = {
   VALIDATE_TOKEN: 'validateToken',
 };
 
+// Los códigos de error
 const errorCodes = {
   noError: 'gubuy_no_error',
   invalidClientId: 'gubuy_invalid_client_id',
