@@ -353,7 +353,7 @@ Para llamar a la función se debe utilizar la función:
 ```javascript
 try {
   const respValidateToken = await validateToken();
-  // Porcesar respuesta
+  // Procesar respuesta
   ...
 } catch (err) {
   // Procesar error
