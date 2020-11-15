@@ -61,29 +61,28 @@ const jwksResponse = {
 };
 
 describe('configuration module and validate token integration', () => {
-  fetch.mockImplementationOnce(() =>
-    Promise.reject(
-      Error({
-        status: 404,
-        bodyString:
-          '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
-        headers: {
-          'Cache-Control': 'no-store',
-          Connection: 'close',
-          'Content-Length': '176',
-          'Content-Type': 'text/html; charset=UTF-8',
-          Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
-          Pragma: 'no-cache',
-          Server: 'nginx/1.15.1',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY, SAMEORIGIN',
-        },
-      }),
-    ),
-  );
-
   it('calls setParameters and validateToken but fetch fails', async () => {
     setParameters({ clientId, idToken });
+    fetch.mockImplementation(() =>
+      Promise.reject(
+        Error({
+          status: 404,
+          bodyString:
+            '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
+          headers: {
+            'Cache-Control': 'no-store',
+            Connection: 'close',
+            'Content-Length': '176',
+            'Content-Type': 'text/html; charset=UTF-8',
+            Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+            Pragma: 'no-cache',
+            Server: 'nginx/1.15.1',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY, SAMEORIGIN',
+          },
+        }),
+      ),
+    );
     try {
       await validateToken();
     } catch (error) {
@@ -382,7 +381,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with invalid token (empty)', async () => {
+  it('calls setParameters and validateToken with invalid token (empty), fetch not called', async () => {
     setParameters({ clientId });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({

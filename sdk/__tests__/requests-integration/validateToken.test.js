@@ -178,8 +178,8 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a validate token request, with invalid token (acr)', async () => {
@@ -219,8 +219,8 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a validate token request, with invalid token (amr)', async () => {
@@ -260,8 +260,8 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a validate token request, with invalid token (kid)', async () => {
@@ -303,8 +303,8 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a validate token request, with invalid token (empty)', async () => {
