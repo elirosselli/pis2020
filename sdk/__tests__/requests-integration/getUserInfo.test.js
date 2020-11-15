@@ -622,10 +622,10 @@ describe('configuration module and make request type get user info integration',
   });
 
   it('calls getUserInfo with empty id token', async () => {
-    const clientId = 'clienttt';
-    const clientSecret = 'secrettest';
-    const code = 'test';
-    const redirectUri = 'redirecttesturi';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
     setParameters({
       clientId,
       clientSecret,

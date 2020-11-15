@@ -17,7 +17,7 @@ const generateRandomState = () => {
   // Se genera un random uuid.
   const uuid = uuidv4();
   const seedArray = uuid.split('');
-  // Se cambian letras por su código ascii y guiones por un random number,
+  // Se cambian letras por su código ASCII y guiones por un número aleatorio,
   // ya que la semilla debe ser un número.
   for (let i = 0; i < uuid.length; i += 1) {
     if (isLetter(seedArray[i])) {
@@ -28,9 +28,10 @@ const generateRandomState = () => {
   }
   // Se corta en 16 digitos la semilla.
   const randomSeed = parseInt(seedArray.join('').slice(0, 15), 10);
-  // Se genera un Mersenne Twister generator con la semilla random.
+  // Se genera un Mersenne Twister generator con la semilla aleatoria.
+  // Mersenne Twister es un algoritmo que genera numeros pseudo aleatorios muy utilizado por su buena calidad.
   const randomGenerator = new MersenneTwister(randomSeed);
-  // Se genera el random state basado en el algoritmo Mersenne Twister.
+  // Se genera el state aleatorio basado en el algoritmo Mersenne Twister.
   const randomInt = randomGenerator.random_int();
   const state = randomInt.toString();
   // Se settea el state a utilizar.
