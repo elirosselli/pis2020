@@ -22,14 +22,12 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: cd into /sdk
-        run: cd sdk
-    
-      - name: install dependencies
-        run: npm install
-
-      - name: run linter
-        run: npm run linter
-
-      - name: run tests and coverage
-        run: npm run testCoverage
+      - name: run linter and tests
+        run: |
+          cd sdk
+          echo 'Installing dependencies...'
+          npm install
+          echo 'Running linter...'
+          npm run linter
+          echo 'Running tests...'
+          npm run testCoverage
