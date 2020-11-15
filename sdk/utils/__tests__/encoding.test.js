@@ -13,8 +13,9 @@ const base64 =
 
 describe('encoding', () => {
   it('calls base64URLtoBase64', () => {
+    // rompo un test a ver si el CI falla
     const response = base64URLtoBase64(base64URL);
-    expect(response).toBe(base64);
+    expect(response).toBe('123');
   });
 
   it('calls base64URLtoBase64 wrongLength', () => {
