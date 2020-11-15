@@ -37,9 +37,13 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
 
   // Se valida que el acr esté incluido en los definidos por IDUruguay.
+  // ACR: es un conjunto de métodos o procedimientos de autenticación
+  // que se consideran equivalentes entre sí en un contexto particular.
   isValid = isValid && ACR_LIST.includes(payloadObj.acr);
 
   // Se valida que los amr estén incluido en los definidos por IDUruguay.
+  // AMR: es un array de strings que corresponden a identificadores de
+  // métodos de autenticación usados en la autenticación.
   isValid =
     isValid &&
     Array.isArray(payloadObj.amr) &&
