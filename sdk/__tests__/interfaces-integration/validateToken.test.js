@@ -155,7 +155,7 @@ describe('configuration module and validate token integration', () => {
     });
   });
 
-  it('calls setParameters and validateToken with valid client id and invalid token (alg, iss, aud, expiration), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid client id and invalid token (alg, iss, aud, expiration)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -211,7 +211,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (acr), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (acr)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -267,7 +267,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (amr), fetch not called', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (amr)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -323,7 +323,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with invalid token (kid)', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (kid)', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -422,7 +422,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(3);
   });
 
-  it('calls setParameters and validateToken with invalid clientId (empty)', async () => {
+  it('calls setParameters and validateToken with invalid clientId (empty), fetch not called', async () => {
     setParameters({ idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
