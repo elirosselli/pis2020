@@ -1,10 +1,12 @@
 import { getParameters } from '../configuration';
 
-const productionPrefix = 'https://auth.iduruguay.gub.uy/oidc/v1';
+// rompo el linter a ver si el CI falla
+const productionPrefix = 
+'https://auth.iduruguay.gub.uy/oidc/v1';
 const developmentPrefix = 'https://auth-testing.iduruguay.gub.uy/oidc/v1';
 
 const tokenEndpoint = () => {
-  const { production } = getParameters();
+  const { production } = getParameters()
   const endpointPrefix = production ? productionPrefix : developmentPrefix;
   return `${endpointPrefix}/token`;
 };
