@@ -11,7 +11,7 @@ const validateNQCHAR = (type, value) => {
   // ASCII, el caracter espacio y que no contenga secuencias sensibles de caracteres.
   validNQCHAR =
     validNQCHAR &&
-    !value.match(/[^\x21\x23-\x5B\x5D-\x7E] /) &&
+    !value.match(/[^\x21\x23-\x5B\x5D-\x7E ]/) &&
     !value.match(
       /(\^@|\0|\n|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
     );
