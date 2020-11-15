@@ -23,12 +23,11 @@ En esta sección se presenta una visión simplificada del diseño del componente
 ### Módulos del componente SDK
 El componente se encuentra dividido en cuatro módulos los cuales se presentan a continuación.
 
-
-![alt text](docs/arq.png)
+<img src="docs/arq.png" width="55%">
 
 Correspondencia entre los módulos con los archivos y directorios del repositorio.
 
-![alt text](docs/implementacion.png)
+<img src="docs/implementacion.png" width="55%">
 
 ### Descripción de los módulos
 #### Interface 
