@@ -1,6 +1,6 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { decode } from 'base-64';
-import { ERRORS } from '../utils/constants';
+import { ACR_LIST, AMR_LIST, ERRORS } from '../utils/constants';
 
 import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 
@@ -36,33 +36,14 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
   // Se valida el kid (identificador único) del token.
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
 
-  // Lista de acr (Authentication Methods References) definidos por IDUruguay.
-  const acrList = [
-    'urn:iduruguay:nid:0',
-    'urn:iduruguay:nid:1',
-    'urn:iduruguay:nid:2',
-    'urn:iduruguay:nid:3',
-  ];
-
-  // Lista de amr (Authentication Methods References) definidos por IDUruguay.
-  const amrList = [
-    'urn:iduruguay:am:password',
-    'urn:iduruguay:am:totp',
-    'urn:iduruguay:am:ci',
-    'urn:iduruguay:am:idp:ae:0',
-    'urn:iduruguay:am:idp:ae:1',
-    'urn:iduruguay:am:idp:ae:2',
-    'urn:iduruguay:am:idp:ae:3',
-  ];
-
   // Se valida que el acr esté incluido en los definidos por IDUruguay.
-  isValid = isValid && acrList.includes(payloadObj.acr);
+  isValid = isValid && ACR_LIST.includes(payloadObj.acr);
 
   // Se valida que los amr estén incluido en los definidos por IDUruguay.
   isValid =
     isValid &&
     Array.isArray(payloadObj.amr) &&
-    payloadObj.amr.every(v => amrList.includes(v));
+    payloadObj.amr.every(v => AMR_LIST.includes(v));
 
   if (isValid) {
     return Promise.resolve({
