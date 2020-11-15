@@ -60,7 +60,7 @@ const jwksResponse = {
   ],
 };
 
-describe('configuration module and make request type validate token integration', () => {
+describe('configuration module and validate token integration', () => {
   fetch.mockImplementationOnce(() =>
     Promise.reject(
       Error({
@@ -81,7 +81,8 @@ describe('configuration module and make request type validate token integration'
       }),
     ),
   );
-  it('calls setParameters and makes a validate token request but fetch fails', async () => {
+
+  it('calls setParameters and validateToken but fetch fails', async () => {
     setParameters({ clientId, idToken });
     try {
       await validateToken();
@@ -91,9 +92,9 @@ describe('configuration module and make request type validate token integration'
     expect.assertions(1);
   });
 
-  it('calls setParameters and makes a validate token request, with valid token', async () => {
+  it('calls setParameters and validateToken, with valid token', async () => {
     setParameters({ clientId, idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -126,6 +127,21 @@ describe('configuration module and make request type validate token integration'
     KEYUTIL.getKey.mockImplementation(() => pubKey);
 
     const result = await validateToken();
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
     expect(result).toStrictEqual({
       jwk: jwksResponse,
       message: ERRORS.NO_ERROR,
@@ -140,9 +156,9 @@ describe('configuration module and make request type validate token integration'
     });
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (alg, iss, aud, expiration)', async () => {
+  it('calls setParameters and validateToken with valid client id and invalid token (alg, iss, aud, expiration), fetch not called', async () => {
     setParameters({ clientId, idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -177,13 +193,28 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (acr)', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (acr), fetch not called', async () => {
     setParameters({ clientId, idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -218,13 +249,28 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (amr)', async () => {
+  it('calls setParameters and validateToken with valid clientId and invalid token (amr), fetch not called', async () => {
     setParameters({ clientId, idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -259,13 +305,28 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (kid)', async () => {
+  it('calls setParameters and validateToken with invalid token (kid)', async () => {
     setParameters({ clientId, idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -302,13 +363,28 @@ describe('configuration module and make request type validate token integration'
         aud: [parameters.clientId],
         verifyAt: time,
       });
-      expect.assertions(3);
     }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
   });
 
-  it('calls setParameters and makes a validate token request, with invalid token (empty)', async () => {
+  it('calls setParameters and validateToken with invalid token (empty)', async () => {
     setParameters({ clientId });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
@@ -329,12 +405,27 @@ describe('configuration module and make request type validate token integration'
     } catch (error) {
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(3);
   });
 
-  it('calls setParameters and makes a validate token request, with invalid clientId (empty)', async () => {
+  it('calls setParameters and validateToken with invalid clientId (empty)', async () => {
     setParameters({ idToken });
-    const parameters = getParameters();
+    let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -355,6 +446,21 @@ describe('configuration module and make request type validate token integration'
     } catch (error) {
       expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
     }
-    expect.assertions(2);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(3);
   });
 });

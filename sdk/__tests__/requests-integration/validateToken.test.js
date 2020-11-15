@@ -81,6 +81,7 @@ describe('configuration module and make request type validate token integration'
       }),
     ),
   );
+
   it('calls setParameters and makes a validate token request but fetch fails', async () => {
     setParameters({ clientId, idToken });
     try {

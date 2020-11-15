@@ -349,7 +349,6 @@ Al llamar a la función se valida el *id_token*. Para esto se obtiene del *JWKS 
 
 Para llamar a la función se debe utilizar la función:
 
-
 ```javascript
 try {
   const respValidateToken = await validateToken();
