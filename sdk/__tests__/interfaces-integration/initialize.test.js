@@ -42,7 +42,7 @@ describe('configuration module and initialize integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const scope = 'scope';
+    const scope = 'correctScope';
 
     const response = initialize(
       redirectUri,

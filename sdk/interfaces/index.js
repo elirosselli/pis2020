@@ -10,8 +10,14 @@ import {
 
 const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
   let response;
-  if (clientId && redirectUri && clientSecret) {
-    // Si los parámetros clientId, clientSecret y redirectUri no son vacíos se hace el set de los parámetros.
+  if (
+    clientId &&
+    redirectUri &&
+    clientSecret &&
+    typeof production === 'boolean'
+  ) {
+    // Si los parámetros clientId, clientSecret y redirectUri no son vacíos
+    // y production es de tipo booleano se hace el set de los parámetros.
     const scopeToSet = scope || ''; // Si no se pasa el scope como parámetro, se toma como undefined, entonces se debe asignar el string vacío.
     setParameters({
       redirectUri,
@@ -28,7 +34,12 @@ const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
     };
   } else {
     // Si alguno de los parámetros es vacío se retorna el error correspondiente.
-    response = initializeErrors(clientId, redirectUri, clientSecret);
+    response = initializeErrors(
+      clientId,
+      redirectUri,
+      clientSecret,
+      production,
+    );
   }
   // Se retorna el error y el mensaje correspondiente.
   return response;

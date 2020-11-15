@@ -8,7 +8,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('login', () => {
   it('calls login and works correctly', async () => {
-    const code = 'code';
+    const code = 'correctCode';
     makeRequest.mockReturnValue(
       Promise.resolve({
         code,

@@ -17,17 +17,19 @@ afterEach(() => jest.clearAllMocks());
 
 describe('endpoints', () => {
   it('calls login in production', () => {
-    const scope = 'scope';
+    const scope = 'correctScope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = true;
-    const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const state = '123456';
+    const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
       scope,
       clientId,
       redirectUri,
       production,
+      state,
     });
 
     const returnedLoginEndpoint = loginEndpoint();
@@ -35,16 +37,18 @@ describe('endpoints', () => {
   });
 
   it('calls login in development', () => {
-    const scope = 'scope';
+    const scope = 'correctScope';
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = false;
-    const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const state = '123456';
+    const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
       scope,
       clientId,
       redirectUri,
+      state,
       production,
     });
 
@@ -102,7 +106,7 @@ describe('endpoints', () => {
 
   it('calls logoutEndpoint in production', () => {
     const idToken = 'idToken';
-    const state = 'state';
+    const state = 'correctState';
     const production = true;
     const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 
@@ -118,7 +122,7 @@ describe('endpoints', () => {
 
   it('calls logoutEndpoint in development', () => {
     const idToken = 'idToken';
-    const state = 'state';
+    const state = 'correctState';
     const production = false;
     const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 

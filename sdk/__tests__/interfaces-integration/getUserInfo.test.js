@@ -1,13 +1,13 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { ERRORS } from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
 } from '../../configuration';
-import makeRequest from '../../requests';
+import { getUserInfo } from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -39,8 +39,8 @@ const userId = 'uy-cid-12345678';
 const idToken =
   'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
 
-describe('configuration module and make request type get user info integration', () => {
-  it('calls set parameters and makes a get user info request with all scopes', async () => {
+describe('configuration module and get user info integration', () => {
+  it('calls set parameters and get user info with all scopes', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -62,10 +62,10 @@ describe('configuration module and make request type get user info integration',
       production: false,
       code,
       accessToken,
+      idToken,
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken,
       state: '',
       scope: '',
     });
@@ -97,7 +97,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
@@ -154,7 +154,7 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with personal_info scope', async () => {
+  it('calls set parameters and get user info with personal_info scope', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -201,7 +201,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
@@ -248,7 +248,7 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with no claims', async () => {
+  it('calls set parameters and get user info with no claims', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -288,7 +288,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
@@ -328,7 +328,7 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with expired access token', async () => {
+  it('calls set parameters and get user info with expired access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -368,7 +368,7 @@ describe('configuration module and make request type get user info integration',
     );
 
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
@@ -391,7 +391,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls set parameters, makes a get user info request and fetch fails', async () => {
+  it('calls set parameters and get user info, fetch fails', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -427,7 +427,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
@@ -449,7 +449,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls set parameters, makes a get user info request and returns some error', async () => {
+  it('calls set parameters and get user info, returns some error', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -487,7 +487,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
@@ -509,7 +509,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls set parameters, makes a get user info request and returns some error with www authenticate header', async () => {
+  it('calls set parameters and get user info, returns some error with www authenticate header', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -547,7 +547,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
@@ -569,7 +569,7 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls set parameters and makes a get user info request with empty access token', async () => {
+  it('calls set parameters and get user info with empty access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -599,7 +599,7 @@ describe('configuration module and make request type get user info integration',
       scope: '',
     });
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
@@ -622,10 +622,10 @@ describe('configuration module and make request type get user info integration',
   });
 
   it('calls getUserInfo with empty id token', async () => {
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const code = 'correctCode';
-    const redirectUri = 'redirectUri';
+    const clientId = 'clienttt';
+    const clientSecret = 'secrettest';
+    const code = 'test';
+    const redirectUri = 'redirecttesturi';
     setParameters({
       clientId,
       clientSecret,
@@ -651,7 +651,7 @@ describe('configuration module and make request type get user info integration',
       scope: '',
     });
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
     }

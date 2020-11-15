@@ -21,9 +21,16 @@ const errorCodes = {
   invalidClient: 'invalid_client',
   invalidIdTokenHint: 'invalid_id_token_hint',
   invalidUrlLogout: 'invalid_url_logout',
-  invalidIdToken: 'invalid_id_token',
+  invalidSub: 'gubuy_invalid_sub',
+  invalidIdToken: 'gubuy_invalid_id_token',
   invalidLengthError: 'base64URL_to_base64_invalid_length_error',
   invalidBase64ToHexConversion: 'invalid_base64_to_hex_conversion',
+  invalidState: 'invalid_state',
+  invalidTokenType: 'invalid_token_type',
+  invalidScope: 'invalid_scope',
+  invalidExpiresIn: 'invalid_expires_in',
+  invalidProduction: 'invalid_production',
+  invalidParameterType: 'invalid_parameter_type',
 };
 
 const errorDescriptions = {
@@ -42,10 +49,17 @@ const errorDescriptions = {
     'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)',
   invalidIdTokenHint: 'Invalid id_token_hint parameter',
   invalidUrlLogout: 'Invalid returned url for logout',
-  invalidIdToken: 'Invalid id token',
+  invalidSub: 'Sub returned by API does not match given sub',
+  invalidIdToken: 'Invalid id_token parameter',
   invalidLengthError:
     'Input base64url string is the wrong length to determine padding',
   invalidBase64ToHexConversion: 'Error while decoding base64 to hex',
+  invalidState: 'Invalid state parameter',
+  invalidTokenType: 'Invalid token_type parameter',
+  invalidScope: 'Invalid scope parameter',
+  invalidExpiresIn: 'Invalid expires_in parameter',
+  invalidProduction: 'Invalid production parameter',
+  invalidParameterType: 'Invalid parameter type',
 };
 
 class ErrorNoError extends Error {
@@ -206,6 +220,19 @@ class ErrorInvalidUrlLogout extends Error {
   }
 }
 
+class ErrorInvalidSub extends Error {
+  constructor(
+    errorCode = errorCodes.invalidSub,
+    errorDescription = errorDescriptions.invalidSub,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidSub';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 class ErrorInvalidIdToken extends Error {
   constructor(
     errorCode = errorCodes.invalidIdToken,
@@ -214,6 +241,19 @@ class ErrorInvalidIdToken extends Error {
   ) {
     super(...params);
     this.name = 'invalidIdToken';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidState extends Error {
+  constructor(
+    errorCode = errorCodes.invalidState,
+    errorDescription = errorDescriptions.invalidState,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidState';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
@@ -232,6 +272,19 @@ class ErrorBase64InvalidLength extends Error {
   }
 }
 
+class ErrorInvalidTokenType extends Error {
+  constructor(
+    errorCode = errorCodes.invalidTokenType,
+    errorDescription = errorDescriptions.invalidTokenType,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidTokenType';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
 class ErrorBase64ToHexConversion extends Error {
   constructor(
     errorCode = errorCodes.invalidBase64ToHexConversion,
@@ -240,6 +293,58 @@ class ErrorBase64ToHexConversion extends Error {
   ) {
     super(...params);
     this.name = 'invalidBase64ToHexConversion';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidScope extends Error {
+  constructor(
+    errorCode = errorCodes.invalidScope,
+    errorDescription = errorDescriptions.invalidScope,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidScope';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidExpiresIn extends Error {
+  constructor(
+    errorCode = errorCodes.invalidExpiresIn,
+    errorDescription = errorDescriptions.invalidExpiresIn,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidExpiresIn';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidProduction extends Error {
+  constructor(
+    errorCode = errorCodes.invalidProduction,
+    errorDescription = errorDescriptions.invalidProduction,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidProduction';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+class ErrorInvalidParameterType extends Error {
+  constructor(
+    errorCode = errorCodes.invalidParameterType,
+    errorDescription = errorDescriptions.invalidParameterType,
+    ...params
+  ) {
+    super(...params);
+    this.name = 'invalidParameterType';
     this.errorCode = errorCode;
     this.errorDescription = errorDescription;
   }
@@ -258,9 +363,31 @@ const ERRORS = {
   INVALID_CLIENT: new ErrorInvalidClient(),
   INVALID_ID_TOKEN_HINT: new ErrorInvalidIdTokenHint(),
   INVALID_URL_LOGOUT: new ErrorInvalidUrlLogout(),
+  INVALID_SUB: new ErrorInvalidSub(),
   INVALID_ID_TOKEN: new ErrorInvalidIdToken(),
   INVALID_BASE64_LENGTH: new ErrorBase64InvalidLength(),
   INVALID_BASE64_TO_HEX_CONVERSION: new ErrorBase64ToHexConversion(),
+  INVALID_STATE: new ErrorInvalidState(),
+  INVALID_TOKEN_TYPE: new ErrorInvalidTokenType(),
+  INVALID_SCOPE: new ErrorInvalidScope(),
+  INVALID_EXPIRES_IN: new ErrorInvalidExpiresIn(),
+  INVALID_PRODUCTION: new ErrorInvalidProduction(),
+  INVALID_PARAMETER_TYPE: new ErrorInvalidParameterType(),
 };
 
-export { REQUEST_TYPES, ERRORS };
+const PARAMETERS = {
+  redirectUri: 'redirectUri',
+  clientId: 'clientId',
+  clientSecret: 'clientSecret',
+  code: 'code',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenType: 'tokenType',
+  expiresIn: 'expiresIn',
+  idToken: 'idToken',
+  state: 'state',
+  scope: 'scope',
+  production: 'production',
+};
+
+export { REQUEST_TYPES, ERRORS, PARAMETERS };

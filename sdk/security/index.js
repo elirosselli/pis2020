@@ -1,5 +1,11 @@
-/* eslint-disable import/prefer-default-export */
-// istanbul ignore file
+/* istanbul ignore file */
+import { generateRandomState, validateSub } from './validateResponse';
 import validateTokenSecurity from './validateTokenSecurity';
+import validateParameters from './validateParameters';
 
-export { validateTokenSecurity };
+export {
+  generateRandomState,
+  validateParameters,
+  validateSub,
+  validateTokenSecurity,
+};

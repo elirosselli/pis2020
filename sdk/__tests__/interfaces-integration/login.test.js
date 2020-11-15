@@ -1,9 +1,5 @@
 import { ERRORS } from '../../utils/constants';
-import {
-  setParameters,
-  getParameters,
-  resetParameters,
-} from '../../configuration';
+import { getParameters, resetParameters } from '../../configuration';
 import { initialize, login } from '../../interfaces';
 
 const mockAddEventListener = jest.fn();
@@ -15,14 +11,28 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
+jest.mock('uuid', () =>
+  jest.fn().mockReturnValue('b5be6251-9589-43bf-b12f-f6447dc179c0'),
+);
+
+const mockState = '3035783770';
+jest.mock(
+  'mersenne-twister',
+  () =>
+    function mockMersenne() {
+      return {
+        random_int: jest.fn(() => mockState),
+      };
+    },
+);
+
 afterEach(() => jest.clearAllMocks());
 
 beforeEach(() => {
   resetParameters();
 });
 
-const correctLoginEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri&state=${mockState}`;
 
 const mockAddEventListenerError = (eventType, eventHandler) => {
   if (eventType === 'url')
@@ -57,7 +67,7 @@ describe('configuration module and login integration', () => {
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2`,
+          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=${mockState}`,
         });
     });
     const response = await login();
@@ -65,6 +75,7 @@ describe('configuration module and login integration', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
+      state: mockState,
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
@@ -81,64 +92,7 @@ describe('configuration module and login integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
-      scope: '',
-    });
-  });
-
-  it('calls initialize and login with state', async () => {
-    const redirectUri = 'redirectUri';
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const state = 'state';
-    initialize(redirectUri, clientId, clientSecret, false);
-
-    setParameters({ state });
-
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state,
-      scope: '',
-    });
-
-    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
-      if (eventType === 'url')
-        eventHandler({
-          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=${parameters.state}`,
-        });
-    });
-    const response = await login();
-    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(response).toStrictEqual({
-      code: '35773ab93b5b4658b81061ce3969efc2',
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-    });
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: response.code,
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state,
+      state: mockState,
       scope: '',
     });
   });
@@ -344,8 +298,7 @@ describe('configuration module and login integration', () => {
   });
 
   it('calls initialize with clientId different from RP and then calls login', async () => {
-    const badLoginEndpoint =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=invalidClientId&redirect_uri=redirectUri';
+    const badLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=invalidClientId&redirect_uri=redirectUri&state=${mockState}`;
     const redirectUri = 'redirectUri';
     const clientId = 'invalidClientId';
     const clientSecret = 'clientSecret';
@@ -388,15 +341,14 @@ describe('configuration module and login integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
+      state: mockState,
       scope: '',
     });
     expect.assertions(5);
   });
 
   it('calls initialize with redirectUri different from RP and then calls login', async () => {
-    const badLoginEndpoint =
-      'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=invalidRedirectUri';
+    const badLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=invalidRedirectUri&state=${mockState}`;
     const redirectUri = 'invalidRedirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -439,7 +391,7 @@ describe('configuration module and login integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
+      state: mockState,
       scope: '',
     });
     expect.assertions(5);
@@ -493,7 +445,7 @@ describe('configuration module and login integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
+      state: mockState,
       scope: '',
     });
     expect.assertions(5);
