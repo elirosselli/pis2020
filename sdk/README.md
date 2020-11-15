@@ -197,7 +197,13 @@ import { initialize, login } from 'sdk-gubyuy-test';
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
-initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miLogoutRedirectUri');
+initizalize(
+  'miRedirectUri',
+  'miClientId',
+  'miClientSecret',
+  'miProduction',
+  'miScope',
+);
 ```
 
 Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP.
@@ -236,20 +242,26 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, y *post_logout_redirect_uri*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
+| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *id_token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
-| `logout()`                                                    | Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al *post_logout_redirect_uri* especificado en `initialize` una vez cerrada la sesión.                                                                                                                                          |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *post_logout_redirect_uri* para luego del logout.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*.
 
 ```javascript
-initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miPostLogoutRedirectUri');
+initialize(
+  'miRedirectUri',
+  'miClientId',
+  'miClientSecret',
+  'miProduction',
+  'miScope',
+);
 ```
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
@@ -339,8 +351,6 @@ En caso de que el *token* sea inválido devuelve un error de tipo `ERRORS.INVALI
 
 La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
 
-Al llamar a esta función, se abre un navegador web en el dispositivo del usuario con la URL de cierre de sesión de ID Uruguay, que muestra al usuario final que se está realizando el cierre de sesión. Una vez finalizado el cierre de sesión, se redirige al *post_logout_redirect_uri* especificado al inicializar el SDK.
-
 ```javascript
 await logout();
 ```
@@ -391,8 +401,7 @@ Los errores definidos son:
 | invalidGrant                  | `ErrorInvalidGrant`              | invalid_grant                             | The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.  | Cuando el code o refresh_token son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria.  | Comprobar la validez del code o refresh_token según corresponda.                            |
 | invalidToken                  | `ErrorInvalidToken`              | invalid_token                             | The access token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el access_token es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del access_token.                                                      |
 | invalidClient                 | `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el client_secret y client_id correspondan con los registrados por ID Uruguay.  |
-| invalidTokenHint              | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro id_token_hint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del id_token_hint.                                        |
-| invalidUrlLogout              | `ErrorInvalidUrlLogout`          | invalid_url_logout                        | Invalid returned url for logout.                                                                                                                                                        | Cuando la URL de logout es inválida.                                                                                    | Comprobar la validez de la URL de logout.                                                   |
+| invalidTokenHint              | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro id_token_hint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del id_token_hint.                                        |                                                   |
 | invalidIdToken                | `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
 | invalidLengthError            | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 | invalidBase64ToHexConversion  | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
