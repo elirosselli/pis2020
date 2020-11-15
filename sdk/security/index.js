@@ -1,5 +1,11 @@
-// istanbul ignore file
+/* istanbul ignore file */
+import { generateRandomState, validateSub } from './validateResponse';
 import validateTokenSecurity from './validateTokenSecurity';
 import validateParameters from './validateParameters';
 
-export { validateTokenSecurity, validateParameters };
+export {
+  generateRandomState,
+  validateParameters,
+  validateSub,
+  validateTokenSecurity,
+};

@@ -10,9 +10,9 @@ const tokenEndpoint = () => {
 };
 
 const loginEndpoint = () => {
-  const { production, redirectUri, clientId, scope } = getParameters();
+  const { production, redirectUri, clientId, scope, state } = getParameters();
   const endpointPrefix = production ? productionPrefix : developmentPrefix;
-  return `${endpointPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  return `${endpointPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 };
 
 const userInfoEndpoint = () => {

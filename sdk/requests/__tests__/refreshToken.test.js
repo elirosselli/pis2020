@@ -15,6 +15,10 @@ jest.mock('../../utils/helpers', () => ({
 const contentType = 'application/json';
 
 describe('refreshToken', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('calls refreshToken with correct refreshToken', async () => {
     const expiresIn = 3600;
     const idToken =
@@ -237,6 +241,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
+
     expect.assertions(1);
   });
 

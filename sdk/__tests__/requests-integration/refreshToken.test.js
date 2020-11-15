@@ -64,7 +64,7 @@ const fetchMockImplementationWithInvalidOrEmptyToken = () =>
     },
   });
 
-describe('configuration module and make request type refresh token integration', () => {
+describe('configuration & security modules and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     setParameters({
       clientId,

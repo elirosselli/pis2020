@@ -1,10 +1,14 @@
 import { Linking } from 'react-native';
-import { getParameters, setParameters } from '../configuration';
+import { getParameters, setParameters, eraseState } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
+import { generateRandomState } from '../security';
 import { ERRORS } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
+  // Se genera un random state para el pedido al endpoint de login,
+  // que además se settea en los parámetros mediante una llamada a setParameters.
+  generateRandomState();
   const parameters = getParameters();
   let resolveFunction;
   let rejectFunction;
@@ -18,25 +22,30 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
-    // Obtiene el code a partir de la url a la que
+    // Obtiene el code y state a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
-    // Si existe el code, se guarda y se resuelve la promise
-    // si no, se rechaza la promise con un error.
-    if (code) {
+    const returnedState = event.url.match(/&state=([^&]+)/);
+
+    // Si existe el código y los states coinciden,
+    // se guarda y se resuelve la promise.
+    // Si no, se rechaza la promise con un error.
+    if (code && returnedState[1] === parameters.state) {
       setParameters({ code: code[1] });
-      // Se retorna el código y el error correspondiente (en este caso no hay error).
+      // Se retorna el código, state y el error correspondiente (en este caso no hay error).
       resolveFunction({
         message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
         code: code[1],
-        // TODO: return state.
+        state: returnedState[1],
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
       rejectFunction(ERRORS.ACCESS_DENIED);
-    } else rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
+    } else {
+      rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
+    }
 
     // Se elimina el handler para los eventos url.
     Linking.removeEventListener('url', handleOpenUrl);
@@ -54,18 +63,22 @@ const login = async () => {
     )
       await Linking.openURL(loginEndpoint());
     else {
-      // En caso de que algún parámetro sea vacío, se elimina el handler y rechaza la promise, retornando el error correspondiente.
+      // En caso de que algún parámetro sea vacío, se elimina el handler,
+      // se borra el state, y se rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
       const errorResponse = initializeErrors(
         parameters.clientId,
         parameters.redirectUri,
         parameters.clientSecret,
       );
+      eraseState();
       rejectFunction(errorResponse);
     }
   } catch (error) {
-    // En caso de error, se elimina el handler y rechaza la promise.
+    // En caso de error, se elimina el handler y se borra el state,
+    // y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
+    eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
   }
   return promise;

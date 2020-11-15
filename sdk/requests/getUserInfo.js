@@ -1,13 +1,21 @@
 import { Platform } from 'react-native';
-import { userInfoEndpoint } from '../utils/endpoints';
 import { getParameters } from '../configuration';
+import { validateSub } from '../security';
+import { userInfoEndpoint } from '../utils/endpoints';
 import { fetch } from '../utils/helpers';
 import { ERRORS } from '../utils/constants';
 
 const getUserInfo = async () => {
-  const { accessToken } = getParameters();
+  const { accessToken, idToken } = getParameters();
+  // Si no existe un access token guardado,
+  // se devuelve el error correspondiente.
   if (!accessToken) {
     return Promise.reject(ERRORS.INVALID_TOKEN);
+  }
+  // Se necesita un id token para validar el sub devuelto por el OP.
+  // Si no existe este id token, se devuelve el error correspondiente.
+  if (!idToken) {
+    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
   }
   try {
     const response = await fetch(
@@ -34,11 +42,16 @@ const getUserInfo = async () => {
       return Promise.reject(ERRORS.FAILED_REQUEST);
     }
 
-    // Resuelvo promesa con la información del usuario.
-    responseJson.message = ERRORS.NO_ERROR;
-    responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
-    responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
-    return Promise.resolve(responseJson);
+    // Resuelvo la promesa con la información del usuario si
+    // el sub correspondiente al token utilizado coincide con
+    // el sub de la respuesta del OP.
+    if (validateSub(responseJson.sub)) {
+      responseJson.message = ERRORS.NO_ERROR;
+      responseJson.errorCode = ERRORS.NO_ERROR.errorCode;
+      responseJson.errorDescription = ERRORS.NO_ERROR.errorDescription;
+      return Promise.resolve(responseJson);
+    }
+    return Promise.reject(ERRORS.INVALID_SUB);
   } catch (error) {
     const stringsHeaders = error.headers['Www-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)

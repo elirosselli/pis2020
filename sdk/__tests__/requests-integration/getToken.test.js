@@ -41,7 +41,7 @@ const fetchMockImplementation = () =>
       }),
   });
 
-describe('configuration module and make request type get token integration', () => {
+describe('configuration & security modules and make request type get token integration', () => {
   it('calls setParameters and makes a get token request', async () => {
     const redirectUri = 'redirectUri';
     const clientId = '898562';

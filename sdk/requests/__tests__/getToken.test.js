@@ -15,6 +15,10 @@ jest.mock('../../utils/helpers', () => ({
 const contentType = 'application/json';
 
 describe('getToken', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('calls getToken with correct code', async () => {
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';

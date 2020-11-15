@@ -1,5 +1,5 @@
 import { PARAMETERS, ERRORS } from '../utils/constants';
-import { validateParameters } from '../security';
+import validateParameters from '../security/validateParameters';
 
 const parameters = {
   redirectUri: '',
@@ -69,10 +69,15 @@ const eraseCode = () => {
   parameters.code = '';
 };
 
+const eraseState = () => {
+  parameters.state = '';
+};
+
 export {
   getParameters,
   setParameters,
   clearParameters,
   resetParameters,
   eraseCode,
+  eraseState,
 };

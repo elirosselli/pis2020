@@ -9,17 +9,19 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
-const mockAddEventListener = jest.fn();
-const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
-
-jest.mock('react-native/Libraries/Linking/Linking', () => ({
-  addEventListener: mockAddEventListener,
-  removeEventListener: jest.fn(),
-  openURL: mockLinkingOpenUrl,
-}));
-
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
+}));
+
+const mockSub = '5485';
+
+jest.mock('jsrsasign', () => ({
+  __esModule: true,
+  default: {
+    jws: {
+      JWS: { readSafeJSONString: jest.fn(() => ({ sub: mockSub })) },
+    },
+  },
 }));
 
 afterEach(() => jest.clearAllMocks());
@@ -34,6 +36,8 @@ const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
 const userInfoEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
 const userId = 'uy-cid-12345678';
+const idToken =
+  'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
 
 describe('configuration module and make request type get user info integration', () => {
   it('calls set parameters and makes a get user info request with all scopes', async () => {
@@ -41,7 +45,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -54,7 +65,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -69,7 +80,7 @@ describe('configuration module and make request type get user info integration',
             primer_nombre: 'testNombre',
             segundo_apellido: 'testApellido',
             segundo_nombre: 'testSegundoNombre',
-            sub: '5968',
+            sub: mockSub,
             uid: userId,
             name: 'name',
             given_name: 'given_name',
@@ -111,7 +122,7 @@ describe('configuration module and make request type get user info integration',
       primer_nombre: 'testNombre',
       segundo_apellido: 'testApellido',
       segundo_nombre: 'testSegundoNombre',
-      sub: '5968',
+      sub: mockSub,
       uid: userId,
       name: 'name',
       given_name: 'given_name',
@@ -137,7 +148,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -148,7 +159,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -161,7 +179,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -176,7 +194,7 @@ describe('configuration module and make request type get user info integration',
             primer_nombre: 'testNombre',
             segundo_apellido: 'testApellido',
             segundo_nombre: 'testSegundoNombre',
-            sub: '5968',
+            sub: mockSub,
             uid: userId,
             rid: 'rid',
           }),
@@ -208,7 +226,7 @@ describe('configuration module and make request type get user info integration',
       primer_nombre: 'testNombre',
       segundo_apellido: 'testApellido',
       segundo_nombre: 'testSegundoNombre',
-      sub: '5968',
+      sub: mockSub,
       uid: userId,
       rid: 'rid',
     });
@@ -224,7 +242,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -235,7 +253,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -248,7 +273,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -256,7 +281,10 @@ describe('configuration module and make request type get user info integration',
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
-        json: () => Promise.resolve({}),
+        json: () =>
+          Promise.resolve({
+            sub: mockSub,
+          }),
       }),
     );
 
@@ -280,6 +308,7 @@ describe('configuration module and make request type get user info integration',
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
+      sub: mockSub,
     });
 
     parameters = getParameters();
@@ -293,7 +322,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -304,7 +333,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -317,7 +353,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -348,7 +384,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -360,7 +396,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -373,7 +416,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -399,7 +442,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -411,7 +454,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -424,7 +474,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -452,7 +502,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -464,7 +514,14 @@ describe('configuration module and make request type get user info integration',
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
-    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -477,7 +534,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -505,7 +562,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -523,6 +580,7 @@ describe('configuration module and make request type get user info integration',
       accessToken: '',
       code,
       redirectUri,
+      idToken,
     });
 
     let parameters = getParameters();
@@ -536,7 +594,7 @@ describe('configuration module and make request type get user info integration',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
     });
@@ -553,6 +611,58 @@ describe('configuration module and make request type get user info integration',
       production: false,
       code,
       accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls getUserInfo with empty id token', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken: '',
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      code,
+      accessToken,
+      production: false,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    try {
+      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      code,
+      production: false,
+      accessToken,
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
