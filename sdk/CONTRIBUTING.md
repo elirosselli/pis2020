@@ -3,6 +3,7 @@
 ## Índice
 
 - [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#introducci%C3%B3n)
+- [Diseño en alto nivel del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#Diseño-en-alto-nivel-del-componente-SDK)
 - [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
   - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
@@ -14,7 +15,47 @@
 
 ## Introducción
 
-Este documento presenta documentación técnica detallada sobre la implementación de las funcionalidades del sdk y los módulos que lo componen. También se incluyen instrucciones para poder ejecutar las pruebas unitarias y el analizador estático de código (*linter*).
+Este documento presenta documentación técnica detallada sobre la implementación de las funcionalidades del SDK y los módulos que lo componen. También se incluyen instrucciones para poder ejecutar las pruebas unitarias y el analizador estático de código (*linter*).
+
+## Diseño en alto nivel del componente SDK
+
+En esta sección se presenta una visión simplificada del diseño del componente junto con algunas recomendaciones en caso de agregar funcionalidades al componente.
+
+### Módulos del componente SDK
+
+El componente se encuentra dividido en cuatro módulos los cuales se presentan a continuación.
+
+<img src="docs/arq.png" width="55%">
+
+Correspondencia entre los módulos con los archivos y directorios del repositorio.
+
+<img src="docs/implementacion.png" width="55%">
+
+### Descripción de los módulos
+
+#### Interface
+
+Se encuentran las funcionalidades expuestas por el componente. Una vez que se invoca una funcionalidad al componente, el módulo interface resuelve la misma invocando funcionalidades expuestas por los módulos **Requests** o **Configuration**.
+Si se desea incorporar una nueva funcionalidad al componente, se recomienda publicarla en éste módulo para mantener la coherencia del componente.
+
+#### Configuration
+
+En este módulo se encuentran definidos todos los parámetros que se utilizan durante la ejecución del componente.
+La mayoría de los parámetros almacenados se corresponden con atributos que se utilizan en las peticiones HTTP que realiza el componente a la API de Id Uruguay.
+
+El módulo posee funcionalidades para establecer u obtener los parámetros almacenados en el componente. Por lo tanto, en caso de agregar una variable o constante que será utilizada globalmente en el componente, se recomienda incorporarlo en este módulo.
+
+#### Requests
+
+Las peticiones HTTP a los diferentes *endpoints* de la API Id Uruguay se realizan en el módulo **Requests**. En este módulo se utiliza una variante de la implementación estándar de la función [fetch](https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Utilizando_Fetch) de *Javascript* la cual incluye reintentos en caso de no obtener respuesta.
+
+En caso de querer incluir nuevas peticiones a diferentes *endpoints*, se recomienda hacerlo en este módulo agregando el tipo de petición deseado.
+
+#### Security
+
+En el módulo **Security**, se implementan las validaciones de los tokens y los parametros del módulo **Configuration**. Además se realiza la validacion de las respuestas obtenidas por la API de Id Uruguay.
+
+Se recomienda modificar este módulo en caso de agregar más controles en el componente.
 
 ## Funcionalidades del componente SDK
 
