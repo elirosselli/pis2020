@@ -313,7 +313,7 @@ PODS:
     - React-jsi (= 0.63.2)
   - RNCCheckbox (0.5.5):
     - React
-  - RNSslPinning (1.5.1):
+  - RNSslPinning (1.5.2):
     - AFNetworking (~> 4.0)
     - React
   - Yoga (1.14.0)
@@ -484,7 +484,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4d2e726957f4087449739b595f107c0d4b6c2d2d
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
   RNCCheckbox: 0d96d7725fecba464d0af856e93ce66dde780d75
-  RNSslPinning: da19ab68836374753093259ab3a99ada290b4a02
+  RNSslPinning: 6922b4bdf9db554978bdd7eb05cc69ea9ac0b3ba
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

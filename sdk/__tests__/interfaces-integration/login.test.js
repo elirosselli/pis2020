@@ -1,11 +1,10 @@
-import REQUEST_TYPES from '../../utils/constants';
+import { ERRORS } from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
 } from '../../configuration';
-import { initialize } from '../../interfaces';
-import makeRequest from '../../requests';
+import { initialize, login } from '../../interfaces';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
@@ -24,8 +23,7 @@ beforeEach(() => {
 
 const correctLoginEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=redirectUri';
-const invalidAuthCodeError = 'Invalid authorization code';
-const couldntMakeRequestError = "Couldn't make request";
+
 const mockAddEventListenerError = (eventType, eventHandler) => {
   if (eventType === 'url')
     eventHandler({
@@ -33,20 +31,19 @@ const mockAddEventListenerError = (eventType, eventHandler) => {
     });
 };
 
-describe('configuration module and make request type login integration', () => {
-  it('calls initialize and makes a login request', async () => {
+describe('configuration module and login integration', () => {
+  it('calls initialize and login', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(redirectUri, clientId, clientSecret, false);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -63,17 +60,22 @@ describe('configuration module and make request type login integration', () => {
           url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2`,
         });
     });
-    const code = await makeRequest(REQUEST_TYPES.LOGIN);
+    const response = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(response).toStrictEqual({
+      code: '35773ab93b5b4658b81061ce3969efc2',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
-      code,
+      production: false,
+      code: response.code,
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -84,13 +86,12 @@ describe('configuration module and make request type login integration', () => {
     });
   });
 
-  it('calls initialize and makes a login request with state', async () => {
+  it('calls initialize and login with state', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    const state = 'state';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    const state = 'correctState';
+    initialize(redirectUri, clientId, clientSecret, false);
 
     setParameters({ state });
 
@@ -99,7 +100,7 @@ describe('configuration module and make request type login integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -116,17 +117,22 @@ describe('configuration module and make request type login integration', () => {
           url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=${parameters.state}`,
         });
     });
-    const code = await makeRequest(REQUEST_TYPES.LOGIN);
+    const response = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(code).toBe('35773ab93b5b4658b81061ce3969efc2');
+    expect(response).toStrictEqual({
+      code: '35773ab93b5b4658b81061ce3969efc2',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
-      code,
+      production: false,
+      code: response.code,
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -137,19 +143,17 @@ describe('configuration module and make request type login integration', () => {
     });
   });
 
-  it('calls initialize and makes a login request with empty clientId', async () => {
+  it('calls initialize and login with empty clientId', async () => {
     const redirectUri = 'redirectUri';
     const clientId = '';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -159,18 +163,41 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+
+    const result = initialize(redirectUri, clientId, clientSecret, false);
+    expect(result).toBe(ERRORS.INVALID_CLIENT_ID);
+
+    parameters = getParameters();
+
+    // No se tiene que haber setteado ninguno de los parámetros
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
     mockAddEventListener.mockImplementation();
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
-      expect(error).toMatchObject(Error(couldntMakeRequestError));
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -180,21 +207,86 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(5);
   });
 
-  it('calls initialize and makes a login request with empty redirectUri', async () => {
+  it('calls initialize and login with empty clientSecret', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = '';
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    const result = initialize(redirectUri, clientId, clientSecret, false);
+    expect(result).toBe(ERRORS.INVALID_CLIENT_SECRET);
+
+    parameters = getParameters();
+
+    // No se tiene que haber setteado ninguno de los parámetros
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    mockAddEventListener.mockImplementation();
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(5);
+  });
+
+  it('calls initialize and login with empty redirectUri', async () => {
     const redirectUri = '';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -204,20 +296,19 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
-    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
-      if (eventType === 'url')
-        eventHandler({
-          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81062ce3969efc2`,
-        });
-    });
-    const code = await makeRequest(REQUEST_TYPES.LOGIN);
+
+    const result = initialize(redirectUri, clientId, clientSecret, false);
+
+    expect(result).toBe(ERRORS.INVALID_REDIRECT_URI);
     parameters = getParameters();
+
+    // No se tiene que haber setteado ninguno de los parámetros
     expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri,
-      code,
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
       accessToken: '',
       refreshToken: '',
       tokenType: '',
@@ -226,23 +317,46 @@ describe('configuration module and make request type login integration', () => {
       state: '',
       scope: '',
     });
+
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    expect.assertions(5);
   });
 
-  it('calls initialize with clientId different from RP and makes a login request', async () => {
+  it('calls initialize with clientId different from RP and then calls login', async () => {
     const badLoginEndpoint =
       'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=invalidClientId&redirect_uri=redirectUri';
     const redirectUri = 'redirectUri';
     const clientId = 'invalidClientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(redirectUri, clientId, clientSecret, false);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -256,9 +370,9 @@ describe('configuration module and make request type login integration', () => {
     mockAddEventListener.mockImplementation(mockAddEventListenerError);
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
-      expect(error).toMatchObject(Error(invalidAuthCodeError));
+      expect(error).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint);
@@ -267,7 +381,7 @@ describe('configuration module and make request type login integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -280,21 +394,20 @@ describe('configuration module and make request type login integration', () => {
     expect.assertions(5);
   });
 
-  it('calls initialize with redirectUri different from RP and makes a login request', async () => {
+  it('calls initialize with redirectUri different from RP and then calls login', async () => {
     const badLoginEndpoint =
       'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=invalidRedirectUri';
     const redirectUri = 'invalidRedirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(redirectUri, clientId, clientSecret, false);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -308,9 +421,9 @@ describe('configuration module and make request type login integration', () => {
     mockAddEventListener.mockImplementation(mockAddEventListenerError);
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
-      expect(error).toMatchObject(Error(invalidAuthCodeError));
+      expect(error).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint);
@@ -319,7 +432,7 @@ describe('configuration module and make request type login integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -332,19 +445,18 @@ describe('configuration module and make request type login integration', () => {
     expect.assertions(5);
   });
 
-  it('calls initialize and makes a login request, the user denies access to the application ', async () => {
+  it('calls initialize and login, the user denies access to the application ', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(redirectUri, clientId, clientSecret, false);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -363,9 +475,9 @@ describe('configuration module and make request type login integration', () => {
     });
 
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
-      expect(error).toMatchObject(Error(invalidAuthCodeError));
+      expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
@@ -374,7 +486,7 @@ describe('configuration module and make request type login integration', () => {
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -387,19 +499,18 @@ describe('configuration module and make request type login integration', () => {
     expect.assertions(5);
   });
 
-  it('calls set parameters, makes a login request with correct parameters and Linking.openUrl fails', async () => {
+  it('calls set parameters and login with correct parameters, Linking.openUrl fails', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
-    initialize(redirectUri, clientId, clientSecret, postLogoutRedirectUri);
+    initialize(redirectUri, clientId, clientSecret, false);
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -412,16 +523,16 @@ describe('configuration module and make request type login integration', () => {
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
     try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
+      await login();
     } catch (error) {
-      expect(error).toMatchObject(Error("Couldn't make request"));
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',

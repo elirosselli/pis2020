@@ -1,12 +1,13 @@
-import { fetch } from 'react-native-ssl-pinning';
+/* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
-import REQUEST_TYPES from '../../utils/constants';
+import { fetch } from 'react-native-ssl-pinning';
+import { ERRORS } from '../../utils/constants';
 import {
   setParameters,
   getParameters,
   resetParameters,
 } from '../../configuration';
-import makeRequest from '../../requests';
+import { getUserInfo } from '../../interfaces';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
@@ -34,11 +35,11 @@ const userInfoEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
 const userId = 'uy-cid-12345678';
 
-describe('configuration module and make request type get user info integration', () => {
-  it('calls set parameters and makes a get user info request with all scopes', async () => {
+describe('configuration module and get user info integration', () => {
+  it('calls set parameters and get user info with all scopes', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
@@ -47,7 +48,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -85,7 +86,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
@@ -102,6 +103,9 @@ describe('configuration module and make request type get user info integration',
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -127,7 +131,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -139,10 +143,10 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with personal_info scope', async () => {
+  it('calls set parameters and get user info with personal_info scope', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
@@ -151,7 +155,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -179,7 +183,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
@@ -196,6 +200,9 @@ describe('configuration module and make request type get user info integration',
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -211,7 +218,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -223,10 +230,10 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with no claims', async () => {
+  it('calls set parameters and get user info with no claims', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
@@ -235,7 +242,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -253,7 +260,7 @@ describe('configuration module and make request type get user info integration',
       }),
     );
 
-    const response = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    const response = await getUserInfo();
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
@@ -269,14 +276,18 @@ describe('configuration module and make request type get user info integration',
       },
     });
 
-    expect(response).toStrictEqual({});
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
 
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -288,10 +299,10 @@ describe('configuration module and make request type get user info integration',
     });
   });
 
-  it('calls set parameters and makes a get user info request with expired access token', async () => {
+  it('calls set parameters and get user info with expired access token', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
@@ -300,7 +311,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -311,26 +322,19 @@ describe('configuration module and make request type get user info integration',
       scope: '',
     });
 
-    const error1 = 'invalid_token';
-    const errorDescription = 'The Access Token expired';
     fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () =>
-          Promise.resolve({
-            error1,
-            error_description: errorDescription,
-          }),
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
       }),
     );
 
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
-      expect(err).toStrictEqual({
-        error1,
-        error_description: errorDescription,
-      });
+      expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
 
     parameters = getParameters();
@@ -338,7 +342,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -351,10 +355,10 @@ describe('configuration module and make request type get user info integration',
     expect.assertions(3);
   });
 
-  it('calls getUserInfo and fetch fails', async () => {
+  it('calls set parameters and get user info, fetch fails', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'code';
+    const code = 'correctCode';
     const redirectUri = 'redirectUri';
     setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
 
@@ -363,7 +367,7 @@ describe('configuration module and make request type get user info integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
       refreshToken: '',
@@ -373,21 +377,182 @@ describe('configuration module and make request type get user info integration',
       state: '',
       scope: '',
     });
-    const error = Error('error');
-    fetch.mockImplementation(() => Promise.reject(error));
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () => Promise.resolve(),
+      }),
+    );
     try {
-      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+      await getUserInfo();
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code,
       accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls set parameters and get user info, returns some error', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'some-error':
+            'error="some_error", error_description="Error different from invalid access token"',
+        },
+      }),
+    );
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls set parameters and get user info, returns some error with www authenticate header', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({ clientId, clientSecret, accessToken, code, redirectUri });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
+            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
+      }),
+    );
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls set parameters and get user info with empty access token', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken: '',
+      code,
+      redirectUri,
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_TOKEN);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken: '',
       refreshToken: '',
       tokenType: '',
       expiresIn: '',

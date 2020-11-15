@@ -1,33 +1,58 @@
 import makeRequest from '../index';
-import REQUEST_TYPES from '../../utils/constants';
+import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
 import login from '../login';
 import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 import getUserInfo from '../getUserInfo';
+import validateToken from '../validateToken';
 
 jest.mock('../login');
 jest.mock('../logout');
 jest.mock('../getTokenOrRefresh');
 jest.mock('../getUserInfo');
+jest.mock('../validateToken');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
 
+const getTokenOrRefreshMockImpl = () =>
+  Promise.resolve({
+    token: 'token',
+    message: ERRORS.NO_ERROR,
+    errorCode: ERRORS.NO_ERROR.errorCode,
+    errorDescription: ERRORS.NO_ERROR.errorDescription,
+    expiresIn: 3600,
+    idToken: 'idToken',
+    refreshToken: 'refreshToken',
+    tokenType: 'tokenType',
+  });
+
 describe('login', () => {
   it('calls login and works correctly', async () => {
-    const code = 'code';
-    login.mockImplementation(() => Promise.resolve(code));
+    const code = 'correctCode';
+    login.mockImplementation(() =>
+      Promise.resolve({
+        code,
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+      }),
+    );
     const response = await makeRequest(REQUEST_TYPES.LOGIN);
-    expect(response).toBe(code);
+    expect(response).toStrictEqual({
+      code,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
   });
 
   it('calls login and fails', async () => {
-    const error = Error('error');
-    login.mockImplementation(() => Promise.reject(error));
+    login.mockImplementation(() => Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -36,18 +61,32 @@ describe('login', () => {
 describe('getToken', () => {
   it('calls getToken and works correctly', async () => {
     const token = 'token';
-    getTokenOrRefresh.mockImplementation(() => Promise.resolve(token));
+    const expiresIn = 3600;
+    const idToken = 'idToken';
+    const refreshToken = 'refreshToken';
+    const tokenType = 'tokenType';
+    getTokenOrRefresh.mockImplementation(getTokenOrRefreshMockImpl);
     const response = await makeRequest(REQUEST_TYPES.GET_TOKEN);
-    expect(response).toBe(token);
+    expect(response).toStrictEqual({
+      token,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      expiresIn,
+      idToken,
+      refreshToken,
+      tokenType,
+    });
   });
 
   it('calls getToken and fails', async () => {
-    const error = Error('error');
-    getTokenOrRefresh.mockImplementation(() => Promise.reject(error));
+    getTokenOrRefresh.mockImplementation(() =>
+      Promise.reject(ERRORS.FAILED_REQUEST),
+    );
     try {
       await makeRequest(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -56,18 +95,32 @@ describe('getToken', () => {
 describe('refreshToken', () => {
   it('calls refreshToken and works correctly', async () => {
     const token = 'token';
-    getTokenOrRefresh.mockImplementation(() => Promise.resolve(token));
+    const expiresIn = 3600;
+    const idToken = 'idToken';
+    const refreshToken = 'refreshToken';
+    const tokenType = 'tokenType';
+    getTokenOrRefresh.mockImplementation(getTokenOrRefreshMockImpl);
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    expect(response).toBe(token);
+    expect(response).toStrictEqual({
+      token,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      expiresIn,
+      idToken,
+      refreshToken,
+      tokenType,
+    });
   });
 
   it('calls refreshToken and fails', async () => {
-    const error = Error('error');
-    getTokenOrRefresh.mockImplementation(() => Promise.reject(error));
+    getTokenOrRefresh.mockImplementation(() =>
+      Promise.reject(ERRORS.FAILED_REQUEST),
+    );
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -77,6 +130,9 @@ describe('getUserInfo', () => {
   it('calls getUserInfo and works correctly', async () => {
     getUserInfo.mockImplementation(() =>
       Promise.resolve({
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
         nombre_completo: 'test',
         primer_apellido: 'test',
         primer_nombre: 'testNombre',
@@ -89,6 +145,9 @@ describe('getUserInfo', () => {
 
     const userInfo = await makeRequest(REQUEST_TYPES.GET_USER_INFO);
     expect(userInfo).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
       nombre_completo: 'test',
       primer_apellido: 'test',
       primer_nombre: 'testNombre',
@@ -100,13 +159,12 @@ describe('getUserInfo', () => {
   });
 
   it('calls getUserInfo and fails', async () => {
-    const error = Error('An error occurred');
-    getUserInfo.mockImplementation(() => Promise.reject(error));
+    getUserInfo.mockImplementation(() => Promise.reject(ERRORS.FAILED_REQUEST));
 
     try {
       await makeRequest(REQUEST_TYPES.GET_USER_INFO);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });
@@ -114,19 +172,63 @@ describe('getUserInfo', () => {
 
 describe('logout', () => {
   it('calls logout and works correctly', async () => {
-    const redirectUri = 'postLogoutRedirectUri';
-    logout.mockImplementation(() => Promise.resolve(redirectUri));
+    logout.mockImplementation(() =>
+      Promise.resolve({
+        message: ERRORS.NO_ERROR,
+        errorCode: ERRORS.NO_ERROR.errorCode,
+        errorDescription: ERRORS.NO_ERROR.errorDescription,
+        state: 'correctState',
+      }),
+    );
     const response = await makeRequest(REQUEST_TYPES.LOGOUT);
-    expect(response).toBe(redirectUri);
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      state: 'correctState',
+    });
   });
 
   it('calls logout and fails', async () => {
-    const error = Error('error');
-    logout.mockImplementation(() => Promise.reject(error));
+    logout.mockImplementation(() => Promise.reject(ERRORS.FAILED_REQUEST));
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (err) {
-      expect(err).toBe(error);
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    expect.assertions(1);
+  });
+});
+
+describe('validateToken', () => {
+  it('calls validateToken with valid token', async () => {
+    const result = {
+      jwks: 'jwks',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    };
+    validateToken.mockReturnValue(Promise.resolve(result));
+    const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    expect(response).toBe(result);
+  });
+
+  it('calls validateToken with invalid token', async () => {
+    validateToken.mockReturnValue(Promise.reject(ERRORS.INVALID_ID_TOKEN));
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls validateToken but fetch fails', async () => {
+    validateToken.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

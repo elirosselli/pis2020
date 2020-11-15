@@ -10,18 +10,19 @@
   - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
 - [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
 - [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
+- [Errores](https://github.com/elirosselli/pis2020/tree/develop/sdk#errores)
 - [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
 
 ## Introducción
 
 En este documento se presentan las distintas funcionalidades brindadas por el componente SDK y una guía para lograr la integración del componente con la aplicación. Además, se exponen definiciones previas necesarias para entender el protocolo utilizado para la autenticación y autorización del usuario final.
 
-Este SDK se basa en el protocolo [OAuth 2.0](https://oauth.net/2/) y [OpenID Connect](https://openid.net/connect/) para su implementación, brindando una capa de abstracción al desarrollador y simplificando la interacción con la API REST de ID Uruguay. Para que su integración con el SDK funcione, debe registrarse como RP (_Relaying Party_) en ID Uruguay, siguiendo las instrucciones disponibles en la [página web de AGESIC](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect).
+Este SDK se basa en el protocolo [OAuth 2.0](https://oauth.net/2/) y [OpenID Connect](https://openid.net/connect/) para su implementación, brindando una capa de abstracción al desarrollador y simplificando la interacción con la [API REST de ID Uruguay](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect). Para que su integración con el SDK funcione, debe registrarse como RP (_Relaying Party_) en ID Uruguay, siguiendo las instrucciones disponibles en la [página web de AGESIC](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect).
 
 ## Consideraciones previas
 
 Para lograr autenticar y autorizar al usuario final, el componente SDK establece una comunicación con el servidor de *ID Uruguay* utilizando el protocolo *OpenID Connect 1.0*.
-Este es un protocolo de identidad simple y de estándar abierto creado sobre el protocolo OAuth 2.0, el cual permite a aplicaciones cliente (*Relaying Party* - RP) verificar la identidad de un usuario final basado en la autenticación realizada por este en un Servidor de Autorización (*OpenID Provider* - OP), así como también obtener información personal del usuario final mediante el uso de una *API REST*.
+Este es un protocolo de identidad simple y de estándar abierto creado sobre el protocolo OAuth 2.0, el cual permite a aplicaciones cliente (*Relaying Party* - RP) verificar la identidad de un usuario final basado en la autenticación realizada por este en un Servidor de Autorización (*OpenID Provider* - OP), así como también obtener información personal del usuario final mediante el uso de una API REST.
 Se tienen tres entidades principales:
 
 - Servidor de Autorización (*OpenID Provider* - OP): capaz de autenticar usuarios finales y proveer información sobre estos y el proceso de autenticación a un RP.
@@ -38,7 +39,7 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *response_type* | Requerido | Valor que determina el tipo de flujo de autenticación a utilizar. En caso del [*Authorization Code Flow*](https://auth0.com/docs/flows/authorization-code-flow), es valor es "*code*".             |
     | *client_id*     | Requerido | Identificador del cliente provisto al momento del registro.             |
     | *redirect_uri*  | Requerido |URI a donde debe ser enviada la respuesta. La misma debe ser una de las registradas al momento de darse de alta como cliente.             |
-    | *state*  | Requerido |Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado al cliente junto con el código de autorización o error.             |
+    | *state*  | Recomendado |Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado al cliente junto con el código de autorización o error.             |
     | *nonce* | Opcional | String opaco utilizado para asociar la sesión de un Cliente con un *ID Token*, y mitigar *replay attacks*.    |
     | *prompt*  | Opcional |Lista de valores de cadena ASCII delimitados por un espacio, sensibles a minúsculas y mayúsculas, que especifica si el servidor de autorización solicita al usuario final la reautenticación y consentimiento. Los valores definidos son: *none*, *login* y *consent*.             |
     | *acr_values*  | Opcional |Lista de *strings* sensibles a minúsculas y mayúsculas, separados por espacios y en orden de preferencia, correspondientes a los nombrados en la sección acr - *Authentication Context Class Reference*.            |
@@ -48,7 +49,7 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *code*         | Requerido |Código de autorización generado por el OP. Puede ser utilizado una única vez para obtener un *ID Token y Access Token*. Expira en 10 minutos. |
-    | *state*     | Requerido | El valor exacto recibido del RP en el parámetro "*state*" del *Authentication Request*. |
+    | *state*     | Requerido si fue enviado | El valor exacto recibido del RP en el parámetro "*state*" del *Authentication Request*. |
 
 - *Token Request*: pedido HTTP empleando el método POST que incluye los *Token Request Params* y sirve para solicitar un token. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
 
@@ -81,7 +82,7 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
 - *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.
 
-- *User Info Request*: pedido HTTP que incluye los User Info Request Params y sirve para solicitar información del End-User autenticado. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *UserInfo Endpoint*. Los *User Info Request Params* son:
+- *User Info Request*: pedido HTTP que incluye los *User Info Request Params* y sirve para solicitar información del End-User autenticado. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *UserInfo Endpoint*. Los *User Info Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -96,6 +97,18 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *document*         | pais_documento, tipo_documento, numero_documento | Información sobre el documento del usuario. |
     | *email*         | *email*, *email_verified* | Correo electrónico y si el mismo está verificado. |
     | *auth_info*         | rid, nid, ae | Datos de registro y autenticación del ciudadano en formato URN correspondientes a la Política de Identificación Digital. |
+
+- *Validate Token Request*: Pedido HTTP empleando el método GET que sirve para obtener la clave pública del OP útil para la validación de *tokens*. Este pedido es enviado al *JWKS Endpoint*.
+- *Validate Token Response*: Respuesta HTTP (a una *Validate Token Request*) que incluye los *Validate Token Response Params*. Esta respuesta es obtenida desde el *JWKS Endpoint*.
+
+    | Parámetro       | Tipo      | Descripción |
+    |-----------------|-----------|-------------|
+    | *kty*         | Requerido |Identifica la familia del algoritmo criptográfico utilizado. |
+    | *alg* | Requerido | Identifica el algoritmo utilizado. (`RS256`, `HS256`). |
+    | *use*     | Requerido | Identifica el uso previsto de la clave pública. Indica si se usa para cifrar datos ("enc") o para verificar la firma ("sig"). |
+    | *kid*     | Requerido | Identifica el uso previsto de la clave pública. Indica si se usa para cifrar datos ("enc") o para verificar la firma ("sig"). |
+    | *n*     | Requerido | El módulo de la clave (2048 bit). Codificado en Base64. |
+    | *e*     | Requerido | El exponente de la clave (2048 bit). Codificado en Base64. |
 
 - *Logout Request*: pedido HTTP empleando el método GET que incluye los *Logout Request Params* y sirve para cerrar la sesión del *End User* autenticado en el OP. Este pedido es enviado al *Logout Endpoint*. Los *Logout Request Params* son:
 
@@ -119,7 +132,7 @@ Cabe destacar que ante un posible error la *response* generada por el OP contien
 
 ### Instalación
 
-El SDK se encuentra disponible en npm y puede ser instalado mediante el comando
+El SDK se encuentra disponible en npm y puede instalarlo en su aplicación mediante el comando
 
 `$ npm install sdk-gubuy-test`
 
@@ -184,7 +197,13 @@ import { initialize, login } from 'sdk-gubyuy-test';
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
-initizalize('miRedirectUri', 'miClientId', 'miClientSecret', 'miLogoutRedirectUri');
+initizalize(
+  'miRedirectUri',
+  'miClientId',
+  'miClientSecret',
+  'miProduction',
+  'miScope',
+);
 ```
 
 Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP.
@@ -223,26 +242,33 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `initialize (redirectUri, clientId, clientSecret, postLogoutRedirectUri)`| Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, y *post_logout_redirect_uri*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                        |
+| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
-| `logout()`                                                    | Abre una ventana del navegador web y cierra la sesión del usuario final en ID Uruguay, redirigiendo al *post_logout_redirect_uri* especificado en `initialize` una vez cerrada la sesión.                                                                                                                                          |
+| `validateToken()`                                                    | Verifica que el *id_token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret* y *post_logout_redirect_uri* para luego del logout.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*.
 
 ```javascript
-initialize('miRedirectUri', 'miClientId', 'miClientSecret', 'miPostLogoutRedirectUri');
+initialize(
+  'miRedirectUri',
+  'miClientId',
+  'miClientSecret',
+  'miProduction',
+  'miScope',
+);
 ```
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
 
 ``` javascript
 try {
@@ -305,23 +331,88 @@ Esta función devuelve un objeto con el siguiente formato:
 }
 ```
 
+### Función validateToken
+
+La función `validateToken` permite al usuario validar el *id_token* provisto durante la llamada a `getToken` o `refreshToken`.
+
+Al llamar a la función se valida el *id_token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *id_token* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
+
+| Parámetro | Valor                               |
+|-----------|-------------------------------------|
+| alg       | Algoritmo de la firma.              |
+| iss       | Quien creó y firmó el token.        |
+| aud       | Para quién está destinado el token. |
+| exp       | Tiempo de expiración.               |
+| kid       | Identificador único.                |
+
+En caso de que el *token* sea inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+
 ### Función logout
 
 La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
-
-Al llamar a esta función, se abre un navegador web en el dispositivo del usuario con la URL de cierre de sesión de ID Uruguay, que muestra al usuario final que se está realizando el cierre de sesión. Una vez finalizado el cierre de sesión, se redirige al *post_logout_redirect_uri* especificado al inicializar el SDK.
 
 ```javascript
 await logout();
 ```
 
+## Errores
+
+De forma de establecer un modelo de errores consistente dentro del SDK, se define que cada error devuelto debe tener una estructura específica, definida en el archivo `constants.js`.
+
+Cada error es una extensión de la clase `Error` de `javascript`, y tiene la siguiente estructura:
+
+```javascript
+class NewError extends Error {
+  constructor(
+    errorCode = 'newErrorCode',
+    errorDescription = 'newErrorDescription',
+    ...params
+  ) {
+    // Pasa los argumentos restantes (incluidos los específicos del proveedor) al constructor padre.
+    super(...params);
+    // Información de depuración personalizada.
+    this.name = 'NewError';
+    this.errorCode = errorCode;
+    this.errorDescription = errorDescription;
+  }
+}
+
+```
+
+Se agregan los campos:
+
+| Campo            | Descripción                        |
+|------------------ |----------------------------------- |
+| name              | Nombre del error.                  |
+| errorCode         | Código identificatorio del error.  |
+| errorDescription  | Descripción del error.             |
+
+Los errores definidos son:
+
+| Nombre                        | Clase                            | Código                                    | Descripción                                                                                                                                                                             | ¿Cuándo ocurre?                                                                                                         | Posible solución                                                                            |
+|------------------------------ |--------------------------------- |------------------------------------------ |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------ |-------------------------------------------------------------------------------------------- |
+| noError                       | `ErrorNoError`                   | gubuy_no_error                            | No error                                                                                                                                                                                | Cuando la función cumple correctamente su objetivo.                                                                     | No aplica.                                                                                  |
+| invalidClientId               | `ErrorInvalidClientId`           | gubuy_invalid_client_id                   | Invalid client_id parameter.                                                                                                                                                            | Cuando el valor del client_id definido para el sdk no es correcto.                                                      | Revisar que el client_id definido corresponda con el designado por ID Uruguay.               |
+| invalidRedirectUri            | `ErrorInvalidRedirectUri`        | gubuy_invalid_redirect_uri                | Invalid redirect_uri parameter.                                                                                                                                                         | Cuando la redirect_uri definida para el SDK no es válida.                                                               | Revisar que la redirect_uri definida corresponda con la designada por ID Uruguay.            |
+| invalidClientSecret           | `ErrorInvalidClientSecret`       | gubuy_invalid_client_secret               | Invalid client_secret parameter.                                                                                                                                                        | Cuando el client_secret definido para el SDK no es válido.                                                              | Revisar que el client_secret definido corresponda con el designado por ID Uruguay.           |
+| accessDenied                  | `ErrorAccessDenied`              | access_denied                             | The resource owner or authorization server denied the request.                                                                                                                          | Cuando el usuario final rechaza el login.                                                                               | No aplica.                                                                                  |
+| invalidAuthorizationCode      | `ErrorInvalidAuthorizationCode`  | gubuy_invalid_auhtorization_code          | Invalid authorization code.                                                                                                                                                             | Cuando el code definido en el SDK no es válido.                                                                         | Revisar que el code actual corresponde al devuelto por la función Login().                  |
+| failedRequest                 | `ErrorFailedRequest`             | failed_request                            | Couldn't make request.                                                                                                                                                                  | Cuando la request no pudo ser completada satisfactoriamente.                                                            | Revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.   |
+| invalidGrant                  | `ErrorInvalidGrant`              | invalid_grant                             | The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.  | Cuando el code o refresh_token son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria.  | Comprobar la validez del code o refresh_token según corresponda.                            |
+| invalidToken                  | `ErrorInvalidToken`              | invalid_token                             | The access token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el access_token es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del access_token.                                                      |
+| invalidClient                 | `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el client_secret y client_id correspondan con los registrados por ID Uruguay.  |
+| invalidTokenHint              | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro id_token_hint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del id_token_hint.                                        |                                                   |
+| invalidIdToken                | `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
+| invalidLengthError            | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
+| invalidBase64ToHexConversion  | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
+
 ## Certificado *self-signed* en modo *testing*
 
-En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo click en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
 
 Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
 
-Para el desarrollo en iOS, se deben obtener los 3 certificados de la URL de testing de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
+Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de testing de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
 
 1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
 2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
