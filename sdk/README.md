@@ -266,11 +266,13 @@ initialize(
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
+**Errores initialize**
+
 Si alguno de estos parámetros obligatorios es vacío devuelve un error correspondiente a cual es el primero vacío.
 
-*clientId* vacío retorna `ERRORS.INVALID_CLIENT_ID`.
-*redirectUri* vacía retorna `ERRORS.INVALID_REDIRECT_URI`.
-*clientSecret* vacío retorna `ERRORS.INVALID_CLIENT_SECRET`.
+- *clientId* vacío retorna `ERRORS.INVALID_CLIENT_ID`.
+- *redirectUri* vacía retorna `ERRORS.INVALID_REDIRECT_URI`.
+- *clientSecret* vacío retorna `ERRORS.INVALID_CLIENT_SECRET`.
 
 Por otro lado, si el parámetro production no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
@@ -299,6 +301,8 @@ try {
 
 Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirect_uri* especificada.
 
+**Errores login**
+
 En caso de que alguno de los parámetros *clientId*, *clientSecret* y *redirectUri* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`.
       
 En caso de que no exista el parámetro *code* en la url se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
@@ -317,6 +321,8 @@ const token = await getToken();
 
 Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
 
+**Errores getToken**
+
 En caso de que alguno de los parámetros *clientId*, *clientSecret*, *redirectUri* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE`.
 
 En caso de que el *code* sea inválido o haya expirado, y no se puede obtener un nuevo token de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
@@ -334,6 +340,8 @@ const token = await refreshToken();
 ```
 
 Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
+
+**Errores refreshToken**
 
 Los casos de errores son muy similares a los de `getToken`. 
 
@@ -366,6 +374,8 @@ Esta función devuelve un objeto con el siguiente formato:
   documento: 'uy-ci-1234567',
 }
 ```
+
+**Errores getUserInfo**
 
 En caso de que el *accessToken* sea inválido devuelve un error de tipo `ERRORS.INVALID_TOKEN`.
 
@@ -400,6 +410,8 @@ try {
 }
 ```
 
+**Errores validateToken**
+
 Si alguno de los parámetros obligatorios para la request no se encuentra inicializado, se rechaza la promesa y se retorna un error que especifica cuál parámetro faltó.
 
 En caso de que el *token* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
@@ -416,6 +428,16 @@ La función `logout` del SDK permite al usuario final cerrar su sesión con ID U
 ```javascript
 await logout();
 ```
+
+**Errores logout**
+
+En caso de que el *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
+
+Si los parámetros obligatorios para la request se encuentran inicializados, se procede a evaluar la respuesta del OP. En caso de que la url contenida en la respuesta no coincida con el
+*logoutEnpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
+
+En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
+
 
 ## Errores
 
