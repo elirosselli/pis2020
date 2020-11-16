@@ -7,8 +7,11 @@ import {
   getUserInfo,
   refreshToken,
   validateToken,
+  getParameters,
+  setParameters,
+  clearParameters,
+  resetParameters,
 } from './interfaces';
-import { getParameters, setParameters, resetParameters } from './configuration';
 
 export {
   initialize,
@@ -16,9 +19,10 @@ export {
   logout,
   getParameters,
   setParameters,
+  clearParameters,
+  resetParameters,
   getToken,
   getUserInfo,
   refreshToken,
-  resetParameters,
   validateToken,
 };
