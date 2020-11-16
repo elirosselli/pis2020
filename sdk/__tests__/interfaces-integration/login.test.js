@@ -1,6 +1,10 @@
 import ERRORS from '../../utils/errors';
-import { getParameters, resetParameters } from '../../configuration';
-import { initialize, login } from '../../interfaces';
+import {
+  initialize,
+  login,
+  getParameters,
+  resetParameters,
+} from '../../interfaces';
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());

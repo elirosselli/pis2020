@@ -1,13 +1,12 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { fetch } from 'react-native-ssl-pinning';
 import ERRORS from '../../utils/errors';
-import { validateToken } from '../../interfaces';
-
 import {
+  validateToken,
   setParameters,
   getParameters,
   resetParameters,
-} from '../../configuration';
+} from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
