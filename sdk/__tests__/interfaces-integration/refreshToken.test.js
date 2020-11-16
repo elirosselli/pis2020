@@ -3,11 +3,11 @@ import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
 import ERRORS from '../../utils/errors';
 import {
+  refreshToken,
   setParameters,
   getParameters,
   resetParameters,
-} from '../../configuration';
-import { refreshToken } from '../../interfaces';
+} from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
