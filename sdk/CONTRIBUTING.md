@@ -86,7 +86,7 @@ La implementación de la funcionalidad de **initialize** involucra los siguiente
 - **sdk/interfaces/index.js**: Donde se implementa la función **initialize**.
 - **sdk/configuration/index.js**: Donde se implementa la función **setParameters** utilizada para *setear* los parámetros.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
-- **sdk/utils/constants.js**: Donde se encuentran implementados los errores a retornar.
+- **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 
 La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *production* y *scope*, y retorna mensajes de éxito o de error según corresponda.
 

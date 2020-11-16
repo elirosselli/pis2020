@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { fetch } from '../utils/helpers';
 import { logoutEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
-import { ERRORS } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import { getParameters, clearParameters, eraseState } from '../configuration';
 
 const logout = async () => {

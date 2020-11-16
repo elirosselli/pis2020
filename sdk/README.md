@@ -372,7 +372,7 @@ await logout();
 
 ## Errores
 
-De forma de establecer un modelo de errores consistente dentro del SDK, se define que cada error devuelto debe tener una estructura específica, definida en el archivo `constants.js`.
+De forma de establecer un modelo de errores consistente dentro del SDK, se define que cada error devuelto debe tener una estructura específica, definida en el archivo `errors.js`.
 
 Cada error es una extensión de la clase `Error` de `javascript`, y tiene la siguiente estructura:
 

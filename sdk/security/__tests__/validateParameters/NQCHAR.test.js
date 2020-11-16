@@ -1,5 +1,6 @@
 import validateNQCHAR from '../../validateParameters/NQCHAR';
-import { PARAMETERS, ERRORS } from '../../../utils/constants';
+import { PARAMETERS } from '../../../utils/constants';
+import ERRORS from '../../../utils/errors';
 
 describe('security module validate NQCHAR parameters', () => {
   it('scope: valid', () => {

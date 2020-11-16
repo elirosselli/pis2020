@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { fetch } from '../../utils/helpers';
 import { getParameters } from '../../configuration';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import logout from '../logout';
 
 jest.mock('../../configuration');

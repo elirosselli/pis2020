@@ -1,5 +1,6 @@
 import validateDIGIT from '../../validateParameters/DIGIT';
-import { PARAMETERS, ERRORS } from '../../../utils/constants';
+import { PARAMETERS } from '../../../utils/constants';
+import ERRORS from '../../../utils/errors';
 
 describe('security module validate DIGIT parameters', () => {
   it('expiresIn: valid', () => {

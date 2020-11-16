@@ -1,4 +1,5 @@
-import { PARAMETERS, ERRORS } from '../utils/constants';
+import { PARAMETERS } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import validateParameters from '../security/validateParameters';
 
 const parameters = {

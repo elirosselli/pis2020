@@ -1,13 +1,12 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { fetch } from 'react-native-ssl-pinning';
-import { ERRORS } from '../../utils/constants';
-import { validateToken } from '../../interfaces';
-
+import ERRORS from '../../utils/errors';
 import {
+  validateToken,
   setParameters,
   getParameters,
   resetParameters,
-} from '../../configuration';
+} from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -63,6 +62,21 @@ const jwksResponse = {
 describe('configuration module and validate token integration', () => {
   it('calls setParameters and validateToken but fetch fails', async () => {
     setParameters({ clientId, idToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
     fetch.mockImplementation(() =>
       Promise.reject(
         Error({
@@ -88,7 +102,23 @@ describe('configuration module and validate token integration', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect.assertions(1);
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
   });
 
   it('calls setParameters and validateToken, with valid token', async () => {

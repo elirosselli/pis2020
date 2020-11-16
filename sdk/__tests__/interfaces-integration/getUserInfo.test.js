@@ -1,13 +1,13 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
 import { fetch } from 'react-native-ssl-pinning';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import {
+  getUserInfo,
   setParameters,
   getParameters,
   resetParameters,
-} from '../../configuration';
-import { getUserInfo } from '../../interfaces';
+} from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
