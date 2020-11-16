@@ -266,6 +266,14 @@ initialize(
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
+Si alguno de estos parámetros obligatorios es vacío devuelve un error correspondiente a cual es el primero vacío.
+
+*clientId* vacío retorna `ERRORS.INVALID_CLIENT_ID`.
+*redirectUri* vacía retorna `ERRORS.INVALID_REDIRECT_URI`.
+*clientSecret* vacío retorna `ERRORS.INVALID_CLIENT_SECRET`.
+
+Por otro lado, si el parámetro production no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
 ### Función login
 
 La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
@@ -291,6 +299,14 @@ try {
 
 Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirect_uri* especificada.
 
+En caso de que alguno de los parámetros *clientId*, *clientSecret* y *redirectUri* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`.
+      
+En caso de que no exista el parámetro *code* en la url se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
+
+En caso de que el usuario niegue dar acceso de la información solicitada se retorna el error `ERRORS.ACCESS_DENIED`.
+
+En caso de error en la request se retorna `ERRORS.FAILED_REQUEST`, en este caso se recomienda revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.
+
 ### Función getToken
 
 Una vez realizado el `login`, es posible obtener el `access_token` correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
@@ -301,6 +317,14 @@ const token = await getToken();
 
 Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
 
+En caso de que alguno de los parámetros *clientId*, *clientSecret*, *redirectUri* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE`.
+
+En caso de que el *code* sea inválido o haya expirado, y no se puede obtener un nuevo token de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que no se pudo obtener un nuevo token de forma correcta se retorna `ERRORS.INVALID_CLIENT`. Se recomienda verificar que el *client_secret* y *client_id* correspondan con los registrados por ID Uruguay. 
+
+En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
+
 ### Función refreshToken
 
 El *token* otorgado por ID Uruguay tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el *token* pasará a ser inválido. Para obtener un nuevo *token* se debe invocar a la función `refreshToken`.
@@ -310,6 +334,18 @@ const token = await refreshToken();
 ```
 
 Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
+
+Los casos de errores son muy similares a los de `getToken`. 
+
+En caso de que alguno de los parámetros *clientId*, *clientSecret* y *redirectUri* sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`.
+
+A diferencia del `getToken`, no se chequea que el code sea vacio, pero en cambio se revisa que que el parámetro `refreshToken` no lo sea. Si refreshToken es vacio se retorna `ERRORS.INVALID_GRANT`. 
+
+En caso de que el refreshToken sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que no se pudo obtener un nuevo token de forma correcta se retorna `ERRORS.INVALID_CLIENT`. Se recomienda verificar que el *client_secret* y *client_id* correspondan con los registrados por ID Uruguay. 
+
+En caso de error en la respuesta endpoint se retorna `ERRORS.FAILED_REQUEST`.
 
 ### Función getUserInfo
 
@@ -330,6 +366,10 @@ Esta función devuelve un objeto con el siguiente formato:
   documento: 'uy-ci-1234567',
 }
 ```
+
+En caso de que el *accessToken* sea inválido devuelve un error de tipo `ERRORS.INVALID_TOKEN`.
+
+En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
 
 ### Función validateToken
 
@@ -360,7 +400,14 @@ try {
 }
 ```
 
-En caso de que el *token* sea inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+Si alguno de los parámetros obligatorios para la request no se encuentra inicializado, se rechaza la promesa y se retorna un error que especifica cuál parámetro faltó.
+
+En caso de que el *token* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+
+En caso de que el *clientId* sea vacío devuelve un error de tipo `ERRORS.INVALID_CLIENT_ID`.
+
+En caso de que el *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.FAILED_REQUEST`.
+
 
 ### Función logout
 
