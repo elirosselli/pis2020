@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { fetch } from '../../utils/helpers';
 import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';

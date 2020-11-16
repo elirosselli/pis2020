@@ -3,7 +3,7 @@ import { getParameters } from '../configuration';
 import { validateSub } from '../security';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { fetch } from '../utils/helpers';
-import { ERRORS } from '../utils/constants';
+import ERRORS from '../utils/errors';
 
 const getUserInfo = async () => {
   const { accessToken, idToken } = getParameters();

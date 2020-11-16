@@ -1,5 +1,6 @@
 /* eslint-disable default-case */
-import { PARAMETERS, ERRORS } from '../../utils/constants';
+import { PARAMETERS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 const validateURIReference = (type, value) => {
   let validURIReference;

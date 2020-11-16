@@ -1,5 +1,5 @@
 import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
-import { ERRORS } from './constants';
+import ERRORS from './errors';
 
 const initializeErrors = (clientId, redirectUri, clientSecret, production) => {
   let response;

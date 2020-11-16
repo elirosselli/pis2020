@@ -2,7 +2,8 @@ import { encode } from 'base-64';
 import { Platform } from 'react-native';
 import { getParameters, setParameters, eraseCode } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
-import { ERRORS, REQUEST_TYPES } from '../utils/constants';
+import { REQUEST_TYPES } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import { initializeErrors, fetch } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {

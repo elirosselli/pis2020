@@ -1,7 +1,8 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
 import { fetch } from '../../utils/helpers';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 

@@ -1,6 +1,6 @@
 import { getParameters, resetParameters } from '../../configuration';
 import { initialize } from '../../interfaces';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 afterEach(() => jest.clearAllMocks());
 

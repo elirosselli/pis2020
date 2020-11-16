@@ -1,4 +1,5 @@
-import { PARAMETERS, ERRORS } from '../../utils/constants';
+import { PARAMETERS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 const validateDIGIT = (type, value) => {
   // Se chequea que el valor sea un número entero positivo
