@@ -44,11 +44,6 @@ const logout = async () => {
             errorDescription: ERRORS.NO_ERROR.errorDescription,
             state: state[1],
           });
-        return Promise.resolve({
-          message: ERRORS.NO_ERROR,
-          errorCode: ERRORS.NO_ERROR.errorCode,
-          errorDescription: ERRORS.NO_ERROR.errorDescription,
-        });
       }
       // Si la url contenida en la respuesta no coincide con el
       // logoutEnpoint, se rechaza la promesa retornando un error.
