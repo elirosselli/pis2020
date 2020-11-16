@@ -1,5 +1,6 @@
 import makeRequest from '../requests';
-import { REQUEST_TYPES, ERRORS } from '../utils/constants';
+import { REQUEST_TYPES } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import { initializeErrors } from '../utils/helpers';
 import {
   setParameters,

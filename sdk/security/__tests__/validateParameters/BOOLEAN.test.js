@@ -1,5 +1,6 @@
 import validateBOOLEAN from '../../validateParameters/BOOLEAN';
-import { PARAMETERS, ERRORS } from '../../../utils/constants';
+import { PARAMETERS } from '../../../utils/constants';
+import ERRORS from '../../../utils/errors';
 
 describe('security module validate BOOLEAN parameters', () => {
   it('production: valid', () => {

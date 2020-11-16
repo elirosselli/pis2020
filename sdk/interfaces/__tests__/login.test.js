@@ -1,6 +1,7 @@
 import { login } from '../index';
 import makeRequest from '../../requests';
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 jest.mock('../../requests');
 

@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { fetch } from '../utils/helpers';
 import { validateTokenEndpoint, issuer } from '../utils/endpoints';
-import { ERRORS } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import { getParameters } from '../configuration';
 import { validateTokenSecurity } from '../security';
 

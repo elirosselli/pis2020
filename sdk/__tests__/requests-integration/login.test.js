@@ -1,4 +1,5 @@
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters, resetParameters } from '../../configuration';
 import { initialize } from '../../interfaces';
 import makeRequest from '../../requests';

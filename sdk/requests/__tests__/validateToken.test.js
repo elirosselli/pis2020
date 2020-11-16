@@ -1,5 +1,5 @@
 import { fetch } from '../../utils/helpers';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { issuer } from '../../utils/endpoints';
 import { getParameters } from '../../configuration';
 import validateToken from '../validateToken';
