@@ -1,6 +1,7 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { decode } from 'base-64';
-import { ACR_LIST, AMR_LIST, ERRORS } from '../utils/constants';
+import { ACR_LIST, AMR_LIST } from '../utils/constants';
+import ERRORS from '../utils/errors';
 
 import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 

@@ -1,5 +1,6 @@
 import makeRequest from '../index';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import login from '../login';
 import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';

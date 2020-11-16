@@ -1,5 +1,5 @@
 import { decode } from 'base-64';
-import { ERRORS } from './constants';
+import ERRORS from './errors';
 
 const base64URLtoBase64 = input => {
   // Reemplazar caracteres no compatibles con base64.

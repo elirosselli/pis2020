@@ -1,6 +1,6 @@
 import { initialize } from '../index';
 import { getParameters, resetParameters } from '../../configuration';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { initializeErrors } from '../../utils/helpers';
 
 jest.mock('../../requests');

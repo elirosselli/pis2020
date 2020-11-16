@@ -1,4 +1,4 @@
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters, resetParameters } from '../../configuration';
 import { initialize, login } from '../../interfaces';
 

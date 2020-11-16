@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 import { getParameters, setParameters, eraseState } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
-import { ERRORS } from '../utils/constants';
+import ERRORS from '../utils/errors';
 import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {

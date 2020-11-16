@@ -2,7 +2,7 @@ import { KJUR, KEYUTIL } from 'jsrsasign';
 import { validateTokenSecurity } from '../index';
 import { base64ToHex, base64URLtoBase64 } from '../../utils/encoding';
 import { issuer } from '../../utils/endpoints';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 jest.mock('../../utils/encoding', () => ({
   base64ToHex: jest.fn(),
