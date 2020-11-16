@@ -1,9 +1,13 @@
+# Este workflow manual se encarga de publicar el sdk a npm.
 name: Publish to npm
 
+# Se ejecuta manualmente mediante un workflow dispatch.
 on:
  workflow_dispatch:
 
+# Consiste de dos jobs..
 jobs:
+  # El job build ejecuta los tests y el linter.
   build:
     runs-on: ubuntu-latest
     steps:
@@ -17,7 +21,10 @@ jobs:
           npm run linter
           npm run testCoverage
 
+  # El job publish-npm publica el sdk a npm,
+  # utilizando una token de acceso como método de autenticación.
   publish-npm:
+    # Se deben haber ejecutado los tests y el linter exitosamente antes de poder publicar.
     needs: build
     runs-on: ubuntu-latest
     steps:

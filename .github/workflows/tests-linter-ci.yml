@@ -1,27 +1,27 @@
-# CI Workflow
+# Workflow de CI para ejecutar los tests y el linter cuando se realiza un PR o push a develop.
 name: CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the develop branch
+# Controla cuándo se ejecuta la acción. En este caso se dispara para pull requests o pushes a develop.
 on:
   push:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# Un workflow consiste de uno o más jobs. Este workflow tiene un único job.
 jobs:
-  # Runs linter and tests
+  # El job ci se encarga de ejecutar los tests y el linter.
   ci:
-    # The type of runner that the job will run on
+    # El tipo de runner donde correrá el job (este está por defecto).
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Los steps representan una secuencia de tareas que serán ejecutadas como parte del job.
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Realiza un checks-out del repositorio bajo $GITHUB_WORKSPACE para que el job pueda accederlo.
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
+      # Corre la secuencia de comandos para cambiar al directorio sdk,
+      # instalar las dependencias y ejecutar el linter y los tests.
       - name: run linter and tests
         run: |
           cd sdk
