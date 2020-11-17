@@ -79,10 +79,9 @@ const login = async () => {
     // rechazando la promise.
     if (
       error &&
-      error.errorCode &&
       (error.errorCode === ERRORS.INVALID_REDIRECT_URI.errorCode ||
-        ERRORS.INVALID_CLIENT_SECRET.errorCode ||
-        ERRORS.INVALID_CLIENT_ID.errorCode)
+        error.errorCode === ERRORS.INVALID_CLIENT_SECRET.errorCode ||
+        error.errorCode === ERRORS.INVALID_CLIENT_ID.errorCode)
     )
       rejectFunction(error);
 

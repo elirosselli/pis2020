@@ -286,5 +286,7 @@ describe('configuration module', () => {
       scope: '',
       production: false,
     });
+
+    expect.assertions(11);
   });
 });

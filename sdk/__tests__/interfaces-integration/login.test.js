@@ -511,4 +511,67 @@ describe('configuration module and login integration', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect.assertions(5);
   });
+
+  it('calls set parameters and login returns some error', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    initialize(redirectUri, clientId, clientSecret, false);
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    class SomeError extends Error {
+      constructor(
+        errorCode = 'code_some_error',
+        errorDescription = 'description_some_error',
+        ...params
+      ) {
+        super(...params);
+        this.name = 'someError';
+        this.errorCode = errorCode;
+        this.errorDescription = errorDescription;
+      }
+    }
+    mockLinkingOpenUrl.mockImplementation(() =>
+      Promise.reject(new SomeError()),
+    );
+    mockAddEventListener.mockImplementation();
+
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+  });
 });

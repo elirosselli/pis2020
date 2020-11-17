@@ -164,4 +164,39 @@ describe('login', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
   });
+
+  it('calls login and returns some error', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: 'redirectUri',
+      clientSecret: 'clientSecret',
+      scope: 'correctScope',
+      state: mockState,
+    });
+
+    class SomeError extends Error {
+      constructor(
+        errorCode = 'code_some_error',
+        errorDescription = 'description_some_error',
+        ...params
+      ) {
+        super(...params);
+        this.name = 'someError';
+        this.errorCode = errorCode;
+        this.errorDescription = errorDescription;
+      }
+    }
+    mockLinkingOpenUrl.mockImplementation(() =>
+      Promise.reject(new SomeError()),
+    );
+    mockAddEventListener.mockImplementation();
+
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+  });
 });

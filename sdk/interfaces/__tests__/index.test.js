@@ -61,6 +61,7 @@ describe('initialize', () => {
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when redirectUri is empty', () => {
@@ -85,6 +86,7 @@ describe('initialize', () => {
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when clientSecret is empty', () => {
@@ -109,6 +111,7 @@ describe('initialize', () => {
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when production is empty', () => {
@@ -133,6 +136,7 @@ describe('initialize', () => {
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('does not return error when all parameters are setted', () => {
