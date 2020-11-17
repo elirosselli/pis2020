@@ -369,6 +369,70 @@ Una vez realizado el request se retorna un *response* que, en caso de éxito, co
 
 En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
 
+
+## Funcionalidad de validateToken
+
+### Generalidades
+
+La funcionalidad de validateToken se encarga de validar el id_token provisto por IDUruguay. Para poder realizar dicha acción se obtiene el `jwks` (**JSON Web Key Set**), que es un conjuto de `jwk` ([**JSON Web Key**](https://tools.ietf.org/html/rfc7517)), que representan una clave criptográfica en formato JSON. Estos son expuestos en el [JWKS Endpoint](https://auth.iduruguay.gub.uy/oidc/v1/jwks), y se obtienen en el módulo `requests`, en la función `validateToken`. 
+
+Una vez obtenido el `jwks` correspondiente, se procede a validar el `idToken` obtenido en una llamada a `getToken` o `refreshToken`, para lo cual se invoca a la función `validateTokenSecurity` del componente seguridad pasando como parámetro el `jwks` obtenido. Dentro del componente se utiliza la librería [`jsrsasign`](https://github.com/kjur/jsrsasign), que provee funcionalidades que permiten la decodificación y validación del `id_token`.
+
+Los atributos que se validan en esta función son los siguientes:
+
+| Parámetro | Descripción                           |
+|-----------|---------------------------------------|
+| alg       | Algoritmo de la firma.                |
+| iss       | Quien creó y firmó el token.          |
+| aud       | Para quién está destinado el token.   |
+| exp       | Tiempo de expiración.                 |
+| kid       | Identificador único.                  |
+| acr       | Authentication Context Class Reference|
+| amr       | Authentication Methods References     |
+
+En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`.
+
+### Archivos y parámetros
+
+- **sdk/requests/validateToken.js**: Donde se implementa la función `validateToken`. Esta función se encarga de realizar la *JWKS Request* al *JWKS Endpoint*, obteniendo el *JWKS*, además de llamar a la función `validateTokenSecurity` del modulo de seguridad.
+- **sdk/security/validateTokenSecurity**: se implementa la lógica de la validación del idToken, y devuelve el resultado de esta.
+- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **validateToken**.
+- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
+- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
+- **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+
+### Código
+
+La función de **validateToken** es declarada como una función asincrónica de la siguiente manera:
+
+```javascript
+const validateToken = async () => {
+```
+
+La función **validateToken** invoca a la función **makeRequest** con el parámetro *REQUEST_TYPES.VALIDATE_TOKEN*, indicando que es un *request* del tipo *validateToken*. Luego, dentro de **makeRequest**, se realiza la request como se mencionó previamente.
+Dentro del archivo `requests/validateToken.js`, se chequea que los parámetros requeridos (*clientId* e *idToken*) existan.
+A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *JWKS Endpoint*.
+
+En el cuerpo de la función de **validateToken** se encuentra un bloque de try y uno de catch. Con esto se logra que si la función se ejecuta de forma incorrecta se rechaza la función devolviendo un codigo de error y una descripción del mismo. Por el contrario, en caso de que la respuesta sea satisfactoria, se retorna el resultado de llamar a la función *validateTokenSecurity* del módulo de seguridad.
+
+En la función *validateTokenSecurity* se utiliza las funcionalidades provistas por la librería `jsrsasign`. En primer lugar se obtiene la clave pública a partir de dos de los parámetros devueltos en el `jwks` obtenido, el `n` (*modulous*)  y el `e` (*exponente*). Esta clave pública se pasa a la función `verifyJWT` de la librería antes mencionada, que se encarga de decodificar y validar los siguientes atributos:
+
+| Parámetro | Descripción                         | Comparado con                               |
+|-----------|-------------------------------------|---------------------------------------------|
+| alg       | Algoritmo de la firma.              | Atributo `alg` del *jwksResponse*.          |
+| iss       | Quien creó y firmó el token.        | Issuer definido en el archivo de endpoints. |
+| aud       | Para quién está destinado el token. | ClientId asignado al sdk.                   |
+| exp       | Tiempo de expiración.               | Fecha y hora actual.                        |
+
+Posteriormente se agrega una capa extra de validación, con otros atributos. Para esto primero se decodifica el *id_token* ([JWT](https://tools.ietf.org/html/rfc7519)), obteniendo el *header* y el *payload*. Del *header* se valida el atributo *kid*, comparándola con el recibido en la *JWKS response*. Por otro lado, del *payload* se valida el *acr* y el *amr*, comprobando que estén incluidos en los definidos en el archivo de constantes.
+
+| Parámetro | Descripción                                                                                                                                                        | Valores posibles                                                                                                                                                                                                    |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| acr       | *Authentication Context Class Reference*: conjunto de métodos o procedimientos de autenticación que se consideran equivalentes entre sí en un contexto particular. | ```  [  'urn:iduruguay:nid:0',  'urn:iduruguay:nid:1',  'urn:iduruguay:nid:2',  'urn:iduruguay:nid:3', ] ```                                                                                                        |
+| amr       | *Authentication Methods References*: array de strings que corresponden a identificadores de métodos de autenticación usados en la autenticación.                   | ``` [  'urn:iduruguay:am:password',  'urn:iduruguay:am:totp',  'urn:iduruguay:am:ci',  'urn:iduruguay:am:idp:ae:0',  'urn:iduruguay:am:idp:ae:1',  'urn:iduruguay:am:idp:ae:2',  'urn:iduruguay:am:idp:ae:3', ] ``` |
+
+
 ## Endpoints de producción y testing
 
 Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
