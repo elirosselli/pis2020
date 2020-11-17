@@ -570,5 +570,6 @@ describe('configuration module and make request type login integration', () => {
     });
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect.assertions(5);
   });
 });

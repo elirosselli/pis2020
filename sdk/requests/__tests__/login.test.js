@@ -198,5 +198,6 @@ describe('login', () => {
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect.assertions(3);
   });
 });

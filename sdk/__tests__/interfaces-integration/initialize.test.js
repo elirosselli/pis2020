@@ -155,5 +155,6 @@ describe('configuration module and initialize integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(2);
   });
 });

@@ -573,5 +573,6 @@ describe('configuration module and login integration', () => {
     });
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect.assertions(5);
   });
 });
