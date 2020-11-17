@@ -1,5 +1,7 @@
 import { fetch as fetchSslPinning } from 'react-native-ssl-pinning';
+import { Mutex } from 'async-mutex';
 import ERRORS from './errors';
+import { MUTEX_TYPES } from './constants';
 
 const initializeErrors = (clientId, redirectUri, clientSecret, production) => {
   let response;
@@ -27,4 +29,23 @@ const fetch = (url, options, n = 3) => {
   });
 };
 
-export { initializeErrors, fetch };
+const getTokenOrRefreshMutex = new Mutex();
+
+const MUTEX = {
+  getTokenOrRefreshMutex,
+};
+
+const lockMutex = async type => {
+  let res;
+  switch (type) {
+    case MUTEX_TYPES.getTokenOrRefreshMutexType:
+      res = await MUTEX.getTokenOrRefreshMutex.acquire();
+      break;
+    default:
+      res = '';
+      break;
+  }
+  return res;
+};
+
+export { initializeErrors, fetch, lockMutex };
