@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters, resetParameters} from 'sdk-gubuy-test';
+import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters, resetParameters, validateToken} from 'sdk-gubuy-test';
 import styles from './styles';
 import React from 'react';
 import {
@@ -37,13 +37,14 @@ const App: () => React$Node = () => {
     console.log("Inicializando sdk");
     var now = require("performance-now")
     var start = now();
-    const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
+    const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b', false, 'personal_info');
+    //console.log(init);
+    //setParameters({'scope': 'personal_info'});
     console.log(`ErrorName: ${init.name}`)
     console.log(`ErrorCode: ${init.errorCode}`)
     console.log(`ErrorDescription: ${init.errorDescription}`)
     console.log(`ErrorMessage: ${init.message}`)
     
-    setParameters({scope: "personal_info"});
     var end = now();
     console.log(`Tiempo de ejec: ${end-start} ms`);
   }
@@ -53,6 +54,7 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const code = await login();
+      console.log(code);
       Object.keys(code).forEach(key => {
         console.log(`${key}: ${code[key]}`);
       });
@@ -93,6 +95,25 @@ const App: () => React$Node = () => {
       const rfToken = await refreshToken();
       Object.keys(rfToken).forEach(key => {
         console.log(`${key}: ${rfToken[key]}`);
+      });
+      var end = now();
+      console.log(`Tiempo de ejec: ${end-start} ms`);
+    } catch (error) {
+      console.log(`ErrorName: ${error.name}`)
+      console.log(`ErrorCode: ${error.errorCode}`)
+      console.log(`ErrorDescription: ${error.errorDescription}`)
+      //console.log(error);
+    }
+  }
+
+  handleValidate = async() => {
+    try {
+      var now = require("performance-now")
+      var start = now();
+      
+      const resp = await validateToken();
+      Object.keys(resp).forEach(key => {
+        console.log(`${key}: ${resp[key]}`);
       });
       var end = now();
       console.log(`Tiempo de ejec: ${end-start} ms`);
@@ -261,6 +282,9 @@ const App: () => React$Node = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleRefreshToken}>
           <Text style={styles.buttonText}>refreshToken</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleValidate}>
+          <Text style={styles.buttonText}>Validar Token</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleGetUserInfo}>
           <Text style={styles.buttonText}>getUserInfo</Text>
