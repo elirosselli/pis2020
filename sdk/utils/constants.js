@@ -41,4 +41,9 @@ const AMR_LIST = [
   'urn:iduruguay:am:idp:ae:3',
 ];
 
-export { REQUEST_TYPES, PARAMETERS, ACR_LIST, AMR_LIST };
+// Nombres de las variables de mutex.
+const MUTEX_NAMES = {
+  getTokenOrRefresh: 'getTokenOrRefreshMutex',
+}
+
+export { REQUEST_TYPES, PARAMETERS, ACR_LIST, AMR_LIST, MUTEX_NAMES };

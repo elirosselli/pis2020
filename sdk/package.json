@@ -63,6 +63,7 @@
     "mersenne-twister": "^1.1.0",
     "prop-types": "15.7.2",
     "react": "16.14.0",
+    "react-context-mutex": "^1.0.8",
     "react-native": "0.63.3",
     "react-native-ssl-pinning": "1.5.2",
     "uuid": "8.3.1"
