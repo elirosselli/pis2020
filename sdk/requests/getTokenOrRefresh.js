@@ -15,17 +15,14 @@ const getTokenOrRefresh = async type => {
     !parameters.redirectUri ||
     !parameters.clientSecret
   ) {
-    try {
-      initializeErrors(
-        parameters.clientId,
-        parameters.redirectUri,
-        parameters.clientSecret,
-      );
-    } catch (error) {
-      // Se borra el parámetro code una vez ejecutado el getToken.
-      eraseCode();
-      return Promise.reject(error);
-    }
+    const errorResponse = initializeErrors(
+      parameters.clientId,
+      parameters.redirectUri,
+      parameters.clientSecret,
+    );
+    // Se borra el parámetro code una vez ejecutado el getToken.
+    eraseCode();
+    return Promise.reject(errorResponse);
   }
 
   // En el caso de get token, se chequea que el code exista.

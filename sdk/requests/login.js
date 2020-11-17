@@ -63,29 +63,22 @@ const login = async () => {
     )
       await Linking.openURL(loginEndpoint());
     else {
-      // En caso de que algún parámetro sea vacío, se obtiene el error correspondiente.
-      initializeErrors(
+      // En caso de que algún parámetro sea vacío, se elimina el handler,
+      // se borra el state, y se rechaza la promise, retornando el error correspondiente.
+      Linking.removeEventListener('url', handleOpenUrl);
+      const errorResponse = initializeErrors(
         parameters.clientId,
         parameters.redirectUri,
         parameters.clientSecret,
       );
+      eraseState();
+      rejectFunction(errorResponse);
     }
   } catch (error) {
-    // En caso de error se elimina el handler y se borra el state.
-    eraseState();
+    // En caso de error, se elimina el handler y se borra el state,
+    // y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
-
-    // En caso de error devuelto por la función initializeErrors, se retorna el error obtenido
-    // rechazando la promise.
-    if (
-      error &&
-      (error.errorCode === ERRORS.INVALID_REDIRECT_URI.errorCode ||
-        error.errorCode === ERRORS.INVALID_CLIENT_SECRET.errorCode ||
-        error.errorCode === ERRORS.INVALID_CLIENT_ID.errorCode)
-    )
-      rejectFunction(error);
-
-    // En caso de otro error, se rechaza la promise.
+    eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
   }
   return promise;
