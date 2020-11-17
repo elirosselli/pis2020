@@ -35,12 +35,7 @@ const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
     };
   } else {
     // Si alguno de los parámetros es vacío se retorna el error correspondiente.
-    response = initializeErrors(
-      clientId,
-      redirectUri,
-      clientSecret,
-      production,
-    );
+    initializeErrors(clientId, redirectUri, clientSecret, production);
   }
   // Se retorna el error y el mensaje correspondiente.
   return response;

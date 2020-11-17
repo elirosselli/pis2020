@@ -45,13 +45,17 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_ID);
+
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
@@ -66,13 +70,16 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_REDIRECT_URI);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
@@ -87,13 +94,16 @@ describe('initialize', () => {
       clientSecret: '',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
@@ -108,13 +118,16 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: '',
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_PRODUCTION);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
