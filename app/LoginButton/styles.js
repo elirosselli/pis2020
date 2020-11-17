@@ -6,6 +6,7 @@ const buttonStyles = StyleSheet.create({
     width: '80%',
     alignSelf: 'center',
     marginTop: 30,
+    marginBottom: 15,
     padding: 15,
     borderRadius: 10,
     borderWidth: 2,
@@ -29,7 +30,7 @@ const buttonStyles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: 15,
-  }
+  },
 });
 
 export default buttonStyles;

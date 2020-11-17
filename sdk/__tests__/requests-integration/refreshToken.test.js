@@ -1,7 +1,8 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { fetch } from 'react-native-ssl-pinning';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import {
   setParameters,
   getParameters,
@@ -29,7 +30,6 @@ const idToken =
 const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
 const refreshToken = '041a156232ac43c6b719c57b7217c9ee';
 const redirectUri = 'app://redirect';
-const postLogoutRedirectUri = 'app://postLogout';
 const clientId = '898562';
 const clientSecret = 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
 const server = 'nginx/1.15.1';
@@ -65,21 +65,20 @@ const fetchMockImplementationWithInvalidOrEmptyToken = () =>
     },
   });
 
-describe('configuration module and make request type refresh token integration', () => {
+describe('configuration & security modules and make request type refresh token integration', () => {
   it('calls setParameters and makes a refresh token request ', async () => {
     setParameters({
       clientId,
       clientSecret,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -125,7 +124,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken,
       refreshToken,
@@ -138,21 +137,20 @@ describe('configuration module and make request type refresh token integration',
   });
 
   it('calls setParameters and makes a refresh token request with invalid refresh token', async () => {
-    const invalidRefreshToken = 'invalid_refresh_token';
+    const invalidRefreshToken = 'invalidRefreshToken';
 
     setParameters({
       clientId,
       clientSecret,
       refreshToken: invalidRefreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: invalidRefreshToken,
@@ -175,7 +173,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: invalidRefreshToken,
@@ -193,14 +191,13 @@ describe('configuration module and make request type refresh token integration',
       clientId,
       clientSecret,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -223,7 +220,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken: '',
@@ -242,14 +239,13 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -288,7 +284,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -306,14 +302,13 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId: '',
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -334,7 +329,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId: '',
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -352,14 +347,13 @@ describe('configuration module and make request type refresh token integration',
       clientId,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret: '',
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -380,7 +374,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret: '',
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -398,14 +392,13 @@ describe('configuration module and make request type refresh token integration',
       clientId,
       clientSecret,
       refreshToken,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -426,53 +419,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri: '',
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a refresh token request with empty postLogoutRedirectUri', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      refreshToken,
-      redirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri: '',
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      postLogoutRedirectUri: '',
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -491,14 +438,13 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -524,7 +470,7 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -543,14 +489,13 @@ describe('configuration module and make request type refresh token integration',
       clientSecret,
       refreshToken,
       redirectUri,
-      postLogoutRedirectUri,
     });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
@@ -578,10 +523,56 @@ describe('configuration module and make request type refresh token integration',
       redirectUri,
       clientId,
       clientSecret,
-      postLogoutRedirectUri,
+      production: false,
       code: '',
       accessToken: '',
       refreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('refreshToken does not erase code from parameters', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      code: 'correctCode',
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: 'correctCode',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_GRANT);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: 'correctCode',
+      accessToken: '',
+      refreshToken: '',
       tokenType: '',
       expiresIn: '',
       idToken: '',

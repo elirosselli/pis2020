@@ -1,18 +1,49 @@
 import { getParameters } from '../configuration';
 
-const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
+const productionPrefix = 'https://auth.iduruguay.gub.uy/oidc/v1';
+const developmentPrefix = 'https://auth-testing.iduruguay.gub.uy/oidc/v1';
+
+const tokenEndpoint = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}/token`;
+};
 
 const loginEndpoint = () => {
-  const { redirectUri, clientId, scope } = getParameters();
-  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const { production, redirectUri, clientId, scope, state } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 };
 
-const userInfoEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/userinfo';
+const userInfoEndpoint = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}/userinfo`;
+};
 
 const logoutEndpoint = () => {
-  const { idToken, postLogoutRedirectUri, state } = getParameters();
-  return `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}`;
+  const { production, idToken, state } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 };
 
-export { loginEndpoint, userInfoEndpoint, tokenEndpoint, logoutEndpoint };
+const validateTokenEndpoint = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}/jwks`;
+};
+
+const issuer = () => {
+  const { production } = getParameters();
+  const endpointPrefix = production ? productionPrefix : developmentPrefix;
+  return `${endpointPrefix}`;
+};
+
+export {
+  loginEndpoint,
+  userInfoEndpoint,
+  tokenEndpoint,
+  logoutEndpoint,
+  validateTokenEndpoint,
+  issuer,
+};

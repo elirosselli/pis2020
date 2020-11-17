@@ -1,17 +1,21 @@
 import makeRequest from '../index';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import login from '../login';
 import logout from '../logout';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 import getUserInfo from '../getUserInfo';
+import validateToken from '../validateToken';
 
 jest.mock('../login');
 jest.mock('../logout');
 jest.mock('../getTokenOrRefresh');
 jest.mock('../getUserInfo');
+jest.mock('../validateToken');
 jest.mock('../../configuration');
 
 afterEach(() => jest.clearAllMocks());
+
 const getTokenOrRefreshMockImpl = () =>
   Promise.resolve({
     token: 'token',
@@ -26,7 +30,7 @@ const getTokenOrRefreshMockImpl = () =>
 
 describe('login', () => {
   it('calls login and works correctly', async () => {
-    const code = 'code';
+    const code = 'correctCode';
     login.mockImplementation(() =>
       Promise.resolve({
         code,
@@ -174,7 +178,7 @@ describe('logout', () => {
         message: ERRORS.NO_ERROR,
         errorCode: ERRORS.NO_ERROR.errorCode,
         errorDescription: ERRORS.NO_ERROR.errorDescription,
-        state: 'state',
+        state: 'correctState',
       }),
     );
     const response = await makeRequest(REQUEST_TYPES.LOGOUT);
@@ -182,7 +186,7 @@ describe('logout', () => {
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
-      state: 'state',
+      state: 'correctState',
     });
   });
 
@@ -192,6 +196,40 @@ describe('logout', () => {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    expect.assertions(1);
+  });
+});
+
+describe('validateToken', () => {
+  it('calls validateToken with valid token', async () => {
+    const result = {
+      jwks: 'jwks',
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    };
+    validateToken.mockReturnValue(Promise.resolve(result));
+    const response = await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    expect(response).toBe(result);
+  });
+
+  it('calls validateToken with invalid token', async () => {
+    validateToken.mockReturnValue(Promise.reject(ERRORS.INVALID_ID_TOKEN));
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(1);
+  });
+
+  it('calls validateToken but fetch fails', async () => {
+    validateToken.mockReturnValue(Promise.reject(ERRORS.FAILED_REQUEST));
+    try {
+      await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
     expect.assertions(1);
   });

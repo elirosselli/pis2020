@@ -1,9 +1,11 @@
-# Documentación técnica y otra información relevante
+# Documentación técnica
 
 ## Índice
 
 - [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#introducci%C3%B3n)
+- [Diseño en alto nivel del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#Diseño-en-alto-nivel-del-componente-SDK)
 - [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
+  - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-refreshtoken)
@@ -13,11 +15,93 @@
 
 ## Introducción
 
-Este documento presenta documentación técnica detallada sobre la implementación de las funcionalidades del sdk y los módulos que lo componen. También se incluyen instrucciones para poder ejecutar las pruebas unitarias y el analizador estático de código (*linter*).
+Este documento presenta documentación técnica detallada sobre la implementación de las funcionalidades del SDK y los módulos que lo componen. También se incluyen instrucciones para poder ejecutar las pruebas unitarias y el analizador estático de código (*linter*).
+
+## Diseño en alto nivel del componente SDK
+
+En esta sección se presenta una visión simplificada del diseño del componente junto con algunas recomendaciones en caso de agregar funcionalidades al componente.
+
+### Módulos del componente SDK
+
+El componente se encuentra dividido en cuatro módulos los cuales se presentan a continuación.
+
+<img src="docs/arq.png" width="55%">
+
+Correspondencia entre los módulos con los archivos y directorios del repositorio.
+
+<img src="docs/implementacion.png" width="55%">
+
+### Descripción de los módulos
+
+#### Interface
+
+Se encuentran las funcionalidades expuestas por el componente. Una vez que se invoca una funcionalidad al componente, el módulo interface resuelve la misma invocando funcionalidades expuestas por los módulos **Requests** o **Configuration**.
+Si se desea incorporar una nueva funcionalidad al componente, se recomienda publicarla en éste módulo para mantener la coherencia del componente.
+
+#### Configuration
+
+En este módulo se encuentran definidos todos los parámetros que se utilizan durante la ejecución del componente.
+La mayoría de los parámetros almacenados se corresponden con atributos que se utilizan en las peticiones HTTP que realiza el componente a la API de Id Uruguay.
+
+El módulo posee funcionalidades para establecer u obtener los parámetros almacenados en el componente. Por lo tanto, en caso de agregar una variable o constante que será utilizada globalmente en el componente, se recomienda incorporarlo en este módulo.
+
+#### Requests
+
+Las peticiones HTTP a los diferentes *endpoints* de la API Id Uruguay se realizan en el módulo **Requests**. En este módulo se utiliza una variante de la implementación estándar de la función [fetch](https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Utilizando_Fetch) de *Javascript* la cual incluye reintentos en caso de no obtener respuesta.
+
+En caso de querer incluir nuevas peticiones a diferentes *endpoints*, se recomienda hacerlo en este módulo agregando el tipo de petición deseado.
+
+#### Security
+
+En el módulo **Security**, se implementan las validaciones de los tokens y los parametros del módulo **Configuration**. Además se realiza la validacion de las respuestas obtenidas por la API de Id Uruguay.
+
+Se recomienda modificar este módulo en caso de agregar más controles en el componente.
 
 ## Funcionalidades del componente SDK
 
 Esta sección presenta las funcionalidades brindadas por el componente SDK. Para cada funcionalidad se explica su utilidad y la forma en la que se encuentra implementada. Puede resultar útil para aquellos desarrolladores que busquen entender con mayor detalle el funcionamiento del componente y realizar modificaciones.
+
+### Funcionalidad de *initialize*
+
+#### Generalidades
+
+La funcionalidad de **initialize** se encarga de establecer los parámetros necesarios para la comunicación del componente con el OP. Estos parámetros son utilizados en la mayoría de las comunicaciones entre el componente y el OP, por lo que establecerlos una única vez le brinda a la aplicación móvil RP mayor comodidad en el uso del componente. Observar que esta función es un facilitador, ya que es posible establecer estos parámetros mediante la función **setParameters**.
+
+En particular, los parámetros mencionados son:
+
+- *clientId*
+- *clientSecret*
+- *redirectUri*
+- *production*
+- *scope*
+
+Los últimos dos parámetros pueden ser vacíos.
+
+El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por *scope* y *production*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+
+#### Archivos y parámetros
+
+La implementación de la funcionalidad de **initialize** involucra los siguientes archivos:
+
+- **sdk/interfaces/index.js**: Donde se implementa la función **initialize**.
+- **sdk/configuration/index.js**: Donde se implementa la función **setParameters** utilizada para *setear* los parámetros.
+- **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
+- **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
+
+La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *production* y *scope*, y retorna mensajes de éxito o de error según corresponda.
+
+#### Código
+
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre.
+
+#### Errores
+
+Los códigos de error devueltos en cada caso son:
+
+- En caso de éxito: "gubuy_no_error"
+- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
+- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
+- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
 
 ### Funcionalidad de *login*
 
@@ -33,7 +117,7 @@ En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final
 
 La implementación de la funcionalidad de *login* involucra los siguientes archivos:
 
-- **sdk/requests/logout.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
+- **sdk/requests/login.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **login**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
 - **sdk/configuration/index.js**: Módulo de configuración de dónde se obtienen los parámetros necesarios.
@@ -56,7 +140,7 @@ El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaSc
 Linking.addEventListener('url', handleOpenUrl);
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intentaabrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
 
 ```javascript
 Linking.openURL(loginEndpoint())
@@ -70,7 +154,7 @@ https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid&response_ty
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
-Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
+Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
 Adicionalmente, se intenta obtener el *code* a través de una expresión regular. En caso de encontrarse, se resuelve la promesa retornando dicho parámetro. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
 
@@ -138,7 +222,7 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 
 La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
-A continuación se presentará una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
+A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
 
 Scope: openId:
 
@@ -248,9 +332,9 @@ En el cuerpo de la función de **getUserInfo** se encuentra un bloque de try y u
 
 #### Generalidades
 
-La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final en el OP para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del *logout* consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. Los parámetros obligatorios enviados son: *id_token_hint* y *post_logout_redirect_uri*. El primero se corresponde con el *id_token* obtenido en la última *Get Token Request* o *Refresh Token Request*, mientras que el segundo se corresponde con la dirección a la cual el RP espera que se redireccione al usuario final una vez finalizado el proceso de cierre de sesión. Esta dirección deberá coincidir con la provista al momento del registro del RP ante el OP. Además de los parámetros obligatorios se tiene la opción de brindar el parámetro opcional *state*.
+La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del *logout* consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *id_token_hint*, el cual se corresponde con el *id_token* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio se tiene la opción de brindar el parámetro opcional *state*.
 
-En caso de que los parámetros sean los correctos, la función de **logout** redirecciona al usuario final a la aplicación del RP, y si corresponde, devuelve el parámetro *state*. En caso contrario, se retorna una descripción acorde al error ocurrido.
+En caso de que el parámetro *id_token_hint* sea correcto, la función de **logout** cierra la sesión del usuario ante el OP, y si corresponde, devuelve el parámetro *state*. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
 #### Archivos y parámetros
 
@@ -273,29 +357,39 @@ La función de **logout** es declarada como una función asincrónica de la sigu
 const logout = async () => {
 ```
 
-El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. En el cuerpo de la función, dentro del bloque *try*, se declara un *Event Listener* que escucha por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza linking. Esto se puede ver en la siguiente línea:
+El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*.
 
-```javascript
-Linking.addEventListener('url', handleOpenUrl);
-```
-
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo *url*. Luego, se verifica que los parámetros necesarios para realizar el cierre de sesión se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Logout Endpoint*. Esta *url* contendrá el *id_token_hint*, el *post_logout_redirect_uri*, y opcionalmente *state*. Esto se puede ver a continuación
+En el cuerpo de la función, se verifica que el parámetro necesario para realizar el cierre de sesión se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *url* con la que se envía esta solicitud contiene el *id_token_hint*, y opcionalmente *state*. Esto se puede ver a continuación
 
 ```javascript
 Linking.openURL(logoutEndpoint())
 ```
 
-Donde *logoutEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
+Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *url* que se corresponde con la utilizada para realizar el request.
+
+En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+
+## Endpoints de producción y testing
+
+Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
 
 ```javascript
-https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${postLogoutRedirectUri}&state=${state}
+`${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`
 ```
 
-Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el browser o no.
+donde *endpointPrefix* tendrá el valor
 
-Una vez realizado el request se retorna un *response* que corresponde con un HTTP *redirect* a la *post_logout_redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser* que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito es la *post_logout_redirect_uri* (con *state* como parámetro si corresponde) y en caso contrario un error correspondiente.
+```javascript
+'https://auth-testing.iduruguay.gub.uy/oidc/v1'
+```
 
-En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **logout** también se encuentra un bloque *catch*, que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
+si el SDK se encuentra en modo testing, con el parámetro *production* en *false*, y
+
+```javascript
+'https://auth.iduruguay.gub.uy/oidc/v1'
+```
+
+en caso de que dicho parámetro se encuentre inicializado en *true*.
 
 ## Ejecución de pruebas unitarias y *linter*
 

@@ -1,8 +1,14 @@
 import login from '../login';
 import { getParameters } from '../../configuration';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 jest.mock('../../configuration');
+
+const mockState = '3035783770';
+
+jest.mock('../../security', () => ({
+  generateRandomState: jest.fn(() => mockState),
+}));
 
 const mockAddEventListener = jest.fn();
 const mockLinkingOpenUrl = jest.fn(() => Promise.resolve());
@@ -13,25 +19,23 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-const correctLoginEndpoint =
-  'https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20scope&response_type=code&client_id=clientId&redirect_uri=redirectUri';
+const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20correctScope&response_type=code&client_id=clientId&redirect_uri=redirectUri&state=${mockState}`;
 
 describe('login', () => {
   afterEach(() => jest.clearAllMocks());
 
-  it('calls login with correct clientId, correct redirectUri and return valid code', async () => {
+  it('calls login with correct clientId, correct redirectUri and returns valid code', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
-      scope: 'scope',
+      scope: 'correctScope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url:
-            'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=TEST_STATE',
+          url: `redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=${mockState}`,
         });
     });
     const response = await login();
@@ -39,6 +43,7 @@ describe('login', () => {
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
+      state: mockState,
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
@@ -49,14 +54,14 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
-      scope: 'scope',
+      scope: 'correctScope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: 'redirectUri?code=&state=TEST_STATE',
+          url: 'redirectUri?code=&state=3035783770',
         });
     });
     try {
@@ -73,9 +78,9 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
-      scope: 'scope',
+      scope: 'correctScope',
+      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -92,6 +97,7 @@ describe('login', () => {
   it('calls login with empty clientId', async () => {
     getParameters.mockReturnValue({
       clientId: '',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -118,28 +124,12 @@ describe('login', () => {
     expect.assertions(2);
   });
 
-  it('calls login with empty postLogoutRedirectUri', async () => {
-    getParameters.mockReturnValue({
-      clientId: 'clientId',
-      redirectUri: 'redirectUri',
-      postLogoutRedirectUri: '',
-    });
-    mockAddEventListener.mockImplementation();
-    try {
-      await login();
-    } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
-    }
-    expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(2);
-  });
-
   it('calls login with empty clientSecret', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: '',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -155,9 +145,9 @@ describe('login', () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       clientSecret: 'clientSecret',
-      scope: 'scope',
+      scope: 'correctScope',
+      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')

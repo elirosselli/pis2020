@@ -129,6 +129,30 @@ const styles = StyleSheet.create({
     margin: 8,
     fontSize: 15,
   },
+  switchiOS: {
+    transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }],
+  },
+  switchAndroid: {
+    transform: [{ scaleX: 1 }, { scaleY: 1 }],
+  },
+  checkboxiOS: {
+    padding: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  checkItemiOS: {
+    marginRight: 5,
+    marginTop: 7,
+    transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }],
+  },
+  checkboxAndroid: {
+    padding: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  checkItemAndroid: {
+    marginRight: 5,
+  },
 });
 
 export default styles;

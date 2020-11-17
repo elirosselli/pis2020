@@ -1,6 +1,7 @@
 import { logout } from '../index';
 import makeRequest from '../../requests';
-import { REQUEST_TYPES, ERRORS } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 
 jest.mock('../../requests');
 
@@ -8,7 +9,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
   it('calls logout and works correctly', async () => {
-    const state = 'state';
+    const state = 'correctState';
     makeRequest.mockReturnValue(
       Promise.resolve({
         state,

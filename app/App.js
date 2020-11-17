@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import {
   View,
@@ -7,6 +8,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
+  Switch,
+  Platform,
 } from 'react-native';
 
 import CheckboxList from 'rn-checkbox-list';
@@ -18,6 +21,7 @@ import {
   refreshToken,
   logout,
   setParameters,
+  validateToken,
 } from 'sdk-gubuy-test';
 
 import LoginButton from './LoginButton';
@@ -31,9 +35,12 @@ import ENV from './env';
 
 import scope from './scope';
 
+import CheckIcon from './utils/check.png';
+import CorrectIcon from './utils/correct.png';
+import WrongIcon from './utils/wrong.png';
 import ReloadIcon from './utils/reload.png';
 
-const { sdkIdUClientId, sdkIdUClientSecret } = ENV();
+const envVariables = ENV();
 
 const App = () => {
   const [code, setCode] = useState();
@@ -43,6 +50,20 @@ const App = () => {
   const [updated, setUpdated] = useState(0);
   const [initialized, setInitialized] = useState(0);
   const [refreshTokenLoading, setRefreshTokenLoading] = useState(false);
+  const [sdkProduction, setIsEnabled] = useState(false);
+  const [validateTokenResult, setValidateTokenResult] = useState(0);
+
+  const toggleSwitch = () => {
+    setInitialized(0);
+    setIsEnabled(previousState => !previousState);
+  };
+
+  const { sdkIdUClientId, sdkIdUClientSecret } = sdkProduction
+    ? envVariables.production
+    : envVariables.development;
+  const sdkRedirectUri = sdkProduction
+    ? 'sdkIdUy%3A%2F%2Fauth'
+    : 'sdkIdU.testing%3A%2F%2Fauth';
 
   const doUpdate = someNewValue => {
     setTimeout(() => {
@@ -62,6 +83,11 @@ const App = () => {
     (initialized === 0 && { backgroundColor: '#222' }) ||
     (initialized === 1 && { backgroundColor: '#2ecc71' }) ||
     (initialized === -1 && { backgroundColor: '#e74c3c' });
+
+  const validateStatus =
+    (validateTokenResult === 0 && CheckIcon) ||
+    (validateTokenResult === 1 && CorrectIcon) ||
+    (validateTokenResult === -1 && WrongIcon);
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -82,7 +108,38 @@ const App = () => {
             ]}
           >
             {/* INICIALIZAR SDK */}
-            <View style={{ alignItems: 'flex-end' }}>
+            <View
+              style={{
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                marginBottom: 10,
+              }}
+            >
+              <View
+                style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}
+              >
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 17,
+                  }}
+                >
+                  Producción
+                </Text>
+                <Switch
+                  trackColor={{ false: '#767577', true: '#3a6a8c' }}
+                  thumbColor={sdkProduction ? '#005492' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={sdkProduction}
+                  style={
+                    Platform.OS === 'ios'
+                      ? styles.switchiOS
+                      : styles.switchAndroid
+                  }
+                />
+              </View>
               <TouchableOpacity
                 style={[
                   {
@@ -91,16 +148,18 @@ const App = () => {
                     borderColor: '#000',
                     borderWidth: 1,
                     borderRadius: 5,
+                    alignSelf: 'flex-end',
+                    flex: 1,
                   },
                   initializedColor,
                 ]}
                 onPress={() => {
                   try {
                     initialize(
-                      'sdkIdU.testing%3A%2F%2Fauth',
+                      sdkRedirectUri,
                       sdkIdUClientId,
                       sdkIdUClientSecret,
-                      'sdkIdU.testing://redirect',
+                      sdkProduction,
                     );
                     setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);
@@ -124,14 +183,19 @@ const App = () => {
               Scope
             </Text>
             <View style={styles.informationSeparator} />
-            <View style={{ minHeight: '35%' }}>
+            <View style={{ minHeight: '40%' }}>
               <CheckboxList
                 listItems={scope}
-                listItemStyle={{
-                  padding: 0,
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#eee',
-                }}
+                listItemStyle={
+                  Platform.OS === 'ios'
+                    ? styles.checkboxiOS
+                    : styles.checkboxAndroid
+                }
+                checkboxProp={
+                  Platform.OS === 'ios'
+                    ? styles.checkItemiOS
+                    : styles.checkItemAndroid
+                }
                 onChange={({ items }) => {
                   doUpdate(() => {
                     if (Array.isArray(items) && items.length > 0) {
@@ -253,7 +317,8 @@ const App = () => {
                   >
                     <View
                       style={{
-                        flex: 1,
+                        flex: 3,
+                        flexDirection: 'row',
                       }}
                     >
                       <TouchableOpacity
@@ -262,6 +327,32 @@ const App = () => {
                           height: '100%',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          flex: 1,
+                        }}
+                        onPress={async () => {
+                          try {
+                            const respValidateToken = await validateToken();
+                            console.log(respValidateToken);
+                            setValidateTokenResult(1);
+                          } catch (err) {
+                            setValidateTokenResult(-1);
+                            console.log(err.errorCode, err.errorDescription);
+                          }
+                        }}
+                      >
+                        <Image
+                          style={{ height: 15, width: 15, alignSelf: 'center' }}
+                          source={validateStatus}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#ecf0f1',
+                          flex: 1,
                         }}
                         onPress={async () => {
                           try {
@@ -269,6 +360,7 @@ const App = () => {
                             const respRefreshToken = await refreshToken();
                             setToken(respRefreshToken.refreshToken);
                             setRefreshTokenLoading(false);
+                            setValidateTokenResult(0);
                           } catch (err) {
                             console.log(err.errorCode, err.errorDescription);
                           }

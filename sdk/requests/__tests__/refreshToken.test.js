@@ -1,19 +1,25 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { fetch } from '../../utils/helpers';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
 const contentType = 'application/json';
 
 describe('refreshToken', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('calls refreshToken with correct refreshToken', async () => {
     const expiresIn = 3600;
     const idToken =
@@ -39,7 +45,6 @@ describe('refreshToken', () => {
       'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
     const tokenEndpoint = 'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
     const refreshToken = '541a156232ac43c6b719c57b7217c9ea';
-    const postLogoutRedirectUri = 'postLogoutRedirectUri';
     const redirectUri = 'redirectUri';
 
     // Mockear getParameters
@@ -47,7 +52,6 @@ describe('refreshToken', () => {
       clientId,
       clientSecret,
       refreshToken,
-      postLogoutRedirectUri,
       redirectUri,
       code: 'correctCode',
     });
@@ -58,19 +62,23 @@ describe('refreshToken', () => {
     const response = await getTokenOrRefresh(REQUEST_TYPES.GET_REFRESH_TOKEN);
 
     // Chequeo de parametros enviados
-    expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
-      method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      tokenEndpoint,
+      {
+        method: 'POST',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: contentType,
+        },
+        body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
       },
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: contentType,
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
-    });
+      5,
+    );
 
     // Chequeo de respuestas
     expect(response).toStrictEqual({
@@ -90,7 +98,6 @@ describe('refreshToken', () => {
       clientId: 'incorrectClientId',
       clientSecret: 'incorrectClientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
 
@@ -125,7 +132,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'incorrectRefreshToken',
     });
 
@@ -162,7 +168,6 @@ describe('refreshToken', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -178,7 +183,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: '',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -194,7 +198,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
     });
 
     try {
@@ -210,7 +213,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: '',
     });
 
@@ -227,7 +229,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
     fetch.mockImplementation(() =>
@@ -241,6 +242,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
+
     expect.assertions(1);
   });
 
@@ -249,7 +251,6 @@ describe('refreshToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       refreshToken: 'correctRefreshToken',
     });
 

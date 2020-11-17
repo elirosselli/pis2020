@@ -1,3 +1,7 @@
+import { PARAMETERS } from '../utils/constants';
+import ERRORS from '../utils/errors';
+import validateParameters from '../security/validateParameters';
+
 const parameters = {
   redirectUri: '',
   clientId: '',
@@ -8,17 +12,39 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
-  postLogoutRedirectUri: '',
   state: '',
   scope: '',
+  production: false,
 };
 
 const getParameters = () => parameters;
 
 const setParameters = params => {
+  const validParameters = {};
+  let error;
+
+  // Se validan los parámetros con el módulo de seguridad.
   Object.keys(params).forEach(key => {
-    if (params[key] !== '') parameters[key] = params[key];
+    if (params[key] !== '') {
+      try {
+        validParameters[key] = validateParameters(PARAMETERS[key], params[key]);
+      } catch (err) {
+        if (!error) error = err;
+      }
+    }
   });
+
+  // En caso de haber errores, se devuelve el primero encontrado.
+  if (error) return error;
+
+  // Si no hay errores, se settean los parámetros con los valores
+  // devueltos por el módulo de seguridad.
+  Object.keys(validParameters).forEach(key => {
+    parameters[key] = validParameters[key];
+  });
+
+  // Se devuelve un mensaje de éxito.
+  return ERRORS.NO_ERROR;
 };
 
 const clearParameters = () => {
@@ -27,7 +53,7 @@ const clearParameters = () => {
       key !== 'redirectUri' &&
       key !== 'clientId' &&
       key !== 'clientSecret' &&
-      key !== 'postLogoutRedirectUri'
+      key !== 'production'
     )
       parameters[key] = '';
   });
@@ -35,12 +61,17 @@ const clearParameters = () => {
 
 const resetParameters = () => {
   Object.keys(parameters).forEach(key => {
-    parameters[key] = '';
+    if (key !== 'production') parameters[key] = '';
   });
+  parameters.production = false;
 };
 
 const eraseCode = () => {
   parameters.code = '';
+};
+
+const eraseState = () => {
+  parameters.state = '';
 };
 
 export {
@@ -49,4 +80,5 @@ export {
   clearParameters,
   resetParameters,
   eraseCode,
+  eraseState,
 };

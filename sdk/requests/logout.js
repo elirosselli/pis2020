@@ -1,22 +1,26 @@
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
+import { fetch } from '../utils/helpers';
 import { logoutEndpoint } from '../utils/endpoints';
-import { ERRORS } from '../utils/constants';
-import { getParameters, clearParameters } from '../configuration';
+import { generateRandomState } from '../security';
+import ERRORS from '../utils/errors';
+import { getParameters, clearParameters, eraseState } from '../configuration';
 
 const logout = async () => {
-  var now = require("performance-now")
+  var now = require("performance-now");
   var start = now();
+  // Se genera un random state para el pedido al endpoint de logout,
+  // que además se settea en los parámetros mediante una llamada a setParameters.
+  generateRandomState();
   const parameters = getParameters();
   try {
     // Si alguno de los parámetros obligatorios para la request
-    // no se encuentra inicializado, se rechaza la promesa y se
-    // retorna un error que especifica cuál parámetro
-    // faltó.
-    if (!parameters.idToken)
+    // no se encuentra inicializado, se borra el state,
+    // se rechaza la promesa y se retorna un error que especifica
+    // cuál parámetro faltó.
+    if (!parameters.idToken) {
+      eraseState();
       return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);
-    if (!parameters.postLogoutRedirectUri)
-      return Promise.reject(ERRORS.INVALID_POST_LOGOUT_REDIRECT_URI);
+    }
 
     // Se arma la solicitud a enviar al logoutEndpoint.
     var end = now();

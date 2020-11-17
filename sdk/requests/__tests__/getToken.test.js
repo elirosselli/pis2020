@@ -1,19 +1,25 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { fetch } from 'react-native-ssl-pinning';
 import { Platform } from 'react-native';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { fetch } from '../../utils/helpers';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
 jest.mock('../../configuration');
 
-jest.mock('react-native-ssl-pinning', () => ({
+jest.mock('../../utils/helpers', () => ({
+  ...jest.requireActual('../../utils/helpers'),
   fetch: jest.fn(),
 }));
 
 const contentType = 'application/json';
 
 describe('getToken', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('calls getToken with correct code', async () => {
     const code = 'f24df0c4fcb142328b843d49753946af';
     const redirectUri = 'uri';
@@ -29,7 +35,6 @@ describe('getToken', () => {
       clientId: '898562',
       clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
       redirectUri,
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code,
     });
 
@@ -52,19 +57,23 @@ describe('getToken', () => {
 
     const response = await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
 
-    expect(fetch).toHaveBeenCalledWith(tokenEndpoint, {
-      method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
+    expect(fetch).toHaveBeenCalledWith(
+      tokenEndpoint,
+      {
+        method: 'POST',
+        pkPinning: Platform.OS === 'ios',
+        sslPinning: {
+          certs: ['certificate'],
+        },
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: contentType,
+        },
+        body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
       },
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        Accept: contentType,
-      },
-      body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
-    });
+      5,
+    );
 
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
@@ -83,7 +92,6 @@ describe('getToken', () => {
       clientId: 'invalidClientId',
       clientSecret: 'invalidClientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'corrrectCode',
     });
 
@@ -118,7 +126,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'correctCode',
       accessToken: 'incorrectAccessToken',
     });
@@ -171,8 +178,7 @@ describe('getToken', () => {
       clientId: '',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -189,8 +195,7 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: '',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -207,8 +212,7 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: '',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
-      code: 'code',
+      code: 'correctCode',
       accessToken: 'accessToken',
     });
 
@@ -225,7 +229,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: '',
       accessToken: 'accessToken',
     });
@@ -243,7 +246,6 @@ describe('getToken', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       redirectUri: 'redirectUri',
-      postLogoutRedirectUri: 'postLogoutRedirectUri',
       code: 'correctCode',
       accessToken: 'accessToken',
     });

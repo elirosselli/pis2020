@@ -1,0 +1,33 @@
+# Workflow de CI para ejecutar los tests y el linter cuando se realiza un PR o push a develop.
+name: CI
+
+# Controla cuándo se ejecuta la acción. En este caso se dispara para pull requests o pushes a develop.
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+# Un workflow consiste de uno o más jobs. Este workflow tiene un único job.
+jobs:
+  # El job ci se encarga de ejecutar los tests y el linter.
+  ci:
+    # El tipo de runner donde correrá el job (este está por defecto).
+    runs-on: ubuntu-latest
+
+    # Los steps representan una secuencia de tareas que serán ejecutadas como parte del job.
+    steps:
+      # Realiza un checks-out del repositorio bajo $GITHUB_WORKSPACE para que el job pueda accederlo.
+      - uses: actions/checkout@v2
+
+      # Corre la secuencia de comandos para cambiar al directorio sdk,
+      # instalar las dependencias y ejecutar el linter y los tests.
+      - name: run linter and tests
+        run: |
+          cd sdk
+          echo 'Installing dependencies...'
+          npm install
+          echo 'Running linter...'
+          npm run linter
+          echo 'Running tests...'
+          npm run testCoverage
