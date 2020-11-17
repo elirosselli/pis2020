@@ -5,6 +5,7 @@
 - [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#introducci%C3%B3n)
 - [Diseño en alto nivel del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#Diseño-en-alto-nivel-del-componente-SDK)
 - [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
+  - [Funcionalidades del módulo de configuración](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-m%C3%B3dulo-de-configuraci%C3%B3n)
   - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
@@ -60,6 +61,107 @@ Se recomienda modificar este módulo en caso de agregar más controles en el com
 ## Funcionalidades del componente SDK
 
 Esta sección presenta las funcionalidades brindadas por el componente SDK. Para cada funcionalidad se explica su utilidad y la forma en la que se encuentra implementada. Puede resultar útil para aquellos desarrolladores que busquen entender con mayor detalle el funcionamiento del componente y realizar modificaciones.
+
+### Funcionalidades del módulo de configuración
+Las funcionalidades de este módulo se encargarán de establecer, modificar o borrar los parámetros que se utilizan durante la ejecución del componente. Estos parámetros se encuentran en el objeto **parameters**, que consta de parejas *(clave, valor)* donde la *clave* será el nombre del parámetro, y el *valor* tendrá el valor del parámetro.
+
+Al comienzo de la ejecución, todos los parámetros se encuentran vacíos, a excepción del parámetro *production*, que tiene valor *false*. Las funciones encontradas en este módulo son: 
+- ***getParameters***: Encargada de obtener y retornar el valor de los parámetros.
+- ***setParameters***: Encargada de establecer el valor de los parámetros soliticados. 
+- ***clearParameters***: Encargada de borrar el valor de los parámetros, excepto por los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*.
+- ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*.
+- ***eraseCode***: Encargada de borrar el valor del parámetro *code*.
+- ***eraseState***: Encargada de borrar el valor del parámetro *state*. 
+  
+Todas estas funciones involucran los siguientes archivos:
+- **sdk/configuration/index.js**: Donde se implementan todas las funciones mencionadas.
+- **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
+
+
+#### Funcionalidad de Get Parameters
+##### Generalidades
+Esta función retornará los parámetros encontrados en el módulo de configuración. Estos parámetros son utilizados en la amplia mayoría de las funciones del componente SDK, obteniéndolos a través de esta función. 
+
+El funcionamiento general de **getParameters** consiste simplemente en retornar los parámetros, encontrados en el objeto **parameters**.
+
+##### Parámetros
+La función de **getParameters** no recibe parámetros (los obtiene del objeto *parameters*), y retorna todos los parámetros encontrados en el módulo de configuración. 
+
+##### Código
+El código de esta función consta de solo una línea, que retorna los parámetros obteniéndolos del objeto *parameters*:
+
+```javascript
+const getParameters = () => parameters;
+```
+
+#### Funcionalidad de Set Parameters
+##### Generalidades
+Esta función se encargará de establecer el valor los parámetros encontrados en el módulo de configuración. Además, antes de establecer su valor, valida los parámetros utilizando el módulo de seguridad, para verificar que no tengan contenidos maliciosos o erróneos. Muchas funciones del SDK setean parámetros, utilizando esta función, para que el resto del componente pueda utilizarlos.
+
+El funcionamiento general de **setParameters** consiste recorrer los valores pasados por parámetro, y setearlos en el módulo en caso de que no sean inválidos (que no sean vacíos, ni contengan contenido malicioso o caracteres inválidos, que tengan el tipo adecuado según el parámetro, etc.). A su vez, estos chequeos pueden *sanitizar* el parámetro, eliminado caracteres o partes inválidas, de manera que no se retorna un error, y se guarda el valor sanitizado. En caso de éxito se setean los valores de los parámetros, retornando un mensaje de éxito. En caso contrario, se retornará un error indicando el parámetro inválido. 
+
+##### Archivos y Parámetros
+La función **setParameters** involucra los archivos mencionados anteriormente, junto con:
+**sdk/security/validateParameters/index.js**: Donde se implementa la función de validación de parámetros del módulo de seguridad.
+
+La función de **setParameters** recibe como parámetros los valores de los parámetros a setear en el módulo de configuración. En particular, recibe un objeto con parejas *(clave, valor)* donde la *clave* será el nombre del parámetro, y el *valor* tendrá el valor a setear del parámetro. La función retorna el error de tipo *NO_ERROR* indicando éxito, o un error indicando el parámetro inválido en caso contrario.
+
+##### Código
+En primer lugar, se crea un objeto *validParameters*, donde se guardarán los pares *(clave, valor)* de los parámetros que son validados de manera exitosa.
+
+Luego se tiene el siguiente código:
+```javascript
+  Object.keys(params).forEach(key => {
+    if (params[key] !== '') {
+      try {
+        validParameters[key] = validateParameters(PARAMETERS[key], params[key]);
+      } catch (err) {
+        if (!error) error = err;
+      }
+    }
+  });
+```
+Donde [*Object.keys()*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Object/keys) retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros, y con la función [*forEach(función_callback)*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/forEach) se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. 
+
+En caso de que el valor correspondiente a la clave actual sea distinto de vacío, es decir que no se permiten setear valores vacíos, se ejecuta un bloque [*try-catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch). En el bloque *try*, se ejecuta la función *validateParameters* del módulo de seguridad, que se encargará de validar los valores de los parámetros, como se mencionó anteriormente. En caso de que el parámetro que esté siendo chequeado en la iteración sea válido, se setea el mismo en el objeto *validParameters*, en caso contrario, la función *validateParameters* lanzará una excepción, que será capturada en el bloque *catch*, donde se setea el error obtenido en la variable *error*.
+
+En caso de error, se lanza una excepción indicando el *error* retornado por la función de validación de parámetros, con la sentencia [*throw*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/throw). En caso contrario, se setean los parámetros del módulo en el objeto *parameters* con los valores guardados en el objeto *validParameters*, y se retorna el error de tipo *NO_ERROR*, indicando que no hubo error. 
+
+#### Funcionalidad de Clear Parameters
+##### Generalidades
+Esta función borrará el valor de todos los parámetros, a excepción de los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*. Esta función no borra los parámetros mencionados, ya que los mismos son necesarios para la mayoría de los *requests*, y se asume que los mismos cambiarán con poca frecuencia, o ninguna. 
+
+El funcionamiento general de **clearParameters** consiste en recorrer los valores de los parámetros y borrarlos (setearlos al *string* vacío) en los casos mencionados.
+
+##### Parámetros
+La función de **clearParameters** no recibe parámetros y tampoco retorna ningún valor.
+
+##### Código
+Esta función utiliza [*Object.keys()*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Object/keys) que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función [*forEach(función_callback)*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/forEach) se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se setean sus valores al *string* vacío en el objeto *parameters*, en los casos indicados.
+
+#### Funcionalidad de Reset Parameters
+##### Generalidades
+Esta función borrará el valor de todos los parámetros, a excepción del parámetro *production*, para el cuál se setea su valor en *false*.
+
+El funcionamiento general de **resetParameters** consiste en recorrer los valores de los parámetros y borrarlos (setearlos al *string* vacío), a excepción del parámetro mencionado anteriormente.
+
+##### Parámetros
+La función de **resetParameters** no recibe parámetros y tampoco retorna ningún valor.
+
+##### Código
+Esta función utiliza [*Object.keys()*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Object/keys) que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función [*forEach(función_callback)*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/forEach) se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se setean sus valores al *string* vacío en el objeto *parameters*, a excepción del parámetro *production*. Una vez que se termina la recorrida de todos los parámetros, se setea el parámetro *production* a *false*.
+
+#### Funcionalidades de *Erase Code* y *Erase State*
+##### Generalidades
+Estas funciones se encargarán de borrar dos parámetros, donde **eraseCode** borrará el parámetro *code* y **eraseState** el parámetro *state*.
+
+El funcionamiento general de estas funciones consiste en borrar el valor de los parámetros mencionados (setearlos al *string* vacío). Se crearon estas funciones, ya que la función **setParameters** no permite setear valores vacíos, y en ciertas ocaciones se desean borrar estos dos parámetros particulares.
+
+##### Parámetros
+Las funciones de **eraseCode** y **eraseState** no reciben parámetros y tampoco retornan ningún valor.
+
+##### Código
+El código de estas funciones simplemente consiste en setear los parámetros correspondientes en el objeto *parameters* al *string* vacío.
 
 ### Funcionalidad de *initialize*
 
