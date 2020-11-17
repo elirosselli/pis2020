@@ -432,7 +432,22 @@ Posteriormente se agrega una capa extra de validación, con otros atributos. Par
 | acr       | *Authentication Context Class Reference*: conjunto de métodos o procedimientos de autenticación que se consideran equivalentes entre sí en un contexto particular. | ```  [  'urn:iduruguay:nid:0',  'urn:iduruguay:nid:1',  'urn:iduruguay:nid:2',  'urn:iduruguay:nid:3', ] ```                                                                                                        |
 | amr       | *Authentication Methods References*: array de strings que corresponden a identificadores de métodos de autenticación usados en la autenticación.                   | ``` [  'urn:iduruguay:am:password',  'urn:iduruguay:am:totp',  'urn:iduruguay:am:ci',  'urn:iduruguay:am:idp:ae:0',  'urn:iduruguay:am:idp:ae:1',  'urn:iduruguay:am:idp:ae:2',  'urn:iduruguay:am:idp:ae:3', ] ``` |
 
+Por último se comprueba que las validaciones anteriores hayan sido con éxito, y en ese caso se resuelve la función con lo siguiente:
 
+```javascript
+Promise.resolve({
+  jwk: jwksResponse,
+  message: ERRORS.NO_ERROR,
+  errorCode: ERRORS.NO_ERROR.errorCode,
+  errorDescription: ERRORS.NO_ERROR.errorDescription,
+});
+```
+
+En caso contrario se rechaza la función con un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+
+```javascript
+Promise.reject(ERRORS.INVALID_ID_TOKEN);
+```
 ## Endpoints de producción y testing
 
 Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
