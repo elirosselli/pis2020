@@ -47,10 +47,9 @@ const fetchMockImplementation = () =>
 describe('configuration & security modules and get token integration', () => {
   it('calls setParameters and get token', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -76,8 +75,7 @@ describe('configuration & security modules and get token integration', () => {
 
     fetch.mockImplementation(fetchMockImplementation);
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
     const response = await getToken();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
@@ -122,10 +120,9 @@ describe('configuration & security modules and get token integration', () => {
 
   it('calls setParameters and get token with production set to true', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
     const production = true;
 
     setParameters({
@@ -153,8 +150,7 @@ describe('configuration & security modules and get token integration', () => {
 
     fetch.mockImplementation(fetchMockImplementation);
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
     const response = await getToken();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenProductionEndpoint, {
@@ -200,9 +196,8 @@ describe('configuration & security modules and get token integration', () => {
   it('calls setParameters and get token with empty clientId', async () => {
     const redirectUri = 'redirectUri';
     const clientId = '';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -255,7 +250,7 @@ describe('configuration & security modules and get token integration', () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = '';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -305,15 +300,22 @@ describe('configuration & security modules and get token integration', () => {
   });
 
   it('calls setParameters and get token with empty redirectUri', async () => {
+    const redirectUri = '';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'correctCode';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      code,
-    });
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        code,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -411,16 +413,20 @@ describe('configuration & security modules and get token integration', () => {
   it('calls setParameters and get token with invalid clientId', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'invalid_client_id';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        code,
+      });
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -458,22 +464,26 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
-
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and get token with invalid clientSecret', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'invalid_client_secret';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'correctCode';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        code,
+      });
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -511,22 +521,26 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
-
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and get token with invalid redirectUri', async () => {
     const redirectUri = 'invalid_redirect_uri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const code = 'correctCode';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        code,
+      });
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -564,8 +578,7 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
-
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and get token with invalid production', async () => {
@@ -575,13 +588,18 @@ describe('configuration & security modules and get token integration', () => {
     const code = 'correctCode';
     const production = 'invalid_production';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-      production,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        code,
+        production,
+      });
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_PRODUCTION);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -619,8 +637,7 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
-
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and get token with invalid code', async () => {
@@ -629,12 +646,17 @@ describe('configuration & security modules and get token integration', () => {
     const clientSecret = 'clientSecret';
     const code = 'invalid_code';
 
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      code,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        code,
+      });
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -672,15 +694,13 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
-
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and get token, fetch returns that token is invalid', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
     const code = 'invalidCode';
 
     setParameters({
@@ -753,9 +773,8 @@ describe('configuration & security modules and get token integration', () => {
   it('calls setParameters and get token, fetch returns that client is invalid', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'invalidClientId';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -796,6 +815,7 @@ describe('configuration & security modules and get token integration', () => {
         },
       }),
     );
+
     try {
       await getToken();
     } catch (err) {
@@ -823,10 +843,9 @@ describe('configuration & security modules and get token integration', () => {
 
   it('calls setParameters and get token, fetch returns some error', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -858,11 +877,13 @@ describe('configuration & security modules and get token integration', () => {
         },
       }),
     );
+
     try {
       await getToken();
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -883,10 +904,9 @@ describe('configuration & security modules and get token integration', () => {
 
   it('calls setParameters and get token, fetch fails', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -916,11 +936,13 @@ describe('configuration & security modules and get token integration', () => {
         json: () => Promise.resolve(),
       }),
     );
+
     try {
       await getToken();
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -941,10 +963,9 @@ describe('configuration & security modules and get token integration', () => {
 
   it('calls setParameters and get token, fetch returns invalid accessToken', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -982,9 +1003,14 @@ describe('configuration & security modules and get token integration', () => {
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await getToken();
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
+
+    try {
+      await getToken();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1000,16 +1026,6 @@ describe('configuration & security modules and get token integration', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken: 'invalid_access_token',
-      expiresIn,
-      idToken,
-      refreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1025,14 +1041,14 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and get token, fetch returns invalid expiresIn', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -1070,9 +1086,14 @@ describe('configuration & security modules and get token integration', () => {
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await getToken();
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
+
+    try {
+      await getToken();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1088,16 +1109,6 @@ describe('configuration & security modules and get token integration', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn: 'invalid_expires_in',
-      idToken,
-      refreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1113,14 +1124,14 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and get token, fetch returns invalid idToken', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -1158,9 +1169,14 @@ describe('configuration & security modules and get token integration', () => {
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await getToken();
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
+
+    try {
+      await getToken();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1176,16 +1192,6 @@ describe('configuration & security modules and get token integration', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken: 'invalid_id_token',
-      refreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1201,14 +1207,14 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and get token, fetch returns invalid refreshToken', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -1246,9 +1252,14 @@ describe('configuration & security modules and get token integration', () => {
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await getToken();
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
+
+    try {
+      await getToken();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1264,16 +1275,6 @@ describe('configuration & security modules and get token integration', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken,
-      refreshToken: 'invalid_refresh_token',
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1289,14 +1290,14 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and get token, fetch returns invalid tokenType', async () => {
     const redirectUri = 'redirectUri';
-    const clientId = '898562';
-    const clientSecret =
-      'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
-    const code = 'f24df0c4fcb142328b843d49753946af';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
 
     setParameters({
       clientId,
@@ -1334,9 +1335,14 @@ describe('configuration & security modules and get token integration', () => {
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await getToken();
+    const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
+
+    try {
+      await getToken();
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1352,16 +1358,6 @@ describe('configuration & security modules and get token integration', () => {
       body: `grant_type=authorization_code&code=${code}&redirect_uri=${parameters.redirectUri}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken,
-      refreshToken,
-      tokenType: 'invalid_token_type',
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1377,5 +1373,6 @@ describe('configuration & security modules and get token integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 });
