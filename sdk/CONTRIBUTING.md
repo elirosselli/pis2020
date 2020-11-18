@@ -77,7 +77,7 @@ En particular, los parámetros mencionados son:
 
 Los últimos dos parámetros pueden ser vacíos.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por *scope* y *production*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por *scope* y *production*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
 
 #### Archivos y parámetros
 
@@ -92,7 +92,7 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 

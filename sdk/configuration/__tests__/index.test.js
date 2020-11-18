@@ -240,20 +240,38 @@ describe('configuration module', () => {
       clientSecret: 'clientSecret',
     };
     expect(getParameters()).toStrictEqual(emptyParameters);
-    let error = setParameters(parameters1);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+
+    try {
+      setParameters(parameters1);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
     expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters2);
-    expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+
+    try {
+      setParameters(parameters2);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
     expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters3);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+
+    try {
+      setParameters(parameters3);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
     expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters4);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+
+    try {
+      setParameters(parameters4);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
     expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters5);
+
+    const error = setParameters(parameters5);
     expect(error).toBe(ERRORS.NO_ERROR);
+
     expect(getParameters()).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -268,5 +286,7 @@ describe('configuration module', () => {
       scope: '',
       production: false,
     });
+
+    expect.assertions(11);
   });
 });

@@ -122,8 +122,11 @@ describe('configuration module and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toBe(ERRORS.INVALID_CLIENT_ID);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
 
     parameters = getParameters();
 
@@ -189,8 +192,11 @@ describe('configuration module and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
 
     parameters = getParameters();
 
@@ -255,9 +261,12 @@ describe('configuration module and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
-    expect(result).toBe(ERRORS.INVALID_REDIRECT_URI);
     parameters = getParameters();
 
     // No se tiene que haber setteado ninguno de los parámetros
