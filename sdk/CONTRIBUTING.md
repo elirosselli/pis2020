@@ -370,9 +370,9 @@ Una vez realizado el request se retorna un *response* que, en caso de éxito, co
 En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
 
 
-## Funcionalidad de validateToken
+### Funcionalidad de validateToken
 
-### Generalidades
+#### Generalidades
 
 La funcionalidad de **validateToken** se encarga de validar el *id_token* provisto por *IDUruguay*, es decir, comparar que los atributos que lo componen coincidan con aquellos definidos por *IDUruguay*. Para poder realizar dicha acción se obtiene el `jwks` (**JSON Web Key Set**), que es un conjunto de `jwk` ([**JSON Web Key**](https://tools.ietf.org/html/rfc7517)), que representan una clave criptográfica en formato JSON. Estos son expuestos en el [JWKS Endpoint](https://auth.iduruguay.gub.uy/oidc/v1/jwks), y se obtienen en el módulo `requests`, en la función *validateToken*. 
 
@@ -392,7 +392,7 @@ Los atributos que se validan en esta función son los siguientes:
 
 En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`.
 
-### Archivos y parámetros
+#### Archivos y parámetros
 
 - **sdk/requests/validateToken.js**: Donde se implementa la función *validateToken*. Esta función se encarga de realizar la *JWKS Request* al *JWKS Endpoint*, obteniendo el *JWKS*, además de llamar a la función *validateTokenSecurity* del módulo de seguridad.
 - **sdk/security/validateTokenSecurity**: se implementa la lógica de la validación del id_token, y devuelve el resultado de esta.
@@ -403,7 +403,7 @@ En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_
 - **sdk/utils/errors.js**: Contiene los errores a retornar.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 
-### Código
+#### Código
 
 La función de **validateToken** es declarada como una función asincrónica de la siguiente manera:
 
