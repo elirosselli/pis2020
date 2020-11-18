@@ -329,6 +329,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -398,6 +399,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -444,16 +446,15 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -470,6 +471,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -515,16 +517,15 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -541,6 +542,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -586,16 +588,15 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -612,6 +613,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -658,12 +660,15 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, production);
-    expect(result).toStrictEqual(ERRORS.INVALID_PRODUCTION);
+    try {
+      initialize(redirectUri, clientId, clientSecret, production);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -680,6 +685,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -725,22 +731,15 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      false,
-      'invalid_scope',
-    );
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false, 'invalid_scope');
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_SCOPE);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -757,6 +756,7 @@ describe('configuration & security modules and make request type login integrati
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await makeRequest(REQUEST_TYPES.LOGIN);
     } catch (error) {
@@ -781,7 +781,7 @@ describe('configuration & security modules and make request type login integrati
     expect.assertions(5);
   });
 
-  it('calls initialize and makes a login request with correct parameters, but wrong state is returned', async () => {
+  it('calls initialize and makes a login request with correct parameters, fetch returns invalid state', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -886,7 +886,7 @@ describe('configuration & security modules and make request type login integrati
     expect.assertions(5);
   });
 
-  it('calls initialize with redirectUri different from RP and makes a login request', async () => {
+  it('calls initialize with redirectUri different from RP and then calls login', async () => {
     const badLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=invalidRedirectUri&state=${mockState}`;
     const redirectUri = 'invalidRedirectUri';
     const clientId = 'clientId';
@@ -1038,7 +1038,7 @@ describe('configuration & security modules and make request type login integrati
     expect.assertions(5);
   });
 
-  it('calls initialize with correct parameters, but fetch returns invalid authorization code', async () => {
+  it('calls initialize and makes a login request with correct parameters, fetch returns invalid authorization code', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -1067,16 +1067,11 @@ describe('configuration & security modules and make request type login integrati
         });
     });
 
-    const response = await makeRequest(REQUEST_TYPES.LOGIN);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(response).toStrictEqual({
-      code: 'invalid_code',
-      state: mockState,
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-    });
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
 
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -1090,10 +1085,10 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(3);
   });
 
   it('calls setParameters and makes a login request with undefined scope', async () => {
@@ -1196,18 +1191,21 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-      state: 'invalid_state',
-    });
-    expect(result).toStrictEqual(ERRORS.INVALID_STATE);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+        state: 'invalid_state',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_STATE);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',
@@ -1270,13 +1268,16 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const result = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-    });
-    expect(result).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
     parameters = getParameters();
 
@@ -1343,18 +1344,21 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
 
-    const error = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-      wrongType: 'value',
-    });
-    expect(error).toStrictEqual(ERRORS.INVALID_PARAMETER_TYPE);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+        wrongType: 'value',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    }
 
     parameters = getParameters();
 
-    // No se tiene que haber setteado ninguno de los parámetros..
+    // No se tiene que haber setteado ninguno de los parámetros.
     expect(parameters).toStrictEqual({
       redirectUri: '',
       clientId: '',

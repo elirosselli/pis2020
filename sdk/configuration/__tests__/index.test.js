@@ -311,7 +311,10 @@ describe('configuration module', () => {
   });
 
   it('calls configuration module with invalid parameter type', () => {
-    const response = setParameters({ 'wrong type': 'value' });
-    expect(response).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    try {
+      setParameters({ 'wrong type': 'value' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    }
   });
 });

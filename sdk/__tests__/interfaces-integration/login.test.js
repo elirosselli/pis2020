@@ -328,6 +328,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -397,6 +398,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -443,12 +445,11 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
 
     parameters = getParameters();
 
@@ -469,6 +470,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -514,12 +516,11 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
 
     parameters = getParameters();
 
@@ -540,6 +541,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -585,12 +587,11 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, false);
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
     parameters = getParameters();
 
@@ -611,6 +612,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -657,8 +659,11 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(redirectUri, clientId, clientSecret, production);
-    expect(result).toStrictEqual(ERRORS.INVALID_PRODUCTION);
+    try {
+      initialize(redirectUri, clientId, clientSecret, production);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
 
     parameters = getParameters();
 
@@ -679,6 +684,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -724,18 +730,11 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = initialize(
-      redirectUri,
-      clientId,
-      clientSecret,
-      false,
-      'invalid_scope',
-    );
-    expect(result).toStrictEqual({
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      message: ERRORS.NO_ERROR,
-    });
+    try {
+      initialize(redirectUri, clientId, clientSecret, false, 'invalid_scope');
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_SCOPE);
+    }
 
     parameters = getParameters();
 
@@ -756,6 +755,7 @@ describe('configuration & security modules and login integration', () => {
     });
 
     mockAddEventListener.mockImplementation();
+
     try {
       await login();
     } catch (error) {
@@ -780,7 +780,7 @@ describe('configuration & security modules and login integration', () => {
     expect.assertions(5);
   });
 
-  it('calls initialize and login with correct parameters, but wrong state is returned', async () => {
+  it('calls initialize and login with correct parameters, fetch returns invalid state', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -1037,7 +1037,7 @@ describe('configuration & security modules and login integration', () => {
     expect.assertions(5);
   });
 
-  it('calls initialize and login with correct parameters, but fetch returns invalid authorization code', async () => {
+  it('calls initialize and login with correct parameters, fetch returns invalid authorization code', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -1066,16 +1066,11 @@ describe('configuration & security modules and login integration', () => {
         });
     });
 
-    const response = await login();
-    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(response).toStrictEqual({
-      code: 'invalid_code',
-      state: mockState,
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-    });
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
 
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -1089,10 +1084,10 @@ describe('configuration & security modules and login integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(3);
   });
 
   it('calls setParameters and login with undefined scope', async () => {
@@ -1195,14 +1190,17 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-      state: 'invalid_state',
-    });
-    expect(result).toStrictEqual(ERRORS.INVALID_STATE);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+        state: 'invalid_state',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_STATE);
+    }
 
     parameters = getParameters();
 
@@ -1269,13 +1267,16 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const result = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-    });
-    expect(result).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
     parameters = getParameters();
 
@@ -1342,14 +1343,17 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    const error = setParameters({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production,
-      wrongType: 'value',
-    });
-    expect(error).toStrictEqual(ERRORS.INVALID_PARAMETER_TYPE);
+    try {
+      setParameters({
+        redirectUri,
+        clientId,
+        clientSecret,
+        production,
+        wrongType: 'value',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    }
 
     parameters = getParameters();
 
