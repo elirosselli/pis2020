@@ -11,7 +11,7 @@ afterEach(() => jest.clearAllMocks());
 beforeEach(() => resetParameters());
 
 describe('configuration module', () => {
-  it('works correctly', () => {
+  it('calls configuration module with valid parameters', () => {
     const parameters1 = {
       redirectUri: '',
       clientId: '',
@@ -158,54 +158,7 @@ describe('configuration module', () => {
     });
   });
 
-  it('eraseCode works correctly', () => {
-    const parameters7 = {
-      redirectUri: 'redirectUri',
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      code: 'correctCode',
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      tokenType: 'tokenType',
-      expiresIn: 123,
-      idToken: 'idToken',
-      production: true,
-      state: 'correctState',
-      scope: 'correctScope',
-    };
-    setParameters(parameters7);
-    expect(getParameters()).toStrictEqual({
-      redirectUri: 'redirectUri',
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      code: 'correctCode',
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      tokenType: 'tokenType',
-      expiresIn: 123,
-      idToken: 'idToken',
-      production: true,
-      state: 'correctState',
-      scope: 'correctScope',
-    });
-    eraseCode();
-    expect(getParameters()).toStrictEqual({
-      redirectUri: 'redirectUri',
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      code: '',
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      tokenType: 'tokenType',
-      expiresIn: 123,
-      idToken: 'idToken',
-      production: true,
-      state: 'correctState',
-      scope: 'correctScope',
-    });
-  });
-
-  it('works correctly: sending invalid parameters', () => {
+  it('calls configuration module with invalid parameters', () => {
     const emptyParameters = {
       redirectUri: '',
       clientId: '',
@@ -288,5 +241,80 @@ describe('configuration module', () => {
     });
 
     expect.assertions(11);
+  });
+
+  it('calls configuration module with undefined scope', () => {
+    const emptyParameters = {
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    };
+    expect(getParameters()).toStrictEqual(emptyParameters);
+    const response = setParameters({ scope: undefined });
+    expect(response).toBe(ERRORS.NO_ERROR);
+  });
+
+  it('calls eraseCode', () => {
+    const parameters7 = {
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      code: 'correctCode',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 123,
+      idToken: 'idToken',
+      production: true,
+      state: 'correctState',
+      scope: 'correctScope',
+    };
+    setParameters(parameters7);
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      code: 'correctCode',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 123,
+      idToken: 'idToken',
+      production: true,
+      state: 'correctState',
+      scope: 'correctScope',
+    });
+    eraseCode();
+    expect(getParameters()).toStrictEqual({
+      redirectUri: 'redirectUri',
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      code: '',
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+      tokenType: 'tokenType',
+      expiresIn: 123,
+      idToken: 'idToken',
+      production: true,
+      state: 'correctState',
+      scope: 'correctScope',
+    });
+  });
+
+  it('calls configuration module with invalid parameter type', () => {
+    try {
+      setParameters({ 'wrong type': 'value' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    }
   });
 });
