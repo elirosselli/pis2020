@@ -30,7 +30,7 @@ const login = async () => {
     // Si existe el código y los states coinciden,
     // se guarda y se resuelve la promise.
     // Si no, se rechaza la promise con un error.
-    if (code && returnedState[1] === parameters.state) {
+    if (code && returnedState && returnedState[1] === parameters.state) {
       setParameters({ code: code[1] });
       // Se retorna el código, state y el error correspondiente (en este caso no hay error).
       resolveFunction({
@@ -43,6 +43,8 @@ const login = async () => {
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
       rejectFunction(ERRORS.ACCESS_DENIED);
+    } else if (returnedState && returnedState[1] !== parameters.state) {
+      rejectFunction(ERRORS.INVALID_STATE);
     } else {
       rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
