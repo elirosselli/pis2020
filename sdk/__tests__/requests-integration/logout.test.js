@@ -201,7 +201,12 @@ describe('configuration & security modules and make request type logout integrat
   });
 
   it('calls set parameters and makes a logout request with invalid idTokenHint', async () => {
-    setParameters({ idToken: 'invalid_id_token' });
+    try {
+      setParameters({ idToken: 'invalid_id_token' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -240,11 +245,16 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a logout request with invalid production', async () => {
-    setParameters({ production: 'invalid_production' });
+    try {
+      setParameters({ production: 'invalid_production' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -283,7 +293,7 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a logout request, fetch returns empty state', async () => {
@@ -311,11 +321,13 @@ describe('configuration & security modules and make request type logout integrat
         url: invalidUrl,
       }),
     );
+
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
     }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
@@ -364,11 +376,13 @@ describe('configuration & security modules and make request type logout integrat
     fetch.mockImplementation(() =>
       Promise.resolve({ status: 200, url: 'InvalidUrl' }),
     );
+
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
     }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
@@ -419,11 +433,13 @@ describe('configuration & security modules and make request type logout integrat
         url: '',
       }),
     );
+
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
@@ -470,11 +486,13 @@ describe('configuration & security modules and make request type logout integrat
     });
     const err = Error('error');
     fetch.mockImplementation(() => Promise.reject(err));
+
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+
     expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
