@@ -27,13 +27,13 @@ const correctTokenProductionEndpoint =
 const contentType = 'application/json';
 const tokenType = 'bearer';
 const expiresIn = 3600;
-const idToken =
-  'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
-const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
-const correctRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
-const redirectUri = 'app://redirect';
-const clientId = '898562';
-const clientSecret = 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
+const idToken = 'idToken';
+const accessToken = 'accessToken';
+const correctRefreshToken = 'refreshToken';
+const redirectUri = 'redirectUri';
+const clientId = 'clientId';
+const clientSecret = 'clientSecret';
+const encodedCredentials = 'Y2xpZW50SWQ6Y2xpZW50U2VjcmV0';
 const server = 'nginx/1.15.1';
 const xFrameOptions = 'DENY, SAMEORIGIN';
 const fetchMockImplementation = () =>
@@ -93,9 +93,6 @@ describe('configuration & security modules and make request type refresh token i
     });
 
     fetch.mockImplementation(fetchMockImplementation);
-
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
 
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
@@ -165,9 +162,6 @@ describe('configuration & security modules and make request type refresh token i
 
     fetch.mockImplementation(fetchMockImplementation);
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-
     const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
     expect(fetch).toHaveBeenCalledWith(correctTokenProductionEndpoint, {
       method: 'POST',
@@ -211,11 +205,17 @@ describe('configuration & security modules and make request type refresh token i
   });
 
   it('calls setParameters and makes a refresh token request with empty clientId', async () => {
-    setParameters({
-      clientSecret,
-      refreshToken: correctRefreshToken,
-      redirectUri,
-    });
+    try {
+      setParameters({
+        clientId: '',
+        clientSecret,
+        refreshToken: correctRefreshToken,
+        redirectUri,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -234,8 +234,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -256,11 +256,17 @@ describe('configuration & security modules and make request type refresh token i
   });
 
   it('calls setParameters and makes a refresh token request with empty clientSecret', async () => {
-    setParameters({
-      clientId,
-      refreshToken: correctRefreshToken,
-      redirectUri,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret: '',
+        refreshToken: correctRefreshToken,
+        redirectUri,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -279,8 +285,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -301,11 +307,17 @@ describe('configuration & security modules and make request type refresh token i
   });
 
   it('calls setParameters and makes a refresh token request with empty redirectUri', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      refreshToken: correctRefreshToken,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        refreshToken: correctRefreshToken,
+        redirectUri: '',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -324,8 +336,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -346,11 +358,17 @@ describe('configuration & security modules and make request type refresh token i
   });
 
   it('calls setParameters and makes a refresh token request with empty refreshToken', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        refreshToken: '',
+        redirectUri,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_TOKEN);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -371,8 +389,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_GRANT);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -393,12 +411,17 @@ describe('configuration & security modules and make request type refresh token i
   });
 
   it('calls setParameters and makes a refresh token request with invalid clientId', async () => {
-    setParameters({
-      clientId: 'invalid_client_id',
-      clientSecret,
-      redirectUri,
-      refreshToken: correctRefreshToken,
-    });
+    try {
+      setParameters({
+        clientId: 'invalid_client_id',
+        clientSecret,
+        redirectUri,
+        refreshToken: correctRefreshToken,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -417,8 +440,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
 
     parameters = getParameters();
@@ -436,16 +459,21 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with invalid clientSecret', async () => {
-    setParameters({
-      clientId,
-      clientSecret: 'invalid_client_secret',
-      redirectUri,
-      refreshToken: correctRefreshToken,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret: 'invalid_client_secret',
+        redirectUri,
+        refreshToken: correctRefreshToken,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -464,8 +492,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
 
     parameters = getParameters();
@@ -483,16 +511,21 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with invalid redirectUri', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri: 'invalid_redirect_uri',
-      refreshToken: correctRefreshToken,
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri: 'invalid_redirect_uri',
+        refreshToken: correctRefreshToken,
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -511,8 +544,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
 
     parameters = getParameters();
@@ -530,16 +563,21 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with invalid refreshToken', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      refreshToken: 'invalid_refresh_token',
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        refreshToken: 'invalid_refresh_token',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_TOKEN);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -558,8 +596,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
 
     parameters = getParameters();
@@ -577,17 +615,22 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with invalid production', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      redirectUri,
-      refreshToken: correctRefreshToken,
-      production: 'invalid_production',
-    });
+    try {
+      setParameters({
+        clientId,
+        clientSecret,
+        redirectUri,
+        refreshToken: correctRefreshToken,
+        production: 'invalid_production',
+      });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
+
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -606,8 +649,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
 
     parameters = getParameters();
@@ -625,7 +668,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns that token is invalid', async () => {
@@ -657,8 +700,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_GRANT);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -721,8 +764,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -774,8 +817,8 @@ describe('configuration & security modules and make request type refresh token i
     );
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -825,8 +868,8 @@ describe('configuration & security modules and make request type refresh token i
     );
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -871,8 +914,8 @@ describe('configuration & security modules and make request type refresh token i
 
     try {
       await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_GRANT);
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -930,9 +973,12 @@ describe('configuration & security modules and make request type refresh token i
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -948,16 +994,6 @@ describe('configuration & security modules and make request type refresh token i
       body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken: 'invalid_access_token',
-      expiresIn,
-      idToken,
-      refreshToken: correctRefreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -973,6 +1009,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid expiresIn', async () => {
@@ -1012,9 +1049,12 @@ describe('configuration & security modules and make request type refresh token i
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1030,16 +1070,6 @@ describe('configuration & security modules and make request type refresh token i
       body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn: 'invalid_expires_in',
-      idToken,
-      refreshToken: correctRefreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1055,6 +1085,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid idToken', async () => {
@@ -1094,9 +1125,12 @@ describe('configuration & security modules and make request type refresh token i
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1112,16 +1146,6 @@ describe('configuration & security modules and make request type refresh token i
       body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken: 'invalid_id_token',
-      refreshToken: correctRefreshToken,
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1137,6 +1161,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid refreshToken', async () => {
@@ -1176,9 +1201,12 @@ describe('configuration & security modules and make request type refresh token i
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1194,16 +1222,6 @@ describe('configuration & security modules and make request type refresh token i
       body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken,
-      refreshToken: 'invalid_refresh_token',
-      tokenType,
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1219,6 +1237,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid tokenType', async () => {
@@ -1258,9 +1277,12 @@ describe('configuration & security modules and make request type refresh token i
       }),
     );
 
-    const encodedCredentials =
-      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
-    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
@@ -1276,16 +1298,6 @@ describe('configuration & security modules and make request type refresh token i
       body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
     });
 
-    expect(response).toStrictEqual({
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-      accessToken,
-      expiresIn,
-      idToken,
-      refreshToken: correctRefreshToken,
-      tokenType: 'invalid_token_type',
-    });
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -1301,5 +1313,6 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect.assertions(5);
   });
 });
