@@ -390,7 +390,7 @@ Los atributos que se validan en esta función son los siguientes:
 | acr       | Authentication Context Class Reference|
 | amr       | Authentication Methods References     |
 
-En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`.
+En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`. Si el `client_id` es vacío se retorna el error `ERRORS.INVALID_CLIENT_ID`. Y si la request no se realiza correctamente se devuelve un error de tipo `ERRORS.FAILED_REQUEST`.
 
 #### Archivos y parámetros
 
@@ -402,6 +402,9 @@ En caso de que el `id_token` sea inválido, se retorna el error `ERRORS.INVALID_
 - **sdk/utils/constants.js**: Contiene las constantes a utilizar.
 - **sdk/utils/errors.js**: Contiene los errores a retornar.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+
+La función **validateToken** del módulo *requests* no recibe ningún parámetro, sino que obtiene, en primer lugar, el *id_token* y *client_id* del componente de configuración, el *issuer* del archivo de constantes y el valor del `jwks` de la petición realizada al *JWKS Endpoint*. Estos parámetros luego son pasados a la función **validateTokenSecurity** del componente de seguridad, que los utilizará para realizar la respectiva validación del *id_token*.
+
 
 #### Código
 
