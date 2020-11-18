@@ -286,12 +286,12 @@ Esta función *setea* los parámetros en el SDK. Observar que algunos de los par
 
 ```javascript
 try {
-  setParameters({
+  const response = setParameters({
     redirectUri: 'miRedirectUri',
     clientId: 'miClientId',
   });
 } catch (error){
-  // Hacer algo con el error
+  /* Manejar el error */
 }
 
 ```
