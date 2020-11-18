@@ -3,12 +3,14 @@ import { encode } from 'base-64';
 import { Platform } from 'react-native';
 import { getParameters, setParameters, eraseCode } from '../configuration';
 import { tokenEndpoint } from '../utils/endpoints';
-import { REQUEST_TYPES, MUTEX_TYPES } from '../utils/constants';
+import { REQUEST_TYPES, MUTEX } from '../utils/constants';
 import ERRORS from '../utils/errors';
-import { initializeErrors, fetch, lockMutex } from '../utils/helpers';
+import { initializeErrors, fetch } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
-  const release = lockMutex(MUTEX_TYPES.getTokenOrRefreshMutexType);
+  // Tomar el semáforo para ejecutar la función.
+  const release = await MUTEX.getTokenOrRefreshMutex.acquire();
+
   try {
     const parameters = getParameters();
     // En caso de que algún parámetro sea vacío, se rechaza la promise y se retorna el error correspondiente.
@@ -33,7 +35,6 @@ const getTokenOrRefresh = async type => {
       eraseCode();
       return Promise.reject(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
-
     // En el caso de refresh token, se chequea que el refresh token exista.
     if (type === REQUEST_TYPES.GET_REFRESH_TOKEN && !parameters.refreshToken) {
       return Promise.reject(ERRORS.INVALID_GRANT);
@@ -114,6 +115,7 @@ const getTokenOrRefresh = async type => {
       return Promise.reject(ERRORS.INVALID_CLIENT);
     return Promise.reject(ERRORS.FAILED_REQUEST);
   } finally {
+    // Liberar el semáforo una vez que termina la ejecución de la función.
     release();
   }
 };
