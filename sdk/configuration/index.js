@@ -35,7 +35,7 @@ const setParameters = params => {
   });
 
   // En caso de haber errores, se devuelve el primero encontrado.
-  if (error) return error;
+  if (error) throw error;
 
   // Si no hay errores, se settean los parámetros con los valores
   // devueltos por el módulo de seguridad.

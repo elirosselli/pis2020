@@ -11,7 +11,7 @@ afterEach(() => jest.clearAllMocks());
 beforeEach(() => resetParameters());
 
 describe('configuration module', () => {
-  it('works correctly', () => {
+  it('calls configuration module with valid parameters', () => {
     const parameters1 = {
       redirectUri: '',
       clientId: '',
@@ -158,7 +158,112 @@ describe('configuration module', () => {
     });
   });
 
-  it('eraseCode works correctly', () => {
+  it('calls configuration module with invalid parameters', () => {
+    const emptyParameters = {
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    };
+    const parameters1 = {
+      clientId: 'client_id',
+    };
+    const parameters2 = {
+      clientId: '',
+      redirectUri: 'redirect_uri',
+    };
+    const parameters3 = {
+      clientSecret: 'client_secret',
+      code: 'correctCode',
+    };
+    const parameters4 = {
+      clientId: 'client_code',
+      clientSecret: 'client_secret',
+    };
+    const parameters5 = {
+      clientId: '',
+      clientSecret: 'clientSecret',
+    };
+    expect(getParameters()).toStrictEqual(emptyParameters);
+
+    try {
+      setParameters(parameters1);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+    expect(getParameters()).toStrictEqual(emptyParameters);
+
+    try {
+      setParameters(parameters2);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+    expect(getParameters()).toStrictEqual(emptyParameters);
+
+    try {
+      setParameters(parameters3);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+    expect(getParameters()).toStrictEqual(emptyParameters);
+
+    try {
+      setParameters(parameters4);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+    expect(getParameters()).toStrictEqual(emptyParameters);
+
+    const error = setParameters(parameters5);
+    expect(error).toBe(ERRORS.NO_ERROR);
+
+    expect(getParameters()).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: 'clientSecret',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    expect.assertions(11);
+  });
+
+  it('calls configuration module with undefined scope', () => {
+    const emptyParameters = {
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    };
+    expect(getParameters()).toStrictEqual(emptyParameters);
+    const response = setParameters({ scope: undefined });
+    expect(response).toBe(ERRORS.NO_ERROR);
+  });
+
+  it('calls eraseCode', () => {
     const parameters7 = {
       redirectUri: 'redirectUri',
       clientId: 'clientId',
@@ -205,68 +310,11 @@ describe('configuration module', () => {
     });
   });
 
-  it('works correctly: sending invalid parameters', () => {
-    const emptyParameters = {
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-      production: false,
-    };
-    const parameters1 = {
-      clientId: 'client_id',
-    };
-    const parameters2 = {
-      clientId: '',
-      redirectUri: 'redirect_uri',
-    };
-    const parameters3 = {
-      clientSecret: 'client_secret',
-      code: 'correctCode',
-    };
-    const parameters4 = {
-      clientId: 'client_code',
-      clientSecret: 'client_secret',
-    };
-    const parameters5 = {
-      clientId: '',
-      clientSecret: 'clientSecret',
-    };
-    expect(getParameters()).toStrictEqual(emptyParameters);
-    let error = setParameters(parameters1);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
-    expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters2);
-    expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
-    expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters3);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
-    expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters4);
-    expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
-    expect(getParameters()).toStrictEqual(emptyParameters);
-    error = setParameters(parameters5);
-    expect(error).toBe(ERRORS.NO_ERROR);
-    expect(getParameters()).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: 'clientSecret',
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-      production: false,
-    });
+  it('calls configuration module with invalid parameter type', () => {
+    try {
+      setParameters({ 'wrong type': 'value' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PARAMETER_TYPE);
+    }
   });
 });
