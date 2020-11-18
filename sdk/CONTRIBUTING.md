@@ -417,7 +417,7 @@ Dentro del archivo `requests/validateToken.js`, se chequea que los parámetros r
 
 A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *JWKS Endpoint*.
 
-En el cuerpo de la función de **validateToken** se encuentra un bloque de try y uno de catch que encapsulan la llamada a la función `fetch`. Con esto se logra que si la función se ejecuta de forma incorrecta se rechaza la promesa devolviendo un codigo de error `ERRORS.FAILED_REQUEST` y una descripción del mismo. Por el contrario, en caso de que la respuesta sea satisfactoria, se retorna el resultado de llamar a la función **validateTokenSecurity** del módulo de seguridad, pasando como parámetro el `jwks` obtenido .
+En el cuerpo de la función de **validateToken** se encuentra un bloque de try y uno de catch que encapsulan la llamada a la función `fetch`. Con esto se logra que si la función se ejecuta de forma incorrecta se rechaza la promesa devolviendo un codigo de error `ERRORS.FAILED_REQUEST` y una descripción del mismo. Por el contrario, en caso de que la respuesta sea satisfactoria, se retorna el resultado de llamar a la función **validateTokenSecurity** del módulo de seguridad, pasando como parámetro el `jwks` obtenido.
 
 En la función **validateTokenSecurity** se utiliza las funcionalidades provistas por la librería `jsrsasign`. En primer lugar se obtiene la clave pública a partir de dos de los parámetros devueltos en el `jwks` obtenido, el `n` (*modulous*)  y el `e` (*exponente*). Esta clave pública se pasa a la función **verifyJWT** de la librería antes mencionada, que se encarga de decodificar y validar los siguientes atributos:
 
