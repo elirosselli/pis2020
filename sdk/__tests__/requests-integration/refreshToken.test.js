@@ -22,13 +22,15 @@ beforeEach(() => {
 
 const correctTokenEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
+const correctTokenProductionEndpoint =
+  'https://auth.iduruguay.gub.uy/oidc/v1/token';
 const contentType = 'application/json';
 const tokenType = 'bearer';
 const expiresIn = 3600;
 const idToken =
   'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
 const accessToken = 'c9747e3173544b7b870d48aeafa0f661';
-const refreshToken = '041a156232ac43c6b719c57b7217c9ee';
+const correctRefreshToken = '041a156232ac43c6b719c57b7217c9ee';
 const redirectUri = 'app://redirect';
 const clientId = '898562';
 const clientSecret = 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b';
@@ -42,7 +44,7 @@ const fetchMockImplementation = () =>
         access_token: accessToken,
         expires_in: expiresIn,
         id_token: idToken,
-        refresh_token: refreshToken,
+        refresh_token: correctRefreshToken,
         token_type: tokenType,
       }),
   });
@@ -64,13 +66,14 @@ const fetchMockImplementationWithInvalidOrEmptyToken = () =>
       'X-Frame-Options': xFrameOptions,
     },
   });
+const headerContentType = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 describe('configuration & security modules and make request type refresh token integration', () => {
-  it('calls setParameters and makes a refresh token request ', async () => {
+  it('calls setParameters and makes a refresh token request', async () => {
     setParameters({
       clientId,
       clientSecret,
-      refreshToken,
+      refreshToken: correctRefreshToken,
       redirectUri,
     });
     let parameters = getParameters();
@@ -81,7 +84,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken: '',
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType: '',
       expiresIn: '',
       idToken: '',
@@ -103,10 +106,10 @@ describe('configuration & security modules and make request type refresh token i
       },
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'Content-Type': headerContentType,
         Accept: contentType,
       },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+      body: `grant_type=refresh_token&refresh_token=${correctRefreshToken}`,
     });
 
     expect(response).toStrictEqual({
@@ -116,7 +119,7 @@ describe('configuration & security modules and make request type refresh token i
       accessToken,
       expiresIn,
       idToken,
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType,
     });
     parameters = getParameters();
@@ -127,7 +130,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken,
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType,
       expiresIn,
       idToken,
@@ -136,7 +139,496 @@ describe('configuration & security modules and make request type refresh token i
     });
   });
 
-  it('calls setParameters and makes a refresh token request with invalid refresh token', async () => {
+  it('calls setParameters and makes a refresh token request with production set to true', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      refreshToken: correctRefreshToken,
+      redirectUri,
+      production: true,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: true,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(fetchMockImplementation);
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledWith(correctTokenProductionEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${correctRefreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken: correctRefreshToken,
+      tokenType,
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: true,
+      code: '',
+      accessToken,
+      refreshToken: correctRefreshToken,
+      tokenType,
+      expiresIn,
+      idToken,
+      state: '',
+      scope: '',
+    });
+  });
+
+  it('calls setParameters and makes a refresh token request with empty clientId', async () => {
+    setParameters({
+      clientSecret,
+      refreshToken: correctRefreshToken,
+      redirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId: '',
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId: '',
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with empty clientSecret', async () => {
+    setParameters({
+      clientId,
+      refreshToken: correctRefreshToken,
+      redirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with empty redirectUri', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with empty refreshToken', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(fetchMockImplementationWithInvalidOrEmptyToken);
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_GRANT);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid clientId', async () => {
+    setParameters({
+      clientId: 'invalid_client_id',
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid clientSecret', async () => {
+    setParameters({
+      clientId,
+      clientSecret: 'invalid_client_secret',
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid redirectUri', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri: 'invalid_redirect_uri',
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid refreshToken', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: 'invalid_refresh_token',
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request with invalid production', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+      production: 'invalid_production',
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns that token is invalid', async () => {
     const invalidRefreshToken = 'invalidRefreshToken';
 
     setParameters({
@@ -186,10 +678,11 @@ describe('configuration & security modules and make request type refresh token i
     expect.assertions(3);
   });
 
-  it('calls setParameters and makes a refresh token request with empty refresh token', async () => {
+  it('calls setParameters and makes a refresh token request, fetch returns that client is invalid', async () => {
     setParameters({
       clientId,
       clientSecret,
+      refreshToken: correctRefreshToken,
       redirectUri,
     });
     let parameters = getParameters();
@@ -200,55 +693,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    fetch.mockImplementation(fetchMockImplementationWithInvalidOrEmptyToken);
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_GRANT);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a refresh token request with invalid client id or client secret', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      refreshToken,
-      redirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType: '',
       expiresIn: '',
       idToken: '',
@@ -287,7 +732,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken: '',
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType: '',
       expiresIn: '',
       idToken: '',
@@ -297,146 +742,11 @@ describe('configuration & security modules and make request type refresh token i
     expect.assertions(3);
   });
 
-  it('calls setParameters and makes a refresh token request with empty client id', async () => {
-    setParameters({
-      clientSecret,
-      refreshToken,
-      redirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId: '',
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId: '',
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a refresh token request with empty client secret', async () => {
-    setParameters({
-      clientId,
-      refreshToken,
-      redirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_CLIENT_SECRET);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters and makes a refresh token request with empty redirect uri', async () => {
+  it('calls setParameters and makes a refresh token request, fetch returns some error', async () => {
     setParameters({
       clientId,
       clientSecret,
-      refreshToken,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri: '',
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.INVALID_REDIRECT_URI);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri: '',
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters, makes a refreshToken request and fetch fails', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      refreshToken,
+      refreshToken: correctRefreshToken,
       redirectUri,
     });
     let parameters = getParameters();
@@ -447,58 +757,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 400,
-        json: () => Promise.resolve(),
-      }),
-    );
-    try {
-      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
-    } catch (err) {
-      expect(err).toBe(ERRORS.FAILED_REQUEST);
-    }
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect.assertions(3);
-  });
-
-  it('calls setParameters, makes a refreshToken request and returns some error', async () => {
-    setParameters({
-      clientId,
-      clientSecret,
-      refreshToken,
-      redirectUri,
-    });
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri,
-      clientId,
-      clientSecret,
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType: '',
       expiresIn: '',
       idToken: '',
@@ -526,7 +785,7 @@ describe('configuration & security modules and make request type refresh token i
       production: false,
       code: '',
       accessToken: '',
-      refreshToken,
+      refreshToken: correctRefreshToken,
       tokenType: '',
       expiresIn: '',
       idToken: '',
@@ -536,7 +795,58 @@ describe('configuration & security modules and make request type refresh token i
     expect.assertions(3);
   });
 
-  it('refreshToken does not erase code from parameters', async () => {
+  it('calls setParameters and makes a refresh token request, fetch fails', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      refreshToken: correctRefreshToken,
+      redirectUri,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 400,
+        json: () => Promise.resolve(),
+      }),
+    );
+    try {
+      await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('making a refresh token request does not erase code from parameters', async () => {
     setParameters({
       clientId,
       clientSecret,
@@ -580,5 +890,416 @@ describe('configuration & security modules and make request type refresh token i
       scope: '',
     });
     expect.assertions(3);
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns invalid accessToken', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            access_token: 'invalid_access_token',
+            expires_in: expiresIn,
+            id_token: idToken,
+            refresh_token: correctRefreshToken,
+            token_type: tokenType,
+          }),
+      }),
+    );
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken: 'invalid_access_token',
+      expiresIn,
+      idToken,
+      refreshToken: correctRefreshToken,
+      tokenType,
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns invalid expiresIn', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            access_token: accessToken,
+            expires_in: 'invalid_expires_in',
+            id_token: idToken,
+            refresh_token: correctRefreshToken,
+            token_type: tokenType,
+          }),
+      }),
+    );
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn: 'invalid_expires_in',
+      idToken,
+      refreshToken: correctRefreshToken,
+      tokenType,
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns invalid idToken', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            access_token: accessToken,
+            expires_in: expiresIn,
+            id_token: 'invalid_id_token',
+            refresh_token: correctRefreshToken,
+            token_type: tokenType,
+          }),
+      }),
+    );
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken: 'invalid_id_token',
+      refreshToken: correctRefreshToken,
+      tokenType,
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns invalid refreshToken', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            access_token: accessToken,
+            expires_in: expiresIn,
+            id_token: idToken,
+            refresh_token: 'invalid_refresh_token',
+            token_type: tokenType,
+          }),
+      }),
+    );
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken: 'invalid_refresh_token',
+      tokenType,
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+  });
+
+  it('calls setParameters and makes a refresh token request, fetch returns invalid tokenType', async () => {
+    setParameters({
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken: correctRefreshToken,
+    });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            access_token: accessToken,
+            expires_in: expiresIn,
+            id_token: idToken,
+            refresh_token: correctRefreshToken,
+            token_type: 'invalid_token_type',
+          }),
+      }),
+    );
+
+    const encodedCredentials =
+      'ODk4NTYyOmNkYzA0ZjE5YWMyczJmNWg4ZjZ3ZTZkNDJiMzdlODVhNjNmMXcyZTVmNnNkOGE0NDg0YjZiOTRi';
+    const response = await makeRequest(REQUEST_TYPES.GET_REFRESH_TOKEN);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
+      method: 'POST',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+        'Content-Type': headerContentType,
+        Accept: contentType,
+      },
+      body: `grant_type=refresh_token&refresh_token=${parameters.refreshToken}`,
+    });
+
+    expect(response).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+      accessToken,
+      expiresIn,
+      idToken,
+      refreshToken: correctRefreshToken,
+      tokenType: 'invalid_token_type',
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: correctRefreshToken,
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+    });
   });
 });
