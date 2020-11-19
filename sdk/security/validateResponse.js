@@ -1,34 +1,12 @@
 import MersenneTwister from 'mersenne-twister';
-// import uuidv4 from 'uuid';
 import KJUR from 'jsrsasign';
 import { decode } from 'base-64';
 
 import { setParameters, getParameters } from '../configuration';
 
-const isLetter = char => {
-  const n = char.charCodeAt(0);
-  return (n >= 65 && n < 91) || (n >= 97 && n < 123);
-};
-
-const isDash = char => char === '-';
-
 // Genera un state aleatorio.
 const generateRandomState = () => {
-  // // Se genera un random uuid.
-  // const uuid = uuidv4();
-  // const seedArray = uuid.split('');
-  // // Se cambian letras por su código ASCII y guiones por un número aleatorio,
-  // // ya que la semilla debe ser un número.
-  // for (let i = 0; i < uuid.length; i += 1) {
-  //   if (isLetter(seedArray[i])) {
-  //     seedArray[i] = seedArray[i].charCodeAt(0).toString();
-  //   } else if (isDash(seedArray[i])) {
-  //     seedArray[i] = Math.floor(Math.random() * 11);
-  //   }
-  // }
-  // // Se corta en 16 digitos la semilla.
-  // const randomSeed = parseInt(seedArray.join('').slice(0, 15), 10);
-  const randomSeed = Math.floor(Math.random() * 9999999999999999)
+  const randomSeed = Math.floor(Math.random() * 9999999999999999);
   // Se genera un Mersenne Twister generator con la semilla aleatoria.
   // Mersenne Twister es un algoritmo que genera números pseudo aleatorios muy utilizado por su buena calidad.
   const randomGenerator = new MersenneTwister(randomSeed);
