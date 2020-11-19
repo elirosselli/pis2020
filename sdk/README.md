@@ -268,13 +268,13 @@ Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
 **Errores initialize**
 
-Si alguno de estos parámetros obligatorios es vacío devuelve un error correspondiente a cual es el primero vacío.
+Si alguno de estos parámetros obligatorios es vacío se devuelve un error indicando cual es el primer parámetro vacío. En el caso del `intialize` estos parámetros son *redirectUri*, *clientId* y *clientSecret*, siendo estos los respectivos errores:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET`.
 
-- *clientId* vacío retorna `ERRORS.INVALID_CLIENT_ID`.
-- *redirectUri* vacía retorna `ERRORS.INVALID_REDIRECT_URI`.
-- *clientSecret* vacío retorna `ERRORS.INVALID_CLIENT_SECRET`.
+Por otro lado, si el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
-Por otro lado, si el parámetro production no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
@@ -303,13 +303,15 @@ Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya se
 
 **Errores login**
 
-En caso de que alguno de los parámetros *clientId*, *clientSecret* y *redirectUri* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`.
+En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* y no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respesctivamente.
       
-En caso de que no exista el parámetro *code* en la url se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
+En caso de que no exista el parámetro *code* en la url retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
 
-En caso de que el usuario niegue dar acceso de la información solicitada se retorna el error `ERRORS.ACCESS_DENIED`.
+En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
 
-En caso de error en la request se retorna `ERRORS.FAILED_REQUEST`, en este caso se recomienda revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getToken
 
@@ -323,13 +325,15 @@ Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de 
 
 **Errores getToken**
 
-En caso de que alguno de los parámetros *clientId*, *clientSecret*, *redirectUri* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE`.
+En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecret* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE` respectivamente.
 
-En caso de que el *code* sea inválido o haya expirado, y no se puede obtener un nuevo token de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
+En caso de que el *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que no se pudo obtener un nuevo token de forma correcta se retorna `ERRORS.INVALID_CLIENT`. Se recomienda verificar que el *client_secret* y *client_id* correspondan con los registrados por ID Uruguay. 
+En caso de que el *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
-En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función refreshToken
 
@@ -343,17 +347,19 @@ Esta función requiere que la función `getToken` haya sido ejecutada de forma c
 
 **Errores refreshToken**
 
-Los casos de errores son muy similares a los de `getToken`. 
+Los casos de errores son muy similares a los de la funcionalidad `getToken`. 
 
-En caso de que alguno de los parámetros *clientId*, *clientSecret* y *redirectUri* sea vacío, se retorna el error correspondiente al primer parámetro vacio: `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`.
+En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
 
-A diferencia del `getToken`, no se chequea que el code sea vacio, pero en cambio se revisa que que el parámetro `refreshToken` no lo sea. Si refreshToken es vacio se retorna `ERRORS.INVALID_GRANT`. 
+A diferencia de la funcionalidad `getToken`, en lugar del *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`. 
 
 En caso de que el refreshToken sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que no se pudo obtener un nuevo token de forma correcta se retorna `ERRORS.INVALID_CLIENT`. Se recomienda verificar que el *client_secret* y *client_id* correspondan con los registrados por ID Uruguay. 
+En caso de que el *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
-En caso de error en la respuesta endpoint se retorna `ERRORS.FAILED_REQUEST`.
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getUserInfo
 
@@ -377,9 +383,13 @@ Esta función devuelve un objeto con el siguiente formato:
 
 **Errores getUserInfo**
 
-En caso de que el *accessToken* sea inválido devuelve un error de tipo `ERRORS.INVALID_TOKEN`.
+En caso de que alguno de los parámetros *accessToken* y *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
-En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
+En caso de que el sub correspondiente al token utilizado no coincida con el sub de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función validateToken
 
@@ -412,14 +422,13 @@ try {
 
 **Errores validateToken**
 
-Si alguno de los parámetros obligatorios para la request no se encuentra inicializado, se rechaza la promesa y se retorna un error que especifica cuál parámetro faltó.
+En caso de que alguno de los parámetros obligatorios para la request, en este caso *clientId* y *token* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
-En caso de que el *token* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+En caso de que el *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
 
-En caso de que el *clientId* sea vacío devuelve un error de tipo `ERRORS.INVALID_CLIENT_ID`.
+En caso de error desconocido (no controlado) también se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que el *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.FAILED_REQUEST`.
-
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 ### Función logout
 
@@ -433,10 +442,11 @@ await logout();
 
 En caso de que el *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
 
-Si los parámetros obligatorios para la request se encuentran inicializados, se procede a evaluar la respuesta del OP. En caso de que la url contenida en la respuesta no coincida con el
-*logoutEnpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
+Si *idToken*, el parámetro obligatorio para la *request* se encuentran inicializado, se procede a evaluar la respuesta del OP. En caso de que la url contenida en la respuesta no coincida con el *logoutEndpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
 
-En caso de error en la respuesta del endpoint se retorna `ERRORS.FAILED_REQUEST`.
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
 
 
 ## Errores

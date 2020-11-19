@@ -51,7 +51,7 @@ const logout = async () => {
         });
       }
       // Si la url contenida en la respuesta no coincide con el
-      // logoutEnpoint, se rechaza la promesa retornando un error.
+      // logoutEndpoint, se rechaza la promesa retornando un error.
       return Promise.reject(ERRORS.INVALID_URL_LOGOUT);
     }
     // En cualquier otro caso, se rechaza la promesa
