@@ -54,7 +54,7 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       const code = await login();
-      console.log(code);
+      
       Object.keys(code).forEach(key => {
         console.log(`${key}: ${code[key]}`);
       });
