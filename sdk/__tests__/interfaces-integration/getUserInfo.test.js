@@ -38,8 +38,7 @@ const userInfoEndpoint =
 const userInfoProductionEndpoint =
   'https://auth.iduruguay.gub.uy/oidc/v1/userinfo';
 const userId = 'uy-cid-12345678';
-const idToken =
-  'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
+const idToken = 'valid.id.token';
 
 const validFetchMockImplementation = () =>
   Promise.resolve({
@@ -630,6 +629,76 @@ describe('configuration & security modules and get user info integration', () =>
       scope: '',
     });
     expect.assertions(4);
+  });
+
+  it('calls set parameters and get user info with incorrectly encoded idToken', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken: 'id.token',
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: 'id.token',
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(validFetchMockImplementation);
+
+    try {
+      await getUserInfo();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+      headers: {
+        Authorization: `Bearer ${parameters.accessToken}`,
+        'Content-Type': contentType,
+        Accept: accept,
+      },
+    });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: 'id.token',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(5);
   });
 
   it('calls set parameters and get user info with invalid production', async () => {
