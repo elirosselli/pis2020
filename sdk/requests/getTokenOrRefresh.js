@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { encode } from 'base-64';
 import { Platform } from 'react-native';
 import { getParameters, setParameters, eraseCode } from '../configuration';

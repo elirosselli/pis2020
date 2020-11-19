@@ -41,22 +41,13 @@ const logout = async () => {
       if (urlCheck === logoutEndpoint()) {
         const state = urlCheck.match(/&state=([^&]+)/);
         clearParameters();
-        if (state){
-          var end2 = now();
-          return Promise.resolve({
-            message: ERRORS.NO_ERROR,
-            errorCode: ERRORS.NO_ERROR.errorCode,
-            errorDescription: ERRORS.NO_ERROR.errorDescription,
-            state: state[1],
-            tiempo: (end2-start2) + (end-start),
-          });
-        }
-        var end3=now();
+        var end2 = now();
         return Promise.resolve({
           message: ERRORS.NO_ERROR,
           errorCode: ERRORS.NO_ERROR.errorCode,
           errorDescription: ERRORS.NO_ERROR.errorDescription,
-          tiempo: (end3-start2) + (end-start),
+          state: state[1],
+          tiempo: (end2 - start2) + (end - start),
         });
       }
       // Si la url contenida en la respuesta no coincide con el
