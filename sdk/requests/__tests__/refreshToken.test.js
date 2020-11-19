@@ -13,6 +13,13 @@ jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 
+const mockFunc = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockFunc,
+  })),
+}));
+
 const contentType = 'application/json';
 
 describe('refreshToken', () => {
@@ -80,6 +87,7 @@ describe('refreshToken', () => {
       5,
     );
 
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     // Chequeo de respuestas
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
@@ -124,7 +132,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_CLIENT);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken with invalid refresh token', async () => {
@@ -160,7 +169,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken with empty clientId', async () => {
@@ -175,7 +185,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken with empty clientSecret', async () => {
@@ -190,7 +201,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken with empty redirectUri', async () => {
@@ -205,7 +217,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken with empty refreshToken', async () => {
@@ -221,7 +234,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_GRANT);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken and fetch fails', async () => {
@@ -242,8 +256,8 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
-
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls refreshToken and returns some error', async () => {
@@ -268,6 +282,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 });

@@ -20,6 +20,15 @@ jest.mock('../../security', () => ({
 const idToken = 'idToken';
 const mockState = '3035783770';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`;
+const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=`;
+
+const mockFunc = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockFunc,
+  })),
+}));
+
 afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
@@ -43,6 +52,7 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual({
       state: mockState,
       message: ERRORS.NO_ERROR,
@@ -51,6 +61,37 @@ describe('logout', () => {
     });
   });
 
+<<<<<<< HEAD
+=======
+  it('calls logout with idTokenHint but without state', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+      state: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        url: correctLogoutEndpoint2,
+      }),
+    );
+    const result = await logout();
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(result).toStrictEqual({
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
+  });
+
+>>>>>>> Fixed tests
   it('calls logout without idTokenHint', async () => {
     getParameters.mockReturnValue({
       idToken: '',
@@ -61,6 +102,7 @@ describe('logout', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
+    expect(mockFunc).toHaveBeenCalledTimes(1);
   });
 
   it('calls logout with required parameters and response not OK', async () => {
@@ -79,6 +121,7 @@ describe('logout', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+    expect(mockFunc).toHaveBeenCalledTimes(1);
   });
 
   it('calls logout with required parameters and returns invalid url', async () => {
@@ -102,7 +145,8 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect.assertions(3);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls logout with required parameters and fails', async () => {
@@ -124,6 +168,7 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect.assertions(3);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 });

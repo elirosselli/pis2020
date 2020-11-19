@@ -17,6 +17,13 @@ jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 
+const mockFunc = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockFunc,
+  })),
+}));
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -75,6 +82,7 @@ describe('getUserInfo', () => {
       5,
     );
     expect(validateSub).toHaveBeenCalledWith(sub);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -112,7 +120,8 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    expect.assertions(1);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getUserInfo and returns some error', async () => {
@@ -140,8 +149,8 @@ describe('getUserInfo', () => {
     }
 
     expect(validateSub).not.toHaveBeenCalled();
-
-    expect.assertions(2);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect.assertions(3);
   });
 
   it('calls getUserInfo but subs do not match', async () => {
@@ -179,9 +188,9 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_SUB);
     }
-
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(validateSub).toHaveBeenCalledWith(sub);
-    expect.assertions(2);
+    expect.assertions(3);
   });
 
   it('calls getUserInfo and returns some error with www authenticate header', async () => {
@@ -207,9 +216,9 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(validateSub).not.toHaveBeenCalled();
-    expect.assertions(2);
+    expect.assertions(3);
   });
 
   it('calls getUserInfo with empty access Token', async () => {
@@ -228,9 +237,9 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
-
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(validateSub).not.toHaveBeenCalled();
-    expect.assertions(2);
+    expect.assertions(3);
   });
 });
 
@@ -251,9 +260,9 @@ it('calls getUserInfo with empty Id Token', async () => {
   } catch (err) {
     expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
   }
-
+  expect(mockFunc).toHaveBeenCalledTimes(1);
   expect(validateSub).not.toHaveBeenCalled();
-  expect.assertions(2);
+  expect.assertions(3);
 });
 
 it('calls getUserInfo and fetch fails', async () => {
@@ -277,6 +286,7 @@ it('calls getUserInfo and fetch fails', async () => {
   } catch (err) {
     expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
   }
+  expect(mockFunc).toHaveBeenCalledTimes(1);
   expect(validateSub).not.toHaveBeenCalled();
-  expect.assertions(2);
+  expect.assertions(3);
 });
