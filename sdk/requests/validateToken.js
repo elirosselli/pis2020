@@ -43,7 +43,7 @@ const validateToken = async () => {
     // Convertir a formato json.
     const jwksResponseJson = await jwksResponse.json();
     // Validar el token en el módulo de seguridad a partir de la jwk.
-    var resp = validateTokenSecurity(jwksResponseJson, idToken, clientId, issuer());
+    var resp = await validateTokenSecurity(jwksResponseJson, idToken, clientId, issuer());
     var end2 = now();
     resp.tiempo = (end2 - start2) + (end - start);
     return resp;

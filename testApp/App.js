@@ -168,96 +168,84 @@ const App: () => React$Node = () => {
 
   handleProfiler = async() => {
     var cantEjecuciones = 10;
+    var tEspera = 1000;
     console.log(``);
     console.log(``);
     console.log(`---------Iniciando Profiler---------`);
     console.log(`Promedio de ${cantEjecuciones} ejecuciones.`);
     console.log(`Se requerira que inicie sesion en el navegador para poder realizar las pruebas.`);
     try {
-      initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
-      setParameters({scope: 'personal_info'});
-      await login();
-      console.log(`Login realizado.`);
-      console.log(`Comienzo de ejecucion de las pruebas.`);
-      
-      resetParameters();
-      var tTotal = 0;
-      var prom = 0;
+      var tInit = 0;
+      var tLogin =0;
+      var tGetToken = 0;
+      var tRefreshToken = 0;
+      var tValidateToken = 0;
+      var tUserInfo = 0;
+      var tLogout = 0;
       var now = require("performance-now");
-      var start, end;
+      for (let i = 0; i < cantEjecuciones; i ++){
+        var start = now();
+        initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b', false, 'personal_info');
+        var end = now();
+        tInit += end - start;
 
-      //Prueba para inicializar
-      for (let index = 0; index < cantEjecuciones; index++) {
-        start = now();
-        initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
-        end = now();
-        tTotal = tTotal + (end - start);
-        //sleep(100);
-        resetParameters();
-      }
-      prom = tTotal / 10;
-      console.log(`Initialize:    ${prom} ms`);
-
-      initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b','sdkIdU.testing://redirect');
-      setParameters({scope: 'personal_info'});
-      sleep(100);
-      //Prueba para login
-      tTotal = 0;
-      for (let index = 0; index < cantEjecuciones; index++) {
+        sleep(tEspera);
+        
+        //Prueba para login
         const resp = await login();
-        tTotal = tTotal + resp.tiempo;
-        sleep(200);
-      }
-      prom = tTotal / 10;
-      console.log(`Login:    ${prom} ms`);
+        tLogin = tLogin + resp.tiempo;
 
-      //Prueba para getToken
-      tTotal = 0;
-      for (let index = 0; index < cantEjecuciones; index++) {
-        const resp = await getToken();
-        tTotal = tTotal + resp.tiempo;
-        sleep(200);
-        await login();
-      }
-      prom = tTotal / 10;
-      console.log(`getToken:    ${prom} ms`);
+        sleep(tEspera);
 
-      //Prueba para refreshToken
-      await getToken();
-      tTotal = 0;
-      for (let index = 0; index < cantEjecuciones; index++) {
-        const resp = await refreshToken();
-        tTotal = tTotal + resp.tiempo;
-        sleep(200);
-      }
-      prom = tTotal / 10;
-      console.log(`refreshToken:    ${prom} ms`);
+        //Prueba para getToken
+        resp = await getToken();
+        tGetToken = tGetToken + resp.tiempo;
 
-      //Prueba para getUserInfo
-      tTotal = 0;
-      for (let index = 0; index < cantEjecuciones; index++) {
-        const resp = await getUserInfo();
-        tTotal = tTotal + resp.tiempo;
-        sleep(200);
-      }
-      prom = tTotal / 10;
-      console.log(`getUserInfo:    ${prom} ms`);
+        sleep(tEspera);
 
-      //Prueba para logout
-      tTotal = 0;
-      await login();
-      await getToken();
-      for (let index = 0; index < cantEjecuciones; index++) {
-        const resp = await logout();
-        tTotal = tTotal + resp.tiempo;
-        sleep(200);
-        await login();
-        await getToken();
-      }
-      prom = tTotal / 10;
-      console.log(`logout:    ${prom} ms`);
+        resp = await validateToken();
+        tValidateToken = tValidateToken + resp.tiempo;
 
+        sleep(tEspera);
+
+        //Prueba para refreshToken
+        resp = await refreshToken();
+        tRefreshToken = tRefreshToken + resp.tiempo;
+
+        sleep(tEspera);
+
+
+        //Prueba para getUserInfo
+        resp = await getUserInfo();
+        tUserInfo = tUserInfo + resp.tiempo;
+
+        sleep(tEspera);
+
+        //Prueba para logout
+        resp = await logout();
+        tLogout = tLogout + resp.tiempo;
+
+        sleep(tEspera);
+      }
+
+      tInit = tInit / cantEjecuciones;
+      console.log(`Initialize: ${tInit}`);
+      tLogin = tLogin / cantEjecuciones;
+      console.log(`Login: ${tLogin}`);
+      tGetToken = tGetToken / cantEjecuciones;
+      console.log(`Get Token: ${tGetToken}`);
+      tRefreshToken = tRefreshToken / cantEjecuciones;
+      console.log(`Refresh Token: ${tRefreshToken}`);
+      tValidateToken = tValidateToken / cantEjecuciones;
+      console.log(`Validate Token: ${tValidateToken}`);
+      tUserInfo = tUserInfo / cantEjecuciones;
+      console.log(`User Info: ${tUserInfo}`);
+      tLogout = tLogout / cantEjecuciones;
+      console.log(`Log out: ${tLogout}`);
     } catch (error) {
+      console.log(error.name);
+      console.log(error.errorCode);
+      console.log(error.errorDescription);
       console.log(`Error: ${error}`);
       console.log(`Hubo un error en la ejecucion del profiler, intentelo nuevamente.`);
     }
