@@ -38,7 +38,6 @@ const idToken = 'idToken';
 const clientId = 'clientId';
 
 describe('validateToken', () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
