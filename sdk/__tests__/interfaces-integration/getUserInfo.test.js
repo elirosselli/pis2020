@@ -45,6 +45,7 @@ describe('configuration module and get user info integration', () => {
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
+    const scope = 'personal_info%20profile%20document%20email%20auth_info';
     setParameters({
       clientId,
       clientSecret,
@@ -52,6 +53,7 @@ describe('configuration module and get user info integration', () => {
       code,
       redirectUri,
       idToken,
+      scope,
     });
 
     let parameters = getParameters();
@@ -67,7 +69,7 @@ describe('configuration module and get user info integration', () => {
       tokenType: '',
       expiresIn: '',
       state: '',
-      scope: '',
+      scope,
     });
 
     fetch.mockImplementation(() =>
@@ -150,7 +152,7 @@ describe('configuration module and get user info integration', () => {
       expiresIn: '',
       idToken,
       state: '',
-      scope: '',
+      scope,
     });
   });
 
@@ -159,6 +161,7 @@ describe('configuration module and get user info integration', () => {
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
     const redirectUri = 'redirectUri';
+    const scope = 'personal_info';
     setParameters({
       clientId,
       clientSecret,
@@ -166,6 +169,7 @@ describe('configuration module and get user info integration', () => {
       code,
       redirectUri,
       idToken,
+      scope,
     });
 
     let parameters = getParameters();
@@ -181,7 +185,7 @@ describe('configuration module and get user info integration', () => {
       expiresIn: '',
       idToken,
       state: '',
-      scope: '',
+      scope,
     });
 
     fetch.mockImplementation(() =>
@@ -244,7 +248,7 @@ describe('configuration module and get user info integration', () => {
       expiresIn: '',
       idToken,
       state: '',
-      scope: '',
+      scope,
     });
   });
 
@@ -667,6 +671,70 @@ describe('configuration module and get user info integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
+      state: '',
+      scope: '',
+    });
+    expect.assertions(3);
+  });
+
+  it('calls set parameters and get user info, responseJson.sub invalid', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            sub: '',
+          }),
+      }),
+    );
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_SUB);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
       state: '',
       scope: '',
     });

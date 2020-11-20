@@ -11,6 +11,7 @@
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
   - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-refreshtoken)
   - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-getuserinfo)
+  - [Funcionalidad de *validateToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-logout)
 - [Ejecución de pruebas unitarias y *linter*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
 
@@ -169,7 +170,7 @@ En particular, los parámetros mencionados son:
 
 Los últimos dos parámetros pueden ser vacíos.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por *scope* y *production*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se retorna el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros, solo en aquel caso que no son vacíos (excepto por *scope* y *production*). En primer lugar, se chequea que los parámetros no sean vacíos. Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
 
 #### Archivos y parámetros
 
@@ -184,7 +185,7 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 
@@ -420,6 +421,90 @@ A continuación se arma la solicitud, mediante la función `fetch` y se procede 
 
 En el cuerpo de la función de **getUserInfo** se encuentra un bloque de try y uno de catch. Con esto se logra que si la función se ejecuta de forma satisfactoria se retorna la promesa con los valores explicados anteriormente. De lo contrario se la rechaza devolviendo un codigo de error y una descripción del mismo.
 
+### Funcionalidad de validateToken
+
+#### Generalidades
+
+La funcionalidad de **validateToken** se encarga de validar el *token* provisto por el OP, es decir, comparar que los atributos que lo componen coincidan con aquellos definidos por el OP. Para poder realizar dicha acción se obtiene el `jwks` (**JSON Web Key Set**), que es un conjunto de `jwk` ([**JSON Web Key**](https://tools.ietf.org/html/rfc7517)), que representan una clave criptográfica en formato JSON. Estos son expuestos en el [JWKS Endpoint](https://auth.iduruguay.gub.uy/oidc/v1/jwks), y se obtienen en el módulo *requests*, en la función **validateToken**.
+
+Una vez obtenido el `jwks` correspondiente, se procede a validar el *idToken* obtenido en una llamada a **getToken** o **refreshToken**, para lo cual se invoca a la función **validateTokenSecurity** del módulo seguridad pasando como parámetro el `jwks` obtenido. Dentro del módulo se utiliza la librería [`jsrsasign`](https://github.com/kjur/jsrsasign), que provee funcionalidades que permiten la decodificación y validación del *idToken*.
+
+Los atributos que se validan en esta función son los siguientes:
+
+| Parámetro | Descripción                           |
+|-----------|---------------------------------------|
+| alg       | Algoritmo de la firma.                |
+| iss       | Quien creó y firmó el *token*.          |
+| aud       | Para quién está destinado el *token*.   |
+| exp       | Tiempo de expiración.                 |
+| kid       | Identificador único.                  |
+| acr       | Authentication Context Class Reference|
+| amr       | Authentication Methods References     |
+
+En caso de que el *idToken* sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`. Si el *clientId* es vacío se retorna el error `ERRORS.INVALID_CLIENT_ID`. Y si la *request* no se realiza correctamente se devuelve un error de tipo `ERRORS.FAILED_REQUEST`.
+
+#### Archivos y parámetros
+
+- **sdk/requests/validateToken.js**: Donde se implementa la función **validateToken**. Esta función se encarga de realizar la *JWKS Request* al *JWKS Endpoint*, obteniendo el *JWKS*, además de llamar a la función **validateTokenSecurity** del módulo de seguridad.
+- **sdk/security/validateTokenSecurity**: Se implementa la lógica de la validación del *idToken*, y devuelve el resultado de esta.
+- **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **validateToken**.
+- **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest** con el tipo *REQUEST_TYPES.VALIDATE_TOKEN*.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
+- **sdk/utils/constants.js**: Contiene las constantes a utilizar.
+- **sdk/utils/errors.js**: Contiene los errores a retornar.
+- **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+
+La función **validateToken** del módulo *requests* no recibe ningún parámetro, sino que obtiene, en primer lugar, el *idToken* y *clientId* del componente de configuración, el *issuer* del archivo de constantes y el valor del `jwks` de la petición realizada al *JWKS Endpoint*. En caso de que haya algún problema se retorna el error correspondiente (`ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` o `ERRORS.INVALID_REQUEST`). Si no hubo problema, estos parámetros son pasados a la función **validateTokenSecurity** del componente de seguridad, que los utilizará para realizar la respectiva validación del *idToken*, y retornará un error de tipo `ERRORS.INVALID_TOKEN` si el token en inválido, y en caso contrario, se retorna `ERRORS.NO_ERROR`.
+
+#### Código
+
+La función de **validateToken** es declarada como una función asincrónica de la siguiente manera:
+
+```javascript
+const validateToken = async () => {
+```
+
+La función **validateToken** invoca a la función **makeRequest** con el parámetro *REQUEST_TYPES.VALIDATE_TOKEN*, indicando que es un *request* del tipo *validateToken*. Luego, dentro de **makeRequest**, se realiza la *request* como se mencionó previamente.
+
+Dentro del archivo `requests/validateToken.js`, se chequea que los parámetros requeridos (*clientId* e *idToken*) existan, y en caso de que no, se rechaza la promesa con un error de tipo `ERRORS.INVALID_CLIENT_ID` o `ERRORS.INVALID_ID_TOKEN` respectivamente.
+
+A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *JWKS Endpoint*.
+
+En el cuerpo de la función de **validateToken** se encuentra un bloque de *try* y uno de *catch* que encapsulan la llamada a la función `fetch`. Con esto se logra que si la función se ejecuta de forma incorrecta se rechaza la promesa devolviendo un código de error `ERRORS.FAILED_REQUEST` y una descripción. Por el contrario, en caso de que la respuesta sea satisfactoria, se retorna el resultado de llamar a la función **validateTokenSecurity** del módulo de seguridad, pasando como parámetro el `jwks` obtenido.
+
+En la función **validateTokenSecurity** se utiliza las funcionalidades provistas por la librería `jsrsasign`. En primer lugar se obtiene la clave pública a partir de dos de los parámetros devueltos en el `jwks` obtenido, el `n` (*modulous*)  y el `e` (*exponente*). Esta clave pública se pasa a la función **verifyJWT** de la librería antes mencionada, que se encarga de decodificar y validar los siguientes atributos:
+
+| Parámetro | Descripción                         | Comparado con                               |
+|-----------|-------------------------------------|---------------------------------------------|
+| alg       | Algoritmo de la firma.              | Atributo `alg` del *jwksResponse*.          |
+| iss       | Quien creó y firmó el *token*.        | *Issuer* definido en el archivo de *endpoints*. |
+| aud       | Para quién está destinado el *token*. | *ClientId* asignado al SDK.                   |
+| exp       | Tiempo de expiración.               | Fecha y hora actual.                        |
+
+Posteriormente se agrega una capa extra de validación, con otros atributos. Para esto primero se decodifica el *idToken* ([JWT](https://tools.ietf.org/html/rfc7519)), obteniendo el *header* y el *payload*. Del *header* se valida el atributo *kid*, comparándolo con el recibido en la *JWKS response*. Por otro lado, del *payload* se valida el *acr* y el *amr*, comprobando que estén incluidos en los definidos en el archivo de constantes. En la siguiente tabla se puede ver la definición de los parámetros *acr* y *amr*, así como los posibles valores que puede tomar.
+
+| Parámetro | Descripción                                                                                                                                                        | Valores posibles                                                                                                                                                                                                    |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| acr       | *Authentication Context Class Reference*: conjunto de métodos o procedimientos de autenticación que se consideran equivalentes entre sí en un contexto particular. | ``` [  'urn:iduruguay:nid:0',  'urn:iduruguay:nid:1',  'urn:iduruguay:nid:2',  'urn:iduruguay:nid:3', ] ```                                                                                                        |
+| amr       | *Authentication Methods References*: *array* de *strings* que corresponden a identificadores de métodos de autenticación usados en la autenticación.                   | ``` [  'urn:iduruguay:am:password',  'urn:iduruguay:am:totp',  'urn:iduruguay:am:ci',  'urn:iduruguay:am:idp:ae:0',  'urn:iduruguay:am:idp:ae:1',  'urn:iduruguay:am:idp:ae:2',  'urn:iduruguay:am:idp:ae:3', ] ``` |
+
+Por último, se comprueba que las validaciones anteriores se hayan realizado con éxito, y en ese caso se resuelve la promesa retornando los siguientes valores:
+
+```javascript
+Promise.resolve({
+  jwk: jwksResponse,
+  message: ERRORS.NO_ERROR,
+  errorCode: ERRORS.NO_ERROR.errorCode,
+  errorDescription: ERRORS.NO_ERROR.errorDescription,
+});
+```
+
+En caso contrario se rechaza la promesa con un error de tipo `ERRORS.INVALID_ID_TOKEN`:
+
+```javascript
+Promise.reject(ERRORS.INVALID_ID_TOKEN);
+```
+
 ### Funcionalidad de *logout*
 
 #### Generalidades
@@ -463,7 +548,7 @@ En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la prome
 
 ## Endpoints de producción y testing
 
-Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
+Todas las funcionalidades descritas en la sección anterior obtienen la *URL* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *URL* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *URL* se define como
 
 ```javascript
 `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`
@@ -475,7 +560,7 @@ donde *endpointPrefix* tendrá el valor
 'https://auth-testing.iduruguay.gub.uy/oidc/v1'
 ```
 
-si el SDK se encuentra en modo testing, con el parámetro *production* en *false*, y
+si el SDK se encuentra en modo *testing*, con el parámetro *production* en *false*, y
 
 ```javascript
 'https://auth.iduruguay.gub.uy/oidc/v1'
