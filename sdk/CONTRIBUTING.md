@@ -333,7 +333,7 @@ En el cuerpo de la función de **getUserInfo** se encuentra un bloque de try y u
 
 #### Generalidades
 
-La funcionalidad de **validateToken** se encarga de validar el *token* provisto por el OP, es decir, comparar que los atributos que lo componen coincidan con aquellos definidos por el OP. Para poder realizar dicha acción se obtiene el `jwks` (**JSON Web Key Set**), que es un conjunto de `jwk` ([**JSON Web Key**](https://tools.ietf.org/html/rfc7517)), que representan una clave criptográfica en formato JSON. Estos son expuestos en el [JWKS Endpoint](https://auth.iduruguay.gub.uy/oidc/v1/jwks), y se obtienen en el módulo *requests*, en la función **validateToken**. 
+La funcionalidad de **validateToken** se encarga de validar el *token* provisto por el OP, es decir, comparar que los atributos que lo componen coincidan con aquellos definidos por el OP. Para poder realizar dicha acción se obtiene el `jwks` (**JSON Web Key Set**), que es un conjunto de `jwk` ([**JSON Web Key**](https://tools.ietf.org/html/rfc7517)), que representan una clave criptográfica en formato JSON. Estos son expuestos en el [JWKS Endpoint](https://auth.iduruguay.gub.uy/oidc/v1/jwks), y se obtienen en el módulo *requests*, en la función **validateToken**.
 
 Una vez obtenido el `jwks` correspondiente, se procede a validar el *idToken* obtenido en una llamada a **getToken** o **refreshToken**, para lo cual se invoca a la función **validateTokenSecurity** del módulo seguridad pasando como parámetro el `jwks` obtenido. Dentro del módulo se utiliza la librería [`jsrsasign`](https://github.com/kjur/jsrsasign), que provee funcionalidades que permiten la decodificación y validación del *idToken*.
 
@@ -362,8 +362,7 @@ En caso de que el *idToken* sea inválido, se retorna el error `ERRORS.INVALID_I
 - **sdk/utils/errors.js**: Contiene los errores a retornar.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 
-La función **validateToken** del módulo *requests* no recibe ningún parámetro, sino que obtiene, en primer lugar, el *idToken* y *clientId* del componente de configuración, el *issuer* del archivo de constantes y el valor del `jwks` de la petición realizada al *JWKS Endpoint*. En caso de que haya algún problema se retorna el error correspondiente (`ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` o `ERRORS.INVALID_REQUEST`). Si no hubo problema, estos parámetros son pasados a la función **validateTokenSecurity** del componente de seguridad, que los utilizará para realizar la respectiva validación del *idToken*, y retornará un error de tipo `ERRORS.INVALID_TOKEN` si el token en inválido, y en caso contrario, se retorna `ERRORS.NO_ERROR`. 
-
+La función **validateToken** del módulo *requests* no recibe ningún parámetro, sino que obtiene, en primer lugar, el *idToken* y *clientId* del componente de configuración, el *issuer* del archivo de constantes y el valor del `jwks` de la petición realizada al *JWKS Endpoint*. En caso de que haya algún problema se retorna el error correspondiente (`ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` o `ERRORS.INVALID_REQUEST`). Si no hubo problema, estos parámetros son pasados a la función **validateTokenSecurity** del componente de seguridad, que los utilizará para realizar la respectiva validación del *idToken*, y retornará un error de tipo `ERRORS.INVALID_TOKEN` si el token en inválido, y en caso contrario, se retorna `ERRORS.NO_ERROR`.
 
 #### Código
 
@@ -394,7 +393,7 @@ Posteriormente se agrega una capa extra de validación, con otros atributos. Par
 
 | Parámetro | Descripción                                                                                                                                                        | Valores posibles                                                                                                                                                                                                    |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| acr       | *Authentication Context Class Reference*: conjunto de métodos o procedimientos de autenticación que se consideran equivalentes entre sí en un contexto particular. | ```  [  'urn:iduruguay:nid:0',  'urn:iduruguay:nid:1',  'urn:iduruguay:nid:2',  'urn:iduruguay:nid:3', ] ```                                                                                                        |
+| acr       | *Authentication Context Class Reference*: conjunto de métodos o procedimientos de autenticación que se consideran equivalentes entre sí en un contexto particular. | ``` [  'urn:iduruguay:nid:0',  'urn:iduruguay:nid:1',  'urn:iduruguay:nid:2',  'urn:iduruguay:nid:3', ] ```                                                                                                        |
 | amr       | *Authentication Methods References*: *array* de *strings* que corresponden a identificadores de métodos de autenticación usados en la autenticación.                   | ``` [  'urn:iduruguay:am:password',  'urn:iduruguay:am:totp',  'urn:iduruguay:am:ci',  'urn:iduruguay:am:idp:ae:0',  'urn:iduruguay:am:idp:ae:1',  'urn:iduruguay:am:idp:ae:2',  'urn:iduruguay:am:idp:ae:3', ] ``` |
 
 Por último, se comprueba que las validaciones anteriores se hayan realizado con éxito, y en ese caso se resuelve la promesa retornando los siguientes valores:
@@ -407,6 +406,7 @@ Promise.resolve({
   errorDescription: ERRORS.NO_ERROR.errorDescription,
 });
 ```
+
 En caso contrario se rechaza la promesa con un error de tipo `ERRORS.INVALID_ID_TOKEN`:
 
 ```javascript
