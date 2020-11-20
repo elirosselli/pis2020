@@ -20,7 +20,6 @@ jest.mock('../../security', () => ({
 const idToken = 'idToken';
 const mockState = '3035783770';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`;
-const correctLogoutEndpoint2 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=`;
 
 const mockFunc = jest.fn();
 jest.mock('async-mutex', () => ({
@@ -55,34 +54,6 @@ describe('logout', () => {
     expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual({
       state: mockState,
-      message: ERRORS.NO_ERROR,
-      errorCode: ERRORS.NO_ERROR.errorCode,
-      errorDescription: ERRORS.NO_ERROR.errorDescription,
-    });
-  });
-
-  it('calls logout with idTokenHint but without state', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      state: '',
-    });
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 200,
-        url: correctLogoutEndpoint2,
-      }),
-    );
-    const result = await logout();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint2, {
-      method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
-    });
-    expect(mockFunc).toHaveBeenCalledTimes(1);
-    expect(result).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,

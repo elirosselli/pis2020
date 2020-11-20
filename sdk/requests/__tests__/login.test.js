@@ -174,9 +174,10 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_STATE);
     }
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls login with correct clientId, correct redirectUri and user denies access', async () => {
@@ -199,6 +200,7 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
+    expect(mockFunc).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
   });
