@@ -151,12 +151,6 @@ En este punto se tiene un *Event Listener* que queda esperando por un evento del
 await Linking.openURL(loginEndpoint())
 ```
 
-Donde *loginEndpoint* se encuentra en el archivo *endpoints.js*, con el siguiente valor:
-
-```javascript
-${endpointPrefix}/authorize?scope=openid&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}
-```
-
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
