@@ -249,7 +249,7 @@ describe('configuration & security modules and make request type logout integrat
 
   it('calls set parameters and makes a logout request with invalid production', async () => {
     try {
-      setParameters({ production: 'invalid_production' });
+      setParameters({ idToken, production: 'invalid_production' });
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_PRODUCTION);
     }

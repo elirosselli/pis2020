@@ -248,7 +248,7 @@ describe('configuration & security modules and logout integration', () => {
 
   it('calls set parameters and logout with invalid production', async () => {
     try {
-      setParameters({ production: 'invalid_production' });
+      setParameters({ idToken, production: 'invalid_production' });
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_PRODUCTION);
     }
