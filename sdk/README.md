@@ -206,7 +206,7 @@ initizalize(
 );
 ```
 
-Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP.
+Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope*.
 
 Una vez inicializado el componente, se puede realizar el *login* con ID Uruguay mediante una llamada a la función `login`:
 
@@ -252,7 +252,7 @@ const LoginButton = () => {
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Este último parámetro es opcional. El parámetro *production* es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay, y en *false* en el caso de que se quiera acceder a los endpoints de testing de ID Uruguay. El parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
