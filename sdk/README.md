@@ -242,6 +242,12 @@ const LoginButton = () => {
 
 | Función                                                      | Descripción                                                                                                                                                                            |
 |--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `getParameters()` | Obtiene los parámetros que se encuentran *seteados* en el SDK                                                                       |
+| `setParameters(parameters)` | *Setea* los parámetros pasados por parámetro en el SDK. Además los valida antes de su asignación contra valores maliciosos.                                                                  |
+| `clearParameters()` | Borra todos los parámetros a excepción de: *redirectUri*, *clientId*, *clientSecret* y *production*.                                                                   |
+| `resetParameters()` | Borra todos los parámetros a excepción de *production*, para el cual *setea* su valor en *false*.    
+| `eraseCode()` | Borra el parámetro *code*.                                                           |
+| `eraseState()` | Borra el parámetro *state*.                                                           |
 | `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
@@ -249,6 +255,64 @@ const LoginButton = () => {
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *id_token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 | `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
+
+### Función getParameters
+Esta función retorna los parámetros del SDK en un objeto con pares *(clave, valor)*, por ejemplo
+
+```javascript
+{
+  redirectUri: 'miRedirectUri',
+  clientId: 'miClientId',
+  clientSecret: 'miClientSecret',
+  code: 'miCode',
+  accessToken: 'miAccessToken',
+  refreshToken: 'miRefreshToken',
+  tokenType: 'miTokenType',
+  expiresIn: 'miExpiresIn',
+  idToken: 'miIdToken',
+  state: 'miState',
+  scope: 'miScope',
+  production: false,
+}
+```
+Por ende, para obtener el valor del parámetro *redirectUri*, por ejemplo, basta con el siguiente código
+```javascript
+const parameters = getParameters();
+const valorRedirectUri = parameters.redirectUri;
+```
+
+### Función setParameters
+Esta función *setea* los parámetros en el SDK. Observar que algunos de los parámetros pueden ser *seteados* también utilizando la función *initialize*. Para poder setear los parámetros, alcanza con pasar a la función un objeto con pares *(clave, valor)*, donde las claves sean los nombres de los parámetros a setear, y el valor sus correspondientes valores. A su vez, la función debe ser llamada dentro de un bloque *try*, ya que en caso de que no sea válido algún parámetro, la función lanzará una excepción. Por ejemplo, el siguiente código *seteará* los parámetros *redirectUri* y *clientId*.
+
+```javascript
+try {
+  const response = setParameters({
+    redirectUri: 'miRedirectUri',
+    clientId: 'miClientId',
+  });
+} catch (error){
+  /* Manejar el error */
+}
+
+```
+Observar que esta función no permite setear parámetros vacíos.
+
+### Función clearParameters y resetParameters
+Estas funciones borran todos los parámetros a excepción de los mencionados anteriormente. Basta con llamarlas de la siguiente manera:
+
+```javascript
+clearParameters();
+resetParameters();
+```
+
+### Función eraseCode y eraseState
+Estas funciones borran los parámetros *code* y *state* respectivamente. Basta con llamarlas de la siguiente manera:
+
+```javascript
+eraseCode();
+eraseState();
+```
+
 
 ### Función initialize
 
