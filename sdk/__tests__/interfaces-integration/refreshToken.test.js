@@ -810,7 +810,7 @@ describe('configuration & security modules and refresh token integration', () =>
       Promise.reject({
         headers: {
           'some-error':
-            'error="some_error", error_description="Catched error different from invalid_grant and invalid_client"',
+            'error="some_error", error_description="Caught error different from invalid_grant and invalid_client"',
         },
       }),
     );
