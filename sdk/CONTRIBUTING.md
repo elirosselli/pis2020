@@ -137,7 +137,7 @@ Donde [*Object.keys()*](https://developer.mozilla.org/es/docs/Web/JavaScript/Ref
 
 En caso de que el valor correspondiente a la clave actual sea distinto de vacío, se ejecuta un bloque [*try-catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch). Se realiza este chequeo, ya que no se permiten *setear* valores vacíos. En el bloque *try*, se ejecuta la función **validateParameters** del módulo de seguridad, que se encarga de validar los valores de los parámetros como fue mencionado anteriormente. En caso de que el parámetro que esté siendo chequeado en la iteración sea válido, se *setea* el mismo en el objeto *validParameters*, en caso contrario, la función **validateParameters** lanzará una excepción que será capturada en el bloque *catch* donde se *setea* el error obtenido en la variable *error*.
 
-En caso de error, se lanza una excepción indicando el *error* retornado por la función de validación de parámetros, con la sentencia [*throw*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/throw). En caso contrario, se setean los parámetros del módulo en el objeto *parameters* con los valores guardados en el objeto *validParameters*, y se retorna el error de tipo *NO_ERROR* indicando que no hubo error.
+En caso de error, se lanza una excepción indicando el *error* retornado por la función de validación de parámetros, con la sentencia [*throw*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/throw). En caso contrario, se *setean* los parámetros del módulo en el objeto *parameters* con los valores guardados en el objeto *validParameters*, y se retorna el error de tipo *NO_ERROR* indicando que no hubo error.
 
 #### Funcionalidades de clearParameters y resetParameters
 
@@ -146,7 +146,7 @@ En caso de error, se lanza una excepción indicando el *error* retornado por la 
 Estas funciones borran el valor de todos los parámetros, con las siguientes expeciones:
 
 -**clearParameters**: no borra los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*. Estos parámetros no son borrados ya que son necesarios para la mayoría de los *requests* y se asume que cambiarán con poca frecuencia o ninguna durante la ejecución del componente.
--**resetParameters**: no borra el parámetro *production*, para el cuál se setea su valor en *false*.
+-**resetParameters**: no borra el parámetro *production*, para el cuál se *setea* su valor en *false*.
 
 El funcionamiento general de ambas funciones consiste en recorrer los valores de los parámetros y borrarlos (*setearlos* al *string* vacío) en los casos mencionados.
 
@@ -156,7 +156,7 @@ Las funciones **clearParameters** y **resetParameters** no reciben parámetros y
 
 ##### Código
 
-Ambas funciones utilizan *Object.keys()* que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función *forEach(función_callback)* se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se setean sus valores al *string* vacío en el objeto *parameters*, en los casos indicados. Para el caso de **resetParameters**, una vez terminada la recorrida de todos los parámetros, se setea el parámetro *production* a *false*.
+Ambas funciones utilizan *Object.keys()* que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función *forEach(función_callback)* se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se *setean* sus valores al *string* vacío en el objeto *parameters*, en los casos indicados. Para el caso de **resetParameters**, una vez terminada la recorrida de todos los parámetros, se *setea* el parámetro *production* a *false*.
 
 #### Funcionalidades de *Erase Code* y *Erase State*
 
@@ -205,7 +205,7 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se setean los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret* y *redirectUri*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se *setean* los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 
@@ -320,7 +320,7 @@ La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshTok
 
 #### Generalidades
 
-La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *access_token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* seteado al realizar el **login**. Dicha información será devuelta en formato JSON.
+La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *access_token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON.
 
 #### Archivos y parámetros
 
@@ -335,7 +335,7 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 
 La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
-A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes seteados.
+A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes *seteados*.
 
 Scope: openId:
 

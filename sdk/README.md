@@ -282,7 +282,7 @@ const valorRedirectUri = parameters.redirectUri;
 ```
 
 ### Función setParameters
-Esta función *setea* los parámetros en el SDK. Observar que algunos de los parámetros pueden ser *seteados* también utilizando la función *initialize*. Para poder setear los parámetros, alcanza con pasar a la función un objeto con pares *(clave, valor)*, donde las claves sean los nombres de los parámetros a setear, y el valor sus correspondientes valores. A su vez, la función debe ser llamada dentro de un bloque *try*, ya que en caso de que no sea válido algún parámetro, la función lanzará una excepción. Por ejemplo, el siguiente código *seteará* los parámetros *redirectUri* y *clientId*.
+Esta función *setea* los parámetros en el SDK. Observar que algunos de los parámetros pueden ser *seteados* también utilizando la función *initialize*. Para poder *setear* los parámetros, alcanza con pasar a la función un objeto con pares *(clave, valor)*, donde las claves sean los nombres de los parámetros a *setear*, y el valor sus correspondientes valores. A su vez, la función debe ser llamada dentro de un bloque *try*, ya que en caso de que no sea válido algún parámetro, la función lanzará una excepción. Por ejemplo, el siguiente código *seteará* los parámetros *redirectUri* y *clientId*.
 
 ```javascript
 try {
@@ -295,7 +295,7 @@ try {
 }
 
 ```
-Observar que esta función no permite setear parámetros vacíos.
+Observar que esta función no permite *setear* parámetros vacíos.
 
 ### Función clearParameters y resetParameters
 Estas funciones borran todos los parámetros a excepción de los mencionados anteriormente. Basta con llamarlas de la siguiente manera:
@@ -316,7 +316,7 @@ eraseState();
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
