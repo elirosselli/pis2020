@@ -61,8 +61,6 @@ describe('logout', () => {
     });
   });
 
-<<<<<<< HEAD
-=======
   it('calls logout with idTokenHint but without state', async () => {
     getParameters.mockReturnValue({
       idToken,
@@ -91,7 +89,6 @@ describe('logout', () => {
     });
   });
 
->>>>>>> Fixed tests
   it('calls logout without idTokenHint', async () => {
     getParameters.mockReturnValue({
       idToken: '',
