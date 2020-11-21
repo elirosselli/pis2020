@@ -3,13 +3,14 @@ import { getParameters, setParameters, eraseState } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
 import ERRORS from '../utils/errors';
+import { MUTEX } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
-  // Se genera un random state para el pedido al endpoint de login,
-  // que además se settea en los parámetros mediante una llamada a setParameters.
-  generateRandomState();
-  const parameters = getParameters();
+  // Tomar el semáforo para ejecutar la función.
+  const mutexRelease = await MUTEX.loginMutex.acquire();
+
+  let parameters;
   let resolveFunction;
   let rejectFunction;
 
@@ -22,6 +23,8 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
+    parameters = getParameters();
+
     // Obtiene el code y state a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
@@ -54,6 +57,11 @@ const login = async () => {
   };
 
   try {
+    // Se genera un random state para el pedido al endpoint de login,
+    // que además se settea en los parámetros mediante una llamada a setParameters.
+    generateRandomState();
+    parameters = getParameters();
+
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
     // Si hay un clientId, clientSecret y redirectUri setteado, se abre el browser
@@ -82,6 +90,9 @@ const login = async () => {
     Linking.removeEventListener('url', handleOpenUrl);
     eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
+  } finally {
+    // Liberar el semáforo una vez que termina la ejecución de la función.
+    mutexRelease();
   }
   return promise;
 };
