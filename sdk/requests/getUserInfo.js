@@ -8,7 +8,7 @@ import ERRORS from '../utils/errors';
 
 const getUserInfo = async () => {
   // Tomar el semáforo para ejecutar la función.
-  const release = await MUTEX.getUserInfoMutex.acquire();
+  const mutexRelease = await MUTEX.getUserInfoMutex.acquire();
 
   try {
     const { accessToken, idToken } = getParameters();
@@ -64,7 +64,7 @@ const getUserInfo = async () => {
     return Promise.reject(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.
-    release();
+    mutexRelease();
   }
 };
 

@@ -8,7 +8,7 @@ import { getParameters, clearParameters, eraseState } from '../configuration';
 
 const logout = async () => {
   // Tomar el semáforo para ejecutar la función.
-  const release = await MUTEX.logoutMutex.acquire();
+  const mutexRelease = await MUTEX.logoutMutex.acquire();
 
   try {
     // Se genera un random state para el pedido al endpoint de logout,
@@ -61,7 +61,7 @@ const logout = async () => {
     return Promise.reject(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.
-    release();
+    mutexRelease();
   }
 };
 

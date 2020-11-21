@@ -13,10 +13,10 @@ jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 
-const mockFunc = jest.fn();
+const mockMutex = jest.fn();
 jest.mock('async-mutex', () => ({
   Mutex: jest.fn(() => ({
-    acquire: () => mockFunc,
+    acquire: () => mockMutex,
   })),
 }));
 
@@ -87,7 +87,7 @@ describe('refreshToken', () => {
       5,
     );
 
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     // Chequeo de respuestas
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
@@ -132,7 +132,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_CLIENT);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -169,7 +169,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -185,7 +185,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_CLIENT_ID);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -201,7 +201,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -217,7 +217,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -234,7 +234,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_GRANT);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -256,7 +256,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -282,7 +282,7 @@ describe('refreshToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 });

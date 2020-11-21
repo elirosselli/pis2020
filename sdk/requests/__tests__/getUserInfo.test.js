@@ -17,10 +17,10 @@ jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 
-const mockFunc = jest.fn();
+const mockMutex = jest.fn();
 jest.mock('async-mutex', () => ({
   Mutex: jest.fn(() => ({
-    acquire: () => mockFunc,
+    acquire: () => mockMutex,
   })),
 }));
 
@@ -82,7 +82,7 @@ describe('getUserInfo', () => {
       5,
     );
     expect(validateSub).toHaveBeenCalledWith(sub);
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -120,7 +120,7 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -149,7 +149,7 @@ describe('getUserInfo', () => {
     }
 
     expect(validateSub).not.toHaveBeenCalled();
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(3);
   });
 
@@ -188,7 +188,7 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_SUB);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(validateSub).toHaveBeenCalledWith(sub);
     expect.assertions(3);
   });
@@ -216,7 +216,7 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(validateSub).not.toHaveBeenCalled();
     expect.assertions(3);
   });
@@ -237,7 +237,7 @@ describe('getUserInfo', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_TOKEN);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(validateSub).not.toHaveBeenCalled();
     expect.assertions(3);
   });
@@ -260,7 +260,7 @@ it('calls getUserInfo with empty Id Token', async () => {
   } catch (err) {
     expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
   }
-  expect(mockFunc).toHaveBeenCalledTimes(1);
+  expect(mockMutex).toHaveBeenCalledTimes(1);
   expect(validateSub).not.toHaveBeenCalled();
   expect.assertions(3);
 });
@@ -286,7 +286,7 @@ it('calls getUserInfo and fetch fails', async () => {
   } catch (err) {
     expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
   }
-  expect(mockFunc).toHaveBeenCalledTimes(1);
+  expect(mockMutex).toHaveBeenCalledTimes(1);
   expect(validateSub).not.toHaveBeenCalled();
   expect.assertions(3);
 });

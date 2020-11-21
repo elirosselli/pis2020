@@ -8,7 +8,7 @@ import { MUTEX } from '../utils/constants';
 
 const validateToken = async () => {
   // Tomar el semáforo para ejecutar la función.
-  const release = await MUTEX.validateTokenMutex.acquire();
+  const mutexRelease = await MUTEX.validateTokenMutex.acquire();
 
   try {
     const { idToken, clientId } = getParameters();
@@ -40,14 +40,14 @@ const validateToken = async () => {
     });
     // Convertir a formato json.
     const jwksResponseJson = await jwksResponse.json();
+
     // Validar el token en el módulo de seguridad a partir de la jwk.
-    console.log(idToken);
     return validateTokenSecurity(jwksResponseJson, idToken, clientId, issuer());
   } catch (error) {
     return Promise.reject(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.
-    release();
+    mutexRelease();
   }
 };
 

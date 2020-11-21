@@ -19,10 +19,10 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
-const mockFunc = jest.fn();
+const mockMutex = jest.fn();
 jest.mock('async-mutex', () => ({
   Mutex: jest.fn(() => ({
-    acquire: () => mockFunc,
+    acquire: () => mockMutex,
   })),
 }));
 
@@ -48,7 +48,7 @@ describe('login', () => {
     const response = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
       state: mockState,
@@ -79,7 +79,7 @@ describe('login', () => {
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(4);
   });
 
@@ -100,7 +100,7 @@ describe('login', () => {
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(4);
   });
 
@@ -116,7 +116,7 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(3);
   });
 
@@ -132,7 +132,7 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(3);
   });
 
@@ -150,7 +150,7 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(3);
   });
 
@@ -174,7 +174,7 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_STATE);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     expect.assertions(4);
@@ -200,7 +200,7 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
   });

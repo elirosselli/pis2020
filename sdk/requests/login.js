@@ -8,7 +8,7 @@ import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
   // Tomar el semáforo para ejecutar la función.
-  const release = await MUTEX.loginMutex.acquire();
+  const mutexRelease = await MUTEX.loginMutex.acquire();
 
   let parameters;
   let resolveFunction;
@@ -92,7 +92,7 @@ const login = async () => {
     rejectFunction(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.
-    release();
+    mutexRelease();
   }
   return promise;
 };

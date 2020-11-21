@@ -15,10 +15,10 @@ jest.mock('../../utils/helpers', () => ({
 
 const contentType = 'application/json';
 
-const mockFunc = jest.fn();
+const mockMutex = jest.fn();
 jest.mock('async-mutex', () => ({
   Mutex: jest.fn(() => ({
-    acquire: () => mockFunc,
+    acquire: () => mockMutex,
   })),
 }));
 
@@ -81,7 +81,7 @@ describe('getToken', () => {
       },
       5,
     );
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -124,7 +124,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -161,7 +161,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -177,7 +177,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -194,7 +194,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -211,7 +211,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -228,7 +228,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -245,7 +245,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -271,7 +271,7 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 });

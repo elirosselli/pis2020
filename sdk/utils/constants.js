@@ -47,14 +47,12 @@ const AMR_LIST = [
 // que la funciones puedan ser llamadas cuando existe
 // una ejecución de la función en curso.
 
-// Se crean los mutex.
 const loginMutex = new Mutex();
 const getTokenOrRefreshMutex = new Mutex();
 const getUserInfoMutex = new Mutex();
 const logoutMutex = new Mutex();
 const validateTokenMutex = new Mutex();
 
-// Se exponen los mutex de manera global.
 const MUTEX = {
   loginMutex,
   getTokenOrRefreshMutex,
@@ -62,4 +60,5 @@ const MUTEX = {
   logoutMutex,
   validateTokenMutex,
 };
+
 export { REQUEST_TYPES, PARAMETERS, ACR_LIST, AMR_LIST, MUTEX };

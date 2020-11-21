@@ -9,7 +9,7 @@ import { initializeErrors, fetch } from '../utils/helpers';
 
 const getTokenOrRefresh = async type => {
   // Tomar el semáforo para ejecutar la función.
-  const release = await MUTEX.getTokenOrRefreshMutex.acquire();
+  const mutexRelease = await MUTEX.getTokenOrRefreshMutex.acquire();
 
   try {
     const parameters = getParameters();
@@ -116,7 +116,7 @@ const getTokenOrRefresh = async type => {
     return Promise.reject(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.
-    release();
+    mutexRelease();
   }
 };
 

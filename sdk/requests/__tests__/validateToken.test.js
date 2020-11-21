@@ -13,10 +13,10 @@ jest.mock('../../utils/helpers', () => ({
   fetch: jest.fn(),
 }));
 
-const mockFunc = jest.fn();
+const mockMutex = jest.fn();
 jest.mock('async-mutex', () => ({
   Mutex: jest.fn(() => ({
-    acquire: () => mockFunc,
+    acquire: () => mockMutex,
   })),
 }));
 
@@ -74,7 +74,7 @@ describe('validateToken', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 
@@ -106,7 +106,7 @@ describe('validateToken', () => {
       clientId,
       issuer(),
     );
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual({
       jwk: jwksResponse,
       message: ERRORS.NO_ERROR,
@@ -130,7 +130,7 @@ describe('validateToken', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
     }
-    expect(mockFunc).toHaveBeenCalledTimes(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
   });
 });
