@@ -197,7 +197,7 @@ describe('getUserInfo', () => {
       Promise.reject({
         headers: {
           'Www-Authenticate':
-            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+            'error="other_error", error_description="other_error_description"',
         },
       }),
     );
