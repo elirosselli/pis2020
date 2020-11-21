@@ -138,14 +138,14 @@ La función de **login** es declarada como una función asincrónica de la sigui
 const login = async () => {
 ```
 
-El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. Se inicializa el parámetro *state* del módulo de configuración con una *string* aleatoria, a través de la función **generateTandomState**.
+El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. Se inicializa el parámetro *state* del módulo de configuración con un *string* aleatorio, a través de la función **generateRandomState**.
 En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Esto se puede ver en la siguiente línea:
 
 ```javascript
 Linking.addEventListener('url', handleOpenUrl);
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *client_id*, la *redirect_uri* y opcionalmente *state*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *clientId*, la *redirectUri* y opcionalmente *state*. Esto se puede ver a continuación:
 
 ```javascript
 await Linking.openURL(loginEndpoint())
@@ -153,9 +153,9 @@ await Linking.openURL(loginEndpoint())
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
-Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirect_uri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
+Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code*, y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se resuelve la promesa retornando el *code* y un mensaje de éxito. En caso contrario, se rechaza la promesa con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se resuelve la promesa retornando el *code* y un mensaje de éxito. En caso contrario, se rechaza la promesa con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
 
 #### Errores
 
@@ -174,9 +174,9 @@ Los códigos de error devueltos en cada caso son:
 
 #### Generalidades
 
-La función **getToken** se encarga de la comunicación entre la aplicación de usuario y el *Token Endpoint*, de forma de obtener los datos correspondientes a un Token Request. El objetivo principal de esta función es obtener un *token* para posteriormente utilizarlo con el fin de adquirir información del usuario final previamente autenticado. Por ende, esta función depende del *code* obtenido en la función **login**, además de requerir los datos de autenticación del usuario (*client_id* y *client_secret*), y la *redirect_uri* correspondiente. A partir de estos datos se realiza una consulta *Token Request* con el método POST al *Token Endpoint*.
+La función **getToken** se encarga de la comunicación entre la aplicación de usuario y el *Token Endpoint*, de forma de obtener los datos correspondientes a un *Token Request*. El objetivo principal de esta función es obtener un *token* para posteriormente utilizarlo con el fin de adquirir información del usuario final previamente autenticado. Por ende, esta función depende del *code* obtenido en la función **login**, además de requerir los datos de autenticación del usuario (*clientId* y *clientSecret*), y la *redirectUri* correspondiente. A partir de estos datos se realiza una consulta *Token Request* con el método POST al *Token Endpoint*.
 
-Como resultado de la solicitud se obtiene un *Token Response* conteniendo los parámetros correspondientes. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *access_token* generado junto a otros parámetros relevantes, y un mensaje de éxito. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
+Como resultado de la solicitud se obtiene un *Token Response* conteniendo los parámetros correspondientes. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *token* (*accessToken, *refreshToken*, *idToken*, *tokenType* y *expiresIn*) obtenido y un mensaje de éxito. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
 #### Archivos y parámetros
 
@@ -188,17 +188,17 @@ La implementación de la funcionalidad de **getToken** se encuentra implementada
 - **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Contiene las constantes necesarias.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
-- **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío, y se implementa la función *fetch* utilizada para comunicarse con el endpoint correspondiente.
+- **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío, y se implementa la función *fetch* utilizada para comunicarse con el *endpoint* correspondiente.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 
-La función **getTokenOrRefresh** recibe un solo parámetro, que indica si el request solicitado es del tipo **getToken** o **refreshToken**, y obtiene el resto de los parámetros necesarios a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna el *access_token* generado junto a un *refresh_token*, *tokenType*, *expiresIn*, *idToken*, y un mensaje de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
+La función **getTokenOrRefresh** recibe un solo parámetro, que indica si el *request* solicitado es del tipo **getToken** o **refreshToken**, y obtiene el resto de los parámetros necesarios a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna el *token* obtenido y un mensaje de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
 #### Código
 La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *request*, que en el caso de la funcionalidad **getToken** será *REQUEST_TYPES.GET_TOKEN*.
 
-Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *client_id* y el *client_secret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
+Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
 
-En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*, los otros parámetros previamente mencionados, y un mensaje de éxito. En caso de error, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseState**.
+En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *token* y un mensaje de éxito. En caso de error, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseState**.
 
 #### Errores
 
@@ -225,7 +225,7 @@ Como resultado de la solicitud se obtiene un *Refresh Token Response* conteniend
 La implementación de la funcionalidad de **refreshToken** involucra los mismos archivos y mismos parámetros que **getToken**, ya que sus funcionalidades se encuentran implementadas en la misma función.
 
 #### Código
-La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *request*, que en el caso de la funcionalidad **refreshToken** será *REQUEST_TYPES.GET_REFRESH_TOKEN*. Luego, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant\_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
+La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *request*, que en el caso de la funcionalidad **refreshToken** será *REQUEST_TYPES.GET_REFRESH_TOKEN*. Luego, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grantType* mencionado en *Refresh Token Request Params* y el *refreshToken* obtenido anteriormente a través de **getToken**.
 
 #### Errores
 
@@ -364,7 +364,7 @@ const getUserInfo = async () => {
 
 Esta realiza una request mediante la función `fetch`. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *getUserInfo Endpoint*.
 
-En el cuerpo de la función de **getUserInfo**, primero se verifica que los parámetros *access_token* e *id_token* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un mensaje de error correspondiente. A continuación, se encuentra un bloque de *try* y uno de *catch*. En el de *try*, en caso de éxito se retorna una promesa con los valores mencionados anteriormente, y un mensaje de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un codigo de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un codigo de error y una descripción del mismo.
+En el cuerpo de la función de **getUserInfo**, primero se verifica que los parámetros *accessToken* e *idToken* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un mensaje de error correspondiente. A continuación, se encuentra un bloque de *try* y uno de *catch*. En el de *try*, en caso de éxito se retorna una promesa con los valores mencionados anteriormente, y un mensaje de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un código de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un código de error y una descripción del mismo.
 
 #### Errores
 
@@ -380,9 +380,9 @@ Los códigos de error devueltos en cada caso son:
 
 #### Generalidades
 
-La funcionalidad de *logout* se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del *logout* consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *id_token_hint*, el cual se corresponde con el *id_token* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, el SDK genera un parámetro de seguridad *state* a enviar al OP en la solicitud.
+La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, el SDK genera un parámetro de seguridad *state* a enviar al OP en la solicitud.
 
-En caso de que el parámetro *id_token_hint* sea correcto, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
+En caso de que el parámetro *idTokenHint* sea correcto, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
 #### Archivos y parámetros
 
@@ -394,7 +394,7 @@ La implementación de la funcionalidad de *logout* involucra los siguientes arch
 - **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Contiene las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
-- **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el endpoint correspondiente.
+- **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el *endpoint* correspondiente.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 - **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random, y *setearlo* en el módulo de configuración.
 
@@ -410,15 +410,15 @@ const logout = async () => {
 
 El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*.
 
-En el cuerpo de la función, primero se inicializa el parámetro *state* del módulo de configuración con una *string* aleatoria, generada por la función **generateRandomString**. Luego, se verifica que el parámetro *id_token* se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *url* con la que se envía esta solicitud contiene el *id_token_hint*, y opcionalmente *state*. Esto se puede ver a continuación
+En el cuerpo de la función, primero se inicializa el parámetro *state* del módulo de configuración con un *string* aleatorio, generada por la función **generateRandomString**. Luego, se verifica que el parámetro *idToken* se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *URL* con la que se envía esta solicitud contiene el *idTokenHint*, y opcionalmente *state*. Esto se puede ver a continuación
 
 ```javascript
 Linking.openURL(logoutEndpoint())
 ```
 
-Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *url* que se corresponde con la utilizada para realizar el request.
+Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *URL* que se corresponde con la utilizada para realizar el *request*.
 
-En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+En caso que la *URL* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
 
 #### Errores
 
@@ -431,7 +431,7 @@ Los códigos de error devueltos en cada caso son:
 
 ## Endpoints de producción y testing
 
-Todas las funcionalidades descritas en la sección anterior obtienen la *url* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *url* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
+Todas las funcionalidades descritas en la sección anterior obtienen la *URL* que utilizarán para hacer el pedido al OP a través del archivo **sdk/utils/endpoints.js**. En este, cada *URL* tendrá un prefijo común que dependerá del parámetro *production* del módulo de configuración. A modo de ejemplo, para el logout esta *url* se define como
 
 ```javascript
 `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`
@@ -443,7 +443,7 @@ donde *endpointPrefix* tendrá el valor
 'https://auth-testing.iduruguay.gub.uy/oidc/v1'
 ```
 
-si el SDK se encuentra en modo testing, con el parámetro *production* en *false*, y
+si el SDK se encuentra en modo *testing*, con el parámetro *production* en *false*, y
 
 ```javascript
 'https://auth.iduruguay.gub.uy/oidc/v1'
