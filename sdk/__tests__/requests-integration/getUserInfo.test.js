@@ -50,7 +50,7 @@ const validFetchMockImplementation = () =>
       }),
   });
 
-describe('configuration & security modules make request type get user info integration', () => {
+describe('configuration & security modules and make request type get user info integration', () => {
   it('calls set parameters and makes a get user info request (no scope claims)', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
