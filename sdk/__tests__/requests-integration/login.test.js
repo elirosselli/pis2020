@@ -813,7 +813,6 @@ describe('configuration & security modules and make request type login integrati
     }
 
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -826,14 +825,13 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(4);
   });
 
   it('calls initialize with clientId different from RP and then calls login', async () => {
-    const badLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=invalidClientId&redirect_uri=redirectUri&state=${mockState}`;
     const redirectUri = 'redirectUri';
     const clientId = 'invalidClientId';
     const clientSecret = 'clientSecret';
@@ -863,7 +861,6 @@ describe('configuration & security modules and make request type login integrati
       expect(error).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint);
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -876,14 +873,13 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(4);
   });
 
   it('calls initialize with redirectUri different from RP and then calls login', async () => {
-    const badLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20&response_type=code&client_id=clientId&redirect_uri=invalidRedirectUri&state=${mockState}`;
     const redirectUri = 'invalidRedirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -913,7 +909,6 @@ describe('configuration & security modules and make request type login integrati
       expect(error).toBe(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(badLoginEndpoint);
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -926,10 +921,10 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(4);
   });
 
   it('calls initialize and makes a login request, the user denies access to the application ', async () => {
@@ -967,7 +962,6 @@ describe('configuration & security modules and make request type login integrati
       expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -980,10 +974,10 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
+      state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect.assertions(4);
   });
 
   it('calls initialize and makes a login request with correct parameters, Linking.openUrl fails', async () => {
@@ -1030,8 +1024,7 @@ describe('configuration & security modules and make request type login integrati
       scope: '',
     });
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(5);
+    expect.assertions(4);
   });
 
   it('calls initialize and makes a login request with correct parameters, fetch returns invalid authorization code', async () => {

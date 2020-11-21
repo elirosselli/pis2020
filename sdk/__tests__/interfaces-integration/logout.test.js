@@ -343,7 +343,7 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: mockState,
+      state: '',
       scope: '',
     });
     expect.assertions(5);
@@ -397,7 +397,7 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: mockState,
+      state: '',
       scope: '',
     });
     expect.assertions(5);
@@ -454,7 +454,7 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: mockState,
+      state: '',
       scope: '',
     });
     expect.assertions(5);
@@ -507,7 +507,7 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: mockState,
+      state: '',
       scope: '',
     });
     expect.assertions(5);

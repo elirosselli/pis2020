@@ -45,10 +45,13 @@ const login = async () => {
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
+      eraseState();
       rejectFunction(ERRORS.ACCESS_DENIED);
     } else if (returnedState && returnedState[1] !== parameters.state) {
+      eraseState();
       rejectFunction(ERRORS.INVALID_STATE);
     } else {
+      eraseState();
       rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
 
