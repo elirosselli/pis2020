@@ -50,7 +50,7 @@ const validFetchMockImplementation = () =>
       }),
   });
 
-describe('configuration & security modules and make request type get user info integration', () => {
+describe('configuration & security modules make request type get user info integration', () => {
   it('calls set parameters and makes a get user info request (no scope claims)', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -491,11 +491,13 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
+
     try {
       await makeRequest(REQUEST_TYPES.GET_USER_INFO);
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -651,8 +653,8 @@ describe('configuration & security modules and make request type get user info i
       redirectUri,
       clientId,
       clientSecret,
-      production: false,
       code,
+      production: false,
       accessToken,
       refreshToken: '',
       tokenType: '',
@@ -976,7 +978,7 @@ describe('configuration & security modules and make request type get user info i
       Promise.reject({
         headers: {
           'Www-Authenticate':
-            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+            'error="other_error", error_description="other_error_description"',
         },
       }),
     );

@@ -490,11 +490,13 @@ describe('configuration & security modules and get user info integration', () =>
       state: '',
       scope: '',
     });
+
     try {
       await getUserInfo();
     } catch (err) {
       expect(err).toBe(ERRORS.INVALID_ID_TOKEN);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri,
@@ -650,8 +652,8 @@ describe('configuration & security modules and get user info integration', () =>
       redirectUri,
       clientId,
       clientSecret,
-      production: false,
       code,
+      production: false,
       accessToken,
       refreshToken: '',
       tokenType: '',
@@ -975,7 +977,7 @@ describe('configuration & security modules and get user info integration', () =>
       Promise.reject({
         headers: {
           'Www-Authenticate':
-            'error="other_error", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+            'error="other_error", error_description="other_error_description"',
         },
       }),
     );
