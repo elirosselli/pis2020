@@ -10,7 +10,6 @@ import {
 } from '../configuration';
 
 const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
-  let response;
   if (
     clientId &&
     redirectUri &&
@@ -28,22 +27,14 @@ const initialize = (redirectUri, clientId, clientSecret, production, scope) => {
       scope: scopeToSet, // Puede ser vacío.
     });
     // Mensaje y código de éxito.
-    response = {
+    return {
       errorCode: ERRORS.NO_ERROR.errorCode,
       errorDescription: ERRORS.NO_ERROR.errorDescription,
       message: ERRORS.NO_ERROR,
     };
-  } else {
-    // Si alguno de los parámetros es vacío se retorna el error correspondiente.
-    response = initializeErrors(
-      clientId,
-      redirectUri,
-      clientSecret,
-      production,
-    );
   }
-  // Se retorna el error y el mensaje correspondiente.
-  return response;
+  // Si alguno de los parámetros es vacío se retorna el error correspondiente.
+  throw initializeErrors(clientId, redirectUri, clientSecret, production);
 };
 
 const login = () => makeRequest(REQUEST_TYPES.LOGIN);

@@ -1,6 +1,6 @@
 {
   "name": "sdk-gubuy-test",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Sdk Pis 2020",
   "main": "index.js",
   "scripts": {
@@ -65,7 +65,6 @@
     "react": "16.14.0",
     "react-context-mutex": "^1.0.8",
     "react-native": "0.63.3",
-    "react-native-ssl-pinning": "1.5.2",
-    "uuid": "8.3.1"
+    "react-native-ssl-pinning": "1.5.2"
   }
 }

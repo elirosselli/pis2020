@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { encode } from 'base-64';
 import { Platform } from 'react-native';
 import { useMutex } from 'react-context-mutex';
