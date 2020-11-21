@@ -252,7 +252,7 @@ const LoginButton = () => {
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Este último parámetro es opcional. El parámetro *production* es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay, y en *false* en el caso de que se quiera acceder a los endpoints de testing de ID Uruguay. El parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*. Este último parámetro es opcional. El parámetro *production* es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los *endpoints* de producción de ID Uruguay, y en *false* en el caso de que se quiera acceder a los *endpoints* de *testing* de ID Uruguay. El parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
