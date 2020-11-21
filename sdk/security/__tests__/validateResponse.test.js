@@ -3,10 +3,6 @@ import { getParameters, setParameters } from '../../configuration';
 
 jest.mock('../../configuration');
 
-jest.mock('uuid', () =>
-  jest.fn().mockReturnValue('b5be6251-9589-43bf-b12f-f6447dc179c0'),
-);
-
 const mockState = 3035783770;
 jest.mock(
   'mersenne-twister',
