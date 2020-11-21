@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters, resetParameters, validateToken} from 'sdk-gubuy-test';
+import {initialize, login, logout, getToken, refreshToken, getUserInfo, setParameters, resetParameters, validateToken, getParameters} from 'sdk-gubuy-test';
 import styles from './styles';
 import React from 'react';
 import {
@@ -37,16 +37,22 @@ const App: () => React$Node = () => {
     console.log("Inicializando sdk");
     var now = require("performance-now")
     var start = now();
-    const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b', false, 'personal_info');
-    //console.log(init);
-    //setParameters({'scope': 'personal_info'});
-    console.log(`ErrorName: ${init.name}`)
-    console.log(`ErrorCode: ${init.errorCode}`)
-    console.log(`ErrorDescription: ${init.errorDescription}`)
-    console.log(`ErrorMessage: ${init.message}`)
-    
-    var end = now();
-    console.log(`Tiempo de ejec: ${end-start} ms`);
+    try {
+      const init = initialize('sdkIdU.testing://auth', '894329', 'cdc04f19ac0f28fb3e1ce6d42b37e85a63fb8a654691aa4484b6b94b', false, 'personal_info');
+      //console.log(init);
+      console.log(`ErrorName: ${init.name}`)
+      console.log(`ErrorCode: ${init.errorCode}`)
+      console.log(`ErrorDescription: ${init.errorDescription}`)
+      console.log(`ErrorMessage: ${init.message}`)
+      
+      var end = now();
+      console.log(`Tiempo de ejec: ${end-start} ms`);
+    } catch (error) {
+      console.log(error.name);
+      console.log(error.errorCode);
+      console.log(error.errorDescription);
+      console.log(error.message);
+    }
   }
 
   handleLogin = async() => {
@@ -72,6 +78,7 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
+      
       const token = await getToken();
       Object.keys(token).forEach(key => {
         console.log(`${key}: ${token[key]}`);
@@ -91,7 +98,7 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
-      
+      //setParameters({'refreshToken': '1921241'});
       const rfToken = await refreshToken();
       Object.keys(rfToken).forEach(key => {
         console.log(`${key}: ${rfToken[key]}`);
@@ -110,7 +117,8 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
-      
+      //setParameters({'idToken': '1921241'});
+      //setParameters({'idToken': 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODk5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjA1ODcyNDA2LCJpYXQiOjE2MDU4NzE4MDYsImF1dGhfdGltZSI6MTYwNTg3MTc5MCwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJXbGFRVFNxTTdGeXRHaE54Wl8tZ19BIiwibm9tYnJlX2NvbXBsZXRvIjoiQ2xhcmsgSm9zZSBLZW50IEdvbnphbGV6IiwicHJpbWVyX25vbWJyZSI6IkNsYXJrIiwic2VndW5kb19ub21icmUiOiJKb3NlIiwicHJpbWVyX2FwZWxsaWRvIjoiS2VudCIsInNlZ3VuZG9fYXBlbGxpZG8iOiJHb256YWxleiIsInVpZCI6InV5LWNpLTIwOTYzMDI2In0.tcF1BDbOyDEXfgGl3ACA5EhI-DRzb1d80BXIe9nCgnRW0dfxMpuCK_K5js5ih4u7eov8k53cK9zTrk6v2dHKNUzczehmpwg9oxlQKvBY1RsJusFc_nA1oSE69AOSisnmWyzYxz0fz_2D3_K3YdmTApmTjAr0elPFsM-fB0'});
       const resp = await validateToken();
       Object.keys(resp).forEach(key => {
         console.log(`${key}: ${resp[key]}`);
@@ -129,6 +137,8 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
+      //console.log(getParameters());
+      //setParameters({'idToken': '1921241'});
       const info = await getUserInfo();
       Object.keys(info).forEach(key => {
         console.log(`${key}: ${info[key]}`);
