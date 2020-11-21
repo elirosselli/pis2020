@@ -40,7 +40,6 @@ const validateToken = async () => {
     });
     // Convertir a formato json.
     const jwksResponseJson = await jwksResponse.json();
-
     // Validar el token en el módulo de seguridad a partir de la jwk.
     return validateTokenSecurity(jwksResponseJson, idToken, clientId, issuer());
   } catch (error) {

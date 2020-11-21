@@ -3,6 +3,7 @@ import KJUR from 'jsrsasign';
 import { decode } from 'base-64';
 
 import { setParameters, getParameters } from '../configuration';
+import ERRORS from '../utils/errors';
 
 // Genera un state aleatorio.
 const generateRandomState = () => {
@@ -22,10 +23,14 @@ const generateRandomState = () => {
 // afirmativo y false en caso contrario.
 const validateSub = sub => {
   const { idToken } = getParameters();
-  const payloadObj = KJUR.jws.JWS.readSafeJSONString(
-    decode(idToken.split('.')[1]),
-  );
-  return payloadObj.sub === sub;
+  try {
+    const payloadObj = KJUR.jws.JWS.readSafeJSONString(
+      decode(idToken.split('.')[1]),
+    );
+    return payloadObj.sub === sub;
+  } catch (error) {
+    throw ERRORS.INVALID_ID_TOKEN;
+  }
 };
 
 export { generateRandomState, validateSub };

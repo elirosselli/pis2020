@@ -58,7 +58,10 @@ const getUserInfo = async () => {
     }
     return Promise.reject(ERRORS.INVALID_SUB);
   } catch (error) {
-    const stringsHeaders = error.headers['Www-Authenticate'];
+    if (error === ERRORS.INVALID_ID_TOKEN) {
+      return Promise.reject(ERRORS.INVALID_ID_TOKEN);
+    }
+    const stringsHeaders = error.headers && error.headers['Www-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)
       return Promise.reject(ERRORS.INVALID_TOKEN);
     return Promise.reject(ERRORS.FAILED_REQUEST);
