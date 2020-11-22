@@ -51,6 +51,13 @@ const mockAddEventListenerSuccess = (eventType, eventHandler) => {
     });
 };
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 describe('configuration & security modules and login integration', () => {
   it('calls initialize and login', async () => {
     const redirectUri = 'redirectUri';
@@ -100,6 +107,7 @@ describe('configuration & security modules and login integration', () => {
       state: mockState,
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls initialize and login with production set to true', async () => {
@@ -153,6 +161,7 @@ describe('configuration & security modules and login integration', () => {
       state: mockState,
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls initialize and login with scope', async () => {
@@ -206,6 +215,7 @@ describe('configuration & security modules and login integration', () => {
       state: mockState,
       scope,
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls initialize and login with empty clientId', async () => {
@@ -275,7 +285,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with empty clientSecret', async () => {
@@ -346,7 +357,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with empty redirectUri', async () => {
@@ -417,7 +429,8 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
 
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with invalid clientId', async () => {
@@ -488,7 +501,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with invalid clientSecret', async () => {
@@ -559,7 +573,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with invalid redirectUri', async () => {
@@ -630,7 +645,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with invalid production', async () => {
@@ -702,7 +718,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with invalid scope', async () => {
@@ -773,7 +790,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls initialize and login with correct parameters, fetch returns invalid state', async () => {
@@ -827,7 +845,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls initialize with clientId different from RP and then calls login', async () => {
@@ -875,7 +894,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls initialize with redirectUri different from RP and then calls login', async () => {
@@ -923,7 +943,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls initialize and login, the user denies access to the application ', async () => {
@@ -976,7 +997,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls initialize and login with correct parameters, Linking.openUrl fails', async () => {
@@ -1023,7 +1045,8 @@ describe('configuration & security modules and login integration', () => {
       scope: '',
     });
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls initialize and login with correct parameters, fetch returns invalid authorization code', async () => {
@@ -1076,7 +1099,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and login with undefined scope', async () => {
@@ -1231,7 +1255,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and login with all invalid parameters', async () => {
@@ -1307,7 +1332,8 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and login with invalid parameter type', async () => {
@@ -1384,6 +1410,7 @@ describe('configuration & security modules and login integration', () => {
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 });

@@ -20,6 +20,13 @@ beforeEach(() => {
   resetParameters();
 });
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 const correctTokenEndpoint =
   'https://auth-testing.iduruguay.gub.uy/oidc/v1/token';
 const correctTokenProductionEndpoint =
@@ -134,6 +141,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls setParameters and makes a refresh token request with production set to true', async () => {
@@ -202,6 +210,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls setParameters and makes a refresh token request with empty clientId', async () => {
@@ -252,7 +261,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with empty clientSecret', async () => {
@@ -303,7 +313,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with empty redirectUri', async () => {
@@ -354,7 +365,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with empty refreshToken', async () => {
@@ -407,7 +419,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request with invalid clientId', async () => {
@@ -459,7 +472,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request with invalid clientSecret', async () => {
@@ -511,7 +525,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request with invalid redirectUri', async () => {
@@ -563,7 +578,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request with invalid refreshToken', async () => {
@@ -615,7 +631,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request with invalid production', async () => {
@@ -668,7 +685,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns that token is invalid', async () => {
@@ -718,7 +736,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns that client is invalid', async () => {
@@ -782,7 +801,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns some error', async () => {
@@ -835,7 +855,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request, fetch fails', async () => {
@@ -886,7 +907,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('making a refresh token request does not erase code from parameters', async () => {
@@ -932,7 +954,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid accessToken', async () => {
@@ -1009,7 +1032,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid expiresIn', async () => {
@@ -1085,7 +1109,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid idToken', async () => {
@@ -1161,7 +1186,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid refreshToken', async () => {
@@ -1237,7 +1263,8 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a refresh token request, fetch returns invalid tokenType', async () => {
@@ -1313,6 +1340,7 @@ describe('configuration & security modules and make request type refresh token i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 });
