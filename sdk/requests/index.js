@@ -24,7 +24,7 @@ const makeRequest = async type => {
       return validateToken();
     }
     default:
-      return 'default value';
+      return '';
   }
 };
 
