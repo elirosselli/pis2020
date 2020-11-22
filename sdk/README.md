@@ -246,14 +246,12 @@ const LoginButton = () => {
 | `setParameters(parameters)` | *Setea* los parámetros pasados por parámetro en el SDK. Además los valida antes de su asignación contra valores maliciosos.                                                                  |
 | `clearParameters()` | Borra todos los parámetros a excepción de: *redirectUri*, *clientId*, *clientSecret* y *production*.                                                                   |
 | `resetParameters()` | Borra todos los parámetros a excepción de *production*, para el cual *setea* su valor en *false*.
-| `eraseCode()` | Borra el parámetro *code*.                                                           |
-| `eraseState()` | Borra el parámetro *state*.                                                           |
-| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
-| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
+| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
+| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirectUri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
-| `validateToken()`                                                    | Verifica que el *id_token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
+| `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 | `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
 
 ### Función getParameters
@@ -310,18 +308,9 @@ clearParameters();
 resetParameters();
 ```
 
-### Función eraseCode y eraseState
-
-Estas funciones borran los parámetros *code* y *state* respectivamente. Basta con llamarlas de la siguiente manera:
-
-```javascript
-eraseCode();
-eraseState();
-```
-
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
@@ -340,9 +329,19 @@ try {
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
+#### Errores initialize
+
+Si alguno de estos parámetros obligatorios es vacío se devuelve un error indicando cual es el primer parámetro vacío. En el caso del `intialize` estos parámetros son *redirectUri*, *clientId* y *clientSecret*, siendo estos los respectivos errores:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET`.
+
+Por otro lado, si el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
 
 ``` javascript
 try {
@@ -353,7 +352,7 @@ try {
 }
 ```
 
-El `code` retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al *login* sin guardar la respuesta:
+El *code* retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al `login` sin guardar la respuesta:
 
 ``` javascript
 try {
@@ -363,34 +362,95 @@ try {
 }
 ```
 
-Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirect_uri* especificada.
+Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada.
+
+#### Errores login
+
+En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* y no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
+
+En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
+
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
+En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getToken
 
-Una vez realizado el `login`, es posible obtener el `access_token` correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
+Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
 
-```javascript
-const token = await getToken();
+``` javascript
+try {
+  const token = await getToken();
+  /* Hacer algo con el token */
+} catch (err) {
+  /* Manejar el error */
+}
 ```
 
-Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
+Al igual que el *code*, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
+
+#### Errores getToken
+
+En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecret* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE` respectivamente.
+
+En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
+En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función refreshToken
 
 El *token* otorgado por ID Uruguay tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el *token* pasará a ser inválido. Para obtener un nuevo *token* se debe invocar a la función `refreshToken`.
 
-```javascript
-const token = await refreshToken();
+``` javascript
+try {
+  const token = await refreshToken();
+  /* Hacer algo con el token */
+} catch (err) {
+  /* Manejar el error */
+}
 ```
 
 Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
+
+#### Errores refreshToken
+
+Los casos de errores son muy similares a los de la funcionalidad `getToken`.
+
+En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
+
+A diferencia de la funcionalidad `getToken`, en lugar del parámetro *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
+En caso de que el parámetro *refreshToken* sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getUserInfo
 
 Luego de realizado el `getToken`, se puede invocar la función `getUserInfo` para obtener la información del usuario final autenticado, provista por ID Uruguay:
 
-```javascript
-const userInfo = await getUserInfo();
+``` javascript
+try {
+  const userInfo = await getUserInfo();
+  /* Hacer algo con la userInfo */
+} catch (err) {
+  /* Manejar el error */
+}
 ```
 
 Esta función devuelve un objeto con el siguiente formato:
@@ -405,44 +465,74 @@ Esta función devuelve un objeto con el siguiente formato:
 }
 ```
 
+#### Errores getUserInfo
+
+En caso de que alguno de los parámetros *accessToken* e *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
+
+En caso de que el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+
 ### Función validateToken
 
-La función `validateToken` permite al usuario validar el *id_token* provisto durante la llamada a `getToken` o `refreshToken`.
+La función `validateToken` permite al usuario validar el *token* obtenido con una llamada a `getToken` o `refreshToken`.
 
-Al llamar a la función se valida el *id_token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *id_token* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
+Al llamar a la función se valida el *token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *idToken* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
 
 | Parámetro | Valor                                 |
 |-----------|---------------------------------------|
 | alg       | Algoritmo de la firma.                |
-| iss       | Quien creó y firmó el token.          |
-| aud       | Para quién está destinado el token.   |
+| iss       | Quien creó y firmó el *token*.          |
+| aud       | Para quién está destinado el *token*.   |
 | exp       | Tiempo de expiración.                 |
 | kid       | Identificador único.                  |
-| acr       | Authentication Context Class Reference|
-| amr       | Authentication Methods References     |
+| acr       | *Authentication Context Class Reference*|
+| amr       | *Authentication Methods References*     |
 
 Para llamar a la función se debe utilizar la función:
 
 ```javascript
 try {
   const respValidateToken = await validateToken();
-  // Procesar respuesta
-  ...
+  /* Procesar respuesta */
 } catch (err) {
-  // Procesar error
-  ...
+  /* Manejar el error */
 }
 ```
 
-En caso de que el *token* sea inválido devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN`.
+#### Errores validateToken
+
+En caso de que alguno de los parámetros obligatorios para la *request*, en este caso *clientId* e *idtoken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
+
+En caso de que el parámetro *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
+
+En caso de error desconocido (no controlado) también se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función logout
 
 La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
 
-```javascript
-await logout();
+``` javascript
+try {
+  await logout();
+} catch (err) {
+  /* Manejar el error */
+}
 ```
+
+#### Errores logout
+
+En caso de que el parámetro *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
+
+Si *idToken*, el parámetro obligatorio para la *request* se encuentran inicializado, se procede a evaluar la respuesta del OP. En caso de que la URL contenida en la respuesta no coincida con el *logoutEndpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
+
+En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ## Errores
 
@@ -465,43 +555,41 @@ class NewError extends Error {
     this.errorDescription = errorDescription;
   }
 }
-
 ```
 
 Se agregan los campos:
 
 | Campo            | Descripción                        |
 |------------------ |----------------------------------- |
-| name              | Nombre del error.                  |
 | errorCode         | Código identificatorio del error.  |
 | errorDescription  | Descripción del error.             |
 
 Los errores definidos son:
 
-| Nombre                        | Clase                            | Código                                    | Descripción                                                                                                                                                                             | ¿Cuándo ocurre?                                                                                                         | Posible solución                                                                            |
-|------------------------------ |--------------------------------- |------------------------------------------ |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------ |-------------------------------------------------------------------------------------------- |
-| noError                       | `ErrorNoError`                   | gubuy_no_error                            | No error                                                                                                                                                                                | Cuando la función cumple correctamente su objetivo.                                                                     | No aplica.                                                                                  |
-| invalidClientId               | `ErrorInvalidClientId`           | gubuy_invalid_client_id                   | Invalid client_id parameter.                                                                                                                                                            | Cuando el valor del client_id definido para el sdk no es correcto.                                                      | Revisar que el client_id definido corresponda con el designado por ID Uruguay.               |
-| invalidRedirectUri            | `ErrorInvalidRedirectUri`        | gubuy_invalid_redirect_uri                | Invalid redirect_uri parameter.                                                                                                                                                         | Cuando la redirect_uri definida para el SDK no es válida.                                                               | Revisar que la redirect_uri definida corresponda con la designada por ID Uruguay.            |
-| invalidClientSecret           | `ErrorInvalidClientSecret`       | gubuy_invalid_client_secret               | Invalid client_secret parameter.                                                                                                                                                        | Cuando el client_secret definido para el SDK no es válido.                                                              | Revisar que el client_secret definido corresponda con el designado por ID Uruguay.           |
-| accessDenied                  | `ErrorAccessDenied`              | access_denied                             | The resource owner or authorization server denied the request.                                                                                                                          | Cuando el usuario final rechaza el login.                                                                               | No aplica.                                                                                  |
-| invalidAuthorizationCode      | `ErrorInvalidAuthorizationCode`  | gubuy_invalid_auhtorization_code          | Invalid authorization code.                                                                                                                                                             | Cuando el code definido en el SDK no es válido.                                                                         | Revisar que el code actual corresponde al devuelto por la función Login().                  |
-| failedRequest                 | `ErrorFailedRequest`             | failed_request                            | Couldn't make request.                                                                                                                                                                  | Cuando la request no pudo ser completada satisfactoriamente.                                                            | Revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.   |
-| invalidGrant                  | `ErrorInvalidGrant`              | invalid_grant                             | The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.  | Cuando el code o refresh_token son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria.  | Comprobar la validez del code o refresh_token según corresponda.                            |
-| invalidToken                  | `ErrorInvalidToken`              | invalid_token                             | The access token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el access_token es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del access_token.                                                      |
-| invalidClient                 | `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el client_secret y client_id correspondan con los registrados por ID Uruguay.  |
-| invalidTokenHint              | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro id_token_hint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del id_token_hint.                                        |                                                   |
-| invalidIdToken                | `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
-| invalidLengthError            | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
-| invalidBase64ToHexConversion  | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
+| Clase                            | Código                                    | Descripción                                                                                                                                                                             | ¿Cuándo ocurre?                                                                                                         | Posible solución                                                                            |
+|--------------------------------- |------------------------------------------ |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------ |-------------------------------------------------------------------------------------------- |
+| `ErrorNoError`                   | gubuy_no_error                            | No error                                                                                                                                                                                | Cuando la función cumple correctamente su objetivo.                                                                     | No aplica.                                                                                  |
+| `ErrorInvalidClientId`           | gubuy_invalid_client_id                   | Invalid client_id parameter.                                                                                                                                                            | Cuando el valor del clientId definido para el SDK no es correcto.                                                      | Revisar que el clientId definido corresponda con el designado por ID Uruguay.               |
+| `ErrorInvalidRedirectUri`        | gubuy_invalid_redirect_uri                | Invalid redirect_uri parameter.                                                                                                                                                         | Cuando la redirectUri definida para el SDK no es válida.                                                               | Revisar que la redirectUri definida corresponda con la designada por ID Uruguay.            |
+| `ErrorInvalidClientSecret`       | gubuy_invalid_client_secret               | Invalid client_secret parameter.                                                                                                                                                        | Cuando el clientSecret definido para el SDK no es válido.                                                              | Revisar que el clientSecret definido corresponda con el designado por ID Uruguay.           |
+| `ErrorAccessDenied`              | access_denied                             | The resource owner or authorization server denied the request.                                                                                                                          | Cuando el usuario final rechaza el login.                                                                               | No aplica.                                                                                  |
+| `ErrorInvalidAuthorizationCode`  | gubuy_invalid_auhtorization_code          | Invalid authorization code.                                                                                                                                                             | Cuando el code definido en el SDK no es válido.                                                                         | Revisar que el code actual corresponde al devuelto por la función Login().                  |
+| `ErrorFailedRequest`             | failed_request                            | Couldn't make request.                                                                                                                                                                  | Cuando la request no pudo ser completada satisfactoriamente.                                                            | Revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.   |
+| `ErrorInvalidGrant`              | invalid_grant                             | The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.  | Cuando el code o refreshToken son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria.  | Comprobar la validez del code o refreshToken según corresponda.                            |
+| `ErrorInvalidToken`              | invalid_token                             | The access_token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el accessToken es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del access_token.                                                      |
+| `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el clientSecret y clientId correspondan con los registrados por ID Uruguay.  |
+| `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro idTokenHint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del idTokenHint.                                        |                                                   |
+| `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id_token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
+| `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
+| `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 
 ## Certificado *self-signed* en modo *testing*
 
-En modo de *testing*, es necesario agregar el certificado de la API de testing de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+En modo de *testing*, es necesario agregar el certificado de la API de *testing* de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
 
 Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
 
-Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de testing de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
+Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *testing* de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
 
 1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
 2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
