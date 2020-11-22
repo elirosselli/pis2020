@@ -1,5 +1,6 @@
 import validateURIReference from '../../validateParameters/URIReference';
-import { PARAMETERS, ERRORS } from '../../../utils/constants';
+import { PARAMETERS } from '../../../utils/constants';
+import ERRORS from '../../../utils/errors';
 
 describe('security module validate URIReference parameters', () => {
   it('redirectUri: valid', () => {

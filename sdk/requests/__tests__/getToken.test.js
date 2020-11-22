@@ -1,7 +1,8 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Platform } from 'react-native';
 import { fetch } from '../../utils/helpers';
-import { ERRORS, REQUEST_TYPES } from '../../utils/constants';
+import { REQUEST_TYPES } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
@@ -13,6 +14,13 @@ jest.mock('../../utils/helpers', () => ({
 }));
 
 const contentType = 'application/json';
+
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
 
 describe('getToken', () => {
   afterEach(() => {
@@ -73,7 +81,7 @@ describe('getToken', () => {
       },
       5,
     );
-
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -111,13 +119,13 @@ describe('getToken', () => {
         },
       }),
     );
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken with expired or invalid code ', async () => {
@@ -148,13 +156,13 @@ describe('getToken', () => {
         },
       }),
     );
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_GRANT);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken and fetch fails', async () => {
@@ -169,7 +177,8 @@ describe('getToken', () => {
     } catch (err) {
       expect(err).toBe(ERRORS.FAILED_REQUEST);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken with empty clientId', async () => {
@@ -180,13 +189,13 @@ describe('getToken', () => {
       code: 'correctCode',
       accessToken: 'accessToken',
     });
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken with empty clientSecret', async () => {
@@ -197,13 +206,13 @@ describe('getToken', () => {
       code: 'correctCode',
       accessToken: 'accessToken',
     });
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken with empty redirectUri', async () => {
@@ -214,13 +223,13 @@ describe('getToken', () => {
       code: 'correctCode',
       accessToken: 'accessToken',
     });
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken with empty code', async () => {
@@ -231,13 +240,13 @@ describe('getToken', () => {
       code: '',
       accessToken: 'accessToken',
     });
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 
   it('calls getToken and returns some error', async () => {
@@ -257,12 +266,12 @@ describe('getToken', () => {
         },
       }),
     );
-
     try {
       await getTokenOrRefresh(REQUEST_TYPES.GET_TOKEN);
     } catch (err) {
       expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
     }
-    expect.assertions(1);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
   });
 });

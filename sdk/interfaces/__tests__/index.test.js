@@ -1,6 +1,6 @@
 import { initialize } from '../index';
 import { getParameters, resetParameters } from '../../configuration';
-import { ERRORS } from '../../utils/constants';
+import ERRORS from '../../utils/errors';
 import { initializeErrors } from '../../utils/helpers';
 
 jest.mock('../../requests');
@@ -45,18 +45,23 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_ID);
+
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when redirectUri is empty', () => {
@@ -66,18 +71,22 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_REDIRECT_URI);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when clientSecret is empty', () => {
@@ -87,18 +96,22 @@ describe('initialize', () => {
       clientSecret: '',
       production: false,
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('returns error when production is empty', () => {
@@ -108,18 +121,22 @@ describe('initialize', () => {
       clientSecret: 'clientSecret',
       production: '',
     };
-    const errorResponse = initialize(
-      parameters.redirectUri,
-      parameters.clientId,
-      parameters.clientSecret,
-      parameters.production,
-    );
-    expect(errorResponse).toBe(ERRORS.INVALID_PRODUCTION);
+    try {
+      initialize(
+        parameters.redirectUri,
+        parameters.clientId,
+        parameters.clientSecret,
+        parameters.production,
+      );
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
     const { redirectUri, clientId, clientSecret } = getParameters();
     // Serán vacíos ya que no se setean
     expect(redirectUri).toStrictEqual('');
     expect(clientId).toStrictEqual('');
     expect(clientSecret).toStrictEqual('');
+    expect.assertions(4);
   });
 
   it('does not return error when all parameters are setted', () => {

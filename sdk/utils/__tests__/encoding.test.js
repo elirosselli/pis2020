@@ -1,6 +1,6 @@
 import { decode } from 'base-64';
 import { base64URLtoBase64, base64ToHex } from '../encoding';
-import { ERRORS } from '../constants';
+import ERRORS from '../errors';
 
 jest.mock('base-64', () => ({
   decode: jest.fn(),

@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import validateVSCHAR from '../../validateParameters/VSCHAR';
-import { PARAMETERS, ERRORS } from '../../../utils/constants';
+import { PARAMETERS } from '../../../utils/constants';
+import ERRORS from '../../../utils/errors';
 
 describe('security module validate VSCHAR parameters', () => {
   it('clientId: valid', () => {

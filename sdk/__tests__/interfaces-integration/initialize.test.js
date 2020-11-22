@@ -1,6 +1,5 @@
-import { getParameters, resetParameters } from '../../configuration';
-import { initialize } from '../../interfaces';
-import { ERRORS } from '../../utils/constants';
+import { initialize, getParameters, resetParameters } from '../../interfaces';
+import ERRORS from '../../utils/errors';
 
 afterEach(() => jest.clearAllMocks());
 
@@ -79,9 +78,11 @@ describe('configuration module and initialize integration', () => {
     const clientId = '';
     const clientSecret = 'clientSecret';
 
-    const response = initialize(redirectUri, clientId, clientSecret, false);
-
-    expect(response).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
 
     // Los parámetros no se deberían setear.
     expect(getParameters()).toStrictEqual({
@@ -105,9 +106,11 @@ describe('configuration module and initialize integration', () => {
     const clientId = 'clientId';
     const clientSecret = '';
 
-    const response = initialize(redirectUri, clientId, clientSecret, false);
-
-    expect(response).toStrictEqual(ERRORS.INVALID_CLIENT_SECRET);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
+    }
 
     // Los parámetros no se deberían setear.
     expect(getParameters()).toStrictEqual({
@@ -131,9 +134,11 @@ describe('configuration module and initialize integration', () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
 
-    const response = initialize(redirectUri, clientId, clientSecret, false);
-
-    expect(response).toStrictEqual(ERRORS.INVALID_REDIRECT_URI);
+    try {
+      initialize(redirectUri, clientId, clientSecret, false);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
+    }
 
     // Los parámetros no se deberían setear.
     expect(getParameters()).toStrictEqual({
@@ -150,5 +155,6 @@ describe('configuration module and initialize integration', () => {
       state: '',
       scope: '',
     });
+    expect.assertions(2);
   });
 });

@@ -2,14 +2,15 @@ import { Linking } from 'react-native';
 import { getParameters, setParameters, eraseState } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
-import { ERRORS } from '../utils/constants';
+import ERRORS from '../utils/errors';
+import { MUTEX } from '../utils/constants';
 import { initializeErrors } from '../utils/helpers';
 
 const login = async () => {
-  // Se genera un random state para el pedido al endpoint de login,
-  // que además se settea en los parámetros mediante una llamada a setParameters.
-  generateRandomState();
-  const parameters = getParameters();
+  // Tomar el semáforo para ejecutar la función.
+  const mutexRelease = await MUTEX.loginMutex.acquire();
+
+  let parameters;
   let resolveFunction;
   let rejectFunction;
 
@@ -22,6 +23,8 @@ const login = async () => {
 
   // Handler para el evento url.
   const handleOpenUrl = event => {
+    parameters = getParameters();
+
     // Obtiene el code y state a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
@@ -30,7 +33,7 @@ const login = async () => {
     // Si existe el código y los states coinciden,
     // se guarda y se resuelve la promise.
     // Si no, se rechaza la promise con un error.
-    if (code && returnedState[1] === parameters.state) {
+    if (code && returnedState && returnedState[1] === parameters.state) {
       setParameters({ code: code[1] });
       // Se retorna el código, state y el error correspondiente (en este caso no hay error).
       resolveFunction({
@@ -42,8 +45,13 @@ const login = async () => {
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
+      eraseState();
       rejectFunction(ERRORS.ACCESS_DENIED);
+    } else if (returnedState && returnedState[1] !== parameters.state) {
+      eraseState();
+      rejectFunction(ERRORS.INVALID_STATE);
     } else {
+      eraseState();
       rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
 
@@ -52,6 +60,11 @@ const login = async () => {
   };
 
   try {
+    // Se genera un random state para el pedido al endpoint de login,
+    // que además se settea en los parámetros mediante una llamada a setParameters.
+    generateRandomState();
+    parameters = getParameters();
+
     // Se agrega el handler para eventos url.
     Linking.addEventListener('url', handleOpenUrl);
     // Si hay un clientId, clientSecret y redirectUri setteado, se abre el browser
@@ -80,6 +93,9 @@ const login = async () => {
     Linking.removeEventListener('url', handleOpenUrl);
     eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
+  } finally {
+    // Liberar el semáforo una vez que termina la ejecución de la función.
+    mutexRelease();
   }
   return promise;
 };

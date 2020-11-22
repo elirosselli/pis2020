@@ -1,13 +1,12 @@
 import { KJUR, KEYUTIL } from 'jsrsasign';
 import { fetch } from 'react-native-ssl-pinning';
-import { ERRORS } from '../../utils/constants';
-import { validateToken } from '../../interfaces';
-
+import ERRORS from '../../utils/errors';
 import {
+  validateToken,
   setParameters,
   getParameters,
   resetParameters,
-} from '../../configuration';
+} from '../../interfaces';
 
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
@@ -39,6 +38,7 @@ const kid = 'kid';
 const wrongKid = 'wrongKid';
 const time = 'time';
 const issuer = 'https://auth-testing.iduruguay.gub.uy/oidc/v1';
+const issuerProduction = 'https://auth.iduruguay.gub.uy/oidc/v1';
 const pubKey = 'pubKey';
 
 const acr = 'urn:iduruguay:nid:0';
@@ -60,38 +60,14 @@ const jwksResponse = {
   ],
 };
 
-describe('configuration module and validate token integration', () => {
-  it('calls setParameters and validateToken but fetch fails', async () => {
-    setParameters({ clientId, idToken });
-    fetch.mockImplementation(() =>
-      Promise.reject(
-        Error({
-          status: 404,
-          bodyString:
-            '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
-          headers: {
-            'Cache-Control': 'no-store',
-            Connection: 'close',
-            'Content-Length': '176',
-            'Content-Type': 'text/html; charset=UTF-8',
-            Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
-            Pragma: 'no-cache',
-            Server: 'nginx/1.15.1',
-            'X-Content-Type-Options': 'nosniff',
-            'X-Frame-Options': 'DENY, SAMEORIGIN',
-          },
-        }),
-      ),
-    );
-    try {
-      await validateToken();
-    } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
-    }
-    expect.assertions(1);
+const validFetchMockImplementation = () =>
+  Promise.resolve({
+    status: 200,
+    json: () => Promise.resolve(jwksResponse),
   });
 
-  it('calls setParameters and validateToken, with valid token', async () => {
+describe('configuration & security modules and validate token integration', () => {
+  it('calls setParameters and validate token', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -109,12 +85,7 @@ describe('configuration module and validate token integration', () => {
       production: false,
     });
 
-    fetch.mockImplementation(() =>
-      Promise.resolve({
-        status: 200,
-        json: () => Promise.resolve(jwksResponse),
-      }),
-    );
+    fetch.mockImplementation(validFetchMockImplementation);
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
@@ -155,7 +126,304 @@ describe('configuration module and validate token integration', () => {
     });
   });
 
-  it('calls setParameters and validateToken with valid client id and invalid token (alg, iss, aud, expiration)', async () => {
+  it('calls setParameters and validate token with production set to true', async () => {
+    const production = true;
+    setParameters({ clientId, idToken, production });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production,
+    });
+
+    fetch.mockImplementation(validFetchMockImplementation);
+
+    KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amr,
+    }));
+    KJUR.jws.IntDate.getNow.mockImplementation(() => time);
+    KEYUTIL.getKey.mockImplementation(() => pubKey);
+
+    const result = await validateToken();
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production,
+    });
+    expect(result).toStrictEqual({
+      jwk: jwksResponse,
+      message: ERRORS.NO_ERROR,
+      errorCode: ERRORS.NO_ERROR.errorCode,
+      errorDescription: ERRORS.NO_ERROR.errorDescription,
+    });
+    expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
+      alg: [jwksResponse.keys[0].alg],
+      iss: [issuerProduction],
+      aud: [parameters.clientId],
+      verifyAt: time,
+    });
+  });
+
+  it('calls setParameters and validate token with empty idToken', async () => {
+    setParameters({ clientId, idToken: '' });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validate token with empty clientId', async () => {
+    setParameters({ idToken });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validate token with invalid clientId', async () => {
+    try {
+      setParameters({ clientId: 'invalid_client_id', idToken });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(5);
+  });
+
+  it('calls setParameters and validate token with invalid idToken', async () => {
+    try {
+      setParameters({ clientId, idToken: 'invalid_id_token' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(5);
+  });
+
+  it('calls setParameters and validate token with invalid production', async () => {
+    try {
+      setParameters({ clientId, idToken, production: 'invalid_production' });
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_PRODUCTION);
+    }
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(5);
+  });
+
+  it('calls setParameters and validate token, validateTokenSecurity returns invalid alg, iss, aud and expiration', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -172,6 +440,8 @@ describe('configuration module and validate token integration', () => {
       scope: '',
       production: false,
     });
+
+    fetch.mockImplementation(validFetchMockImplementation);
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => false);
     KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
@@ -211,7 +481,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (acr)', async () => {
+  it('calls setParameters and validate token, validateTokenSecurity returns invalid acr', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -228,6 +498,8 @@ describe('configuration module and validate token integration', () => {
       scope: '',
       production: false,
     });
+
+    fetch.mockImplementation(validFetchMockImplementation);
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
@@ -267,7 +539,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (amr)', async () => {
+  it('calls setParameters and validate token, validateTokenSecurity returns invalid amr', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -284,6 +556,8 @@ describe('configuration module and validate token integration', () => {
       scope: '',
       production: false,
     });
+
+    fetch.mockImplementation(validFetchMockImplementation);
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({ kid }));
@@ -323,7 +597,7 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (kid)', async () => {
+  it('calls setParameters and validate token, validateTokenSecurity returns invalid kid', async () => {
     setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -340,6 +614,8 @@ describe('configuration module and validate token integration', () => {
       scope: '',
       production: false,
     });
+
+    fetch.mockImplementation(validFetchMockImplementation);
 
     KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
     KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
@@ -381,8 +657,8 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(4);
   });
 
-  it('calls setParameters and validateToken with valid clientId and invalid token (empty), fetch not called', async () => {
-    setParameters({ clientId });
+  it('calls setParameters and validate token, fetch returns empty n value', async () => {
+    setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -393,17 +669,49 @@ describe('configuration module and validate token integration', () => {
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
       production: false,
     });
 
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            keys: [
+              {
+                kty: 'RSA',
+                alg: 'RS256',
+                use: 'sig',
+                kid: 'kid',
+                x5c: ['x5c'],
+                n: '',
+                e: 'eValue',
+              },
+            ],
+          }),
+      }),
+    );
+
+    KJUR.jws.JWS.verifyJWT.mockImplementation(() => true);
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      wrongKid,
+    }));
+    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
+      acr,
+      amr,
+    }));
+    KJUR.jws.IntDate.getNow.mockImplementation(() => time);
+    KEYUTIL.getKey.mockImplementation(() => pubKey);
+
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
     }
+
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
@@ -414,7 +722,7 @@ describe('configuration module and validate token integration', () => {
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      idToken: '',
+      idToken,
       state: '',
       scope: '',
       production: false,
@@ -422,12 +730,12 @@ describe('configuration module and validate token integration', () => {
     expect.assertions(3);
   });
 
-  it('calls setParameters and validateToken with invalid clientId (empty), fetch not called', async () => {
-    setParameters({ idToken });
+  it('calls setParameters and validate token, fetch returns invalid n value', async () => {
+    setParameters({ clientId, idToken });
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
-      clientId: '',
+      clientId,
       clientSecret: '',
       code: '',
       accessToken: '',
@@ -440,15 +748,36 @@ describe('configuration module and validate token integration', () => {
       production: false,
     });
 
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            keys: [
+              {
+                kty: 'RSA',
+                alg: 'RS256',
+                use: 'sig',
+                kid: 'kid',
+                x5c: ['x5c'],
+                n: '1',
+                e: 'eValue',
+              },
+            ],
+          }),
+      }),
+    );
+
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toStrictEqual(ERRORS.INVALID_CLIENT_ID);
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
     }
     parameters = getParameters();
     expect(parameters).toStrictEqual({
       redirectUri: '',
-      clientId: '',
+      clientId,
       clientSecret: '',
       code: '',
       accessToken: '',
@@ -459,6 +788,130 @@ describe('configuration module and validate token integration', () => {
       state: '',
       scope: '',
       production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validate token, fetch returns invalid e value', async () => {
+    setParameters({ clientId, idToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            keys: [
+              {
+                kty: 'RSA',
+                alg: 'RS256',
+                use: 'sig',
+                kid: 'kid',
+                x5c: ['x5c'],
+                n: 'nValue',
+                e: '1',
+              },
+            ],
+          }),
+      }),
+    );
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+      production: false,
+    });
+    expect.assertions(4);
+  });
+
+  it('calls setParameters and validate token, fetch fails', async () => {
+    setParameters({ clientId, idToken });
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.reject(
+        Error({
+          status: 404,
+          bodyString:
+            '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
+          headers: {
+            'Cache-Control': 'no-store',
+            Connection: 'close',
+            'Content-Length': '176',
+            'Content-Type': 'text/html; charset=UTF-8',
+            Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+            Pragma: 'no-cache',
+            Server: 'nginx/1.15.1',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY, SAMEORIGIN',
+          },
+        }),
+      ),
+    );
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId,
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      state: '',
+      scope: '',
     });
     expect.assertions(3);
   });
