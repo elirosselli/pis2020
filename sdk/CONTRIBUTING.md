@@ -496,31 +496,6 @@ Los errores devueltos en cada caso son:
 - Cuando el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP: `ERRORS.INVALID_SUB`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
-
-### Funcionalidad de *validateToken*
-
-#### Generalidades
-
-La función `validateToken` permite al usuario validar el *id_token* provisto durante la llamada a `getToken` o `refreshToken`.
-
-#### Archivos y Parámetros
-
-...
-
-#### Código
-
-...
-
-#### Errores
-
-Los errores devueltos en cada caso son:
-
-- En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
-- Cuando el parámetro *token* es vacío: `ERRORS.INVALID_ID_TOKEN`
-- Cuando el parámetro *token* no se pueda validar en el modulo de seguridad: `ERRORS.INVALID_ID_TOKEN`.
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
-
 ### Funcionalidad de validateToken
 
 #### Generalidades
@@ -555,6 +530,16 @@ En caso de que el *idToken* sea inválido, se retorna el error `ERRORS.INVALID_I
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 
 La función **validateToken** del módulo *requests* no recibe ningún parámetro, sino que obtiene, en primer lugar, el *idToken* y *clientId* del componente de configuración, el *issuer* del archivo de constantes y el valor del `jwks` de la petición realizada al *JWKS Endpoint*. En caso de que haya algún problema se retorna el error correspondiente (`ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` o `ERRORS.INVALID_REQUEST`). Si no hubo problema, estos parámetros son pasados a la función **validateTokenSecurity** del componente de seguridad, que los utilizará para realizar la respectiva validación del *idToken*, y retornará un error de tipo `ERRORS.INVALID_TOKEN` si el token en inválido, y en caso contrario, se retorna `ERRORS.NO_ERROR`.
+
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *token* es vacío: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el parámetro *token* no se pueda validar en el modulo de seguridad: `ERRORS.INVALID_ID_TOKEN`.
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 #### Código
 
