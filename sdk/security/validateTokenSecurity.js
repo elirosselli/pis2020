@@ -30,7 +30,7 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
     // Se obtiene el campo head del token.
     headObj = KJUR.jws.JWS.readSafeJSONString(decode(idToken.split('.')[0]));
 
-    // Se obtiene el campo head del token.
+    // Se obtiene el campo payload del token.
     payloadObj = KJUR.jws.JWS.readSafeJSONString(decode(idToken.split('.')[1]));
   } catch (err) {
     return Promise.reject(ERRORS.INVALID_ID_TOKEN);

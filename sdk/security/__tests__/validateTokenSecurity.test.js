@@ -72,7 +72,7 @@ describe('validateToken', () => {
     });
   });
 
-  it('not validates token readSafeJSONString not works', async () => {
+  it('does not validate token when readSafeJSONString throws error', async () => {
     base64ToHex.mockImplementation(() => {});
     base64URLtoBase64.mockReturnValue(() => {});
 
