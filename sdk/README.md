@@ -246,14 +246,12 @@ const LoginButton = () => {
 | `setParameters(parameters)` | *Setea* los parámetros pasados por parámetro en el SDK. Además los valida antes de su asignación contra valores maliciosos.                                                                  |
 | `clearParameters()` | Borra todos los parámetros a excepción de: *redirectUri*, *clientId*, *clientSecret* y *production*.                                                                   |
 | `resetParameters()` | Borra todos los parámetros a excepción de *production*, para el cual *setea* su valor en *false*.
-| `eraseCode()` | Borra el parámetro *code*.                                                           |
-| `eraseState()` | Borra el parámetro *state*.                                                           |
-| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
-| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirect_uri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
+| `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
+| `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirectUri* configurado y se devuelve el *code*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
-| `validateToken()`                                                    | Verifica que el *id_token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
+| `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 | `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
 
 ### Función getParameters
@@ -310,18 +308,9 @@ clearParameters();
 resetParameters();
 ```
 
-### Función eraseCode y eraseState
-
-Estas funciones borran los parámetros *code* y *state* respectivamente. Basta con llamarlas de la siguiente manera:
-
-```javascript
-eraseCode();
-eraseState();
-```
-
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirect_uri*, *client_id*, *client_secret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primero es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los endpoints de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los endpoints de testing. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
@@ -352,7 +341,7 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el `code` correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo testing). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirect_uri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, y en caso de error se produce una excepción.
 
 ``` javascript
 try {
@@ -363,7 +352,7 @@ try {
 }
 ```
 
-El `code` retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al *login* sin guardar la respuesta:
+El *code* retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar este código, se puede llamar al `login` sin guardar la respuesta:
 
 ``` javascript
 try {
@@ -373,7 +362,7 @@ try {
 }
 ```
 
-Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirect_uri* especificada.
+Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada.
 
 #### Errores login
 
@@ -391,7 +380,7 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getToken
 
-Una vez realizado el `login`, es posible obtener el `access_token` correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
+Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
 
 ``` javascript
 try {
@@ -402,7 +391,7 @@ try {
 }
 ```
 
-Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
+Al igual que el *code*, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
 
 #### Errores getToken
 
@@ -412,7 +401,7 @@ En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda
 
 En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
-En caso de que los parámetros *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -445,7 +434,7 @@ En caso de que el tipo del parámetro *production* no es booleano se retorna el 
 
 En caso de que el parámetro *refreshToken* sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que los parámetros *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+En caso de que los parámetros *clientIid* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -478,7 +467,7 @@ Esta función devuelve un objeto con el siguiente formato:
 
 #### Errores getUserInfo
 
-En caso de que alguno de los parámetros *accessToken* y *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
+En caso de que alguno de los parámetros *accessToken* e *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
 En caso de que el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
 
@@ -488,19 +477,19 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función validateToken
 
-La función `validateToken` permite al usuario validar el *id_token* provisto durante la llamada a `getToken` o `refreshToken`.
+La función `validateToken` permite al usuario validar el *token* obtenido con una llamada a `getToken` o `refreshToken`.
 
-Al llamar a la función se valida el *id_token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *id_token* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
+Al llamar a la función se valida el *token*. Para esto se obtiene del *JWKS Endpoint* las claves y algoritmos que el OP utiliza. Posteriormente, con estos datos se procede a verificar que el *idToken* sea un [JWT (JsonWebToken)](https://tools.ietf.org/html/rfc7519). Si esto se cumple se valida la firma del *token*, además de los siguientes campos:
 
 | Parámetro | Valor                                 |
 |-----------|---------------------------------------|
 | alg       | Algoritmo de la firma.                |
-| iss       | Quien creó y firmó el token.          |
-| aud       | Para quién está destinado el token.   |
+| iss       | Quien creó y firmó el *token*.          |
+| aud       | Para quién está destinado el *token*.   |
 | exp       | Tiempo de expiración.                 |
 | kid       | Identificador único.                  |
-| acr       | Authentication Context Class Reference|
-| amr       | Authentication Methods References     |
+| acr       | *Authentication Context Class Reference*|
+| amr       | *Authentication Methods References*     |
 
 Para llamar a la función se debe utilizar la función:
 
@@ -515,7 +504,7 @@ try {
 
 #### Errores validateToken
 
-En caso de que alguno de los parámetros obligatorios para la request, en este caso *clientId* y *token* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
+En caso de que alguno de los parámetros obligatorios para la *request*, en este caso *clientId* e *idtoken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
 En caso de que el parámetro *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
 
