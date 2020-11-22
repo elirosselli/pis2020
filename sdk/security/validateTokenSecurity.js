@@ -24,15 +24,17 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
     verifyAt: KJUR.jws.IntDate.getNow(),
   });
 
-  // Se obtiene el campo head del token.
-  const headObj = KJUR.jws.JWS.readSafeJSONString(
-    decode(idToken.split('.')[0]),
-  );
+  let headObj;
+  let payloadObj;
+  try {
+    // Se obtiene el campo head del token.
+    headObj = KJUR.jws.JWS.readSafeJSONString(decode(idToken.split('.')[0]));
 
-  // Se obtiene el campo head del token.
-  const payloadObj = KJUR.jws.JWS.readSafeJSONString(
-    decode(idToken.split('.')[1]),
-  );
+    // Se obtiene el campo head del token.
+    payloadObj = KJUR.jws.JWS.readSafeJSONString(decode(idToken.split('.')[1]));
+  } catch (err) {
+    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
+  }
 
   // Se valida el kid (identificador único) del token.
   isValid = isValid && headObj.kid === jwksResponse.keys[0].kid;
