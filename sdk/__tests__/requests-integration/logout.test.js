@@ -35,6 +35,13 @@ const correctLogoutEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/log
 const correctLogoutProductionEndpoint = `https://auth.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`;
 const invalidUrl = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=`;
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 describe('configuration & security modules and make request type logout integration', () => {
   it('calls set parameters and makes a logout request', async () => {
     setParameters({ idToken });
@@ -92,6 +99,7 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a logout request with production set to true', async () => {
@@ -151,6 +159,7 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a logout request with empty idTokenHint', async () => {
@@ -192,7 +201,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a logout request with invalid idTokenHint', async () => {
@@ -240,7 +250,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a logout request with invalid production', async () => {
@@ -288,7 +299,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a logout request, fetch returns empty state', async () => {
@@ -347,7 +359,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a logout request, fetch returns invalid url', async () => {
@@ -401,7 +414,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a logout request, fetch fails (returning 404)', async () => {
@@ -458,7 +472,8 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a logout request, fetch fails (promise rejected)', async () => {
@@ -511,6 +526,7 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 });

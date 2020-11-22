@@ -68,6 +68,13 @@ const validFetchMockImplementation = () =>
     json: () => Promise.resolve(jwksResponse),
   });
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 describe('configuration & security modules and make request type validate token integration', () => {
   it('calls setParameters and makes a validate token request', async () => {
     setParameters({ clientId, idToken });
@@ -126,6 +133,7 @@ describe('configuration & security modules and make request type validate token 
       aud: [parameters.clientId],
       verifyAt: time,
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls setParameters and makes a validate token request with production set to true', async () => {
@@ -186,6 +194,7 @@ describe('configuration & security modules and make request type validate token 
       aud: [parameters.clientId],
       verifyAt: time,
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls setParameters and makes a validate token request with empty idToken', async () => {
@@ -230,7 +239,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request with empty clientId', async () => {
@@ -275,7 +285,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request with invalid clientId', async () => {
@@ -324,7 +335,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a validate token request with invalid idToken', async () => {
@@ -373,7 +385,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a validate token request with invalid production', async () => {
@@ -422,7 +435,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls setParameters and makes a validate token request, validateTokenSecurity returns invalid alg, iss, aud and expiration', async () => {
@@ -480,7 +494,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, validateTokenSecurity returns invalid acr', async () => {
@@ -538,7 +553,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, validateTokenSecurity returns invalid amr', async () => {
@@ -596,7 +612,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, validateTokenSecurity returns invalid kid', async () => {
@@ -656,7 +673,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, fetch returns empty n value', async () => {
@@ -729,7 +747,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls setParameters and makes a validate token request, fetch returns invalid n value', async () => {
@@ -791,7 +810,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, fetch returns invalid e value', async () => {
@@ -854,7 +874,8 @@ describe('configuration & security modules and make request type validate token 
       scope: '',
       production: false,
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls setParameters and makes a validate token request, fetch fails', async () => {
@@ -915,6 +936,7 @@ describe('configuration & security modules and make request type validate token 
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 });

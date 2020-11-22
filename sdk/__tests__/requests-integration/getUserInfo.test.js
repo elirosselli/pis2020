@@ -50,6 +50,13 @@ const validFetchMockImplementation = () =>
       }),
   });
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 describe('configuration & security modules and make request type get user info integration', () => {
   it('calls set parameters and makes a get user info request (no scope claims)', async () => {
     const clientId = 'clientId';
@@ -121,6 +128,7 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a get user info request with production set to true', async () => {
@@ -196,6 +204,7 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a get user info request (one scope claims)', async () => {
@@ -292,6 +301,7 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope,
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a get user info request (all scopes claims)', async () => {
@@ -408,6 +418,7 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope,
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls set parameters and makes a get user info request with empty accessToken', async () => {
@@ -459,7 +470,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request with empty idToken', async () => {
@@ -513,7 +525,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request with invalid accessToken', async () => {
@@ -572,7 +585,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a get user info request with invalid idToken', async () => {
@@ -631,7 +645,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a get user info request with incorrectly encoded idToken', async () => {
@@ -701,7 +716,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(5);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
   });
 
   it('calls set parameters and makes a get user info request with invalid production', async () => {
@@ -761,7 +777,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(4);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
   });
 
   it('calls set parameters and makes a get user info request with expired accessToken', async () => {
@@ -824,7 +841,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request, fetch fails', async () => {
@@ -882,7 +900,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request, fetch returns some error', async () => {
@@ -942,7 +961,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request, fetch returns some error with www authenticate header', async () => {
@@ -1002,7 +1022,8 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls set parameters and makes a get user info request, responseJson.sub invalid', async () => {
@@ -1066,6 +1087,7 @@ describe('configuration & security modules and make request type get user info i
       state: '',
       scope: '',
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 });
