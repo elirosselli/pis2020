@@ -144,6 +144,9 @@ Para que el SDK funcione correctamente, debe instalar en su aplicación la libre
 
 `$ npm install react-native-ssl-pinning --save`
 
+En caso de que su aplicación sea para dispositivos iOS, adicionalmente se debe ejecutar el siguiente comando
+
+`$ cd ios && pod install`
 ### Configuración de redirect URI
 
 Deberá configurar en su aplicación su *redirect URI*, como se explica en la [documentación de *React Native*](https://reactnative.dev/docs/linking#enabling-deep-links).
