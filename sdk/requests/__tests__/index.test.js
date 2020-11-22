@@ -234,10 +234,3 @@ describe('validateToken', () => {
     expect.assertions(1);
   });
 });
-
-describe('default', () => {
-  it('calls default', async () => {
-    const response = await makeRequest('default');
-    expect(response).toBe('');
-  });
-});
