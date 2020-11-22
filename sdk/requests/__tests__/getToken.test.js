@@ -69,6 +69,7 @@ describe('getToken', () => {
       {
         method: 'POST',
         pkPinning: Platform.OS === 'ios',
+        disableAllSecurity: false,
         sslPinning: {
           certs: ['certificate'],
         },
