@@ -347,7 +347,7 @@ La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshTok
 
 #### Errores
 
-Los casos de errores son muy similares a los de la funcionalidad `getToken`. 
+Los casos de errores son muy similares a los de la funcionalidad `getToken`.
 
 Los errores devueltos en cada caso son:
 
@@ -496,7 +496,6 @@ Los errores devueltos en cada caso son:
 - Cuando el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP: `ERRORS.INVALID_SUB`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
-
 ### Funcionalidad de validateToken
 
 #### Generalidades
@@ -580,6 +579,7 @@ En caso contrario se rechaza la promesa con un error de tipo `ERRORS.INVALID_ID_
 ```javascript
 Promise.reject(ERRORS.INVALID_ID_TOKEN);
 ```
+
 #### Errores
 
 Los errores devueltos en cada caso son:

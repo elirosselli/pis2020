@@ -340,7 +340,7 @@ try {
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
-**Errores initialize**
+#### Errores initialize
 
 Si alguno de estos parámetros obligatorios es vacío se devuelve un error indicando cual es el primer parámetro vacío. En el caso del `intialize` estos parámetros son *redirectUri*, *clientId* y *clientSecret*, siendo estos los respectivos errores:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET`.
 
@@ -375,10 +375,10 @@ try {
 
 Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirect_uri* especificada.
 
-**Errores login**
+#### Errores login
 
 En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* y no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
-      
+
 En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
 
 En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
@@ -404,7 +404,7 @@ try {
 
 Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de no necesitar almacenar el *token*, también se puede llamar a `getToken` sin guardar la respuesta.
 
-**Errores getToken**
+#### Errores getToken
 
 En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecret* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE` respectivamente.
 
@@ -433,13 +433,13 @@ try {
 
 Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
 
-**Errores refreshToken**
+#### Errores refreshToken
 
-Los casos de errores son muy similares a los de la funcionalidad `getToken`. 
+Los casos de errores son muy similares a los de la funcionalidad `getToken`.
 
 En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
 
-A diferencia de la funcionalidad `getToken`, en lugar del parámetro *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`. 
+A diferencia de la funcionalidad `getToken`, en lugar del parámetro *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`.
 
 En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
@@ -476,7 +476,7 @@ Esta función devuelve un objeto con el siguiente formato:
 }
 ```
 
-**Errores getUserInfo**
+#### Errores getUserInfo
 
 En caso de que alguno de los parámetros *accessToken* y *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
@@ -513,7 +513,7 @@ try {
 }
 ```
 
-**Errores validateToken**
+#### Errores validateToken
 
 En caso de que alguno de los parámetros obligatorios para la request, en este caso *clientId* y *token* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
@@ -535,7 +535,7 @@ try {
 }
 ```
 
-**Errores logout**
+#### Errores logout
 
 En caso de que el parámetro *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
 
@@ -544,7 +544,6 @@ Si *idToken*, el parámetro obligatorio para la *request* se encuentran iniciali
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
-
 
 ## Errores
 
@@ -567,7 +566,6 @@ class NewError extends Error {
     this.errorDescription = errorDescription;
   }
 }
-
 ```
 
 Se agregan los campos:
