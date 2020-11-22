@@ -205,16 +205,16 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego, se *setean* los parámetros con la función **setParameters** y se retorna un objeto indicando que no hay error. Dicho objeto incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error de tipo *NO_ERROR*. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego se invoca a la función **setParameters**, y si los parámetros son válidos, estos son *seteados* en el módulo de configuración. **setParameters** retorna un objeto indicando si hubo error, el cual incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error del tipo correspondiente. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 
 Los errores devueltos en cada caso son:
 
 - En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
-- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
-- Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
+- Cuando el parámetro *redirectUri* es vacío o inválido: `ERRORS.INVALID_REDIRECT_URI`
+- Cuando el parámetro *clientId* es vacío o inválido: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *clientSecret* es vacío o inválido: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
@@ -269,20 +269,7 @@ Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve a
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se resuelve la promesa retornando el *code*, *state* y un mensaje de éxito. En caso contrario, se rechaza la promesa con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
-
-#### Errores
-
-Los códigos de error devueltos en cada caso son:
-
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
-- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
-- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
-- Cuando el usuario final niega el acceso: "access_denied"
-- Cuando el parámetro *state* obtenido en la *response* no coincide con el del módulo de configuración: "invalid_state"
-- Cuando el parámetro *code* obtenido en la *response* no es válido: "gubuy_invalid_auhtorization_code"
-- Cuando el *try* falla: "failed_request"
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se invoca a la función **setParameters**, y si el parámetro *code* es válido, este es *seteado* en el módulo de configuración. Luego se resuelve la promesa retornando al usuario dicho *code* y *state* junto a un mensaje de éxito. Si el parámetro no es válido, o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
 
 #### Errores
 
@@ -293,8 +280,8 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
-- Cuando no existe el parámetro *code*  en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
-- Cuando el usuario final no autorice a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
+- Cuando no existe el parámetro *code* en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando el usuario final no autoriza a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *getToken*
@@ -326,19 +313,7 @@ La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *req
 
 Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
 
-En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *token* y un mensaje de éxito. En caso de error, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseState**.
-
-#### Errores
-
-Los códigos de error devueltos en cada caso son:
-
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
-- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
-- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
-- Cuando el parámetro *code* es vacío: "gubuy_invalid_auhtorization_code"
-- Cuando el OP rechaza las credenciales enviadas: *invalid_client*
-- En otro caso de error: "failed_request"
+En caso de obtenerse una respuesta y que la misma sea exitosa, se invoca la función **setParameters** para *setear* los parámetros recibidos en el componente configuración, y se resuelve la promesa con el valor correspondiente al *token* y un mensaje de éxito. Si alguno de los parámetros obtenidos resulta inválido, **setParameters** arrojará una excepción, retornando un detalle del error, y no *setearán* los parámetros. En caso de que la respuesta del OP arroje un error, o que el estado de la respuesta no sea 200, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseState**.
 
 #### Errores
 
