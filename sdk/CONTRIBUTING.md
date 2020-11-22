@@ -96,12 +96,14 @@ En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clie
 
 #### Errores
 
-Los códigos de error devueltos en cada caso son:
+Los errores devueltos en cada caso son:
 
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
-- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
-- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
+- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *login*
 
@@ -158,6 +160,19 @@ Una vez realizado el *request* se retorna un *response* que corresponde con un H
 
 Adicionalmente, se intenta obtener el *code* a través de una expresión regular. En caso de encontrarse, se resuelve la promesa retornando dicho parámetro. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
 
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
+- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
+- Cuando no existe el parámetro *code*  en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando el usuario final no autorice a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+
 ### Funcionalidad de *getToken*
 
 #### Generalidades
@@ -187,6 +202,20 @@ Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para 
 
  En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *access_token*. En caso de error, se rechaza la promesa devolviendo el error recibido.
 
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
+- Cuando el parámetro *code* es vacío: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
+- Cuando el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria: `ERRORS.INVALID_GRANT`
+- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`.
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+
 ### Funcionalidad de *refreshToken*
 
 #### Generalidades
@@ -202,6 +231,22 @@ La implementación de la funcionalidad de **refreshToken** involucra los mismos 
 #### Código
 
 La función **getTokenOrRefresh** en el caso de la funcionalidad de **refreshToken** invoca a la función **makeRequest** con el parámetro REQUEST_TYPES.GET_REFRESH_TOKEN, indicando que es un *request* del tipo *refreshToken*. Luego, dentro de **makeRequest**, las implementaciones de **getToken** y **refreshToken** serán la misma, a diferencia del *body* de la solicitud *fetch*. En el caso de la funcionalidad **refreshToken**, el *body* solo necesita del *grant\_type* mencionado en *Refresh Token Request Params* y el *refresh_token* obtenido anteriormente a través de **getToken**.
+
+#### Errores
+
+Los casos de errores son muy similares a los de la funcionalidad `getToken`. 
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
+- Cuando el parámetro *refreshToken* es vacío: `ERRORS.INVALID_GRANT`
+- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
+- Cuando el parámetro *refreshToken* sea inválido o haya expirado: `ERRORS.INVALID_GRANT`
+- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`.
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *getUserInfo*
 
@@ -328,6 +373,41 @@ A continuación se arma la solicitud, mediante la función `fetch` y se procede 
 
 En el cuerpo de la función de **getUserInfo** se encuentra un bloque de try y uno de catch. Con esto se logra que si la función se ejecuta de forma satisfactoria se retorna la promesa con los valores explicados anteriormente. De lo contrario se la rechaza devolviendo un codigo de error y una descripción del mismo.
 
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *accessToken* es vacío: `ERRORS.INVALID_TOKEN`
+- Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP: `ERRORS.INVALID_SUB`
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+
+
+### Funcionalidad de *validateToken*
+
+#### Generalidades
+
+La función `validateToken` permite al usuario validar el *id_token* provisto durante la llamada a `getToken` o `refreshToken`.
+
+#### Archivos y Parámetros
+
+...
+
+#### Código
+
+...
+
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *token* es vacío: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el parámetro *token* no se pueda validar en el modulo de seguridad: `ERRORS.INVALID_ID_TOKEN`.
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+
 ### Funcionalidad de *logout*
 
 #### Generalidades
@@ -368,6 +448,15 @@ Linking.openURL(logoutEndpoint())
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *url* que se corresponde con la utilizada para realizar el request.
 
 En caso que la *url* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+
+#### Errores
+
+Los errores devueltos en cada caso son:
+
+- En caso de éxito: `ERRORS.NO_ERROR`
+- Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN_HINT`
+- Cuando el parámetro *idToken* no es vacío, y la URL contenida en la respuesta del OP no coincida con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
+- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 ## Endpoints de producción y testing
 

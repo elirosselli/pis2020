@@ -307,6 +307,8 @@ En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecr
       
 En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
 
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
 En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
@@ -332,9 +334,11 @@ Al igual que el `code`, el *token* retornado se guarda en el SDK, con lo que de 
 
 En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecret* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE` respectivamente.
 
-En caso de que el *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
+En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que el *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
+
+En caso de que los parámetros *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -361,11 +365,13 @@ Los casos de errores son muy similares a los de la funcionalidad `getToken`.
 
 En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
 
-A diferencia de la funcionalidad `getToken`, en lugar del *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`. 
+A diferencia de la funcionalidad `getToken`, en lugar del parámetro *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`. 
 
-En caso de que el refreshToken sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
+En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
-En caso de que el *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
+En caso de que el parámetro *refreshToken* sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
+
+En caso de que los parámetros *client_id* o *client_secret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -400,7 +406,7 @@ Esta función devuelve un objeto con el siguiente formato:
 
 En caso de que alguno de los parámetros *accessToken* y *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
-En caso de que el sub correspondiente al token utilizado no coincida con el sub de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
+En caso de que el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -437,7 +443,7 @@ try {
 
 En caso de que alguno de los parámetros obligatorios para la request, en este caso *clientId* y *token* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
 
-En caso de que el *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
+En caso de que el parámetro *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
 
 En caso de error desconocido (no controlado) también se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -457,9 +463,9 @@ try {
 
 **Errores logout**
 
-En caso de que el *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
+En caso de que el parámetro *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
 
-Si *idToken*, el parámetro obligatorio para la *request* se encuentran inicializado, se procede a evaluar la respuesta del OP. En caso de que la url contenida en la respuesta no coincida con el *logoutEndpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
+Si *idToken*, el parámetro obligatorio para la *request* se encuentran inicializado, se procede a evaluar la respuesta del OP. En caso de que la URL contenida en la respuesta no coincida con el *logoutEndpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
