@@ -1,11 +1,8 @@
 import { generateRandomState, validateSub } from '../validateResponse';
 import { getParameters, setParameters } from '../../configuration';
+import ERRORS from '../../utils/errors';
 
 jest.mock('../../configuration');
-
-jest.mock('uuid', () =>
-  jest.fn().mockReturnValue('b5be6251-9589-43bf-b12f-f6447dc179c0'),
-);
 
 const mockState = 3035783770;
 jest.mock(
@@ -58,5 +55,20 @@ describe('validateResponse', () => {
     const incorrectSub = '1234';
     const isValid = validateSub(incorrectSub);
     expect(isValid).toBe(false);
+  });
+
+  it('calls validate sub with incorrectly encoded idToken', async () => {
+    getParameters.mockReturnValue({
+      idToken: 'id.token',
+    });
+
+    const sub = '5859';
+
+    try {
+      validateSub(sub);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+    expect.assertions(1);
   });
 });

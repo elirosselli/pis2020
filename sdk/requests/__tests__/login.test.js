@@ -19,6 +19,13 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
   openURL: mockLinkingOpenUrl,
 }));
 
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 const correctLoginEndpoint = `https://auth-testing.iduruguay.gub.uy/oidc/v1/authorize?scope=openid%20correctScope&response_type=code&client_id=clientId&redirect_uri=redirectUri&state=${mockState}`;
 
 describe('login', () => {
@@ -41,6 +48,7 @@ describe('login', () => {
     const response = await login();
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(response).toStrictEqual({
       code: '35773ab93b5b4658b81061ce3969efc2',
       state: mockState,
@@ -71,7 +79,8 @@ describe('login', () => {
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls login with correct clientId and Linking.openUrl fails', async () => {
@@ -91,7 +100,8 @@ describe('login', () => {
     }
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls login with empty clientId', async () => {
@@ -106,7 +116,8 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(2);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(3);
   });
 
   it('calls login with empty redirectUri', async () => {
@@ -121,7 +132,8 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_REDIRECT_URI);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(2);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(3);
   });
 
   it('calls login with empty clientSecret', async () => {
@@ -138,7 +150,8 @@ describe('login', () => {
       expect(error).toBe(ERRORS.INVALID_CLIENT_SECRET);
     }
     expect(mockLinkingOpenUrl).not.toHaveBeenCalled();
-    expect.assertions(2);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(3);
   });
 
   it('calls login with correct clientId, correct redirectUri and return invalid state', async () => {
@@ -161,9 +174,10 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_STATE);
     }
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
-    expect.assertions(3);
+    expect.assertions(4);
   });
 
   it('calls login with correct clientId, correct redirectUri and user denies access', async () => {
@@ -186,6 +200,7 @@ describe('login', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.ACCESS_DENIED);
     }
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
     expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
   });

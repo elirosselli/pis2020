@@ -20,6 +20,14 @@ jest.mock('../../security', () => ({
 const idToken = 'idToken';
 const mockState = '3035783770';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`;
+
+const mockMutex = jest.fn();
+jest.mock('async-mutex', () => ({
+  Mutex: jest.fn(() => ({
+    acquire: () => mockMutex,
+  })),
+}));
+
 afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
@@ -43,6 +51,7 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual({
       state: mockState,
       message: ERRORS.NO_ERROR,
@@ -61,6 +70,7 @@ describe('logout', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls logout with required parameters and response not OK', async () => {
@@ -79,6 +89,7 @@ describe('logout', () => {
     } catch (error) {
       expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls logout with required parameters and returns invalid url', async () => {
@@ -102,7 +113,8 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 
   it('calls logout with required parameters and fails', async () => {
@@ -124,6 +136,7 @@ describe('logout', () => {
         certs: ['certificate'],
       },
     });
-    expect.assertions(3);
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
   });
 });

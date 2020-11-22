@@ -1,3 +1,5 @@
+import { Mutex } from 'async-mutex';
+
 const REQUEST_TYPES = {
   LOGIN: 'login',
   GET_TOKEN: 'getToken',
@@ -41,4 +43,22 @@ const AMR_LIST = [
   'urn:iduruguay:am:idp:ae:3',
 ];
 
-export { REQUEST_TYPES, PARAMETERS, ACR_LIST, AMR_LIST };
+// Mutex (semáforo binario), para prevenir
+// que la funciones puedan ser llamadas cuando existe
+// una ejecución de la función en curso.
+
+const loginMutex = new Mutex();
+const getTokenOrRefreshMutex = new Mutex();
+const getUserInfoMutex = new Mutex();
+const logoutMutex = new Mutex();
+const validateTokenMutex = new Mutex();
+
+const MUTEX = {
+  loginMutex,
+  getTokenOrRefreshMutex,
+  getUserInfoMutex,
+  logoutMutex,
+  validateTokenMutex,
+};
+
+export { REQUEST_TYPES, PARAMETERS, ACR_LIST, AMR_LIST, MUTEX };
