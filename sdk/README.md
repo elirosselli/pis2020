@@ -348,7 +348,7 @@ Por otro lado, si el tipo del parámetro *production* no es booleano se retorna 
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
@@ -387,7 +387,7 @@ En caso de que el usuario final no autorice a la aplicación móvil RP a acceder
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getToken
 
@@ -416,7 +416,7 @@ En caso de que los parámetros *client_id* o *client_secret* no se correspondan 
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función refreshToken
 
@@ -449,7 +449,7 @@ En caso de que los parámetros *client_id* o *client_secret* no se correspondan 
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función getUserInfo
 
@@ -484,7 +484,7 @@ En caso de que el *sub* correspondiente al *token* utilizado no coincida con el 
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función validateToken
 
@@ -521,7 +521,7 @@ En caso de que el parámetro *token* no se pueda validar en el modulo de segurid
 
 En caso de error desconocido (no controlado) también se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función logout
 
@@ -543,7 +543,7 @@ Si *idToken*, el parámetro obligatorio para la *request* se encuentran iniciali
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
-En caso de que no haya ocurrido ningun error se retorna `ERRORS.NO_ERROR`.
+En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 
 ## Errores
