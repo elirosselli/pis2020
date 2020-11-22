@@ -99,7 +99,6 @@ describe('configuration & security modules and make request type logout integrat
       state: '',
       scope: '',
     });
-
     expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 

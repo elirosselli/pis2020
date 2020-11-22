@@ -1179,6 +1179,7 @@ describe('configuration & security modules and login integration', () => {
       state: mockState,
       scope: '',
     });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
   it('calls setParameters and login with invalid state', async () => {
