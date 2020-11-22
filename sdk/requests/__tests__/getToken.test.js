@@ -43,6 +43,7 @@ describe('getToken', () => {
       clientSecret: 'cdc04f19ac2s2f5h8f6we6d42b37e85a63f1w2e5f6sd8a4484b6b94b',
       redirectUri,
       code,
+      production: false,
     });
 
     fetch.mockImplementation(() =>

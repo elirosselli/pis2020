@@ -87,6 +87,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -163,10 +164,9 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenProductionEndpoint, {
       method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
+      disableAllSecurity: true,
+      pkPinning: false,
+      sslPinning: false,
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
         'Content-Type': headerContentType,
@@ -1036,6 +1036,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1120,6 +1121,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1204,6 +1206,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1288,6 +1291,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1372,6 +1376,7 @@ describe('configuration & security modules and get token integration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
