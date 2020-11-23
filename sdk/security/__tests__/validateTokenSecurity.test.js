@@ -124,33 +124,6 @@ describe('validateToken', () => {
     expect.assertions(2);
   });
 
-  it('not validates token (alg, iss, aud, expiration)', async () => {
-    base64ToHex.mockImplementation(() => {});
-    base64URLtoBase64.mockReturnValue(() => {});
-
-    KJUR.jws.JWS.verifyJWT.mockImplementation(() => false);
-    KJUR.jws.JWS.readSafeJSONString.mockImplementation(() => ({ kid }));
-    KJUR.jws.JWS.readSafeJSONString.mockImplementationOnce(() => ({
-      acr,
-      amr,
-    }));
-    KJUR.jws.IntDate.getNow.mockImplementation(() => time);
-    KEYUTIL.getKey.mockImplementation(() => pubKey);
-
-    try {
-      await validateTokenSecurity(jwksResponse, idToken, clientId, issuer());
-    } catch (error) {
-      expect(KJUR.jws.JWS.verifyJWT).toHaveBeenCalledWith(idToken, pubKey, {
-        alg: [jwksResponse.keys[0].alg],
-        iss: [issuer()],
-        aud: [clientId],
-        verifyAt: time,
-      });
-      expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
-    }
-    expect.assertions(2);
-  });
-
   it('not validates token (acr)', async () => {
     base64ToHex.mockImplementation(() => {});
     base64URLtoBase64.mockReturnValue(() => {});
