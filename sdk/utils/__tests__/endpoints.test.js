@@ -21,7 +21,7 @@ describe('endpoints', () => {
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = true;
-    const state = '123456';
+    const state = 'correctState';
     const loginEndpointValue = `${productionPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
@@ -29,10 +29,9 @@ describe('endpoints', () => {
       clientId,
       redirectUri,
       production,
-      state,
     });
 
-    const returnedLoginEndpoint = loginEndpoint();
+    const returnedLoginEndpoint = loginEndpoint(state);
     expect(returnedLoginEndpoint).toBe(loginEndpointValue);
   });
 
@@ -41,18 +40,17 @@ describe('endpoints', () => {
     const clientId = 'clientId';
     const redirectUri = 'redirectUri';
     const production = false;
-    const state = '123456';
+    const state = 'correctState';
     const loginEndpointValue = `${developmentPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
     getParameters.mockReturnValue({
       scope,
       clientId,
       redirectUri,
-      state,
       production,
     });
 
-    const returnedLoginEndpoint = loginEndpoint();
+    const returnedLoginEndpoint = loginEndpoint(state);
     expect(returnedLoginEndpoint).toBe(loginEndpointValue);
   });
 
@@ -106,33 +104,31 @@ describe('endpoints', () => {
 
   it('calls logoutEndpoint in production', () => {
     const idToken = 'idToken';
-    const state = 'correctState';
     const production = true;
+    const state = 'correctState';
     const logoutEndpointValue = `${productionPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 
     getParameters.mockReturnValue({
       production,
       idToken,
-      state,
     });
 
-    const returnedLogoutEndpoint = logoutEndpoint();
+    const returnedLogoutEndpoint = logoutEndpoint(state);
     expect(returnedLogoutEndpoint).toBe(logoutEndpointValue);
   });
 
   it('calls logoutEndpoint in development', () => {
     const idToken = 'idToken';
-    const state = 'correctState';
     const production = false;
+    const state = 'correctState';
     const logoutEndpointValue = `${developmentPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 
     getParameters.mockReturnValue({
       production,
       idToken,
-      state,
     });
 
-    const returnedLogoutEndpoint = logoutEndpoint();
+    const returnedLogoutEndpoint = logoutEndpoint(state);
     expect(returnedLogoutEndpoint).toBe(logoutEndpointValue);
   });
 

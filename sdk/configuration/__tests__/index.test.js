@@ -22,7 +22,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     };
@@ -62,7 +61,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     });
@@ -77,7 +75,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     });
@@ -92,7 +89,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     });
@@ -107,7 +103,6 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 123,
       idToken: 'idToken',
-      state: '',
       scope: '',
       production: false,
     });
@@ -122,7 +117,6 @@ describe('configuration module', () => {
       tokenType: 'tokenType',
       expiresIn: 123,
       idToken: 'idToken',
-      state: '',
       production: true,
       scope: 'correctScope',
     });
@@ -137,7 +131,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: true,
     });
@@ -152,7 +145,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     });
@@ -169,7 +161,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     };
@@ -235,7 +226,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     });
@@ -254,7 +244,6 @@ describe('configuration module', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
       production: false,
     };
@@ -275,7 +264,6 @@ describe('configuration module', () => {
       expiresIn: 123,
       idToken: 'idToken',
       production: true,
-      state: 'correctState',
       scope: 'correctScope',
     };
     setParameters(parameters7);
@@ -290,7 +278,6 @@ describe('configuration module', () => {
       expiresIn: 123,
       idToken: 'idToken',
       production: true,
-      state: 'correctState',
       scope: 'correctScope',
     });
     eraseCode();
@@ -305,7 +292,6 @@ describe('configuration module', () => {
       expiresIn: 123,
       idToken: 'idToken',
       production: true,
-      state: 'correctState',
       scope: 'correctScope',
     });
   });

@@ -95,7 +95,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -138,7 +137,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType,
       expiresIn,
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -164,7 +162,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -207,7 +204,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType,
       expiresIn,
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -237,7 +233,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -258,7 +253,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -289,7 +283,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -310,7 +303,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -341,7 +333,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -362,7 +353,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -393,7 +383,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -416,7 +405,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -447,7 +435,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -469,7 +456,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -500,7 +486,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -522,7 +507,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -553,7 +537,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -575,7 +558,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -606,7 +588,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -628,7 +609,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -660,7 +640,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -682,7 +661,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -710,7 +688,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -733,7 +710,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -759,7 +735,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -798,7 +773,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -824,7 +798,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -852,7 +825,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -878,7 +850,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -904,7 +875,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -930,7 +900,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -951,7 +920,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -978,7 +946,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1029,7 +996,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1055,7 +1021,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1106,7 +1071,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1132,7 +1096,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1183,7 +1146,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1209,7 +1171,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1260,7 +1221,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1286,7 +1246,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1337,7 +1296,6 @@ describe('configuration & security modules and make request type refresh token i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
