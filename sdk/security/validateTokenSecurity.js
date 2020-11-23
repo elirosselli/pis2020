@@ -19,7 +19,7 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
     // Se valida la firma, los campos alg, iss, aud, y que no esté expirado.
     // alg: algoritmo de la firma.
     // iss: quién creo y firmó el token.
-    // aud: para quién está destinado el token
+    // aud: para quién está destinado el token.
     // verifyAt: Verifica validez comparada con la hora actual.
     isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
