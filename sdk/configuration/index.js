@@ -12,7 +12,6 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
-  state: '',
   scope: '',
   production: false,
 };
