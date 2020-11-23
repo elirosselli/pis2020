@@ -790,7 +790,7 @@ describe('configuration & security modules and validate token integration', () =
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
     }
     parameters = getParameters();
@@ -853,7 +853,7 @@ describe('configuration & security modules and validate token integration', () =
     try {
       await validateToken();
     } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
     }
 

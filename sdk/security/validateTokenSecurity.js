@@ -7,26 +7,27 @@ import { base64ToHex, base64URLtoBase64 } from '../utils/encoding';
 
 const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
   // Se construye la clave pública para verificar la firma del token.
-  const pubKey = KEYUTIL.getKey({
-    n: base64ToHex(base64URLtoBase64(jwksResponse.keys[0].n)),
-    e: base64ToHex(jwksResponse.keys[0].e),
-  });
-
-  // Se valida la firma, los campos alg, iss, aud, y que no esté expirado.
-  // alg: algoritmo de la firma.
-  // iss: quién creo y firmó el token.
-  // aud: para quién está destinado el token
-  // verifyAt: Verifica validez comparada con la hora actual.
-  let isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
-    alg: [jwksResponse.keys[0].alg],
-    iss: [issuer],
-    aud: [clientId],
-    verifyAt: KJUR.jws.IntDate.getNow(),
-  });
-
+  let isValid;
   let headObj;
   let payloadObj;
   try {
+    const pubKey = KEYUTIL.getKey({
+      n: base64ToHex(base64URLtoBase64(jwksResponse.keys[0].n)),
+      e: base64ToHex(jwksResponse.keys[0].e),
+    });
+
+    // Se valida la firma, los campos alg, iss, aud, y que no esté expirado.
+    // alg: algoritmo de la firma.
+    // iss: quién creo y firmó el token.
+    // aud: para quién está destinado el token
+    // verifyAt: Verifica validez comparada con la hora actual.
+    isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
+      alg: [jwksResponse.keys[0].alg],
+      iss: [issuer],
+      aud: [clientId],
+      verifyAt: KJUR.jws.IntDate.getNow(),
+    });
+
     // Se obtiene el campo head del token.
     headObj = KJUR.jws.JWS.readSafeJSONString(decode(idToken.split('.')[0]));
 
