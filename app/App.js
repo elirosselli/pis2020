@@ -254,6 +254,7 @@ const App = () => {
                   setCode();
                   setToken(null);
                   setUserInfo({});
+                  setValidateTokenResult(0);
                 } catch (err) {
                   console.log(err);
                 }
