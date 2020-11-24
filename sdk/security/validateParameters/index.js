@@ -14,7 +14,6 @@ const validateParameters = (type, value) => {
     case PARAMETERS.code:
     case PARAMETERS.accessToken:
     case PARAMETERS.refreshToken:
-    case PARAMETERS.state:
     case PARAMETERS.idToken: {
       return validateVSCHAR(type, value);
     }

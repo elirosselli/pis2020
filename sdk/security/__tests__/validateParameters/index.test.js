@@ -88,21 +88,6 @@ describe('security module', () => {
     }
   });
 
-  it('state: valid', () => {
-    const state = '0cf37136-efbb-44d0-993f-fb1e8b928e47';
-    const validState = validateParameters(PARAMETERS.state, state);
-    expect(validState).toBe(state);
-  });
-
-  it('state: invalid', () => {
-    const state = '';
-    try {
-      validateParameters(PARAMETERS.state, state);
-    } catch (ErrorState) {
-      expect(ErrorState).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-  });
-
   it('redirectUri: valid', () => {
     const redirectUri = 'sdkIdU.testing://auth';
     const validRedirectUri = validateParameters(

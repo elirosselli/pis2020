@@ -2,7 +2,7 @@ import MersenneTwister from 'mersenne-twister';
 import KJUR from 'jsrsasign';
 import { decode } from 'base-64';
 
-import { setParameters, getParameters } from '../configuration';
+import { getParameters } from '../configuration';
 import ERRORS from '../utils/errors';
 
 // Genera un state aleatorio.
@@ -13,9 +13,8 @@ const generateRandomState = () => {
   const randomGenerator = new MersenneTwister(randomSeed);
   // Se genera el state aleatorio basado en el algoritmo Mersenne Twister.
   const randomInt = randomGenerator.random_int();
-  const state = randomInt.toString();
-  // Se settea el state a utilizar.
-  setParameters({ state });
+  // Se devuelve el state.
+  return randomInt.toString();
 };
 
 // Verifica que el sub obtenido del id token guardado en los parámetros

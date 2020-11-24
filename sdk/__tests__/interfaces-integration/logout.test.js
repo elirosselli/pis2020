@@ -57,7 +57,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -95,7 +94,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -117,7 +115,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -155,7 +152,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -174,7 +170,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -197,7 +192,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -223,7 +217,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -246,7 +239,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -272,7 +264,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -295,7 +286,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -317,7 +307,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -355,7 +344,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -377,7 +365,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -410,7 +397,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -432,7 +418,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -468,7 +453,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -490,7 +474,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     const err = Error('error');
@@ -522,7 +505,6 @@ describe('configuration & security modules and logout integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);

@@ -9,8 +9,8 @@ const tokenEndpoint = () => {
   return `${endpointPrefix}/token`;
 };
 
-const loginEndpoint = () => {
-  const { production, redirectUri, clientId, scope, state } = getParameters();
+const loginEndpoint = state => {
+  const { production, redirectUri, clientId, scope } = getParameters();
   const endpointPrefix = production ? productionPrefix : developmentPrefix;
   return `${endpointPrefix}/authorize?scope=openid%20${scope}&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 };
@@ -21,8 +21,8 @@ const userInfoEndpoint = () => {
   return `${endpointPrefix}/userinfo`;
 };
 
-const logoutEndpoint = () => {
-  const { production, idToken, state } = getParameters();
+const logoutEndpoint = state => {
+  const { production, idToken } = getParameters();
   const endpointPrefix = production ? productionPrefix : developmentPrefix;
   return `${endpointPrefix}/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${state}`;
 };
