@@ -12,7 +12,6 @@ const parameters = {
   tokenType: '',
   expiresIn: '',
   idToken: '',
-  state: '',
   scope: '',
   production: false,
 };
@@ -70,15 +69,10 @@ const eraseCode = () => {
   parameters.code = '';
 };
 
-const eraseState = () => {
-  parameters.state = '';
-};
-
 export {
   getParameters,
   setParameters,
   clearParameters,
   resetParameters,
   eraseCode,
-  eraseState,
 };

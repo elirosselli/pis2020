@@ -32,7 +32,6 @@ describe('configuration module and initialize integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
   });
@@ -68,7 +67,6 @@ describe('configuration module and initialize integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope,
     });
   });
@@ -96,7 +94,6 @@ describe('configuration module and initialize integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
   });
@@ -124,7 +121,6 @@ describe('configuration module and initialize integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
   });
@@ -152,7 +148,6 @@ describe('configuration module and initialize integration', () => {
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect.assertions(2);

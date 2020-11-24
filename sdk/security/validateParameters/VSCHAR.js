@@ -32,9 +32,6 @@ const validateVSCHAR = (type, value) => {
       case PARAMETERS.refreshToken: {
         throw ERRORS.INVALID_TOKEN;
       }
-      case PARAMETERS.state: {
-        throw ERRORS.INVALID_STATE;
-      }
       case PARAMETERS.idToken: {
         throw ERRORS.INVALID_ID_TOKEN;
       }

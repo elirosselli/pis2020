@@ -12,12 +12,9 @@ import LogoAgesicSimple from './images/logoAgesicSimple.png';
 const LoginButton = ({ handleCode, notActive }) => {
   const handleButton = async () => {
     if (notActive) {
-      Alert.alert(
-        'SDK Alert',
-        'SDK no inicializado',
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        { cancelable: true },
-      );
+      Alert.alert('SDK Alert', 'SDK no inicializado', [{ text: 'OK' }], {
+        cancelable: true,
+      });
     } else {
       const parameters = getParameters();
       if (parameters.code === '') await handleLogin();

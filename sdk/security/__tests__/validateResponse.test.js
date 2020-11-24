@@ -1,5 +1,5 @@
 import { generateRandomState, validateSub } from '../validateResponse';
-import { getParameters, setParameters } from '../../configuration';
+import { getParameters } from '../../configuration';
 import ERRORS from '../../utils/errors';
 
 jest.mock('../../configuration');
@@ -30,11 +30,9 @@ describe('validateResponse', () => {
     jest.clearAllMocks();
   });
 
-  it('calls generateRandomState and sets state correctly', async () => {
-    const expectedParameters = { state: mockState.toString() };
-    generateRandomState();
-    expect(setParameters).toHaveBeenCalledTimes(1);
-    expect(setParameters).toHaveBeenCalledWith(expectedParameters);
+  it('calls generateRandomState and returns correct state', async () => {
+    const generatedState = generateRandomState();
+    expect(generatedState).toBe(mockState.toString());
   });
 
   it('calls validate sub and subs match', async () => {
