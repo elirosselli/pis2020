@@ -161,7 +161,6 @@ const App = () => {
                       sdkIdUClientSecret,
                       sdkProduction,
                     );
-                    setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);
                   } catch (error) {
                     console.log(error);
