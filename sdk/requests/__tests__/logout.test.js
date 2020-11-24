@@ -33,7 +33,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
   it('calls logout with idTokenHint and state', async () => {
-    getParameters.mockReturnValue({ idToken });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -45,6 +45,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -59,7 +60,7 @@ describe('logout', () => {
   });
 
   it('calls logout without idTokenHint', async () => {
-    getParameters.mockReturnValue({ idToken: '' });
+    getParameters.mockReturnValue({ idToken: '', production: false });
     try {
       await logout();
     } catch (error) {
@@ -85,7 +86,7 @@ describe('logout', () => {
   });
 
   it('calls logout with required parameters and returns invalid url', async () => {
-    getParameters.mockReturnValue({ idToken });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({ status: 200, url: 'badUrl' }),
     );
@@ -98,6 +99,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -107,7 +109,7 @@ describe('logout', () => {
   });
 
   it('calls logout with required parameters and fails', async () => {
-    getParameters.mockReturnValue({ idToken });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() => Promise.reject());
     try {
       await logout();
@@ -118,6 +120,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
