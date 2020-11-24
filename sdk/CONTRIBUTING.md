@@ -13,6 +13,8 @@
   - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-getuserinfo)
   - [Funcionalidad de *validateToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-logout)
+  - [Llamadas concurrentes](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#llamadas-concurrentes)
+
 - [Ejecución de pruebas unitarias y *linter*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
 
 ## Introducción
@@ -712,9 +714,9 @@ Los errores devueltos en cada caso son:
 
 ## Llamadas concurrentes
 
-Tomando en cuenta que llamadas simultaneas a una misma función del módulo de request pueden generar conflictos a la hora de su ejecución, por ejemplo, dos llamadas a *getToken* pueden derivar en que una de estas no tenga el `code` disponible, se decide utilizar la lógica de [Mutex](https://en.wikipedia.org/wiki/Mutual_exclusion). Esto permite que si el mutex asignado a la función ya fue activado, otra llamada a esta no pueda ejecutarse hasta que la primera lo libere.  
+Dado que lamadas simultáneas a una misma función del módulo de *Requests* pueden generar conflictos a la hora de su ejecución, ya que utilizan los mismos parámetros del módulo de configuración, los reescriben y eso puede llegar a dar problemas. Como solución a esto, se decide utilizar la lógica de *[Mutex](https://en.wikipedia.org/wiki/Mutual_exclusion)* en las funcionalidades afectadas, lo que permite que si el mutex asignado a cada funcionalidad ya fue activado, otra llamada a esta no pueda ejecutarse hasta que la primera lo libere.  
 
-Para lograr esto se utiliza la librería [`async-mutex`](https://github.com/DirtyHairy/async-mutex), que provee una implementación de Mutex para *javascript*. Además, se define en el archivo `utils/constants.js` la siguiente estructura:
+Para lograr esto se utiliza la librería [`async-mutex`](https://github.com/DirtyHairy/async-mutex), que provee una implementación de *Mutex* para *JAVASCRIPT*. Además, se define en el archivo `utils/constants.js` la siguiente estructura:
 
 ```javascript
 const MUTEX = {
@@ -727,7 +729,7 @@ const MUTEX = {
 ```
 Donde cada atributo del objeto `MUTEX` es un objeto de tipo Mutex que será utilizado en la función correspondiente, y que es inicializado de la forma `const funcionMutex = new Mutex();`.
 
-Una vez inicializado cada mutex, se debe invocar en la función correspondiente de la siguiente forma:
+Para controlar las llamadas concurrentes se invoca el mutex en la función correspondiente, por ejemplo, de la siguiente forma:
 
 ```javascript
 const funcion = async () => {
@@ -751,7 +753,7 @@ const funcion = async () => {
 }
 ```
 
-La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el mutex y devuelve una función (*mutexRelease*) que, una vez llamada (al final de la ejecución de la función), libera el mutex, dejándolo libre para otra llamada.
+La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el mutex y devuelve una función (*mutexRelease*) que, una vez llamada, libera el *Mutex*, dejándolo libre para otra llamada. Tomando en cuenta que la función *mutexRelease()* está incluida en un *finally*, se ejecuta siempre al terminar la función, independientemente de si entra o no al *catch*.
 
 
 ## Endpoints de producción y testing
