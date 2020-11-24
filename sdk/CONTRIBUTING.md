@@ -157,7 +157,7 @@ Las funciones **clearParameters** y **resetParameters** no reciben parámetros y
 
 Ambas funciones utilizan *Object.keys()* que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función *forEach(función_callback)* se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se *setean* sus valores al *string* vacío en el objeto *parameters*, en los casos indicados. Para el caso de **resetParameters**, una vez terminada la recorrida de todos los parámetros, se *setea* el parámetro *production* a *false*.
 
-#### Funcionalidad de eraseCode 
+#### Funcionalidad de eraseCode
 
 ##### Generalidades
 
@@ -251,7 +251,7 @@ La función de **login** es declarada como una función asincrónica de la sigui
 const login = async () => {
 ```
 
-El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. 
+El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código.
 En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en la *request* de *login*.
 
 Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP, se compara el *state* generado con el obtenido en la respuesta, debiendo ser iguales. Esto se puede ver en la siguiente línea:
@@ -647,7 +647,6 @@ Los errores devueltos en cada caso son:
 #### Generalidades
 
 La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, al igual que en la funcionalidad de **login**, se genera el *state* (un *string* aleatorio) que será utilizado en la *request* de **logout**
-
 
 En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
