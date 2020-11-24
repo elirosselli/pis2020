@@ -767,7 +767,7 @@ describe('configuration & security modules and make request type validate token 
     try {
       await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
     }
     parameters = getParameters();
@@ -828,7 +828,7 @@ describe('configuration & security modules and make request type validate token 
     try {
       await makeRequest(REQUEST_TYPES.VALIDATE_TOKEN);
     } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
       expect(KJUR.jws.JWS.verifyJWT).not.toHaveBeenCalled();
     }
 
