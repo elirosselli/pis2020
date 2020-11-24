@@ -25,8 +25,9 @@ const logout = async () => {
     // Se arma la solicitud a enviar al logoutEndpoint.
     const response = await fetch(logoutEndpoint(state), {
       method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
+      pkPinning: !parameters.production && Platform.OS === 'ios',
+      disableAllSecurity: parameters.production,
+      sslPinning: !parameters.production && {
         certs: ['certificate'],
       },
     });
