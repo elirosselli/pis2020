@@ -74,7 +74,6 @@ Al comienzo de la ejecución todos los parámetros se encuentran vacíos, a exce
 - ***clearParameters***: Encargada de borrar el valor de los parámetros, excepto por los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*.
 - ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*.
 - ***eraseCode***: Encargada de borrar el valor del parámetro *code*.
-- ***eraseState***: Encargada de borrar el valor del parámetro *state*.
   
 Todas estas funciones involucran los siguientes archivos:
 
@@ -158,21 +157,21 @@ Las funciones **clearParameters** y **resetParameters** no reciben parámetros y
 
 Ambas funciones utilizan *Object.keys()* que retorna un arreglo de las propiedades *clave* de un objeto, en este caso, el nombre de los parámetros guardados en *parameters*, y con la función *forEach(función_callback)* se ejecuta la función (*function_callback*) indicada por cada elemento del *array*, donde a la clave actual se le llamará *key*. De esta manera, se recorren todos los parámetros, y se *setean* sus valores al *string* vacío en el objeto *parameters*, en los casos indicados. Para el caso de **resetParameters**, una vez terminada la recorrida de todos los parámetros, se *setea* el parámetro *production* a *false*.
 
-#### Funcionalidades de *Erase Code* y *Erase State*
+#### Funcionalidad de eraseCode 
 
 ##### Generalidades
 
-Estas funciones se encargan de borrar dos parámetros: **eraseCode** borra el parámetro *code* y **eraseState** el parámetro *state*.
+Esta función se encarga de borrar el parámetro *code*.
 
-El funcionamiento general de estas funciones consiste en borrar el valor de los parámetros mencionados (*setearlos* al *string* vacío). Se crearon estas funciones, ya que la función **setParameters** no permite *setear* valores vacíos, y en ciertas ocaciones se desean borrar estos dos parámetros particulares.
+El funcionamiento general de esta función consiste en borrar el valor del parámetro mencionado (*setearlo* al *string* vacío). Se creó esta función, ya que **setParameters** no permite *setear* valores vacíos, y en ciertas ocaciones se desea borrar el parámetro en cuestión.
 
 ##### Parámetros
 
-Las funciones de **eraseCode** y **eraseState** no reciben parámetros y tampoco retornan ningún valor.
+La función de **eraseCode** no recibe parámetros y tampoco retorna ningún valor.
 
 ##### Código
 
-El código de estas funciones simplemente consiste en *setear* los parámetros correspondientes en el objeto *parameters* al *string* vacío.
+El código de esta función simplemente consiste en *setear* el parámetro correspondiente en el objeto *parameters* al *string* vacío.
 
 ### Funcionalidad de *initialize*
 
@@ -240,7 +239,7 @@ La implementación de la funcionalidad de *login* involucra los siguientes archi
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
-- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random, y *setearlo* en el módulo de configuración.
+- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un *state* aleatorio.
 
 La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa.
 
@@ -252,24 +251,26 @@ La función de **login** es declarada como una función asincrónica de la sigui
 const login = async () => {
 ```
 
-El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. Se inicializa el parámetro *state* del módulo de configuración con un *string* aleatorio, a través de la función **generateRandomState**.
-En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Esto se puede ver en la siguiente línea:
+El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código. 
+En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en la *request* de *login*.
+
+Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP, se compara el *state* generado con el obtenido en la respuesta, debiendo ser iguales. Esto se puede ver en la siguiente línea:
 
 ```javascript
-Linking.addEventListener('url', handleOpenUrl);
+Linking.addEventListener('url', event => handleOpenUrl(event, state));
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el *clientId*, la *redirectUri* y opcionalmente *state*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un mensaje de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la *url* deseada para enviar al *Login Endpoint*. Esta *url* contendrá el prefijo que indica si se utiliza la API de producción o *testing*, el *clientId*, la *redirectUri*, el *state* y opcionalmente *scope*. Esto se puede ver a continuación:
 
 ```javascript
-await Linking.openURL(loginEndpoint())
+await Linking.openURL(loginEndpoint(state));
 ```
 
 Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve apenas se abre el *browser* o no. Luego, el usuario final ingresa sus credenciales y decide si confirmar el acceso por parte de la aplicación a los datos solicitados.
 
-Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
+Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y *state* (que debe ser igual al generado) y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se resuelve la promesa retornando el *code*, *state* y un mensaje de éxito. En caso contrario, se rechaza la promesa con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros (y que el *state* coincida con el generado), se *setea* el parámetro *code* en el módulo de configuración y se resuelve la promesa retornando el *code*, *state* y un mensaje de éxito. En caso contrario, se rechaza la promesa con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
 
 #### Errores
 
@@ -279,22 +280,24 @@ Los códigos de error devueltos en cada caso son:
 - Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
 - Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
 - Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
-- Cuando el usuario final niega el acceso: "access_denied"
-- Cuando el parámetro *state* obtenido en la *response* no coincide con el del módulo de configuración: "invalid_state"
-- Cuando el parámetro *code* obtenido en la *response* no es válido: "gubuy_invalid_auhtorization_code"
-- Cuando el *try* falla: "failed_request"
+- Cuando el parámetro *production* no es booleano: "invalid_production"
+- Cuando el usuario final no autorice a la aplicación móvil RP a acceder a sus datos: "access_denied"
+- Cuando no existe el parámetro *code* en la URL retornada por el OP: "gubuy_invalid_auhtorization_code"
+- Cuando el parámetro *state* obtenido en la *response* no coincide con el del generado (enviado en la *request*): "invalid_state"
+- En otro caso de error: "failed_request"
 
 #### Errores
 
 Los errores devueltos en cada caso son:
 
 - En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
+- Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
-- Cuando no existe el parámetro *code*  en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
 - Cuando el usuario final no autorice a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
+- Cuando no existe el parámetro *code* en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando el parámetro *state* obtenido en la *response* no coincide con el del generado (enviado en la *request*): `ERRORS.INVALID_STATE`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *getToken*
@@ -326,7 +329,7 @@ La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *req
 
 Se utiliza la librería [base-64](https://github.com/mathiasbynens/base64) para codificar el *clientId* y el *clientSecret* siguiendo el esquema de autenticación [HTTP Basic Auth](https://tools.ietf.org/html/rfc7617). A continuación se arma la solicitud, mediante la función `fetch` y se procede a su envío. Utilizando la función de sincronismos `await` se espera una posible respuesta por parte del *Token Endpoint*. Ante un error en la solicitud se entra al bloque *catch* y se retorna el error correspondiente.
 
-En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *token* y un mensaje de éxito. En caso de error, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseState**.
+En caso de obtenerse una respuesta y que la misma sea exitosa, se *setean* los parámetros recibidos en el componente configuración, con la función **setParameters** y se resuelve la promesa con el valor correspondiente al *token* y un mensaje de éxito. En caso de error, se rechaza la promesa devolviendo el error recibido. En todos los casos, al finalizar se borra el parámetro *code* del módulo de configuración con la función **eraseCode**.
 
 #### Errores
 
@@ -643,9 +646,10 @@ Los errores devueltos en cada caso son:
 
 #### Generalidades
 
-La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, el SDK genera un parámetro de seguridad *state* a enviar al OP en la solicitud.
+La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, al igual que en la funcionalidad de **login**, se genera el *state* (un *string* aleatorio) que será utilizado en la *request* de **logout**
 
-En caso de que el parámetro *idTokenHint* sea correcto, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
+
+En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
 #### Archivos y parámetros
 
@@ -659,9 +663,9 @@ La implementación de la funcionalidad de *logout* involucra los siguientes arch
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el *endpoint* correspondiente.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
-- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random, y *setearlo* en el módulo de configuración.
+- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un *state* aleatorio.
 
-La función **logout** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en la *request* a través del módulo de configuración, en la función **logoutEndpoint** definida en el archivo de *endpoints* previamente mencionado, y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa, y si corresponde el parámetro *state*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
+La función **logout** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en la *request* a través del módulo de configuración, en la función **logoutEndpoint** definida en el archivo de *endpoints* previamente mencionado, y retorna una promesa. Cuando se resuelve dicha promesa se obtiene un código y descripción indicando que la operación resultó exitosa y el parámetro *state*. En caso contrario, cuando se rechaza la promesa se retorna un código y descripción indicando el error correspondiente.
 
 #### Código
 
@@ -673,15 +677,15 @@ const logout = async () => {
 
 El fin de la función *async* es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*.
 
-En el cuerpo de la función, primero se inicializa el parámetro *state* del módulo de configuración con un *string* aleatorio, generada por la función **generateRandomString**. Luego, se verifica que el parámetro *idToken* se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *URL* con la que se envía esta solicitud contiene el *idTokenHint*, y opcionalmente *state*. Esto se puede ver a continuación
+En el cuerpo de la función, primero se genera el *state* con la función **generateRandomString**. Luego, se verifica que el parámetro *idToken* se encuentre ya definido en el módulo de configuración. En el caso de que no, se rechaza la promesa con un mensaje de error correspondiente. Por otro lado, si se encuentra inicializado, se envía una solicitud al *Logout Endpoint* utilizando la función *fetch*. La *URL* con la que se envía esta solicitud contiene el *idTokenHint* y el *state* generado. Esto se puede ver a continuación
 
 ```javascript
-Linking.openURL(logoutEndpoint())
+await fetch(logoutEndpoint(state)...
 ```
 
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *URL* que se corresponde con la utilizada para realizar el *request*.
 
-En caso que la *URL* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con el mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos.
+En caso que la *URL* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con el mensaje de error correspondiente.
 
 #### Errores
 

@@ -255,7 +255,7 @@ const LoginButton = () => {
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
-| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay.                                                                                                                                          |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido.                                                                                                                                          |
 
 ### Función getParameters
 
@@ -272,7 +272,6 @@ Esta función retorna los parámetros del SDK en un objeto con pares *(clave, va
   tokenType: 'miTokenType',
   expiresIn: 'miExpiresIn',
   idToken: 'miIdToken',
-  state: 'miState',
   scope: 'miScope',
   production: false,
 }
@@ -344,7 +343,7 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, un parámetro *scope* y un mensaje de éxito. En caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, el *state* obtenido en la respuesta del OP, un parámetro *scope* y un mensaje de éxito. En caso de error se produce una excepción.
 
 ``` javascript
 try {
@@ -356,7 +355,7 @@ try {
 }
 ```
 
-El *code* y *state* retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar estos parámetros, se puede llamar al `login` sin guardar la respuesta:
+El *code* retornado por la función se guarda internamente en el SDK durante la sesión del usuario final (no se guarda en el dispositivo, solo en memoria). De no necesitar los parámetros retornados, se puede llamar al `login` sin guardar la respuesta:
 
 ``` javascript
 try {
@@ -377,6 +376,8 @@ En caso de que no exista el parámetro *code* en la URL retornada por el OP se r
 En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
 En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
+
+En caso de que el parámetro *state* obtenido en la *response* no coincida con el del generado (enviado en la *request*) `ERRORS.INVALID_STATE`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
@@ -584,6 +585,7 @@ Los errores definidos son:
 | `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el clientSecret y clientId correspondan con los registrados por ID Uruguay.  |
 | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro idTokenHint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del idTokenHint.                                        |                                                   |
 | `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id_token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
+| `ErrorInvalidState`     | invalid_state          | Invalid state parameter.                                                                                                                                                     | Cuando el *state* obtenido en una *response* no coincide con el *state* enviado en la *request* correspondiente.                                                   | No aplica.               |
 | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 
