@@ -3,25 +3,29 @@ import { getParameters } from '../configuration';
 import { validateSub } from '../security';
 import { userInfoEndpoint } from '../utils/endpoints';
 import { fetch } from '../utils/helpers';
+import { MUTEX } from '../utils/constants';
 import ERRORS from '../utils/errors';
 
 const getUserInfo = async () => {
   var now = require("performance-now");
   var start = now();
-  const { accessToken, idToken } = getParameters();
-  // Si no existe un access token guardado,
-  // se devuelve el error correspondiente.
-  if (!accessToken) {
-    return Promise.reject(ERRORS.INVALID_TOKEN);
-  }
-  // Se necesita un id token para validar el sub devuelto por el OP.
-  // Si no existe este id token, se devuelve el error correspondiente.
-  if (!idToken) {
-    return Promise.reject(ERRORS.INVALID_ID_TOKEN);
-  }
-  try {
-    var end = now();
+  // Tomar el semáforo para ejecutar la función.
+  const mutexRelease = await MUTEX.getUserInfoMutex.acquire();
 
+  try {
+    const { accessToken, idToken } = getParameters();
+    // Si no existe un access token guardado,
+    // se devuelve el error correspondiente.
+    if (!accessToken) {
+      return Promise.reject(ERRORS.INVALID_TOKEN);
+    }
+    // Se necesita un id token para validar el sub devuelto por el OP.
+    // Si no existe este id token, se devuelve el error correspondiente.
+    if (!idToken) {
+      return Promise.reject(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    var end = now();
     const response = await fetch(
       userInfoEndpoint(),
       {
@@ -64,10 +68,16 @@ const getUserInfo = async () => {
     }
     return Promise.reject(ERRORS.INVALID_SUB);
   } catch (error) {
-    const stringsHeaders = error.headers['Www-Authenticate'];
+    if (error === ERRORS.INVALID_ID_TOKEN) {
+      return Promise.reject(ERRORS.INVALID_ID_TOKEN);
+    }
+    const stringsHeaders = error.headers && error.headers['Www-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)
       return Promise.reject(ERRORS.INVALID_TOKEN);
     return Promise.reject(ERRORS.FAILED_REQUEST);
+  } finally {
+    // Liberar el semáforo una vez que termina la ejecución de la función.
+    mutexRelease();
   }
 };
 
