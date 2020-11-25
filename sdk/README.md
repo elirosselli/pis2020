@@ -2,15 +2,15 @@
 
 ## Índice
 
-- [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk#introducci%C3%B3n)
-- [Consideraciones previas](https://github.com/elirosselli/pis2020/tree/develop/sdk#consideraciones-previas)
-- [Instalación y configuración](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-y-configuraci%C3%B3n)
-  - [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
-  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-- [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
-- [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
-- [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
+- [Introducción](#introducci%C3%B3n)
+- [Consideraciones previas](#consideraciones-previas)
+- [Instalación y configuración](#instalaci%C3%B3n-y-configuraci%C3%B3n)
+  - [Instalación](#instalaci%C3%B3n)
+  - [Instalación de react-native-ssl-pinning](#instalaci%C3%B3n-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](#instalaci%C3%B3n-de-react-native-ssl-pinning)
+- [Utilización](#utilizaci%C3%B3n)
+- [Funcionalidades](#funcionalidades)
+- [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
 
 ## Introducción
 
