@@ -795,7 +795,7 @@ describe('configuration & security modules and get user info integration', () =>
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
         },
       }),
@@ -972,7 +972,7 @@ describe('configuration & security modules and get user info integration', () =>
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="other_error", error_description="other_error_description"',
         },
       }),
