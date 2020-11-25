@@ -268,10 +268,25 @@ El código de la función consiste en verificar que el *idToken* que contiene *s
 #### Funcionalidad de validateTokenSecurity
 
 ##### Generalidades
-
+Esta función se encarga de validar la estructura del *idToken* devuelto por *idUruguay* a partir de la *jwksResponse* obtenida en la request *validateToken*.
 ##### Parámetros
+La función *validateTokenSecurity* recibe los siguientes parámetros:
 
+| Parámetro    	| Descripción                                                                          	|
+|--------------	|--------------------------------------------------------------------------------------	|
+| jwksResponse 	| Respuesta obtenida de la consulta al JWKS endpoint.                                  	|
+| idToken      	| idToken asignado en el componente configuración, obtenida de una solicitud de token. 	|
+| clientId     	| Id de cliente asignado por idUruguay.                                                	|
+| issuer       	| URL almacenada en el archivo de endpoints.                                           	|
 ##### Código
+
+Para validar el *idToken* se hace uso de la librería *jsrsasign*.
+
+En primer lugar, esta función obteniene la clave pública del endpoint a partir de los atributos *n* y *m* del la *jwksResponse*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el issuer, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
+
+Posteriormente decodifica el *header* y el *payload*. Del *header* valida el *kid* que es un identificador único incluido tanto en el *idToken* como en el *jwksResponse*. Además, valida que el ACR (Authentication Context Class Reference) y el AMR (Authentication Methods References) asignados estén entre los definidos en el archivo de constantes.
+
+Si se cumplen todas las condiciones mencionadas se resuelve la promesa con la *jwksResponse* y un error de tipo *ERRORS.NO_ERROR*. En caso contrario se rechaza la promesa con un error de tipo *ERRORS.INVALID_ID_TOKEN*.
 
 ### Funcionalidad de *initialize*
 
