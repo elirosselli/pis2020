@@ -190,7 +190,7 @@ En particular, los parámetros mencionados son:
 
 Los últimos dos parámetros pueden ser vacíos.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos ni inválidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
 
 #### Archivos y parámetros
 
@@ -205,7 +205,7 @@ La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *r
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego se invoca a la función **setParameters**, y si los parámetros son válidos, estos son *seteados* en el módulo de configuración. **setParameters** retorna un objeto indicando si hubo error, el cual incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error del tipo correspondiente. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego se invoca a la función **setParameters**, y si los parámetros son válidos, estos son *seteados* en el módulo de configuración. **setParameters** retorna un objeto indicando si alguno de los parámetros es inválido. Este incluye un código (*errorCode*), una descripción (*errorDescription*) y un mensaje (*message*) que contiene el error del tipo correspondiente. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 
@@ -226,7 +226,7 @@ La funcionalidad de **login** se encarga de autenticar al usuario final directam
 
 Para validar al RP, el OP verifica que el *client_id* y *redirect_uri* enviados en la *Authentication Request* coinciden con los generados al momento del [registro](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integración+con+OpenID+Connect) del RP ante el OP. Una vez que el RP es validado, el usuario final puede realizar el proceso de autenticación y autorización directamente ante el OP a través del navegador web. En este proceso se deben ingresar las credenciales de Usuario gub.uy y autorizar al RP al acceso a los datos solicitados. Cuando esta acción finaliza el usuario final debe confirmar para volver a la aplicación.
 
-En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un mensaje de éxito. En caso contrario, ya sea porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna una descripción acorde al error ocurrido.
+En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un mensaje de éxito. En caso contrario, ya sea porque alguno de los parámetros es inválido, porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna una descripción acorde al error ocurrido.
 
 #### Archivos y parámetros
 
@@ -240,7 +240,7 @@ La implementación de la funcionalidad de *login* involucra los siguientes archi
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
-- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random, y *setearlo* en el módulo de configuración.
+- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random.
 
 La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa.
 
@@ -269,7 +269,7 @@ Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve a
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento *url*. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la *url* que en caso de éxito contiene el *code* y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros, se invoca a la función **setParameters**, y si el parámetro *code* es válido, este es *seteado* en el módulo de configuración. Luego se resuelve la promesa retornando al usuario dicho *code* y *state* junto a un mensaje de éxito. Si el parámetro no es válido, o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde. En todos los casos, al finalizar se borra el parámetro *state* del módulo de configuración con la función **eraseState**.
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros y que el *state* recibido sea igual al enviado, se invoca a la función **setParameters**, y si el parámetro *code* es válido, este es *seteado* en el módulo de configuración. Luego se resuelve la promesa retornando al usuario dicho *code* y *state* junto a un mensaje de éxito. Si el parámetro no es válido, el *state* no coincide, o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un mensaje de error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un mensaje de error acorde.
 
 #### Errores
 
@@ -279,10 +279,10 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
-- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
-- Cuando no existe el parámetro *code* en la URL retornada por el OP: `ERRORS.INVALID_AUTHORIZATION_CODE`
 - Cuando el usuario final no autoriza a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+- Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
+- Cuando el *code* retornado por el OP es inválido, u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando se entra al bloque *catch* del código: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *getToken*
 
