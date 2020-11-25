@@ -33,12 +33,13 @@ const logout = async () => {
     });
     const { status } = response;
     const urlCheck = response.url;
+    const returnedState = urlCheck.match(/&state=([^&]+)/);
+    const returnedIdTokenHint = urlCheck.match(/\?id_token_hint=([^&]+)/);
 
     // Si los parámetros obligatorios para la request se encuentran
     // inicializados, se procede a evaluar la respuesta del OP.
     if (status === 200) {
       if (urlCheck === logoutEndpoint(state)) {
-        const returnedState = urlCheck.match(/&state=([^&]+)/);
         clearParameters();
         return Promise.resolve({
           message: ERRORS.NO_ERROR,
@@ -49,6 +50,13 @@ const logout = async () => {
       }
       // Si la url contenida en la respuesta no coincide con el
       // logoutEndpoint, se rechaza la promesa retornando un error.
+      // Si no coinciden por el state, se retorna el error correspondiente.
+      if (returnedState && returnedState[1] !== state)
+        return Promise.reject(ERRORS.INVALID_STATE);
+      // Si no coinciden por el id token, se retorna el error correspondiente.
+      if (returnedIdTokenHint && returnedIdTokenHint !== parameters.idToken)
+        return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);
+      // En cualquier otro caso se retorna invalid_url
       return Promise.reject(ERRORS.INVALID_URL_LOGOUT);
     }
     // En cualquier otro caso, se rechaza la promesa

@@ -80,7 +80,7 @@ describe('logout', () => {
     try {
       await logout();
     } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
     expect(mockMutex).toHaveBeenCalledTimes(1);
   });
