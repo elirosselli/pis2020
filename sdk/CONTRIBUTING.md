@@ -173,6 +173,105 @@ La función de **eraseCode** no recibe parámetros y tampoco retorna ningún val
 
 El código de esta función simplemente consiste en *setear* el parámetro correspondiente en el objeto *parameters* al *string* vacío.
 
+### Funcionalidades del módulo de seguridad
+
+Las funcionalidades de este módulo se encargarán de validar ciertos parámetros, brindando seguridad al SDK.
+
+Las funciones encontradas en este módulo son:
+
+- ***getRandomState***: Encargada de generar un parámetro *state* aleatorio.
+- ***validateParameters***: Encargada de validar los parámetros a *setear* en el módulo de configuración.
+- ***validateSub***: Encargada de validar el parámetro *sub*, recibido en una *response* del OP.
+- ***validateTokenSecurity***: Encargada de validar el *token*, a través de un *jwk* recibido en una *response* del OP.
+  
+Todas estas funciones involucran los siguientes archivos:
+
+- **sdk/security/index.js**: Donde se exportan todas las funciones anteriormente mencionadas.
+- **sdk/security/validateParameters/index.js**: Donde se implementa la función **validateParameters**.
+- **sdk/security/validateParameters/BOOLEAN.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateParameters/DIGIT.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateParameters/NQCHAR.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateParameters/URIReference.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateParameters/VSCHAR.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateResponse.js**: Donde se implementan las funciones **getRandomState** y **validateSub**.
+- **sdk/security/validateTokenSecurity.js**: Donde se implementa la función **validateTokenSecurity**.
+- **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
+- **sdk/utils/constants.js**: Donde se encuentran ciertas constantes utilizadas.
+
+#### Funcionalidad de getRandomState
+
+##### Generalidades
+
+Esta función se encarga de generar un parámetro *state* aleatorio para luego enviar en una *request* al OP.
+
+##### Parámetros
+
+La función **getRandomState** no recibe ningún parámetro, y retorna el *state* generado.
+
+##### Código
+
+El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería MersenneTwister obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. El valor es retornado en forma de *string*.
+
+#### Funcionalidad de validateParameters
+
+##### Generalidades
+
+Esta función se encarga de validar ciertos parámetros previo a ser *seteados* en el módulo de configuración y/o retornados al usuario. La validación a realizar dependerá del tipo de parámetro a validar.
+
+##### Parámetros
+
+La función **validateParameters** recibe un parámetro a validar junto a su tipo. Se retorna un mensaje de éxito si este es válido, y si no lo es se retorna el mensaje de error que corresponda.
+
+##### Código
+
+El tipo de validación a realizar dependerá del tipo de parámetro. Si el parámetro es de uno de los siguientes tipos:
+
+- *clientId*
+- *clientSecret*
+- *code*
+- *accessToken*
+- *refreshToken*
+- *idToken*
+
+se efectuará una validación con la función **validateVSCHAR**, que verificará que el parámetro solo contenga caracteres del tipo de dato *VSCHAR*, y que no contenga secuencias sensibles de caracteres.
+
+Si el parámetro es de uno de los siguientes tipos:
+
+- *redirectUri
+- *tokenType
+
+se efectuará una validación con la función **validateURIReference**, que verificará que el parámetro solo contenga caracteres permitidos para el tipo de dato *URIReference*, y que no contenga secuencias sensibles de caracteres.
+
+Si el parámetro es del tipo *scope*, se efectuará una validación con la función **validateNQCHAR**, que verificará que el parámetro solo contenga caracteres del tipo de dato *NQCHAR*, y que no contenga secuencias sensibles de caracteres.
+
+Si el parámetro es del tipo *expiresIn*, se efectuará una validación con la función **validateDIGIT**, que verificará que el parámetro sea un número entero positivo menor a un año en segundos.
+
+Si el parámetro es del tipo *production*, se efectuará una validación con la función **validateBOOLEAN**, que verificará que el parámetro sea del tipo booleano.
+
+En todos los casos, se retornará un mensaje de éxito si el parámetro es válido, y si no lo es, el error que corresponda, indicando la invalidez del parámetro.
+
+#### Funcionalidad de validateSub
+
+##### Generalidades
+
+Esta función se encarga de validar el parámetro *sub*, obtenido en una *GetUserInfo Response* del OP.
+
+##### Parámetros
+
+La función **validateSub** recibe el parámetro *sub*, y retorna un mensaje de éxito si este es válido. Si no lo es, se retorna el mensaje de error que corresponda.
+
+##### Código
+
+El código de la función consiste en verificar que el *idToken* que contiene *sub* coincida con el *seteado* en el módulo de configuración. Si el parámetro *idToken* no se encuentra inicializado en dicho módulo, se retorna el error `ERRORS.INVALID_ID_TOKEN`. En otro caso, si ambos *idToken* coinciden se retorna el valor *true*, y sino, *false*.
+
+#### Funcionalidad de validateTokenSecurity
+
+##### Generalidades
+
+##### Parámetros
+
+##### Código
+
 ### Funcionalidad de *initialize*
 
 #### Generalidades
