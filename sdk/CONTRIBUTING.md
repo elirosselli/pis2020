@@ -325,10 +325,12 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el parámetro *code* es vacío: `ERRORS.INVALID_AUTHORIZATION_CODE`
-- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
+- Cuando el parámetro *accessToken* o *refreshToken* recibido es inválido: `ERRORS.INVALID_TOKEN`
+- Cuando el parámetro *idToken* recibido es inválido: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el parámetro *tokenType* recibido es inválido: `ERRORS.INVALID_TOKEN_TYPE`
 - Cuando el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria: `ERRORS.INVALID_GRANT`
-- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`.
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`
+- En caso de error desconocido (no controlado) se retorna: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *refreshToken*
 
@@ -348,18 +350,6 @@ La función **getTokenOrRefresh**, recibe como único parámetro el tipo de *req
 
 #### Errores
 
-Los códigos de error devueltos en cada caso son:
-
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *clientId* es vacío: "gubuy_invalid_client_id"
-- Cuando el parámetro *redirectUri* es vacío: "gubuy_invalid_redirect_uri"
-- Cuando el parámetro *clientSecret* es vacío: "gubuy_invalid_client_secret"
-- Cuando el parámetro *refreshToken* es vacío, o es rechazado por el OP: *invalid_grant*
-- Cuando el OP rechaza las credenciales enviadas: *invalid_client*
-- En otro caso de error: "failed_request"
-
-#### Errores
-
 Los casos de errores son muy similares a los de la funcionalidad `getToken`.
 
 Los errores devueltos en cada caso son:
@@ -368,11 +358,13 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientId* es vacío: `ERRORS.INVALID_CLIENT_ID`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
-- Cuando el parámetro *refreshToken* es vacío: `ERRORS.INVALID_GRANT`
-- Cuando el parámetro *production* no es booleano: `ERRORS.INVALID_PRODUCTION`
 - Cuando el parámetro *refreshToken* sea inválido o haya expirado: `ERRORS.INVALID_GRANT`
-- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`.
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+- Cuando el parámetro *accessToken* o *refreshToken* recibido es inválido: `ERRORS.INVALID_TOKEN`
+- Cuando el parámetro *idToken* recibido es inválido: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el parámetro *tokenType* recibido es inválido: `ERRORS.INVALID_TOKEN_TYPE`
+- Cuando el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria: `ERRORS.INVALID_GRANT`
+- En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`
+- En caso de error desconocido (no controlado) se retorna: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de *getUserInfo*
 
@@ -503,21 +495,11 @@ En el cuerpo de la función de **getUserInfo**, primero se verifica que los par�
 
 #### Errores
 
-Los códigos de error devueltos en cada caso son:
-
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *access_token* es vacío, o es rechazado por el OP: "invalid_token"
-- Cuando el parámetro *idToken* es vacío: "gubuy_invalid_id_token"
-- Cuando el parámetro *sub* retornado por el OP es inválido: "gubuy_invalid_sub"
-- En otro caso de error: "failed_request"
-
-#### Errores
-
 Los errores devueltos en cada caso son:
 
 - En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *accessToken* es vacío: `ERRORS.INVALID_TOKEN`
-- Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN`
+- Cuando el parámetro *accessToken* es vacío, o el OP lo rechaza: `ERRORS.INVALID_TOKEN`
+- Cuando el parámetro *idToken* es vacío, o el OP lo rechaza: `ERRORS.INVALID_ID_TOKEN`
 - Cuando el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP: `ERRORS.INVALID_SUB`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
 
@@ -658,15 +640,6 @@ await fetch(logoutEndpoint(state)...
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una *URL* que se corresponde con la utilizada para realizar el *request*.
 
 En caso que la *URL* retornada sea efectivamente dicha URI, se resuelve la promesa. En caso contrario se rechaza la promesa, con el mensaje de error correspondiente.
-
-#### Errores
-
-Los códigos de error devueltos en cada caso son:
-
-- En caso de éxito: "gubuy_no_error"
-- Cuando el parámetro *idTokenHint* es vacío: "invalid_id_token_hint"
-- Cuando la *url* obtenida en la *response* no coincide con la URI con la cual se hizo la solicitud: "invalid_url_logout"
-- En otro caso de error: "failed_request"
 
 #### Errores
 
