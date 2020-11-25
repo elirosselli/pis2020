@@ -9,10 +9,9 @@ import { MUTEX } from '../utils/constants';
 const validateToken = async () => {
   // Tomar el semáforo para ejecutar la función.
   const mutexRelease = await MUTEX.validateTokenMutex.acquire();
-  const parameters = getParameters();
 
   try {
-    const { idToken, clientId } = getParameters();
+    const { idToken, clientId, production } = getParameters();
 
     // Si alguno de los parámetros obligatorios para la request
     // no se encuentra inicializado, se rechaza la promesa y se
@@ -31,9 +30,9 @@ const validateToken = async () => {
     // JWKS Endpoint: expone las claves y algoritmos que el OP usa. Útil para verificar la autenticidad de los tokens emitidos.
     const jwksResponse = await fetch(validateTokenEndpoint(), {
       method: 'GET',
-      pkPinning: !parameters.production && Platform.OS === 'ios',
-      disableAllSecurity: parameters.production,
-      sslPinning: !parameters.production && {
+      pkPinning: !production && Platform.OS === 'ios',
+      disableAllSecurity: production,
+      sslPinning: !production && {
         certs: ['certificate'],
       },
       headers: {

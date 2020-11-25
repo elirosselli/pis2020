@@ -9,10 +9,9 @@ import ERRORS from '../utils/errors';
 const getUserInfo = async () => {
   // Tomar el semáforo para ejecutar la función.
   const mutexRelease = await MUTEX.getUserInfoMutex.acquire();
-  const parameters = getParameters();
 
   try {
-    const { accessToken, idToken } = getParameters();
+    const { accessToken, idToken, production } = getParameters();
     // Si no existe un access token guardado,
     // se devuelve el error correspondiente.
     if (!accessToken) {
@@ -23,14 +22,13 @@ const getUserInfo = async () => {
     if (!idToken) {
       return Promise.reject(ERRORS.INVALID_ID_TOKEN);
     }
-
     const response = await fetch(
       userInfoEndpoint(),
       {
         method: 'GET',
-        pkPinning: !parameters.production && Platform.OS === 'ios',
-        disableAllSecurity: parameters.production,
-        sslPinning: !parameters.production && {
+        pkPinning: !production && Platform.OS === 'ios',
+        disableAllSecurity: production,
+        sslPinning: !production && {
           certs: ['certificate'],
         },
         headers: {
@@ -64,7 +62,7 @@ const getUserInfo = async () => {
     if (error === ERRORS.INVALID_ID_TOKEN) {
       return Promise.reject(ERRORS.INVALID_ID_TOKEN);
     }
-    const stringsHeaders = error.headers && error.headers['Www-Authenticate'];
+    const stringsHeaders = error.headers && error.headers['WWW-Authenticate'];
     if (stringsHeaders && stringsHeaders.indexOf('invalid_token') !== -1)
       return Promise.reject(ERRORS.INVALID_TOKEN);
     return Promise.reject(ERRORS.FAILED_REQUEST);
