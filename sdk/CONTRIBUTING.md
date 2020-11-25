@@ -2,20 +2,19 @@
 
 ## Índice
 
-- [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#introducci%C3%B3n)
-- [Diseño en alto nivel del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#Diseño-en-alto-nivel-del-componente-SDK)
-- [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
-  - [Funcionalidades del módulo de configuración](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-m%C3%B3dulo-de-configuraci%C3%B3n)
-  - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
-  - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
-  - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
-  - [Funcionalidad de *refreshToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-refreshtoken)
-  - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-getuserinfo)
-  - [Funcionalidad de *validateToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-validatetoken)
-  - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-logout)
-  - [Llamadas concurrentes](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#llamadas-concurrentes)
-
-- [Ejecución de pruebas unitarias y *linter*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
+- [Introducción](#introducción)
+- [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
+- [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
+  - [Funcionalidades del módulo de configuración](#funcionalidades-del-módulo-de-configuración)
+  - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
+  - [Funcionalidad de *login*](#funcionalidad-de-login)
+  - [Funcionalidad de *getToken*](#funcionalidad-de-gettoken)
+  - [Funcionalidad de *refreshToken*](#funcionalidad-de-refreshtoken)
+  - [Funcionalidad de *getUserInfo*](#funcionalidad-de-getuserinfo)
+  - [Funcionalidad de *validateToken*](#funcionalidad-de-validatetoken)
+  - [Funcionalidad de *logout*](#funcionalidad-de-logout)
+  - [Llamadas concurrentes](#llamadas-concurrentes)
+- [Ejecución de pruebas unitarias y *linter*](#ejecución-de-pruebas-unitarias-y-linter)
 
 ## Introducción
 
