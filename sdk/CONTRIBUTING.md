@@ -2,10 +2,10 @@
 
 ## Índice
 
-- [Introducción](#introducci%C3%B3n)
-- [Diseño en alto nivel del componente SDK](#Diseño-en-alto-nivel-del-componente-SDK)
+- [Introducción](#introducción)
+- [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
-  - [Funcionalidades del módulo de configuración](#funcionalidades-del-m%C3%B3dulo-de-configuraci%C3%B3n)
+  - [Funcionalidades del módulo de configuración](#funcionalidades-del-módulo-de-configuración)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](#funcionalidad-de-gettoken)
@@ -14,8 +14,7 @@
   - [Funcionalidad de *validateToken*](#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](#funcionalidad-de-logout)
   - [Llamadas concurrentes](#llamadas-concurrentes)
-
-- [Ejecución de pruebas unitarias y *linter*](#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
+- [Ejecución de pruebas unitarias y *linter*](#ejecución-de-pruebas-unitarias-y-linter)
 
 ## Introducción
 

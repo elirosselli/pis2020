@@ -2,13 +2,13 @@
 
 ## Índice
 
-- [Introducción](#introducci%C3%B3n)
+- [Introducción](#introducción)
 - [Consideraciones previas](#consideraciones-previas)
-- [Instalación y configuración](#instalaci%C3%B3n-y-configuraci%C3%B3n)
-  - [Instalación](#instalaci%C3%B3n)
-  - [Instalación de react-native-ssl-pinning](#instalaci%C3%B3n-de-react-native-ssl-pinning)
-  - [Configuración de redirect URI](#instalaci%C3%B3n-de-react-native-ssl-pinning)
-- [Utilización](#utilizaci%C3%B3n)
+- [Instalación y configuración](#instalación-y-configuración)
+  - [Instalación](#instalación)
+  - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](#configuración-de-redirect-uri)
+- [Utilización](#utilización)
 - [Funcionalidades](#funcionalidades)
 - [Errores](#errores)
 - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
