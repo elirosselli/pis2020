@@ -13,12 +13,13 @@ jest.mock('../../utils/helpers', () => ({
 
 jest.mock('../../configuration');
 
+const mockState = '3035783770';
+
 jest.mock('../../security', () => ({
-  generateRandomState: jest.fn(),
+  generateRandomState: jest.fn(() => mockState),
 }));
 
 const idToken = 'idToken';
-const mockState = '3035783770';
 const correctLogoutEndpoint1 = `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`;
 
 const mockMutex = jest.fn();
@@ -32,10 +33,7 @@ afterEach(() => jest.clearAllMocks());
 
 describe('logout', () => {
   it('calls logout with idTokenHint and state', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      state: mockState,
-    });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
@@ -47,6 +45,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -61,10 +60,7 @@ describe('logout', () => {
   });
 
   it('calls logout without idTokenHint', async () => {
-    getParameters.mockReturnValue({
-      idToken: '',
-      state: mockState,
-    });
+    getParameters.mockReturnValue({ idToken: '', production: false });
     try {
       await logout();
     } catch (error) {
@@ -74,10 +70,7 @@ describe('logout', () => {
   });
 
   it('calls logout with required parameters and response not OK', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      state: mockState,
-    });
+    getParameters.mockReturnValue({ idToken });
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 400,
@@ -93,10 +86,7 @@ describe('logout', () => {
   });
 
   it('calls logout with required parameters and returns invalid url', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      state: mockState,
-    });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({ status: 200, url: 'badUrl' }),
     );
@@ -109,6 +99,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -118,10 +109,7 @@ describe('logout', () => {
   });
 
   it('calls logout with required parameters and fails', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      state: mockState,
-    });
+    getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() => Promise.reject());
     try {
       await logout();
@@ -132,6 +120,7 @@ describe('logout', () => {
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint1, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },

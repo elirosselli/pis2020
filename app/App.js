@@ -55,6 +55,7 @@ const App = () => {
 
   const toggleSwitch = () => {
     setInitialized(0);
+    setUpdated(0);
     setIsEnabled(previousState => !previousState);
   };
 
@@ -98,7 +99,10 @@ const App = () => {
       </View>
       <View style={styles.loginContainer}>
         {!code && (
-          <LoginButton handleCode={setCode} notActive={initialized !== 1} />
+          <LoginButton
+            handleCode={setCode}
+            notActive={initialized !== 1 || updated !== 1}
+          />
         )}
         {!code && (
           <View
@@ -161,7 +165,6 @@ const App = () => {
                       sdkIdUClientSecret,
                       sdkProduction,
                     );
-                    setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);
                   } catch (error) {
                     console.log(error);

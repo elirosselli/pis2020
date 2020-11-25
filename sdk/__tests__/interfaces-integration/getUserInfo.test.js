@@ -83,7 +83,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -94,6 +93,7 @@ describe('configuration & security modules and get user info integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -124,7 +124,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -159,7 +158,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -170,10 +168,9 @@ describe('configuration & security modules and get user info integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoProductionEndpoint, {
       method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
+      disableAllSecurity: true,
+      pkPinning: false,
+      sslPinning: false,
       headers: {
         Authorization: `Bearer ${parameters.accessToken}`,
         'Content-Type': contentType,
@@ -200,7 +197,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -234,7 +230,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
 
@@ -259,6 +254,7 @@ describe('configuration & security modules and get user info integration', () =>
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -297,7 +293,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -331,7 +326,6 @@ describe('configuration & security modules and get user info integration', () =>
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      state: '',
       scope,
     });
 
@@ -366,6 +360,7 @@ describe('configuration & security modules and get user info integration', () =>
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -414,7 +409,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -446,7 +440,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     try {
@@ -466,7 +459,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -499,7 +491,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -521,7 +512,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -559,7 +549,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -581,7 +570,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -619,7 +607,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -641,7 +628,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -674,7 +660,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: 'id.token',
-      state: '',
       scope: '',
     });
 
@@ -689,6 +674,7 @@ describe('configuration & security modules and get user info integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -712,7 +698,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: 'id.token',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -751,7 +736,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -773,7 +757,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -806,7 +789,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -837,7 +819,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -870,7 +851,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -896,7 +876,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -929,7 +908,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -957,7 +935,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -990,7 +967,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -1018,7 +994,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1051,7 +1026,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -1083,7 +1057,6 @@ describe('configuration & security modules and get user info integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);

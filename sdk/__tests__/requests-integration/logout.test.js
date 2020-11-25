@@ -44,7 +44,7 @@ jest.mock('async-mutex', () => ({
 
 describe('configuration & security modules and make request type logout integration', () => {
   it('calls set parameters and makes a logout request', async () => {
-    setParameters({ idToken });
+    setParameters({ idToken, production: false });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -58,7 +58,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -73,6 +72,7 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -96,7 +96,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -118,7 +117,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -132,10 +130,9 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctLogoutProductionEndpoint, {
       method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
+      pkPinning: false,
+      disableAllSecurity: true,
+      sslPinning: false,
     });
     expect(response).toStrictEqual({
       state: mockState,
@@ -156,7 +153,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -175,7 +171,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -198,7 +193,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -224,7 +218,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -247,7 +240,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -273,7 +265,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -296,7 +287,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -304,7 +294,7 @@ describe('configuration & security modules and make request type logout integrat
   });
 
   it('calls set parameters and makes a logout request, fetch returns empty state', async () => {
-    setParameters({ idToken });
+    setParameters({ idToken, production: false });
 
     let parameters = getParameters();
     expect(parameters).toStrictEqual({
@@ -318,7 +308,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -339,6 +328,7 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -356,7 +346,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -378,7 +367,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -395,6 +383,7 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -411,7 +400,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -433,7 +421,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -453,6 +440,7 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -469,7 +457,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -491,7 +478,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     const err = Error('error');
@@ -507,6 +493,7 @@ describe('configuration & security modules and make request type logout integrat
     expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
       method: 'GET',
       pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
       sslPinning: {
         certs: ['certificate'],
       },
@@ -523,7 +510,6 @@ describe('configuration & security modules and make request type logout integrat
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);

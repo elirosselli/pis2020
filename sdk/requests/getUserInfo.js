@@ -9,6 +9,7 @@ import ERRORS from '../utils/errors';
 const getUserInfo = async () => {
   // Tomar el semáforo para ejecutar la función.
   const mutexRelease = await MUTEX.getUserInfoMutex.acquire();
+  const parameters = getParameters();
 
   try {
     const { accessToken, idToken } = getParameters();
@@ -27,8 +28,9 @@ const getUserInfo = async () => {
       userInfoEndpoint(),
       {
         method: 'GET',
-        pkPinning: Platform.OS === 'ios',
-        sslPinning: {
+        pkPinning: !parameters.production && Platform.OS === 'ios',
+        disableAllSecurity: parameters.production,
+        sslPinning: !parameters.production && {
           certs: ['certificate'],
         },
         headers: {
@@ -39,6 +41,7 @@ const getUserInfo = async () => {
       },
       5,
     );
+
     const { status } = response;
     const responseJson = await response.json();
     // En caso de error se devuelve la respuesta,
