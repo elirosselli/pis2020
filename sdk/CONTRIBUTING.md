@@ -714,9 +714,9 @@ Los errores devueltos en cada caso son:
 
 ## Llamadas concurrentes
 
-Dado que lamadas simultáneas a una misma función del módulo de *Requests* pueden generar conflictos a la hora de su ejecución, ya que utilizan los mismos parámetros del módulo de configuración, los reescriben y eso puede llegar a dar problemas. Como solución a esto, se decide utilizar la lógica de *[Mutex](https://en.wikipedia.org/wiki/Mutual_exclusion)* en las funcionalidades afectadas, lo que permite que si el mutex asignado a cada funcionalidad ya fue activado, otra llamada a esta no pueda ejecutarse hasta que la primera lo libere.  
+Llamadas simultáneas a una misma función del módulo de *Requests* pueden generar conflictos a la hora de su ejecución, ya que utilizan los mismos parámetros del módulo de configuración, los reescriben y eso puede llegar a dar problemas. Como solución a esto, se decide utilizar la lógica de *[Mutex](https://en.wikipedia.org/wiki/Mutual_exclusion)* en las funcionalidades afectadas, lo que permite que si el *mutex* asignado a cada funcionalidad ya fue activado, otra llamada a esta no pueda ejecutarse hasta que la primera lo libere.  
 
-Para lograr esto se utiliza la librería [`async-mutex`](https://github.com/DirtyHairy/async-mutex), que provee una implementación de *Mutex* para *JAVASCRIPT*. Además, se define en el archivo `utils/constants.js` la siguiente estructura:
+Para lograr esto se utiliza la librería [`async-mutex`](https://github.com/DirtyHairy/async-mutex), que provee una implementación de *Mutex* para *JavaScript*. Además, se define en el archivo `utils/constants.js` la siguiente estructura:
 
 ```javascript
 const MUTEX = {
@@ -729,7 +729,7 @@ const MUTEX = {
 ```
 Donde cada atributo del objeto `MUTEX` es un objeto de tipo Mutex que será utilizado en la función correspondiente, y que es inicializado de la forma `const funcionMutex = new Mutex();`.
 
-Para controlar las llamadas concurrentes se invoca el mutex en la función correspondiente, por ejemplo, de la siguiente forma:
+Para controlar las llamadas concurrentes se invoca el *mutex* en la función correspondiente, por ejemplo, de la siguiente forma:
 
 ```javascript
 const funcion = async () => {
@@ -753,7 +753,7 @@ const funcion = async () => {
 }
 ```
 
-La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el mutex y devuelve una función (*mutexRelease*) que, una vez llamada, libera el *Mutex*, dejándolo libre para otra llamada. Tomando en cuenta que la función *mutexRelease()* está incluida en un *finally*, se ejecuta siempre al terminar la función, independientemente de si entra o no al *catch*.
+La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el *mutex* y devuelve una función (*mutexRelease*) que, una vez llamada, libera el *Mutex*, dejándolo libre para otra llamada. Tomando en cuenta que la función *mutexRelease()* está incluida en un *finally*, se ejecuta siempre al terminar la función, independientemente de si entra o no al *catch*.
 
 
 ## Endpoints de producción y testing
