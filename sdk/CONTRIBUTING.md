@@ -13,6 +13,8 @@
   - [Funcionalidad de *getUserInfo*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-getuserinfo)
   - [Funcionalidad de *validateToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-logout)
+  - [Llamadas concurrentes](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#llamadas-concurrentes)
+
 - [Ejecución de pruebas unitarias y *linter*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#ejecuci%C3%B3n-de-pruebas-unitarias-y-linter)
 
 ## Introducción
@@ -227,6 +229,8 @@ Para validar al RP, el OP verifica que el *client_id* y *redirect_uri* enviados 
 
 En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un mensaje de éxito. En caso contrario, ya sea porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna una descripción acorde al error ocurrido.
 
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 La implementación de la funcionalidad de *login* involucra los siguientes archivos:
@@ -308,6 +312,8 @@ La función **getToken** se encarga de la comunicación entre la aplicación de 
 
 Como resultado de la solicitud se obtiene un *Token Response* conteniendo los parámetros correspondientes. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función retorna el *token* (*accessToken*, *refreshToken*, *idToken*, *tokenType* y *expiresIn*) obtenido y un mensaje de éxito. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionaldiad de **refreshToken**. La misma involucra los siguientes archivos:
@@ -365,6 +371,8 @@ La función **refreshToken** se encarga de obtener un nuevo *token*, cuando un *
 
 Como resultado de la solicitud se obtiene un *Refresh Token Response* conteniendo los parámetros correspondientes, que serán los mismos que en un *Token Response*. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función los retorna junto a un mensaje de éxito. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y Parámetros
 
 La implementación de la funcionalidad de **refreshToken** involucra los mismos archivos y mismos parámetros que **getToken**, ya que sus funcionalidades se encuentran implementadas en la misma función.
@@ -406,6 +414,8 @@ Los errores devueltos en cada caso son:
 #### Generalidades
 
 La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *access_token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON.
+
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
 #### Archivos y parámetros
 
@@ -570,6 +580,8 @@ Los atributos que se validan en esta función son los siguientes:
 
 En caso de que el *idToken* sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`. Si el *clientId* es vacío se retorna el error `ERRORS.INVALID_CLIENT_ID`. Y si la *request* no se realiza correctamente se devuelve un error de tipo `ERRORS.FAILED_REQUEST`.
 
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 - **sdk/requests/validateToken.js**: Donde se implementa la función **validateToken**. Esta función se encarga de realizar la *JWKS Request* al *JWKS Endpoint*, obteniendo el *JWKS*, además de llamar a la función **validateTokenSecurity** del módulo de seguridad.
@@ -650,6 +662,8 @@ La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final
 
 En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un mensaje de éxito. En caso contrario, se retorna una descripción acorde al error ocurrido.
 
+Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 La implementación de la funcionalidad de *logout* involucra los siguientes archivos:
@@ -703,6 +717,43 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN_HINT`
 - Cuando el parámetro *idToken* no es vacío, y la URL contenida en la respuesta del OP no coincida con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
 - En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+
+## Llamadas concurrentes
+
+Llamadas simultáneas a una misma función del módulo de *Requests* pueden generar conflictos a la hora de su ejecución, ya que utilizan los mismos parámetros del módulo de configuración, los reescriben y eso puede llegar a dar problemas. Como solución a esto, se decide utilizar la lógica de *[Mutex](https://en.wikipedia.org/wiki/Mutual_exclusion)* en las funcionalidades afectadas, lo que permite que si el *mutex* asignado a cada funcionalidad ya fue activado, otra llamada a esta no pueda ejecutarse hasta que la primera lo libere.  
+
+Para lograr esto se utiliza la librería [`async-mutex`](https://github.com/DirtyHairy/async-mutex), que provee una implementación de *Mutex* para *JavaScript*. Además, se define en el archivo `utils/constants.js` la siguiente estructura:
+
+```javascript
+const MUTEX = {
+  loginMutex,
+  getTokenOrRefreshMutex,
+  getUserInfoMutex,
+  logoutMutex,
+  validateTokenMutex,
+};
+```
+
+Donde cada atributo del objeto `MUTEX` es un objeto de tipo Mutex que será utilizado en la función correspondiente, y que es inicializado de la forma `const funcionMutex = new Mutex();`.
+
+Para controlar las llamadas concurrentes se invoca el *mutex* en la función correspondiente, por ejemplo, de la siguiente forma:
+
+```javascript
+const funcion = async () => {
+  // Tomar el semáforo para ejecutar la función.
+  const mutexRelease = await MUTEX.getTokenOrRefreshMutex.acquire();
+  try {
+    // Ejecutar la función.
+  } catch {
+    // Manejar excepciones.
+  } finally {
+    // Liberar el semáforo una vez que termina la ejecución de la función.
+    mutexRelease();
+  }
+}
+```
+
+La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el *mutex* y devuelve una función (*mutexRelease*) que, una vez llamada, libera el *Mutex*, dejándolo libre para otra llamada. Tomando en cuenta que la función *mutexRelease()* está incluida en un *finally*, se ejecuta siempre al terminar la función, independientemente de si entra o no al *catch*.
 
 ## Endpoints de producción y testing
 
