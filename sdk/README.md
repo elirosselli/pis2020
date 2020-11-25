@@ -115,7 +115,6 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
-    | *post_logout_redirect_uri* | Opcional | URL a la cual será redireccionado el RP luego que el *logout* en el OP finalice exitosamente. Esta URL debe existir en la configuración que mantiene el OP del RP, si la misma no existe o no es exactamente igual, será redireccionado al inicio del OP. |
     | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
 
 - *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
