@@ -10,6 +10,10 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
