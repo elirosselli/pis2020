@@ -161,7 +161,6 @@ const App = () => {
                       sdkIdUClientSecret,
                       sdkProduction,
                     );
-                    setParameters({ state: '9JoSGrmWYy' });
                     setInitialized(1);
                   } catch (error) {
                     console.log(error);
@@ -254,6 +253,8 @@ const App = () => {
                   setCode();
                   setToken(null);
                   setUserInfo({});
+                  setValidateTokenResult(0);
+                  setUpdated(0);
                 } catch (err) {
                   console.log(err);
                 }

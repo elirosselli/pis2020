@@ -37,7 +37,6 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
       scope: 'correctScope',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
@@ -64,7 +63,6 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
       scope: 'correctScope',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
@@ -89,7 +87,6 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
       scope: 'correctScope',
-      state: mockState,
     });
     mockLinkingOpenUrl.mockImplementation(() => Promise.reject());
     mockAddEventListener.mockImplementation();
@@ -107,7 +104,6 @@ describe('login', () => {
   it('calls login with empty clientId', async () => {
     getParameters.mockReturnValue({
       clientId: '',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -141,7 +137,6 @@ describe('login', () => {
       clientId: 'clientId',
       redirectUri: 'redirectUri',
       clientSecret: '',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation();
     try {
@@ -160,7 +155,6 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
       scope: 'correctScope',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
@@ -186,7 +180,6 @@ describe('login', () => {
       redirectUri: 'redirectUri',
       clientSecret: 'clientSecret',
       scope: 'correctScope',
-      state: mockState,
     });
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')

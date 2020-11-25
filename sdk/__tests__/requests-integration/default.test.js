@@ -15,7 +15,6 @@ describe('configuration module and make request type default integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -32,7 +31,6 @@ describe('configuration module and make request type default integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
   });

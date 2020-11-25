@@ -44,12 +44,6 @@ describe('security module validate VSCHAR parameters', () => {
     expect(validRefreshToken).toBe(refreshToken);
   });
 
-  it('state: valid', () => {
-    const state = '0cf37136-efbb-44d0-993f-fb1e8b928e47';
-    const validState = validateVSCHAR(PARAMETERS.state, state);
-    expect(validState).toBe(state);
-  });
-
   it('idToken: valid', () => {
     const idToken =
       'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjAxNTA2Nzc5LCJpYXQiOjE2MDE1MDYxNzksImF1dGhfdGltZSI6MTYwMTUwMTA0OSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJmZ1pFMG1DYml2ZmxBcV95NWRTT09RIn0.r2kRakfFjIXBSWlvAqY-hh9A5Em4n5SWIn9Dr0IkVvnikoAh_E1OPg1o0IT1RW-0qIt0rfkoPUDCCPNrl6d_uNwabsDV0r2LgBSAhjFIQigM37H1buCAn6A5kiUNh8h_zxKxwA8qqia7tql9PUYwNkgslAjgCKR79imMz4j53iw';
@@ -84,12 +78,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(6);
+    expect.assertions(5);
   });
 
   it('VSCHAR: null', () => {
@@ -119,12 +108,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(6);
+    expect.assertions(5);
   });
 
   it('VSCHAR: undefined', () => {
@@ -154,12 +138,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(6);
+    expect.assertions(5);
   });
 
   it('VSCHAR: not a string', () => {
@@ -189,11 +168,6 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
     VSCHAR = {};
     try {
       validateVSCHAR(PARAMETERS.clientId, VSCHAR);
@@ -219,11 +193,6 @@ describe('security module validate VSCHAR parameters', () => {
       validateVSCHAR(PARAMETERS.refreshToken, VSCHAR);
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
-    }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
     }
     VSCHAR = [];
     try {
@@ -251,12 +220,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(18);
+    expect.assertions(15);
   });
 
   it('VSCHAR: query parameters', () => {
@@ -295,14 +259,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toBe(ERRORS.INVALID_TOKEN);
     }
-    VSCHAR =
-      '0cf37136-efbb-44d0-993f-fb1e8b928e47?redirect_uri=1&client_id=2&client_secret=3&code=4&access_token=5&refresh_token=6&token_type=7&expires_in=8&id_token=9&post_logot_redirect_uri=10&state=11&scope=12&response_type=13&nonce=14&prompt=15&acr_values=16&grant_type=17&id_token_hint=18';
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toBe(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(6);
+    expect.assertions(5);
   });
 
   it('VSCHAR: with special caracters (invalids)', () => {
@@ -332,11 +289,6 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
     VSCHAR = '\n';
     try {
       validateVSCHAR(PARAMETERS.clientId, VSCHAR);
@@ -362,11 +314,6 @@ describe('security module validate VSCHAR parameters', () => {
       validateVSCHAR(PARAMETERS.refreshToken, VSCHAR);
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
-    }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
     }
     VSCHAR = '^@';
     try {
@@ -394,12 +341,7 @@ describe('security module validate VSCHAR parameters', () => {
     } catch (ErrorVSCHAR) {
       expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_TOKEN);
     }
-    try {
-      validateVSCHAR(PARAMETERS.state, VSCHAR);
-    } catch (ErrorVSCHAR) {
-      expect(ErrorVSCHAR).toStrictEqual(ERRORS.INVALID_STATE);
-    }
-    expect.assertions(18);
+    expect.assertions(15);
   });
 
   it('VSCHAR: with special caracters (valids)', () => {
@@ -414,8 +356,6 @@ describe('security module validate VSCHAR parameters', () => {
     expect(validVSCHAR).toStrictEqual('12 34');
     validVSCHAR = validateVSCHAR(PARAMETERS.refreshToken, VSCHAR);
     expect(validVSCHAR).toStrictEqual('12 34');
-    validVSCHAR = validateVSCHAR(PARAMETERS.state, VSCHAR);
-    expect(validVSCHAR).toStrictEqual('12 34');
     VSCHAR = '.';
     validVSCHAR = validateVSCHAR(PARAMETERS.clientId, VSCHAR);
     expect(validVSCHAR).toStrictEqual(VSCHAR);
@@ -427,8 +367,6 @@ describe('security module validate VSCHAR parameters', () => {
     expect(validVSCHAR).toStrictEqual(VSCHAR);
     validVSCHAR = validateVSCHAR(PARAMETERS.refreshToken, VSCHAR);
     expect(validVSCHAR).toStrictEqual(VSCHAR);
-    validVSCHAR = validateVSCHAR(PARAMETERS.state, VSCHAR);
-    expect(validVSCHAR).toStrictEqual(VSCHAR);
     VSCHAR = ',';
     validVSCHAR = validateVSCHAR(PARAMETERS.clientId, VSCHAR);
     expect(validVSCHAR).toStrictEqual(VSCHAR);
@@ -439,8 +377,6 @@ describe('security module validate VSCHAR parameters', () => {
     validVSCHAR = validateVSCHAR(PARAMETERS.accessToken, VSCHAR);
     expect(validVSCHAR).toStrictEqual(VSCHAR);
     validVSCHAR = validateVSCHAR(PARAMETERS.refreshToken, VSCHAR);
-    expect(validVSCHAR).toStrictEqual(VSCHAR);
-    validVSCHAR = validateVSCHAR(PARAMETERS.state, VSCHAR);
     expect(validVSCHAR).toStrictEqual(VSCHAR);
   });
 });
