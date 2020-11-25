@@ -6,6 +6,10 @@ import ERRORS from '../../utils/errors';
 import { getParameters } from '../../configuration';
 import getTokenOrRefresh from '../getTokenOrRefresh';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('../../configuration');
 
 jest.mock('../../utils/helpers', () => ({

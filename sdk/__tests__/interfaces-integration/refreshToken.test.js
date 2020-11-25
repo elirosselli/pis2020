@@ -9,6 +9,10 @@ import {
   resetParameters,
 } from '../../interfaces';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));

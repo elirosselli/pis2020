@@ -4,6 +4,10 @@ import { getParameters } from '../../configuration';
 import ERRORS from '../../utils/errors';
 import logout from '../logout';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('../../configuration');
 
 jest.mock('../../utils/helpers', () => ({

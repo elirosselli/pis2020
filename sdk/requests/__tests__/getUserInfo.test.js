@@ -6,6 +6,10 @@ import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { validateSub } from '../../security';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('../../configuration');
 
 jest.mock('../../security', () => ({
