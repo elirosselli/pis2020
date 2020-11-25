@@ -372,6 +372,7 @@ La función **refreshToken** se encarga de obtener un nuevo *token*, cuando un *
 Como resultado de la solicitud se obtiene un *Refresh Token Response* conteniendo los parámetros correspondientes, que serán los mismos que en un *Token Response*. En caso de éxito, los valores de estos parámetros son almacenados en el componente de configuración, y la función los retorna junto a un mensaje de éxito. En caso contrario, se retorna al RP un código y descripción acorde al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y Parámetros
 
 La implementación de la funcionalidad de **refreshToken** involucra los mismos archivos y mismos parámetros que **getToken**, ya que sus funcionalidades se encuentran implementadas en la misma función.
@@ -415,6 +416,7 @@ Los errores devueltos en cada caso son:
 La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *access_token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 La implementación de la funcionalidad de *getUserInfo* involucra los siguientes archivos:
@@ -579,6 +581,7 @@ Los atributos que se validan en esta función son los siguientes:
 En caso de que el *idToken* sea inválido, se retorna el error `ERRORS.INVALID_ID_TOKEN`. Si el *clientId* es vacío se retorna el error `ERRORS.INVALID_CLIENT_ID`. Y si la *request* no se realiza correctamente se devuelve un error de tipo `ERRORS.FAILED_REQUEST`.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
+
 #### Archivos y parámetros
 
 - **sdk/requests/validateToken.js**: Donde se implementa la función **validateToken**. Esta función se encarga de realizar la *JWKS Request* al *JWKS Endpoint*, obteniendo el *JWKS*, además de llamar a la función **validateTokenSecurity** del módulo de seguridad.
@@ -730,6 +733,7 @@ const MUTEX = {
   validateTokenMutex,
 };
 ```
+
 Donde cada atributo del objeto `MUTEX` es un objeto de tipo Mutex que será utilizado en la función correspondiente, y que es inicializado de la forma `const funcionMutex = new Mutex();`.
 
 Para controlar las llamadas concurrentes se invoca el *mutex* en la función correspondiente, por ejemplo, de la siguiente forma:
@@ -738,26 +742,18 @@ Para controlar las llamadas concurrentes se invoca el *mutex* en la función cor
 const funcion = async () => {
   // Tomar el semáforo para ejecutar la función.
   const mutexRelease = await MUTEX.getTokenOrRefreshMutex.acquire();
-
   try {
-
     // Ejecutar la función.
-
   } catch {
-    
     // Manejar excepciones.
-
   } finally {
-
     // Liberar el semáforo una vez que termina la ejecución de la función.
     mutexRelease();
-
   }
 }
 ```
 
 La función `await MUTEX.getTokenOrRefreshMutex.acquire()` bloquea el *mutex* y devuelve una función (*mutexRelease*) que, una vez llamada, libera el *Mutex*, dejándolo libre para otra llamada. Tomando en cuenta que la función *mutexRelease()* está incluida en un *finally*, se ejecuta siempre al terminar la función, independientemente de si entra o no al *catch*.
-
 
 ## Endpoints de producción y testing
 
