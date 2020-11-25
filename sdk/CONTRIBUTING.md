@@ -6,6 +6,7 @@
 - [Diseño en alto nivel del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#Diseño-en-alto-nivel-del-componente-SDK)
 - [Funcionalidades del componente SDK](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-componente-sdk)
   - [Funcionalidades del módulo de configuración](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidades-del-m%C3%B3dulo-de-configuraci%C3%B3n)
+  - [Funcionalidades del módulo de seguridad](https://github.com/elirosselli/pis2020/blob/feature/functionality-security-doc/sdk/CONTRIBUTING.md#funcionalidades-del-m%C3%B3dulo-de-seguridad)
   - [Funcionalidad de *initialize*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](https://github.com/elirosselli/pis2020/tree/develop/sdk/CONTRIBUTING.md#funcionalidad-de-gettoken)
@@ -237,8 +238,8 @@ se efectuará una validación con la función **validateVSCHAR**, que verificar�
 
 Si el parámetro es de uno de los siguientes tipos:
 
-- *redirectUri
-- *tokenType
+- *redirectUri*
+- *tokenType*
 
 se efectuará una validación con la función **validateURIReference**, que verificará que el parámetro solo contenga caracteres permitidos para el tipo de dato *URIReference*, y que no contenga secuencias sensibles de caracteres.
 
