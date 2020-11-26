@@ -26,7 +26,7 @@ const login = async () => {
     // Obtiene el code y state a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
-    const returnedState = event.url.match(/&state=([^&]+)/);
+    const returnedState = event.url.match(/&state=([^&]*)/);
 
     // Si existe el código y los states coinciden,
     // se guarda y se resuelve la promise.
