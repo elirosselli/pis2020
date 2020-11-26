@@ -269,16 +269,20 @@ El código de la función consiste en verificar que el *idToken* que contiene *s
 #### Funcionalidad de validateTokenSecurity
 
 ##### Generalidades
+
 Esta función se encarga de validar la estructura del *idToken* devuelto por *idUruguay* a partir de la *jwksResponse* obtenida en la request *validateToken*.
+
 ##### Parámetros
+
 La función *validateTokenSecurity* recibe los siguientes parámetros:
 
-| Parámetro    	| Descripción                                                                          	|
-|--------------	|--------------------------------------------------------------------------------------	|
-| jwksResponse 	| Respuesta obtenida de la consulta al JWKS endpoint.                                  	|
-| idToken      	| idToken asignado en el componente configuración, obtenida de una solicitud de token. 	|
-| clientId     	| Id de cliente asignado por idUruguay.                                                	|
-| issuer       	| URL almacenada en el archivo de endpoints.                                           	|
+| Parámetro     | Descripción                                                                           |
+|-------------- |-------------------------------------------------------------------------------------- |
+| jwksResponse  | Respuesta obtenida de la consulta al JWKS endpoint.                                   |
+| idToken       | idToken asignado en el componente configuración, obtenida de una solicitud de token.  |
+| clientId      | Id de cliente asignado por idUruguay.                                                 |
+| issuer        | URL almacenada en el archivo de endpoints.                                            |
+
 ##### Código
 
 Para validar el *idToken* se hace uso de la librería *jsrsasign*.

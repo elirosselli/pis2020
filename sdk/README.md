@@ -414,7 +414,6 @@ En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.IN
 
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
-
 ### Función refreshToken
 
 El *token* otorgado por ID Uruguay tiene un tiempo de expiración fijo, por lo que una vez transcurrido este tiempo, el *token* pasará a ser inválido. Para obtener un nuevo *token* se debe invocar a la función `refreshToken`.
