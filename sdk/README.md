@@ -210,7 +210,7 @@ initizalize(
 );
 ```
 
-Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope*.
+Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope* y *miProduction*.
 
 Una vez inicializado el componente, se puede realizar el *login* con ID Uruguay mediante una llamada a la función `login`:
 
@@ -344,7 +344,7 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, el *state* obtenido en la respuesta del OP, un parámetro *scope* y un mensaje de éxito. En caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, el *state* obtenido en la respuesta del OP y un mensaje de éxito. En caso de error se produce una excepción.
 
 ``` javascript
 try {
@@ -373,8 +373,6 @@ Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya se
 En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* y no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
 
 En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
-
-En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
 
 En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
 
@@ -405,13 +403,18 @@ En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecre
 
 En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
-
 En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
+En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
+
+En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
+
+En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
+
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+
 
 ### Función refreshToken
 
@@ -443,6 +446,12 @@ En caso de que el parámetro *refreshToken* sea inválido o haya expirado se ret
 En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
+
+En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
+
+En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
 
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
