@@ -149,7 +149,7 @@ describe('login', () => {
     expect.assertions(3);
   });
 
-  it('calls login with correct clientId, correct redirectUri and return invalid state', async () => {
+  it('calls login with correct clientId, correct redirectUri and return different state', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       redirectUri: 'redirectUri',
@@ -161,6 +161,30 @@ describe('login', () => {
         eventHandler({
           url:
             'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=invalid_state',
+        });
+    });
+    try {
+      await login();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_STATE);
+    }
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    expect(mockLinkingOpenUrl).toHaveBeenCalledWith(correctLoginEndpoint);
+    expect.assertions(4);
+  });
+
+  it('calls login with correct clientId, correct redirectUri and return empty state', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      redirectUri: 'redirectUri',
+      clientSecret: 'clientSecret',
+      scope: 'correctScope',
+    });
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: 'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=',
         });
     });
     try {
