@@ -184,17 +184,15 @@ Las funciones encontradas en este módulo son:
 - ***getRandomState***: Encargada de generar un parámetro *state* aleatorio.
 - ***validateParameters***: Encargada de validar los parámetros a *setear* en el módulo de configuración.
 - ***validateSub***: Encargada de validar el parámetro *sub*, recibido en una *response* del OP.
-- ***validateTokenSecurity***: Encargada de validar el *token*, a través de un *jwk* recibido en una *response* del OP.
-  
-Todas estas funciones involucran los siguientes archivos:
+- ***validateTokenSecurity***: Encargada de validar la estructura del *idToken* devuelto por *ID Uruguay* a partir de la *jwkResponse* obtenida en la request *validateToken*.
 
 - **sdk/security/index.js**: Donde se exportan todas las funciones anteriormente mencionadas.
 - **sdk/security/validateParameters/index.js**: Donde se implementa la función **validateParameters**.
-- **sdk/security/validateParameters/BOOLEAN.js**: Donde se implementa una función utilizada por **validateParameters**.
-- **sdk/security/validateParameters/DIGIT.js**: Donde se implementa una función utilizada por **validateParameters**.
-- **sdk/security/validateParameters/NQCHAR.js**: Donde se implementa una función utilizada por **validateParameters**.
-- **sdk/security/validateParameters/URIReference.js**: Donde se implementa una función utilizada por **validateParameters**.
-- **sdk/security/validateParameters/VSCHAR.js**: Donde se implementa una función utilizada por **validateParameters**.
+- **sdk/security/validateParameters/BOOLEAN.js**: Donde se implementa una función utilizada por **validateParameters** para validar parámetros booleanos.
+- **sdk/security/validateParameters/DIGIT.js**: Donde se implementa una función utilizada por **validateParameters** para validar parámetros numéricos.
+- **sdk/security/validateParameters/NQCHAR.js**: Donde se implementa una función utilizada por **validateParameters** para validar parámetros del tipo *NQCHAR*.
+- **sdk/security/validateParameters/URIReference.js**: Donde se implementa una función utilizada por **validateParameters** para validar parámetros del tipo *URI*.
+- **sdk/security/validateParameters/VSCHAR.js**: Donde se implementa una función utilizada por **validateParameters** para validar parámetros del tipo *VSCHAR*.
 - **sdk/security/validateResponse.js**: Donde se implementan las funciones **getRandomState** y **validateSub**.
 - **sdk/security/validateTokenSecurity.js**: Donde se implementa la función **validateTokenSecurity**.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
@@ -212,7 +210,7 @@ La función **getRandomState** no recibe ningún parámetro, y retorna el *state
 
 ##### Código
 
-El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería MersenneTwister obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. El valor es retornado en forma de *string*.
+El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería *MersenneTwister* obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. Dicha librería utiliza el algortimo [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) para la generación de números pseudoaleatorios. El valor es retornado en forma de *string*.
 
 #### Funcionalidad de validateParameters
 
@@ -270,7 +268,7 @@ El código de la función consiste en verificar que el *idToken* que contiene *s
 
 ##### Generalidades
 
-Esta función se encarga de validar la estructura del *idToken* devuelto por *idUruguay* a partir de la *jwksResponse* obtenida en la request *validateToken*.
+Esta función se encarga de validar la estructura del *idToken* devuelto por *ID Uruguay* a partir de la *jwksResponse* obtenida en la request *validateToken*.
 
 ##### Parámetros
 
@@ -280,18 +278,18 @@ La función *validateTokenSecurity* recibe los siguientes parámetros:
 |-------------- |-------------------------------------------------------------------------------------- |
 | jwksResponse  | Respuesta obtenida de la consulta al JWKS endpoint.                                   |
 | idToken       | idToken asignado en el componente configuración, obtenida de una solicitud de token.  |
-| clientId      | Id de cliente asignado por idUruguay.                                                 |
+| clientId      | clientId asignado por ID Uruguay.                                                 |
 | issuer        | URL almacenada en el archivo de endpoints.                                            |
 
 ##### Código
 
 Para validar el *idToken* se hace uso de la librería *jsrsasign*.
 
-En primer lugar, esta función obteniene la clave pública del endpoint a partir de los atributos *n* y *m* del la *jwksResponse*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el issuer, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
+En primer lugar, esta función obteniene la clave pública del endpoint a partir de los atributos *n* y *m* del la *jwksResponse*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el *issuer*, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
 
-Posteriormente decodifica el *header* y el *payload*. Del *header* valida el *kid* que es un identificador único incluido tanto en el *idToken* como en el *jwksResponse*. Además, valida que el ACR (Authentication Context Class Reference) y el AMR (Authentication Methods References) asignados estén entre los definidos en el archivo de constantes.
+Posteriormente decodifica el *header* y el *payload*. Del *header* valida el *kid* que es un identificador único incluido tanto en el *idToken* como en el *jwksResponse*. Además, valida que el ACR (*Authentication Context Class Reference*) y el AMR (*Authentication Methods References*) asignados estén entre los definidos en el archivo de constantes.
 
-Si se cumplen todas las condiciones mencionadas se resuelve la promesa con la *jwksResponse* y un error de tipo *ERRORS.NO_ERROR*. En caso contrario se rechaza la promesa con un error de tipo *ERRORS.INVALID_ID_TOKEN*.
+Si se cumplen todas las condiciones mencionadas se resuelve la promesa con la *jwksResponse* y se devuelve *ERRORS.NO_ERROR*. En caso contrario se rechaza la promesa con un error de tipo *ERRORS.INVALID_ID_TOKEN*.
 
 ### Funcionalidad de *initialize*
 
@@ -309,7 +307,7 @@ En particular, los parámetros mencionados son:
 
 Los últimos dos parámetros pueden ser vacíos.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios no son vacíos ni inválidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios son válidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un mensaje indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
 
 #### Archivos y parámetros
 
@@ -361,7 +359,7 @@ La implementación de la funcionalidad de *login* involucra los siguientes archi
 - **sdk/utils/endpoints.js**: Contiene los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
-- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un parámetro *state* random.
+- **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un *state* aleatorio.
 
 La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa.
 
@@ -488,7 +486,7 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *accessToken* o *refreshToken* recibido es inválido: `ERRORS.INVALID_TOKEN`
 - Cuando el parámetro *idToken* recibido es inválido: `ERRORS.INVALID_ID_TOKEN`
 - Cuando el parámetro *tokenType* recibido es inválido: `ERRORS.INVALID_TOKEN_TYPE`
-- Cuando el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria: `ERRORS.INVALID_GRANT`
+- Cuando el parámetro *code* es inválido o ha expirado, y no se puede obtener un nuevo *token* de forma satisfactoria: `ERRORS.INVALID_GRANT`
 - En caso de que el parámetro *client_id* o *client_secret* no se correspondan con los registrados ante el OP: `ERRORS.INVALID_CLIENT`
 - En caso de error desconocido (no controlado) se retorna: `ERRORS.FAILED_REQUEST`
 
