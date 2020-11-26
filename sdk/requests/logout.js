@@ -51,10 +51,10 @@ const logout = async () => {
       // Si la url contenida en la respuesta no coincide con el
       // logoutEndpoint, se rechaza la promesa retornando un error.
       // Si no coinciden por el state, se retorna el error correspondiente.
-      if (returnedState && (returnedState[1] !== state))
+      if (returnedState && returnedState[1] !== state)
         return Promise.reject(ERRORS.INVALID_STATE);
       // Si no coinciden por el id token, se retorna el error correspondiente.
-      if (returnedIdTokenHint && (returnedIdTokenHint[1] !== parameters.idToken))
+      if (returnedIdTokenHint && returnedIdTokenHint[1] !== parameters.idToken)
         return Promise.reject(ERRORS.INVALID_ID_TOKEN_HINT);
       // En cualquier otro caso se retorna invalid_url
       return Promise.reject(ERRORS.INVALID_URL_LOGOUT);

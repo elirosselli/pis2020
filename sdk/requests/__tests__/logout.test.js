@@ -114,7 +114,7 @@ describe('logout', () => {
   it('calls logout with required parameters and returns invalid url without id token and state', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
-      Promise.resolve({ status: 200, url: `InvalidUrl` }),
+      Promise.resolve({ status: 200, url: 'InvalidUrl' }),
     );
     try {
       await logout();
@@ -238,7 +238,7 @@ describe('logout', () => {
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
-        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=differentState&post_logout_redirect_uri=&state=${mockState}`,
+        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=differentIdToken&post_logout_redirect_uri=&state=${mockState}`,
       }),
     );
     try {

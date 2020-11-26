@@ -491,7 +491,7 @@ describe('configuration & security modules and make request type logout integrat
     fetch.mockImplementation(() =>
       Promise.resolve({
         status: 200,
-        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=differentState&post_logout_redirect_uri=&state=${mockState}`,
+        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=differentIdToken&post_logout_redirect_uri=&state=${mockState}`,
       }),
     );
 
@@ -604,7 +604,7 @@ describe('configuration & security modules and make request type logout integrat
       scope: '',
     });
     fetch.mockImplementation(() =>
-      Promise.resolve({ status: 200, url: `InvalidUrl` }),
+      Promise.resolve({ status: 200, url: 'InvalidUrl' }),
     );
 
     try {
