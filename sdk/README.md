@@ -210,7 +210,7 @@ initizalize(
 );
 ```
 
-Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope*.
+Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope* y *miProduction*.
 
 Una vez inicializado el componente, se puede realizar el *login* con ID Uruguay mediante una llamada a la función `login`:
 
@@ -374,8 +374,6 @@ En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecr
 
 En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
 
-En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
-
 En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
 
 En caso de que el parámetro *state* obtenido en la *response* no coincida con el del generado (enviado en la *request*) `ERRORS.INVALID_STATE`.
@@ -405,13 +403,18 @@ En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecre
 
 En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
 
-En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
-
 En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
 
+En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
+
+En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
+
+En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
+
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+
 
 ### Función refreshToken
 
@@ -443,6 +446,12 @@ En caso de que el parámetro *refreshToken* sea inválido o haya expirado se ret
 En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
 
 En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
+
+En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
+
+En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
+
+En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
 
 En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
