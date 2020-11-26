@@ -325,7 +325,7 @@ describe('configuration & security modules and make request type logout integrat
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
+      expect(error).toBe(ERRORS.INVALID_STATE);
     }
 
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -356,7 +356,241 @@ describe('configuration & security modules and make request type logout integrat
     expect.assertions(6);
   });
 
-  it('calls set parameters and makes a logout request, fetch returns invalid url', async () => {
+  it('calls set parameters and logout, fetch returns different state', async () => {
+    setParameters({ idToken });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=${idToken}&post_logout_redirect_uri=&state=differentState`,
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_STATE);
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
+  });
+
+  it('calls set parameters and logout, fetch returns empty idToken', async () => {
+    setParameters({ idToken });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=&post_logout_redirect_uri=&state=${mockState}`,
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
+  });
+
+  it('calls set parameters and logout, fetch returns different idToken', async () => {
+    setParameters({ idToken });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        url: `https://auth-testing.iduruguay.gub.uy/oidc/v1/logout?id_token_hint=differentIdToken&post_logout_redirect_uri=&state=${mockState}`,
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
+  });
+
+  it('calls set parameters and makes a logout request, fetch returns invalid url with idToken and state', async () => {
+    setParameters({ idToken });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+        url: `InvalidUrl?id_token_hint=${idToken}&post_logout_redirect_uri=&state=${mockState}`,
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGOUT);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(correctLogoutEndpoint, {
+      method: 'GET',
+      pkPinning: Platform.OS === 'ios',
+      disableAllSecurity: false,
+      sslPinning: {
+        certs: ['certificate'],
+      },
+    });
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri: '',
+      clientId: '',
+      clientSecret: '',
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(6);
+  });
+
+  it('calls set parameters and makes a logout request, fetch returns invalid url without idToken and state', async () => {
     setParameters({ idToken });
 
     let parameters = getParameters();
