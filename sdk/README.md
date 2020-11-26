@@ -344,7 +344,7 @@ En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
 
 ### Función login
 
-La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, el *state* obtenido en la respuesta del OP, un parámetro *scope* y un mensaje de éxito. En caso de error se produce una excepción.
+La función `login` abre una ventana en el navegador web del dispositivo con la URL del inicio de sesión con ID Uruguay (<https://mi.iduruguay.gub.uy/login> o <https://mi-testing.iduruguay.gub.uy/login> si se está en modo *testing*). Una vez que el usuario final ingresa sus credenciales y autoriza a la aplicación, este es redirigido a la *redirectUri* configurada en la inicialización del SDK. Esta función devuelve el *code* correspondiente al usuario final autenticado, el *state* obtenido en la respuesta del OP y un mensaje de éxito. En caso de error se produce una excepción.
 
 ``` javascript
 try {
