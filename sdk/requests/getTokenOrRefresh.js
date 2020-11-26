@@ -65,8 +65,9 @@ const getTokenOrRefresh = async type => {
       tokenEndpoint(),
       {
         method: 'POST',
-        pkPinning: Platform.OS === 'ios',
-        sslPinning: {
+        pkPinning: !parameters.production && Platform.OS === 'ios',
+        disableAllSecurity: parameters.production,
+        sslPinning: !parameters.production && {
           certs: ['certificate'],
         },
         headers: {

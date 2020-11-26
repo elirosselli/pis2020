@@ -13,7 +13,7 @@ const validateToken = async () => {
   const mutexRelease = await MUTEX.validateTokenMutex.acquire();
 
   try {
-    const { idToken, clientId } = getParameters();
+    const { idToken, clientId, production } = getParameters();
 
     // Si alguno de los parámetros obligatorios para la request
     // no se encuentra inicializado, se rechaza la promesa y se
@@ -34,8 +34,9 @@ const validateToken = async () => {
 
     const jwksResponse = await fetch(validateTokenEndpoint(), {
       method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
+      pkPinning: !production && Platform.OS === 'ios',
+      disableAllSecurity: production,
+      sslPinning: !production && {
         certs: ['certificate'],
       },
       headers: {

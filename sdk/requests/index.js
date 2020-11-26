@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable default-case */
 import login from './login';
 import logout from './logout';
 import getUserInfo from './getUserInfo';
@@ -23,8 +25,6 @@ const makeRequest = async type => {
     case REQUEST_TYPES.VALIDATE_TOKEN: {
       return validateToken();
     }
-    default:
-      return 'default value';
   }
 };
 

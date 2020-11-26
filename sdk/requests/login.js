@@ -1,5 +1,5 @@
 import { Linking } from 'react-native';
-import { getParameters, setParameters, eraseState } from '../configuration';
+import { getParameters, setParameters } from '../configuration';
 import { loginEndpoint } from '../utils/endpoints';
 import { generateRandomState } from '../security';
 import ERRORS from '../utils/errors';
@@ -24,19 +24,17 @@ const login = async () => {
   });
 
   // Handler para el evento url.
-  const handleOpenUrl = event => {
+  const handleOpenUrl = (event, state) => {
     var start2 = now();
-    parameters = getParameters();
-
     // Obtiene el code y state a partir de la url a la que
     // redirige el browser luego de realizado el login.
     const code = event.url.match(/\?code=([^&]+)/);
-    const returnedState = event.url.match(/&state=([^&]+)/);
+    const returnedState = event.url.match(/&state=([^&]*)/);
 
     // Si existe el código y los states coinciden,
     // se guarda y se resuelve la promise.
     // Si no, se rechaza la promise con un error.
-    if (code && returnedState && returnedState[1] === parameters.state) {
+    if (code && returnedState && returnedState[1] === state) {
       setParameters({ code: code[1] });
 
       var end2 = now();
@@ -51,28 +49,25 @@ const login = async () => {
       });
     } else if (event.url && event.url.indexOf('error=access_denied') !== -1) {
       // Cuando el usuario niega el acceso.
-      eraseState();
       rejectFunction(ERRORS.ACCESS_DENIED);
-    } else if (returnedState && returnedState[1] !== parameters.state) {
-      eraseState();
+    } else if (returnedState && returnedState[1] !== state) {
       rejectFunction(ERRORS.INVALID_STATE);
     } else {
-      eraseState();
       rejectFunction(ERRORS.INVALID_AUTHORIZATION_CODE);
     }
 
+    
     // Se elimina el handler para los eventos url.
     Linking.removeEventListener('url', handleOpenUrl);
   };
 
   try {
-    // Se genera un random state para el pedido al endpoint de login,
-    // que además se settea en los parámetros mediante una llamada a setParameters.
-    generateRandomState();
+    // Se genera un random state para el pedido al endpoint de login.
+    const state = generateRandomState();
     parameters = getParameters();
 
     // Se agrega el handler para eventos url.
-    Linking.addEventListener('url', handleOpenUrl);
+    Linking.addEventListener('url', event => handleOpenUrl(event, state));
     // Si hay un clientId, clientSecret y redirectUri setteado, se abre el browser
     // para realizar la autenticación y autorización con idUruguay.
     if (
@@ -81,8 +76,8 @@ const login = async () => {
       parameters.clientSecret
     ){
       var end = now();
-      await Linking.openURL(loginEndpoint());
-    } else {
+      await Linking.openURL(loginEndpoint(state));
+    }else {
       // En caso de que algún parámetro sea vacío, se elimina el handler,
       // se borra el state, y se rechaza la promise, retornando el error correspondiente.
       Linking.removeEventListener('url', handleOpenUrl);
@@ -91,14 +86,12 @@ const login = async () => {
         parameters.redirectUri,
         parameters.clientSecret,
       );
-      eraseState();
       rejectFunction(errorResponse);
     }
   } catch (error) {
     // En caso de error, se elimina el handler y se borra el state,
     // y rechaza la promise.
     Linking.removeEventListener('url', handleOpenUrl);
-    eraseState();
     rejectFunction(ERRORS.FAILED_REQUEST);
   } finally {
     // Liberar el semáforo una vez que termina la ejecución de la función.

@@ -9,6 +9,10 @@ import {
   resetParameters,
 } from '../../interfaces';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
@@ -94,7 +98,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -103,6 +106,7 @@ describe('configuration & security modules and refresh token integration', () =>
     const response = await refreshToken();
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -137,7 +141,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType,
       expiresIn,
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -163,7 +166,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -172,10 +174,9 @@ describe('configuration & security modules and refresh token integration', () =>
     const response = await refreshToken();
     expect(fetch).toHaveBeenCalledWith(correctTokenProductionEndpoint, {
       method: 'POST',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
+      disableAllSecurity: true,
+      pkPinning: false,
+      sslPinning: false,
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
         'Content-Type': headerContentType,
@@ -206,7 +207,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType,
       expiresIn,
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -236,7 +236,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -257,7 +256,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -288,7 +286,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -309,7 +306,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -340,7 +336,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -361,7 +356,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -392,7 +386,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -415,7 +408,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -446,7 +438,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -468,7 +459,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -499,7 +489,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -521,7 +510,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -552,7 +540,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -574,7 +561,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -605,7 +591,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -627,7 +612,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -659,7 +643,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -681,7 +664,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -709,7 +691,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -732,7 +713,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -758,7 +738,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -797,7 +776,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -823,7 +801,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -851,7 +828,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -877,7 +853,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -903,7 +878,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -929,7 +903,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -950,7 +923,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -977,7 +949,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1004,6 +975,7 @@ describe('configuration & security modules and refresh token integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1028,7 +1000,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1054,7 +1025,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1081,6 +1051,7 @@ describe('configuration & security modules and refresh token integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1105,7 +1076,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1131,7 +1101,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1158,6 +1127,7 @@ describe('configuration & security modules and refresh token integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1182,7 +1152,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1208,7 +1177,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1235,6 +1203,7 @@ describe('configuration & security modules and refresh token integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1259,7 +1228,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1285,7 +1253,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1312,6 +1279,7 @@ describe('configuration & security modules and refresh token integration', () =>
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(correctTokenEndpoint, {
       method: 'POST',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -1336,7 +1304,6 @@ describe('configuration & security modules and refresh token integration', () =>
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);

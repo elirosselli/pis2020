@@ -78,7 +78,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -105,7 +104,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -130,7 +128,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -159,7 +156,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -184,7 +180,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope,
     });
 
@@ -213,7 +208,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
       scope,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -236,7 +230,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -260,7 +253,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -283,7 +275,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -307,7 +298,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -331,7 +321,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -355,7 +344,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -378,7 +366,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -402,7 +389,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -426,7 +412,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -451,7 +436,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -475,7 +459,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -499,7 +482,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -523,7 +505,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -547,7 +528,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -571,7 +551,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -595,7 +574,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -619,7 +597,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -643,7 +620,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -668,7 +644,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -692,7 +667,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -716,7 +690,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -740,7 +713,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -764,7 +736,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -788,14 +759,13 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(6);
   });
 
-  it('calls initialize and makes a login request with correct parameters, fetch returns invalid state', async () => {
+  it('calls initialize and makes a login request with correct parameters, fetch returns different state', async () => {
     const redirectUri = 'redirectUri';
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
@@ -813,14 +783,13 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=invalid_state`,
+          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=differentState`,
         });
     });
 
@@ -843,7 +812,59 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(5);
+  });
+
+  it('calls initialize and makes a login request with correct parameters, fetch returns empty state', async () => {
+    const redirectUri = 'redirectUri';
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    initialize(redirectUri, clientId, clientSecret, false);
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
+      scope: '',
+    });
+
+    mockAddEventListener.mockImplementation((eventType, eventHandler) => {
+      if (eventType === 'url')
+        eventHandler({
+          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=`,
+        });
+    });
+
+    try {
+      await makeRequest(REQUEST_TYPES.LOGIN);
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_STATE);
+    }
+
+    expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code: '',
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -868,7 +889,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -892,7 +912,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -917,7 +936,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -941,7 +959,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -966,7 +983,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -995,7 +1011,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1020,7 +1035,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     mockLinkingOpenUrl.mockImplementationOnce(() => Promise.reject());
@@ -1042,7 +1056,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockLinkingOpenUrl).toHaveBeenCalledTimes(1);
@@ -1068,7 +1081,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1097,7 +1109,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1122,7 +1133,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1147,7 +1157,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1177,88 +1186,9 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: mockState,
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls setParameters and makes a login request with invalid state', async () => {
-    const redirectUri = 'redirectUri';
-    const clientId = 'clientId';
-    const clientSecret = 'clientSecret';
-    const production = false;
-
-    let parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    try {
-      setParameters({
-        redirectUri,
-        clientId,
-        clientSecret,
-        production,
-        state: 'invalid_state',
-      });
-    } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_STATE);
-    }
-
-    parameters = getParameters();
-
-    // No se tiene que haber setteado ninguno de los parámetros.
-    expect(parameters).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-
-    mockAddEventListener.mockImplementation();
-    try {
-      await makeRequest(REQUEST_TYPES.LOGIN);
-    } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
-    }
-
-    parameters = getParameters();
-    expect(parameters).toStrictEqual({
-      redirectUri: '',
-      clientId: '',
-      clientSecret: '',
-      production: false,
-      code: '',
-      accessToken: '',
-      refreshToken: '',
-      tokenType: '',
-      expiresIn: '',
-      idToken: '',
-      state: '',
-      scope: '',
-    });
-    expect(mockMutex).toHaveBeenCalledTimes(1);
-    expect.assertions(6);
   });
 
   it('calls setParameters and makes a login request with all invalid parameters', async () => {
@@ -1279,7 +1209,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1308,7 +1237,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1331,7 +1259,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1356,7 +1283,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1386,7 +1312,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -1409,7 +1334,6 @@ describe('configuration & security modules and make request type login integrati
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);

@@ -10,6 +10,10 @@ import {
 } from '../../configuration';
 import makeRequest from '../../requests';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('react-native-ssl-pinning', () => ({
   fetch: jest.fn(),
 }));
@@ -84,7 +88,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -95,6 +98,7 @@ describe('configuration & security modules and make request type get user info i
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -125,7 +129,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -160,7 +163,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -171,10 +173,9 @@ describe('configuration & security modules and make request type get user info i
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoProductionEndpoint, {
       method: 'GET',
-      pkPinning: Platform.OS === 'ios',
-      sslPinning: {
-        certs: ['certificate'],
-      },
+      disableAllSecurity: true,
+      pkPinning: false,
+      sslPinning: false,
       headers: {
         Authorization: `Bearer ${parameters.accessToken}`,
         'Content-Type': contentType,
@@ -201,7 +202,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -235,7 +235,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
 
@@ -260,6 +259,7 @@ describe('configuration & security modules and make request type get user info i
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -298,7 +298,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -332,7 +331,6 @@ describe('configuration & security modules and make request type get user info i
       refreshToken: '',
       tokenType: '',
       expiresIn: '',
-      state: '',
       scope,
     });
 
@@ -367,6 +365,7 @@ describe('configuration & security modules and make request type get user info i
 
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -415,7 +414,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -447,7 +445,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     try {
@@ -467,7 +464,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -500,7 +496,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -522,7 +517,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -560,7 +554,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -582,7 +575,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -620,7 +612,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -642,7 +633,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -675,7 +665,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: 'id.token',
-      state: '',
       scope: '',
     });
 
@@ -690,6 +679,7 @@ describe('configuration & security modules and make request type get user info i
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(userInfoEndpoint, {
       method: 'GET',
+      disableAllSecurity: false,
       pkPinning: Platform.OS === 'ios',
       sslPinning: {
         certs: ['certificate'],
@@ -713,7 +703,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: 'id.token',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -752,7 +741,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
 
@@ -774,7 +762,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken: '',
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -807,14 +794,13 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
         },
       }),
@@ -838,7 +824,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -871,7 +856,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -897,7 +881,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -930,7 +913,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
@@ -958,7 +940,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -991,13 +972,12 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="other_error", error_description="other_error_description"',
         },
       }),
@@ -1019,7 +999,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
@@ -1052,7 +1031,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
 
@@ -1084,7 +1062,6 @@ describe('configuration & security modules and make request type get user info i
       tokenType: '',
       expiresIn: '',
       idToken,
-      state: '',
       scope: '',
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
