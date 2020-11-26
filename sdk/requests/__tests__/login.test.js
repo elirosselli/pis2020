@@ -160,7 +160,7 @@ describe('login', () => {
       if (eventType === 'url')
         eventHandler({
           url:
-            'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=invalid_state',
+            'redirectUri?code=35773ab93b5b4658b81061ce3969efc2&state=differentState',
         });
     });
     try {

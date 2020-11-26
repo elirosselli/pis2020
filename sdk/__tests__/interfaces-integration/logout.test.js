@@ -410,7 +410,7 @@ describe('configuration & security modules and logout integration', () => {
     expect.assertions(6);
   });
 
-  it('calls set parameters and logout, fetch returns empty idtoken', async () => {
+  it('calls set parameters and logout, fetch returns empty idToken', async () => {
     setParameters({ idToken });
 
     let parameters = getParameters();
@@ -469,7 +469,7 @@ describe('configuration & security modules and logout integration', () => {
     expect.assertions(6);
   });
 
-  it('calls set parameters and logout, fetch returns different id token', async () => {
+  it('calls set parameters and logout, fetch returns different idToken', async () => {
     setParameters({ idToken });
 
     let parameters = getParameters();
@@ -528,7 +528,7 @@ describe('configuration & security modules and logout integration', () => {
     expect.assertions(6);
   });
 
-  it('calls set parameters and logout, fetch returns invalid url with id token and state', async () => {
+  it('calls set parameters and logout, fetch returns invalid url with idToken and state', async () => {
     setParameters({ idToken });
 
     let parameters = getParameters();
@@ -585,7 +585,7 @@ describe('configuration & security modules and logout integration', () => {
     expect.assertions(6);
   });
 
-  it('calls set parameters and logout, fetch returns invalid url without id token and state', async () => {
+  it('calls set parameters and logout, fetch returns invalid url without idToken and state', async () => {
     setParameters({ idToken });
 
     let parameters = getParameters();

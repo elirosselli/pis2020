@@ -85,7 +85,7 @@ describe('logout', () => {
     expect(mockMutex).toHaveBeenCalledTimes(1);
   });
 
-  it('calls logout with required parameters and returns invalid url with id token and state', async () => {
+  it('calls logout with required parameters and fetch returns invalid url with idToken and state', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -111,7 +111,7 @@ describe('logout', () => {
     expect.assertions(4);
   });
 
-  it('calls logout with required parameters and returns invalid url without id token and state', async () => {
+  it('calls logout with required parameters and fetch returns invalid url without idToken and state', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({ status: 200, url: 'InvalidUrl' }),
@@ -134,7 +134,7 @@ describe('logout', () => {
     expect.assertions(4);
   });
 
-  it('calls logout with required parameters and fails', async () => {
+  it('calls logout with required parameters and fetch fails', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() => Promise.reject());
     try {

@@ -789,7 +789,7 @@ describe('configuration & security modules and make request type login integrati
     mockAddEventListener.mockImplementation((eventType, eventHandler) => {
       if (eventType === 'url')
         eventHandler({
-          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=invalid_state`,
+          url: `${parameters.redirectUri}?code=35773ab93b5b4658b81061ce3969efc2&state=differentState`,
         });
     });
 
