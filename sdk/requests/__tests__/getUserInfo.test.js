@@ -6,6 +6,10 @@ import getUserInfo from '../getUserInfo';
 import { getParameters } from '../../configuration';
 import { validateSub } from '../../security';
 
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+}));
+
 jest.mock('../../configuration');
 
 jest.mock('../../security', () => ({
@@ -108,7 +112,7 @@ describe('getUserInfo', () => {
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
         },
       }),
@@ -206,7 +210,7 @@ describe('getUserInfo', () => {
     fetch.mockImplementation(() =>
       Promise.reject({
         headers: {
-          'Www-Authenticate':
+          'WWW-Authenticate':
             'error="other_error", error_description="other_error_description"',
         },
       }),

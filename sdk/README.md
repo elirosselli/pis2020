@@ -2,16 +2,16 @@
 
 ## Índice
 
-- [Introducción](https://github.com/elirosselli/pis2020/tree/develop/sdk#introducci%C3%B3n)
-- [Consideraciones previas](https://github.com/elirosselli/pis2020/tree/develop/sdk#consideraciones-previas)
-- [Instalación y configuración](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-y-configuraci%C3%B3n)
-  - [Instalación](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n)
-  - [Instalación de react-native-ssl-pinning](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-  - [Configuración de redirect URI](https://github.com/elirosselli/pis2020/tree/develop/sdk#instalaci%C3%B3n-de-react-native-ssl-pinning)
-- [Utilización](https://github.com/elirosselli/pis2020/tree/develop/sdk#utilizaci%C3%B3n)
-- [Funcionalidades](https://github.com/elirosselli/pis2020/tree/develop/sdk#funcionalidades)
-- [Errores](https://github.com/elirosselli/pis2020/tree/develop/sdk#errores)
-- [Certificado *self-signed* en modo *testing*](https://github.com/elirosselli/pis2020/tree/develop/sdk#certificado-self-signed-en-modo-testing)
+- [Introducción](#introducción)
+- [Consideraciones previas](#consideraciones-previas)
+- [Instalación y configuración](#instalación-y-configuración)
+  - [Instalación](#instalación)
+  - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](#configuración-de-redirect-uri)
+- [Utilización](#utilización)
+- [Funcionalidades](#funcionalidades)
+- [Errores](#errores)
+- [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
 
 ## Introducción
 
@@ -115,7 +115,6 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
-    | *post_logout_redirect_uri* | Opcional | URL a la cual será redireccionado el RP luego que el *logout* en el OP finalice exitosamente. Esta URL debe existir en la configuración que mantiene el OP del RP, si la misma no existe o no es exactamente igual, será redireccionado al inicio del OP. |
     | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
 
 - *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
@@ -240,7 +239,7 @@ const LoginButton = () => {
 };
 ```
 
- En la [App de ejemplo](https://github.com/elirosselli/pis2020/blob/develop/app/LoginButton/index.js) se puede ver un ejemplo de uso más detallado.
+ En la [App de ejemplo](../app/LoginButton/index.js) se puede ver un ejemplo de uso más detallado.
 
 ## Funcionalidades
 
@@ -256,7 +255,7 @@ const LoginButton = () => {
 | `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
-| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido.                                                                                                                                          |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido. Es necesario volver a *setear* el *scope* una vez cerrada la sesión.                                                                                                                                         |
 
 ### Función getParameters
 
