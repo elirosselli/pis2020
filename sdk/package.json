@@ -58,11 +58,10 @@
     "react-test-renderer": "16.14.0"
   },
   "dependencies": {
-    "async-mutex": "^0.2.4",
+    "async-mutex": "0.2.4",
     "base-64": "0.1.0",
     "jsrsasign": "10.0.4",
-    "mersenne-twister": "^1.1.0",
-    "prop-types": "15.7.2",
+    "mersenne-twister": "1.1.0",
     "react": "16.14.0",
     "react-native": "0.63.3",
     "react-native-ssl-pinning": "1.5.2"
