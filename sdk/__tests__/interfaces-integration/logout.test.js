@@ -320,7 +320,7 @@ describe('configuration & security modules and logout integration', () => {
     try {
       await logout();
     } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_STATE);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
 
     expect(fetch).toHaveBeenCalledTimes(1);

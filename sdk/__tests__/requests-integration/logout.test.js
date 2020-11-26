@@ -321,7 +321,7 @@ describe('configuration & security modules and make request type logout integrat
     try {
       await makeRequest(REQUEST_TYPES.LOGOUT);
     } catch (error) {
-      expect(error).toBe(ERRORS.INVALID_URL_LOGOUT);
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN_HINT);
     }
 
     expect(fetch).toHaveBeenCalledTimes(1);
