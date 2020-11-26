@@ -78,7 +78,7 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
-      
+      //setParameters({'code': '10k12e'});
       const token = await getToken();
       Object.keys(token).forEach(key => {
         console.log(`${key}: ${token[key]}`);
@@ -98,7 +98,7 @@ const App: () => React$Node = () => {
     try {
       var now = require("performance-now")
       var start = now();
-      //setParameters({'refreshToken': '1921241'});
+      //setParameters({'refreshToken': 'woefoiwef1291021'});
       const rfToken = await refreshToken();
       Object.keys(rfToken).forEach(key => {
         console.log(`${key}: ${rfToken[key]}`);
@@ -118,6 +118,8 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       //setParameters({'idToken': '1921241'});
+      setParameters({'idToken': 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODU5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjA2MjQ5MDI1LCJpYXQiOjE2MDYyNDg0MjUsImF1dGhfdGltZSI6MTYwNjI0Mzc2MSwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJWM3NOa3BHZU1qa0FWdWcxRy1xMGp3In0.MRBs1mlP-DYyAB_49SBE0dODF0uh7Xu1NMF46lDA0ddIhEeRKOV-YJe9UVOLS6JcHHDKNdVFwxvpo1B1Nk6DgPiCf1fZ0Y3HYyWixR7U_q_hee3K4dvbNWuWowEFCrkaF6ykdyHxJNJ0I24R46LYERuvxK8dyHOZV0CEgBkQeBY'});
+      //console.log(getParameters());
       //setParameters({'idToken': 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODk5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjA1ODcyNDA2LCJpYXQiOjE2MDU4NzE4MDYsImF1dGhfdGltZSI6MTYwNTg3MTc5MCwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJXbGFRVFNxTTdGeXRHaE54Wl8tZ19BIiwibm9tYnJlX2NvbXBsZXRvIjoiQ2xhcmsgSm9zZSBLZW50IEdvbnphbGV6IiwicHJpbWVyX25vbWJyZSI6IkNsYXJrIiwic2VndW5kb19ub21icmUiOiJKb3NlIiwicHJpbWVyX2FwZWxsaWRvIjoiS2VudCIsInNlZ3VuZG9fYXBlbGxpZG8iOiJHb256YWxleiIsInVpZCI6InV5LWNpLTIwOTYzMDI2In0.tcF1BDbOyDEXfgGl3ACA5EhI-DRzb1d80BXIe9nCgnRW0dfxMpuCK_K5js5ih4u7eov8k53cK9zTrk6v2dHKNUzczehmpwg9oxlQKvBY1RsJusFc_nA1oSE69AOSisnmWyzYxz0fz_2D3_K3YdmTApmTjAr0elPFsM-fB0'});
       const resp = await validateToken();
       Object.keys(resp).forEach(key => {
@@ -138,7 +140,8 @@ const App: () => React$Node = () => {
       var now = require("performance-now")
       var start = now();
       //console.log(getParameters());
-      //setParameters({'idToken': '1921241'});
+      setParameters({'idToken': '1921241'});
+      //setParameters({'idToken': 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjdhYThlN2YzOTE2ZGNiM2YyYTUxMWQzY2ZiMTk4YmY0In0.eyJpc3MiOiJodHRwczovL2F1dGgtdGVzdGluZy5pZHVydWd1YXkuZ3ViLnV5L29pZGMvdjEiLCJzdWIiOiI1ODk5IiwiYXVkIjoiODk0MzI5IiwiZXhwIjoxNjA1ODcyNDA2LCJpYXQiOjE2MDU4NzE4MDYsImF1dGhfdGltZSI6MTYwNTg3MTc5MCwiYW1yIjpbInVybjppZHVydWd1YXk6YW06cGFzc3dvcmQiXSwiYWNyIjoidXJuOmlkdXJ1Z3VheTpuaWQ6MSIsImF0X2hhc2giOiJXbGFRVFNxTTdGeXRHaE54Wl8tZ19BIiwibm9tYnJlX2NvbXBsZXRvIjoiQ2xhcmsgSm9zZSBLZW50IEdvbnphbGV6IiwicHJpbWVyX25vbWJyZSI6IkNsYXJrIiwic2VndW5kb19ub21icmUiOiJKb3NlIiwicHJpbWVyX2FwZWxsaWRvIjoiS2VudCIsInNlZ3VuZG9fYXBlbGxpZG8iOiJHb256YWxleiIsInVpZCI6InV5LWNpLTIwOTYzMDI2In0.tcF1BDbOyDEXfgGl3ACA5EhI-DRzb1d80BXIe9nCgnRW0dfxMpuCK_K5js5ih4u7eov8k53cK9zTrk6v2dHKNUzczehmpwg9oxlQKvBY1RsJusFc_nA1oSE69AOSisnmWyzYxz0fz_2D3_K3YdmTApmTjAr0elPFsM-fB0'});
       const info = await getUserInfo();
       Object.keys(info).forEach(key => {
         console.log(`${key}: ${info[key]}`);
