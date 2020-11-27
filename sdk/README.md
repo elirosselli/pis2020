@@ -48,10 +48,10 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
-    | *code*         | Requerido |Código de autorización generado por el OP. Puede ser utilizado una única vez para obtener un *ID Token y Access Token*. Expira en 10 minutos. |
+    | *code*         | Requerido |Código de autorización generado por el OP. Puede ser utilizado una única vez para obtener un *token*. Expira en 10 minutos. |
     | *state*     | Requerido si fue enviado | El valor exacto recibido del RP en el parámetro "*state*" del *Authentication Request*. |
 
-- *Token Request*: pedido HTTP empleando el método POST que incluye los *Token Request Params* y sirve para solicitar un token. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
+- *Token Request*: pedido HTTP empleando el método POST que incluye los *Token Request Params* y sirve para solicitar un *token*. Este pedido es enviado al *Token Endpoint*. Los *Token Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
@@ -76,19 +76,19 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *grant_type*         | Requerido |Tipo de credenciales a presentar. Debe ser "*refresh_token*". |
-    | *refresh_token* | Requerido | Token emitido por el OP, previamente tramitado en el *Token Request*. |
+    | *refresh_token* | Requerido | *refresh_token* emitido por el OP, previamente tramitado en el *Token Request*. |
 
     Además contiene el *client_id* y *client_secret* siguiendo el esquema de autenticación [*HTTP Basic Auth*](https://tools.ietf.org/html/rfc7617).
 
 - *Refresh Token Response*: respuesta HTTP (a una *Refresh Token Request*) que incluye los *Refresh Token Response Params*. Esta respuesta es obtenida desde el *Token Endpoint*. Los parámetros son los mismos que *Token Response Params*.
 
-- *User Info Request*: pedido HTTP que incluye los *User Info Request Params* y sirve para solicitar información del End-User autenticado. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *UserInfo Endpoint*. Los *User Info Request Params* son:
+- *User Info Request*: pedido HTTP que incluye los *User Info Request Params* y sirve para solicitar información del End-User autenticado. Puede llevarse a cabo empleando los métodos HTTP GET o HTTP POST. Este pedido es enviado al *User Info Endpoint*. Los *User Info Request Params* son:
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *access_token*         | Requerido |Es incluido en el *header* HTTP *Authorization* siguiendo el esquema *Bearer* |
 
-- *User Info Response*: respuesta HTTP (a una *User Info Request*) que incluye los *User Info Response Params*. Esta respuesta es obtenida desde el *UserInfo Endpoint*. Los *User Info Response Params* son un JSON conteniendo los *claims* solicitados. Dichos *claims* pueden ser:
+- *User Info Response*: respuesta HTTP (a una *User Info Request*) que incluye los *User Info Response Params*. Esta respuesta es obtenida desde el *User Info Endpoint*. Los *User Info Response Params* son un JSON conteniendo los *claims* solicitados. Dichos *claims* pueden ser:
 
     | Nombre      | Claims      | Descripción |
     |-----------------|-----------|-------------|
@@ -98,15 +98,15 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
     | *email*         | *email*, *email_verified* | Correo electrónico y si el mismo está verificado. |
     | *auth_info*         | rid, nid, ae | Datos de registro y autenticación del ciudadano en formato URN correspondientes a la Política de Identificación Digital. |
 
-- *Validate Token Request*: Pedido HTTP empleando el método GET que sirve para obtener la clave pública del OP útil para la validación de *tokens*. Este pedido es enviado al *JWKS Endpoint*.
-- *Validate Token Response*: Respuesta HTTP (a una *Validate Token Request*) que incluye los *Validate Token Response Params*. Esta respuesta es obtenida desde el *JWKS Endpoint*.
+- *JWKS Request*: Pedido HTTP empleando el método GET que sirve para obtener la clave pública del OP útil para la validación de *tokens*. Este pedido es enviado al *JWKS Endpoint*.
+- *JWKS Response*: Respuesta HTTP (a una *JWKS Request*) que incluye los *JWKS Response Params*. Esta respuesta es obtenida desde el *JWKS Endpoint*.
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
     | *kty*         | Requerido |Identifica la familia del algoritmo criptográfico utilizado. |
     | *alg* | Requerido | Identifica el algoritmo utilizado. (`RS256`, `HS256`). |
     | *use*     | Requerido | Identifica el uso previsto de la clave pública. Indica si se usa para cifrar datos ("enc") o para verificar la firma ("sig"). |
-    | *kid*     | Requerido | Identifica el uso previsto de la clave pública. Indica si se usa para cifrar datos ("enc") o para verificar la firma ("sig"). |
+    | *kid*     | Requerido | Identificador único. |
     | *n*     | Requerido | El módulo de la clave (2048 bit). Codificado en Base64. |
     | *e*     | Requerido | El exponente de la clave (2048 bit). Codificado en Base64. |
 
@@ -189,12 +189,14 @@ En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en 
 3. Seleccione "Info", y en la sección de URL Types haga click en el botón de "+".
 4. En el campo "URL Schemes" ingrese su redirect URI
 
+Tanto en el caso de Android como en el de iOS únicamente debe agregar la porción de su *redirect* URI que se encuentra previa a los símbolos "://".
+
 ## Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
 
 ```javascript
-import { initialize, login } from 'sdk-gubyuy-test';
+import { initialize, login } from 'sdk-gubuy-test';
 ```
 
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
@@ -252,14 +254,14 @@ const LoginButton = () => {
 | `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirectUri* configurado y se devuelve el *code* y un *state*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
-| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken` previamente.                                                                                                    |
+| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken()` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
-| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido. Es necesario volver a *setear* el *scope* una vez cerrada la sesión.                                                                                                                                         |
+| `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido. Es necesario volver a *setear* el *scope* una vez cerrada la sesión si se desea realizar un login sin antes haber invocado a la función de inicialización.                                                                                                                                         |
 
 ### Función getParameters
 
-Esta función retorna los parámetros del SDK en un objeto con pares *(clave, valor)*, por ejemplo
+Esta función retorna los parámetros del SDK en un objeto con pares *(clave, valor)*, por ejemplo:
 
 ```javascript
 {
@@ -277,7 +279,7 @@ Esta función retorna los parámetros del SDK en un objeto con pares *(clave, va
 }
 ```
 
-Por ende, para obtener el valor del parámetro *redirectUri*, por ejemplo, basta con el siguiente código
+Por ende, para obtener el valor del parámetro *redirectUri*, por ejemplo, basta con el siguiente código:
 
 ```javascript
 const parameters = getParameters();
@@ -286,7 +288,7 @@ const valorRedirectUri = parameters.redirectUri;
 
 ### Función setParameters
 
-Esta función *setea* los parámetros en el SDK. Observar que algunos de los parámetros pueden ser *seteados* también utilizando la función *initialize*. Para poder *setear* los parámetros, alcanza con pasar a la función un objeto con pares *(clave, valor)*, donde las claves sean los nombres de los parámetros a *setear*, y el valor sus correspondientes valores. A su vez, la función debe ser llamada dentro de un bloque *try*, ya que en caso de que no sea válido algún parámetro, la función lanzará una excepción. Por ejemplo, el siguiente código *seteará* los parámetros *redirectUri* y *clientId*.
+Esta función *setea* los parámetros en el SDK. Observar que algunos de los parámetros pueden ser *seteados* también utilizando la función *initialize*. Para poder *setear* los parámetros, alcanza con pasar a la función un objeto con pares *(clave, valor)*, donde las claves sean los nombres de los parámetros a *setear*, y el valor sus correspondientes valores. A su vez, la función debe ser llamada dentro de un bloque *try*, ya que en caso de que no sea válido algún parámetro, la función lanzará una excepción. Por ejemplo, el siguiente código *seteará* los parámetros *redirectUri* y *clientId*:
 
 ```javascript
 try {
@@ -298,8 +300,11 @@ try {
   /* Manejar el error */
 }
 ```
+Destacar que esta función no permite *setear* parámetros vacíos.
 
-Observar que esta función no permite *setear* parámetros vacíos.
+#### Errores setParameters
+
+Los errores que puede devolver esta función son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_PRODUCTION`, `ERRORS.INVALID_EXPIRES_IN`, `ERRORS.INVALID_SCOPE`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_TOKEN_TYPE`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN`.
 
 ### Función clearParameters y resetParameters
 
@@ -333,13 +338,7 @@ Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
 
 #### Errores initialize
 
-Si alguno de estos parámetros obligatorios es vacío se devuelve un error indicando cual es el primer parámetro vacío. En el caso del `intialize` estos parámetros son *redirectUri*, *clientId* y *clientSecret*, siendo estos los respectivos errores:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET`.
-
-Por otro lado, si el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_PRODUCTION` y `ERRORS.FAILED_REQUEST`.
 
 ### Función login
 
@@ -369,21 +368,11 @@ Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya se
 
 #### Errores login
 
-En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* y no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
-
-En caso de que no exista el parámetro *code* en la URL retornada por el OP se retorna el error `ERRORS.INVALID_AUTHORIZATION_CODE`.
-
-En caso de que el usuario final no autorice a la aplicación móvil RP a acceder a sus datos se retorna el error `ERRORS.ACCESS_DENIED`.
-
-En caso de que el parámetro *state* obtenido en la *response* no coincida con el del generado (enviado en la *request*) `ERRORS.INVALID_STATE`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.ACCESS_DENIED`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_STATE` y `ERRORS.FAILED_REQUEST`.
 
 ### Función getToken
 
-Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken` del SDK:
+Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken`:
 
 ``` javascript
 try {
@@ -398,21 +387,7 @@ Al igual que el *code*, el *token* retornado se guarda en el SDK, con lo que de 
 
 #### Errores getToken
 
-En caso de que alguno de los parámetros *redirectUri*, *clientId*, *clientSecret* y *code* no haya sido seteado, por lo tanto sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET` y  `ERRORS.INVALID_AUTHORIZATION_CODE` respectivamente.
-
-En caso de que el parámetro *code* sea inválido o haya expirado, y no se pueda obtener un nuevo *token* de forma satisfactoria se retorna `ERRORS.INVALID_GRANT`.
-
-En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
-
-En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
-
-En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_TOKEN`, `ERRORS.INVALID_ID_TOKEN`, `ERRORS.INVALID_TOKEN_TYPE`,  `ERRORS.INVALID_GRANT`, `ERRORS.INVALID_CLIENT` y `ERRORS.FAILED_REQUEST`.
 
 ### Función refreshToken
 
@@ -431,27 +406,7 @@ Esta función requiere que la función `getToken` haya sido ejecutada de forma c
 
 #### Errores refreshToken
 
-Los casos de errores son muy similares a los de la funcionalidad `getToken`.
-
-En caso de que alguno de los parámetros *redirectUri*, *clientId* y *clientSecret* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_CLIENT_SECRET` respectivamente.
-
-A diferencia de la funcionalidad `getToken`, en lugar del parámetro *code*, se revisa que que el parámetro *refreshToken* sea vacío. En tal caso se retorna `ERRORS.INVALID_GRANT`.
-
-En caso de que el tipo del parámetro *production* no es booleano se retorna el error `ERRORS.INVALID_PRODUCTION`.
-
-En caso de que el parámetro *refreshToken* sea inválido o haya expirado se retorna `ERRORS.INVALID_GRANT`.
-
-En caso de que los parámetros *clientId* o *clientSecret* no se correspondan con los registrados ante el OP se retorna `ERRORS.INVALID_CLIENT`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que el parámetro tokenType recibido es inválido se retorna `ERRORS.INVALID_TOKEN_TYPE`.
-
-En caso de que el parámetro accessToken o refreshToken recibido es inválido se retorna `ERRORS.INVALID_TOKEN`.
-
-En caso de que el parámetro idToken recibido es inválido se retorna `ERRORS.INVALID_ID_TOKEN`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_GRANT`, `ERRORS.INVALID_TOKEN`, `ERRORS.INVALID_ID_TOKEN`, `ERRORS.INVALID_TOKEN_TYPE`, `ERRORS.INVALID_CLIENT` y `ERRORS.FAILED_REQUEST`.
 
 ### Función getUserInfo
 
@@ -470,23 +425,32 @@ Esta función devuelve un objeto con el siguiente formato:
 
 ```javascript
 {
-  primer_nombre: 'Juan',
-  segundo_nombre: 'José',
-  primer_apellido: 'Perez',
-  segundo_apellido: 'Martinez',
-  documento: 'uy-ci-1234567',
+  sub: '5968',
+  name: 'Clark Jose Kent Gonzalez',
+  given_name: 'Clark Jose',
+  family_name: 'Kent Gonzalez',
+  nickname: 'uy-ci-12345678',
+  email: 'kentprueba@gmail.com',
+  email_verified: true,
+  nombre_completo: 'Clark Jose Kent Gonzalez',
+  primer_nombre: 'Clark',
+  segundo_nombre: 'Jose',
+  primer_apellido: 'Kent',
+  segundo_apellido: 'Gonzalez',
+  uid: 'uy-ci-12345678',
+  pais_documento: { codigo: 'uy', nombre: 'Uruguay' },
+  tipo_documento: { codigo: 68909, nombre: 'C.I.' },
+  numero_documento: '12345678',
+  ae: 'urn:uce:ae:1',
+  nid: "urn:uce:nid:1",
+  rid: "urn:uce:rid:1",
 }
 ```
+El contenido de la respuesta variará dependiendo del *scope* utilizado. La respuesta de ejemplo presentada es el resultado de utilizar todos los *scopes* posibles.
 
 #### Errores getUserInfo
 
-En caso de que alguno de los parámetros *accessToken* e *idToken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
-
-En caso de que el *sub* correspondiente al *token* utilizado no coincida con el *sub* de la respuesta del OP se retorna el error `ERRORS.INVALID_SUB`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_TOKEN`, `ERRORS.INVALID_ID_TOKEN`, `ERRORS.INVALID_SUB` y `ERRORS.FAILED_REQUEST`.
 
 ### Función validateToken
 
@@ -504,7 +468,7 @@ Al llamar a la función se valida el *token*. Para esto se obtiene del *JWKS End
 | acr       | *Authentication Context Class Reference*|
 | amr       | *Authentication Methods References*     |
 
-Para llamar a la función se debe utilizar la función:
+Para llamar a la función se debe utilizar:
 
 ```javascript
 try {
@@ -517,17 +481,11 @@ try {
 
 #### Errores validateToken
 
-En caso de que alguno de los parámetros obligatorios para la *request*, en este caso *clientId* e *idtoken* sea vacío, se retorna el error correspondiente al primer parámetro vacío, siendo estos:  `ERRORS.INVALID_CLIENT_ID` y `ERRORS.INVALID_ID_TOKEN` respectivamente.
-
-En caso de que el parámetro *token* no se pueda validar en el modulo de seguridad se retorna el error `ERRORS.INVALID_ID_TOKEN`.
-
-En caso de error desconocido (no controlado) también se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` y `ERRORS.FAILED_REQUEST`.
 
 ### Función logout
 
-La función `logout` del SDK permite al usuario final cerrar su sesión con ID Uruguay.
+La función `logout` permite al usuario final cerrar su sesión con ID Uruguay.
 
 ``` javascript
 try {
@@ -539,13 +497,7 @@ try {
 
 #### Errores logout
 
-En caso de que el parámetro *idToken* sea vacío devuelve un error de tipo `ERRORS.INVALID_ID_TOKEN_HINT`.
-
-Si *idToken*, el parámetro obligatorio para la *request* se encuentran inicializado, se procede a evaluar la respuesta del OP. En caso de que la URL contenida en la respuesta no coincida con el *logoutEndpoint*, se rechaza la promesa retornando `ERRORS.INVALID_URL_LOGOUT`.
-
-En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`.
-
-En caso de que no haya ocurrido ningún error se retorna `ERRORS.NO_ERROR`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_ID_TOKEN_HINT`, `ERRORS.INVALID_URL_LOGOUT`, `ERRORS.INVALID_STATE` y `ERRORS.FAILED_REQUEST`.
 
 ## Errores
 
@@ -574,7 +526,7 @@ Se agregan los campos:
 
 | Campo            | Descripción                        |
 |------------------ |----------------------------------- |
-| errorCode         | Código identificatorio del error.  |
+| errorCode         | Código identificador del error.  |
 | errorDescription  | Descripción del error.             |
 
 Los errores definidos son:
@@ -589,7 +541,7 @@ Los errores definidos son:
 | `ErrorInvalidAuthorizationCode`  | gubuy_invalid_auhtorization_code          | Invalid authorization code.                                                                                                                                                             | Cuando el code definido en el SDK no es válido.                                                                         | Revisar que el code actual corresponde al devuelto por la función Login().                  |
 | `ErrorFailedRequest`             | failed_request                            | Couldn't make request.                                                                                                                                                                  | Cuando la request no pudo ser completada satisfactoriamente.                                                            | Revisar que los parámetros de la request sean válidos y comprobar la conexión a internet.   |
 | `ErrorInvalidGrant`              | invalid_grant                             | The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.  | Cuando el code o refreshToken son inválidos o expiraron, y no se puede obtener un nuevo token de forma satisfactoria.  | Comprobar la validez del code o refreshToken según corresponda.                            |
-| `ErrorInvalidToken`              | invalid_token                             | The access_token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el accessToken es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del access_token.                                                      |
+| `ErrorInvalidToken`              | invalid_token                             | The access_token provided is expired, revoked, malformed, or invalid for other reasons.                                                                                                 | Cuando el accessToken es inválido o expiró, y no se puede obtener la UserInfo de forma satisfactoria.                  | Comprobar la validez del accessToken.                                                      |
 | `ErrorInvalidClient`             | invalid_client                            | Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)                                                            | Cuando no se pudo obtener un nuevo token de forma correcta.                                                             | Verificar que el clientSecret y clientId correspondan con los registrados por ID Uruguay.  |
 | `ErrorInvalidIdTokenHint`        | invalid_id_token_hint                     | Invalid id_token_hint parameter.                                                                                                                                                        | Cuando el parámetro idTokenHint es inválido o no existe a la hora de llamar a Logout.                                 | Comprobar la existencia y validez del idTokenHint.                                        |                                                   |
 | `ErrorInvalidIdToken`            | invalid_id_token                          | Invalid id_token.                                                                                                                                                                       | Cuando el idToken registrado en el SDK es inválido.                                                                     | Comprobar que el idToken sea el mismo recibido durante getToken o refreshToken.             |
