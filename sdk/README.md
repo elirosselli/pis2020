@@ -300,6 +300,7 @@ try {
   /* Manejar el error */
 }
 ```
+
 Destacar que esta función no permite *setear* parámetros vacíos.
 
 #### Errores setParameters
@@ -331,7 +332,6 @@ try {
 } catch (err){
   /* Manejar el error */
 }
-
 ```
 
 Luego de esto, se considera que el SDK se encuentra inicializado correctamente.
@@ -446,6 +446,7 @@ Esta función devuelve un objeto con el siguiente formato:
   rid: "urn:uce:rid:1",
 }
 ```
+
 El contenido de la respuesta variará dependiendo del *scope* utilizado. La respuesta de ejemplo presentada es el resultado de utilizar todos los *scopes* posibles.
 
 #### Errores getUserInfo
