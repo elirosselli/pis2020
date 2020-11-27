@@ -420,6 +420,7 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el usuario final no autoriza a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
 - Cuando el *code* retornado por el OP es inválido, u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
+- Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
 - Cuando se entra al bloque *catch* del código: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de getToken
