@@ -72,7 +72,7 @@ Las funcionalidades de este módulo se encargan de establecer, modificar o borra
 Al comienzo de la ejecución todos los parámetros se encuentran vacíos, a excepción del parámetro *production* que tiene valor *false*. Las funciones encontradas en este módulo son:
 
 - ***getParameters***: Encargada de obtener y retornar el valor de los parámetros.
-- ***setParameters***: Encargada de establecer el valor de los parámetros soliticados.
+- ***setParameters***: Encargada de establecer el valor de los parámetros solicitados.
 - ***clearParameters***: Encargada de borrar el valor de los parámetros, excepto por los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*.
 - ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*.
 - ***eraseCode***: Encargada de borrar el valor del parámetro *code*.
@@ -160,7 +160,7 @@ Los errores devueltos en cada caso son:
 
 ##### Generalidades
 
-Estas funciones borran el valor de todos los parámetros, con las siguientes expeciones:
+Estas funciones borran el valor de todos los parámetros, con las siguientes excepciones:
 
 - **clearParameters**: no borra los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*. Estos parámetros no son borrados ya que son necesarios para la mayoría de los *requests* y se asume que cambiarán con poca frecuencia o ninguna durante la ejecución del componente.
 - **resetParameters**: no borra el parámetro *production*, para el cuál se *setea* su valor en *false*.
@@ -228,7 +228,7 @@ La función **getRandomState** no recibe ningún parámetro, y retorna el *state
 
 ##### Código
 
-El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería *MersenneTwister* obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. Dicha librería utiliza el algortimo [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) para la generación de números pseudoaleatorios. El valor es retornado en forma de *string*.
+El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería *MersenneTwister* obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. Dicha librería utiliza el algoritmo [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) para la generación de números pseudoaleatorios. El valor es retornado en forma de *string*.
 
 #### Funcionalidad de validateParameters
 
@@ -303,7 +303,7 @@ La función *validateTokenSecurity* recibe los siguientes parámetros:
 
 Para validar el *idToken* se hace uso de la librería [*jsrsasign*](https://github.com/kjur/jsrsasign).
 
-En primer lugar, esta función obteniene la clave pública del *endpoint* a partir de los atributos *n* y *m* del la *JWKS Response*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el *issuer*, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
+En primer lugar, esta función obtiene la clave pública del *endpoint* a partir de los atributos *n* y *m* del la *JWKS Response*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el *issuer*, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
 
 Posteriormente decodifica el *header* y el *payload*. Del *header* valida el *kid* que es un identificador único incluido tanto en el *idToken* como en el *JWKS Response*. Además, valida que el ACR (*Authentication Context Class Reference*) y el AMR (*Authentication Methods References*) asignados estén entre los definidos en el archivo de constantes.
 
@@ -357,11 +357,11 @@ Los errores devueltos en cada caso son:
 
 #### Generalidades
 
-La funcionalidad de **login** se encarga de autenticar al usuario final directamente ante el OP para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del **login** consiste en una función que devuelve una [promesa](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Usar_promesas). Para esto, primero se envía un *Authentication Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda validar al RP. Los parámetros obligatorios enviados son: *scope*, *responseType*, *clientId* y *redirectUri*.
+La funcionalidad de **login** se encarga de autenticar al usuario final directamente ante el OP, para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del **login** consiste en una función que devuelve una [promesa](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Usar_promesas). Para esto, primero se envía un *Authentication Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda validar al RP. Los parámetros obligatorios enviados son: *scope*, *responseType*, *clientId* y *redirectUri*.
 
-Para validar al RP, el OP verifica que el *clientId* y *redirectUri* enviados en la *Authentication Request* coinciden con los generados al momento del [registro](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integración+con+OpenID+Connect) del RP ante el OP. Una vez que el RP es validado, el usuario final puede realizar el proceso de autenticación y autorización directamente ante el OP a través del navegador web. En este proceso se deben ingresar las credenciales de Usuario gub.uy y autorizar al RP al acceso a los datos solicitados. Cuando esta acción finaliza el usuario final debe confirmar para volver a la aplicación.
+Para validar al RP, el OP verifica que el *clientId* y *redirectUri* enviados en la *Authentication Request* coincidan con los generados al momento del [registro](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integración+con+OpenID+Connect) del RP ante el OP. Una vez que el RP es validado, el usuario final puede realizar el proceso de autenticación y autorización directamente ante el OP a través del navegador web. En este proceso el usuario final debe ingresar sus credenciales de Usuario gub.uy y autorizar al RP al acceso de los datos solicitados. Cuando esta acción finaliza debe confirmar para volver a la aplicación.
 
-En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un código y descripción de éxito. En caso contrario, ya sea porque alguno de los parámetros es inválido, porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna un código y descripción acordes al error ocurrido.
+En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un código y descripción de éxito. En caso contrario, ya sea porque alguno de los parámetros es inválido, porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna un código y una descripción acordes al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -372,14 +372,14 @@ La implementación de la funcionalidad de *login* involucra los siguientes archi
 - **sdk/requests/login.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **login**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración de dónde se obtienen los parámetros necesarios.
+- **sdk/configuration/index.js**: Donde se implementa el Módulo *Configuration* y por ende de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
-- **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+- **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo *configuration*.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 - **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un *state* aleatorio.
 
-La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa. Cuando esta es resulta se retorna el *code*, *state* y un código y descripción de éxito. En caso de ser rechazada se retorna el código y descripción del error correspondiente.
+La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo *configuration* y retorna una promesa. Cuando esta es resuelta se retorna el *code*, *state* y un código y descripción de éxito. En caso de ser rechazada se retorna el código y descripción del error correspondiente.
 
 #### Código
 
@@ -390,9 +390,8 @@ const login = async () => {
 ```
 
 El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código.
-En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en la *request* de *login*.
 
-Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP se compara el *state* generado con el obtenido en la respuesta, debiendo ser iguales. Esto se puede ver en la siguiente línea:
+En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en el *Login Request*. Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de detectar un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP se compara el *state* generado con el obtenido en la respuesta, debiendo estos ser iguales. Esto se puede ver en la siguiente línea:
 
 ```javascript
 Linking.addEventListener('url', event => handleOpenUrl(event, state));

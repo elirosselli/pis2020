@@ -2,16 +2,38 @@
 
 ## Índice
 
-- [Introducción](#introducción)
-- [Consideraciones previas](#consideraciones-previas)
-- [Instalación y configuración](#instalación-y-configuración)
-  - [Instalación](#instalación)
-  - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
-  - [Configuración de redirect URI](#configuración-de-redirect-uri)
-- [Utilización](#utilización)
-- [Funcionalidades](#funcionalidades)
-- [Errores](#errores)
-- [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
+- [SDK ID Uruguay React Native](#sdk-id-uruguay-react-native)
+  - [Índice](#índice)
+  - [Introducción](#introducción)
+  - [Consideraciones previas](#consideraciones-previas)
+  - [Instalación y configuración](#instalación-y-configuración)
+    - [Instalación](#instalación)
+    - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
+    - [Configuración de redirect URI](#configuración-de-redirect-uri)
+      - [Android](#android)
+      - [iOS](#ios)
+  - [Utilización](#utilización)
+  - [Funcionalidades](#funcionalidades)
+    - [Función getParameters](#función-getparameters)
+    - [Función setParameters](#función-setparameters)
+      - [Errores setParameters](#errores-setparameters)
+    - [Función clearParameters y resetParameters](#función-clearparameters-y-resetparameters)
+    - [Función initialize](#función-initialize)
+      - [Errores initialize](#errores-initialize)
+    - [Función login](#función-login)
+      - [Errores login](#errores-login)
+    - [Función getToken](#función-gettoken)
+      - [Errores getToken](#errores-gettoken)
+    - [Función refreshToken](#función-refreshtoken)
+      - [Errores refreshToken](#errores-refreshtoken)
+    - [Función getUserInfo](#función-getuserinfo)
+      - [Errores getUserInfo](#errores-getuserinfo)
+    - [Función validateToken](#función-validatetoken)
+      - [Errores validateToken](#errores-validatetoken)
+    - [Función logout](#función-logout)
+      - [Errores logout](#errores-logout)
+  - [Errores](#errores)
+  - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
 
 ## Introducción
 
@@ -364,7 +386,7 @@ try {
 }
 ```
 
-Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada.
+Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada. Esto también sucede cuando el RP ingresa credenciales no válidas en el SDK (a través de *initialize* o *setParameters*).
 
 #### Errores login
 
