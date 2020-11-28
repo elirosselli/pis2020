@@ -2,40 +2,17 @@
 
 ## Índice
 
-- [SDK ID Uruguay React Native](#sdk-id-uruguay-react-native)
-  - [Índice](#índice)
-  - [Introducción](#introducción)
-  - [Consideraciones previas](#consideraciones-previas)
-  - [Instalación y configuración](#instalación-y-configuración)
-    - [Instalación](#instalación)
-    - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
-    - [Configuración de redirect URI](#configuración-de-redirect-uri)
-      - [Android](#android)
-      - [iOS](#ios)
-    - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
-  - [Utilización](#utilización)
-  - [Funcionalidades](#funcionalidades)
-    - [Función getParameters](#función-getparameters)
-    - [Función setParameters](#función-setparameters)
-      - [Errores setParameters](#errores-setparameters)
-    - [Función clearParameters y resetParameters](#función-clearparameters-y-resetparameters)
-    - [Función initialize](#función-initialize)
-      - [Errores initialize](#errores-initialize)
-    - [Función login](#función-login)
-      - [Errores login](#errores-login)
-    - [Función getToken](#función-gettoken)
-      - [Errores getToken](#errores-gettoken)
-    - [Función refreshToken](#función-refreshtoken)
-      - [Errores refreshToken](#errores-refreshtoken)
-    - [Función getUserInfo](#función-getuserinfo)
-      - [Errores getUserInfo](#errores-getuserinfo)
-    - [Función validateToken](#función-validatetoken)
-      - [Errores validateToken](#errores-validatetoken)
-    - [Función logout](#función-logout)
-      - [Errores logout](#errores-logout)
-  - [Errores](#errores)
+- [Introducción](#introducción)
+- [Consideraciones previas](#consideraciones-previas)
+- [Instalación y configuración](#instalación-y-configuración)
+  - [Instalación](#instalación)
+  - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
+  - [Configuración de redirect URI](#configuración-de-redirect-uri)
+  - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
+- [Utilización](#utilización)
+- [Funcionalidades](#funcionalidades)
+- [Errores](#errores)
   
-
 ## Introducción
 
 En este documento se presentan las distintas funcionalidades brindadas por el componente SDK y una guía para lograr la integración del componente con la aplicación. Además, se exponen definiciones previas necesarias para entender el protocolo utilizado para la autenticación y autorización del usuario final.
@@ -225,7 +202,6 @@ Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *
 1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
 2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
 3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
-
 
 ## Utilización
 
@@ -438,7 +414,7 @@ try {
 }
 ```
 
-Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresca los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función. 
+Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresca los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función.
 
 #### Errores refreshToken
 
