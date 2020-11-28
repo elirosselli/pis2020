@@ -12,6 +12,7 @@
     - [Configuración de redirect URI](#configuración-de-redirect-uri)
       - [Android](#android)
       - [iOS](#ios)
+    - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
   - [Utilización](#utilización)
   - [Funcionalidades](#funcionalidades)
     - [Función getParameters](#función-getparameters)
@@ -33,7 +34,7 @@
     - [Función logout](#función-logout)
       - [Errores logout](#errores-logout)
   - [Errores](#errores)
-  - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
+  
 
 ## Introducción
 
@@ -213,6 +214,19 @@ En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en 
 
 Tanto en el caso de Android como en el de iOS únicamente debe agregar la porción de su *redirect* URI que se encuentra previa a los símbolos "://".
 
+### Certificado *self-signed* en modo *testing*
+
+En modo de *testing*, es necesario agregar el certificado de la API de *testing* de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+
+Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
+
+Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *testing* de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
+
+1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
+2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
+3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
+
+
 ## Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
@@ -276,7 +290,7 @@ const LoginButton = () => {
 | `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirectUri* configurado y se devuelve el *code* y un *state*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
-| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken()` previamente.                                                                                                    |
+| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado. Debe haberse llamado a `getToken()` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 | `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido. Es necesario volver a *setear* el *scope* una vez cerrada la sesión si se desea realizar un login sin antes haber invocado a la función de inicialización.                                                                                                                                         |
@@ -424,7 +438,7 @@ try {
 }
 ```
 
-Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
+Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresa los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función. 
 
 #### Errores refreshToken
 
@@ -508,7 +522,7 @@ Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID
 
 ### Función logout
 
-La función `logout` permite al usuario final cerrar su sesión con ID Uruguay.
+La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Destacar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
 
 ``` javascript
 try {
@@ -571,15 +585,3 @@ Los errores definidos son:
 | `ErrorInvalidState`     | invalid_state          | Invalid state parameter.                                                                                                                                                     | Cuando el *state* obtenido en una *response* no coincide con el *state* enviado en la *request* correspondiente.                                                   | No aplica.               |
 | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
-
-## Certificado *self-signed* en modo *testing*
-
-En modo de *testing*, es necesario agregar el certificado de la API de *testing* de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
-
-Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
-
-Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *testing* de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
-
-1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
-2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
-3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
