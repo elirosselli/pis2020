@@ -6,7 +6,7 @@
 - [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
   - [Funcionalidades del módulo Configuration](#Funcionalidades-del-módulo-configuration)
-  - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-cecurity)
+  - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-security)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](#funcionalidad-de-gettoken)
@@ -397,7 +397,7 @@ En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla
 Linking.addEventListener('url', event => handleOpenUrl(event, state));
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un código y descripción de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la URL deseada para enviar al *Login Endpoint*. Esta URL contendrá el prefijo que indica si se utiliza la API de producción o *testing*, el *clientId*, la *redirectUri*, el *state* y opcionalmente *scope*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo *configuration*. Si alguno de estos parámetros no se encuentra inicializado, se remueve el *Event Listener* y se rechaza la promesa con un código y descripción de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la URL deseada para enviar al *Login Endpoint*. Esta URL contendrá el prefijo que indica si se utiliza la API de producción o *testing*, el *clientId*, la *redirectUri*, el *response_type*, el *state* generado y opcionalmente *scope*. Esto se puede ver a continuación:
 
 ```javascript
 await Linking.openURL(loginEndpoint(state));
@@ -407,7 +407,7 @@ Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve a
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento '*url*'. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la URL que en caso de éxito contiene el *code* y *state* y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros y que el *state* recibido sea igual al enviado, se invoca a la función **setParameters** para *setear* el *code*. Si este es válido entonces es *seteado* en el módulo de configuración. Luego se resuelve la promesa retornando al usuario dicho *code* y *state* junto a un código y descripción de éxito. Si el *code* no es válido, el *state* no coincide, o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un código y descripción del error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un código y descripción del error acorde.
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la *response* a través de expresiones regulares. En caso de encontrarse ambos parámetros y que el *state* recibido sea igual al enviado en el *Login Request*, se invoca a la función **setParameters** para *setear* el *code*. Si este es válido entonces es *seteado* en el módulo *configuration*. Luego se resuelve la promesa retornando al usuario el *code* y *state* obtenidos, junto a un código y descripción de éxito. Si el *code* no es válido, el *state* no coincide, el usuario niega el acceso a los datos o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un código y descripción del error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un código y descripción del error acorde.
 
 #### Errores
 
@@ -418,8 +418,8 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el usuario final no autoriza a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
-- Cuando el *code* retornado por el OP es inválido, u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
-- Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
+- Cuando el *state* obtenido en la *response* no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
+- Cuando el *code* retornado por el OP es inválido, no se encuentra en la *response* u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
 - Cuando se entra al bloque *catch* del código: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de getToken
@@ -434,7 +434,7 @@ Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-conc
 
 #### Archivos y parámetros
 
-La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionaldiad de **refreshToken**. La misma involucra los siguientes archivos:
+La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionalidad de **refreshToken**. La misma involucra los siguientes archivos:
 
 - **sdk/requests/getTokenOrRefresh.js**: Donde se implementan las funcionalidades de **getToken** y **refreshToken**.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca a **getTokenOrRefresh**.
@@ -509,7 +509,7 @@ Los errores devueltos en cada caso son:
 
 #### Generalidades
 
-La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON junto a un código y descripción de éxito. En caso de error se devolvera un código y descripción indicando el error ocurrido.
+La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON junto a un código y descripción de éxito. En caso de error se devolverá un código y descripción indicando el error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -527,9 +527,9 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 - **sdk/security/index.js**: Donde se implementa la función **validateSub**, encargada de validar el parámetro *sub*, contenido en la *response* del OP.
 
-La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos, junto a un código y descripción de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
+La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correspondiente a la información del usuario final según los *scopes* definidos, junto a un código y descripción de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
-A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes *seteados*.
+A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos *scopes* *seteados*.
 
 *Scope*: *openId*:
 
