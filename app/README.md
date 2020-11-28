@@ -85,6 +85,6 @@ En otra terminal, ejecutar además el comando `npx react-native run-android` en 
 
 ### 4b. Ejecutar en iOS
 
-Ejectuar el comando `npx react-native run-ios` dentro de la carpeta /app.
+Ejecutar el comando `npx react-native run-ios` dentro de la carpeta /app.
 
-Al ejectuar este comando, se abrirá un emulador iOS ejecutando la aplicación.
+Al ejecutar este comando, se abrirá un emulador iOS ejecutando la aplicación.

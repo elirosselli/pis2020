@@ -136,10 +136,10 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
-    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
+    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la posesión del mismo, ya que fue intercambiado de forma segura. |
     | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
 
-- *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
+- *Logout Response*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
 
 Cabe destacar que ante un posible error la *response* generada por el OP contiene los siguientes parámetros:
 
@@ -390,11 +390,11 @@ Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya se
 
 #### Errores login
 
-Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.ACCESS_DENIED`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_STATE` y `ERRORS.FAILED_REQUEST`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.ACCESS_DENIED`, `ERRORS.INVALID_STATE`, `ERRORS.INVALID_AUTHORIZATION_CODE` y `ERRORS.FAILED_REQUEST`.
 
 ### Función getToken
 
-Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken`:
+Una vez realizado el `login`, es posible obtener el *token* correspondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken`:
 
 ``` javascript
 try {

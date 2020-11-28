@@ -15,7 +15,7 @@ const validateVSCHAR = (type, value) => {
     validVSCHAR &&
     !value.match(/[^\x20-\x7E]/) &&
     !value.match(
-      /(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
+      /(\^@|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logout_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
     );
   if (!validVSCHAR) {
     switch (type) {
