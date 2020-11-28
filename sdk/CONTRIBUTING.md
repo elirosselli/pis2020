@@ -325,7 +325,7 @@ En particular, los parámetros mencionados son:
 
 El último parámetro puede ser vacío.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios son válidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un código y descripción indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente.
+El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios son válidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un código y descripción indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente mediante llamadas a **setParameters**. Solo se pueden volver a *setear* a vacíos mediante una llamada a **resetParameters**. 
 
 #### Archivos y parámetros
 
@@ -336,11 +336,11 @@ La implementación de la funcionalidad de **initialize** involucra los siguiente
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 
-La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *production* y *scope*, y retorna códigos y descripción de éxito o de error según corresponda.
+La función **initialize** recibe los parámetros *clientId*, *clientSecret*, *redirectUri*, *production* y *scope*, y retorna códigos y descripción de éxito, y en caso de error lanza una excepción con el código y descripción correspondientes.
 
 #### Código
 
-En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean. En caso de que no sean vacíos, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego se invoca a la función **setParameters**, y si los parámetros son válidos, estos son *seteados* en el módulo de configuración. **setParameters** retorna un objeto indicando si alguno de los parámetros es inválido. Este incluye un código y una descripción del error del tipo correspondiente. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
+En primer lugar, se chequea que los parámetros que no pueden ser vacíos (*clientId*, *clientSecret*, *redirectUri* y *production*) no lo sean, además de chequear que el parámetro *production* sea booleano. En caso de que los parámetros no sean vacíos y *production* sea booleano, se chequea si *scope* fue pasado como parámetro o no. En caso negativo, tendrá valor *undefined*, por lo cual se asigna a la variable *scopeToSet* el valor del *scope* en caso de existir o el *string* vacío. Luego se invoca a la función **setParameters**, y si los parámetros son válidos, estos son *seteados* en el módulo de configuración. **setParameters** retorna un objeto indicando si alguno de los parámetros es inválido. Este incluye un código y una descripción del error del tipo correspondiente. En caso de que alguno de los parámetros necesarios sea vacío, se invoca a la función **initializeErrors**, que devolverá un error según el primer parámetro vacío que encuentre, y se lanzará una excepción con el error obtenido.
 
 #### Errores
 
@@ -435,7 +435,7 @@ Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-conc
 
 #### Archivos y parámetros
 
-La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionaldiad de **refreshToken**. La misma involucra los siguientes archivos:
+La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionalidad de **refreshToken**. La misma involucra los siguientes archivos:
 
 - **sdk/requests/getTokenOrRefresh.js**: Donde se implementan las funcionalidades de **getToken** y **refreshToken**.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca a **getTokenOrRefresh**.
