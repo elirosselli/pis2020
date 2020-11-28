@@ -21,11 +21,13 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
     // iss: quién creo y firmó el token.
     // aud: para quién está destinado el token.
     // verifyAt: Verifica validez comparada con la hora actual.
+    // gracePeriod: margen de error de tiempo en el cual se sigue tomando como válido el token.
     isValid = KJUR.jws.JWS.verifyJWT(idToken, pubKey, {
       alg: [jwksResponse.keys[0].alg],
       iss: [issuer],
       aud: [clientId],
       verifyAt: KJUR.jws.IntDate.getNow(),
+      gracePeriod: 60,
     });
 
     // Se obtiene el campo head del token.

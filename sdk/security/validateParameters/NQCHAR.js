@@ -14,7 +14,7 @@ const validateNQCHAR = (type, value) => {
     validNQCHAR &&
     !value.match(/[^\x21\x23-\x5B\x5D-\x7E ]/) &&
     !value.match(
-      /(\^@|\0|\n|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logot_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
+      /(\^@|\0|\n|redirect_uri|client_id|client_secret|code|access_token|refresh_token|token_type|expires_in|id_token_hint|id_token|post_logout_redirect_uri|state|scope|response_type|nonce|prompt|acr_values|grant_type)/,
     );
   if (!validNQCHAR && type === PARAMETERS.scope) {
     throw ERRORS.INVALID_SCOPE;
