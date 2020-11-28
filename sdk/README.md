@@ -223,7 +223,7 @@ try {
     'miScope',
   );
 } catch (error) {
-  /*Manejar el error*/ 
+  /*Manejar el error*/
 }
 ```
 
@@ -247,7 +247,7 @@ const LoginButton = () => {
         Manejar el error
       */
     }
-};
+  };
 
   return (
     <TouchableOpacity onPress={handleLogin}>

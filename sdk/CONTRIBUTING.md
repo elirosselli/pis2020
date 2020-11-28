@@ -325,7 +325,7 @@ En particular, los parámetros mencionados son:
 
 El último parámetro puede ser vacío.
 
-El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios son válidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un código y descripción indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente mediante llamadas a **setParameters**. Solo se pueden volver a *setear* a vacíos mediante una llamada a **resetParameters**. 
+El funcionamiento general de **initialize** consiste en establecer los parámetros mencionados. En primer lugar, se chequea que los parámetros no sean vacíos (excepto por *scope*). Si alguno o varios de estos son vacíos entonces se lanza una excepción, retornando el error correspondiente según el primer parámetro vacío encontrado. En cambio, si los parámetros necesarios son válidos, se *setean* en el componente de configuración utilizando la función **setParameters** y se retorna un código y descripción indicando que no hubo error. Una vez que se *setean* estos parámetros (excepto por el *scope*) no es posible *setear* su valor a vacío nuevamente mediante llamadas a **setParameters**. Solo se pueden volver a *setear* a vacíos mediante una llamada a **resetParameters**.
 
 #### Archivos y parámetros
 
