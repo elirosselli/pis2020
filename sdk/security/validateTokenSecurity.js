@@ -27,7 +27,7 @@ const validateTokenSecurity = (jwksResponse, idToken, clientId, issuer) => {
       iss: [issuer],
       aud: [clientId],
       verifyAt: KJUR.jws.IntDate.getNow(),
-      gracePeriod: 5,
+      gracePeriod: 60,
     });
 
     // Se obtiene el campo head del token.

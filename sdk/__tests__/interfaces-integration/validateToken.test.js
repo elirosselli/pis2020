@@ -128,7 +128,7 @@ describe('configuration & security modules and validate token integration', () =
       iss: [issuer],
       aud: [parameters.clientId],
       verifyAt: time,
-      gracePeriod: 5,
+      gracePeriod: 60,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
   });
@@ -188,7 +188,7 @@ describe('configuration & security modules and validate token integration', () =
       iss: [issuerProduction],
       aud: [parameters.clientId],
       verifyAt: time,
-      gracePeriod: 5,
+      gracePeriod: 60,
     });
     expect(mockMutex).toHaveBeenCalledTimes(1);
   });
@@ -462,7 +462,7 @@ describe('configuration & security modules and validate token integration', () =
         iss: [issuer],
         aud: [parameters.clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
     }
     parameters = getParameters();
@@ -520,7 +520,7 @@ describe('configuration & security modules and validate token integration', () =
         iss: [issuer],
         aud: [parameters.clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
     }
     parameters = getParameters();
@@ -578,7 +578,7 @@ describe('configuration & security modules and validate token integration', () =
         iss: [issuer],
         aud: [parameters.clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
     }
     parameters = getParameters();
@@ -638,7 +638,7 @@ describe('configuration & security modules and validate token integration', () =
         iss: [issuer],
         aud: [parameters.clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
     }
     parameters = getParameters();

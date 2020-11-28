@@ -63,7 +63,7 @@ describe('validateToken', () => {
       iss: [issuer()],
       aud: [clientId],
       verifyAt: time,
-      gracePeriod: 5,
+      gracePeriod: 60,
     });
     expect(result).toStrictEqual({
       jwk: jwksResponse,
@@ -92,7 +92,7 @@ describe('validateToken', () => {
         iss: [issuer()],
         aud: [clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
@@ -120,7 +120,7 @@ describe('validateToken', () => {
         iss: [issuer()],
         aud: [clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
@@ -148,7 +148,7 @@ describe('validateToken', () => {
         iss: [issuer()],
         aud: [clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
@@ -176,7 +176,7 @@ describe('validateToken', () => {
         iss: [issuer()],
         aud: [clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
@@ -204,7 +204,7 @@ describe('validateToken', () => {
         iss: [issuer()],
         aud: [clientId],
         verifyAt: time,
-        gracePeriod: 5,
+        gracePeriod: 60,
       });
       expect(error).toStrictEqual(ERRORS.INVALID_ID_TOKEN);
     }
