@@ -214,13 +214,17 @@ import { initialize, login } from 'sdk-gubuy-test';
 Antes de poder utilizar las funciones, se debe inicializar el SDK mediante la función `initialize`:
 
 ```javascript
-initizalize(
-  'miRedirectUri',
-  'miClientId',
-  'miClientSecret',
-  'miProduction',
-  'miScope',
-);
+try {
+  initizalize(
+    'miRedirectUri',
+    'miClientId',
+    'miClientSecret',
+    miProduction,
+    'miScope',
+  );
+} catch (error) {
+  /*Manejar el error*/
+}
 ```
 
 Los valores para los parámetros son acordados con ID Uruguay al [registrarse](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integraci%C3%B3n+con+OpenID+Connect) exitosamente como RP, a excepción de *miScope* y *miProduction*.
@@ -243,7 +247,7 @@ const LoginButton = () => {
         Manejar el error
       */
     }
-};
+  };
 
   return (
     <TouchableOpacity onPress={handleLogin}>
@@ -330,7 +334,7 @@ resetParameters();
 
 ### Función initialize
 
-Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*. Estos dos últimos parámetros son opcionales. El primer parámetro opcional es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los *endpoints* de producción de ID Uruguay. Por defecto, se encontrará definido en *false*, lo que permitirá acceder a los *endpoints* de *testing*. El segundo parámetro opcional se corresponde con el parámetro *scope* que requiere la *Authentication Request*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
+Se debe inicializar el SDK con la función `initialize`, que recibe como parámetros: *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*. El último parámetro es opcional y se corresponde con el parámetro *scope* que requiere la *Authentication Request*. El parámetro *production* es un booleano que deberá inicializarse en *true* en el caso de que se quiera acceder a los *endpoints* de producción de ID Uruguay, y en *false* si se quiere acceder a los *endpoints* de *testing*. La función *initialize* debe ser llamada dentro de un bloque *try*, ya que en caso de no poder *setear* los parámetros, la misma lanzará una excepción.
 
 ```javascript
 try {
