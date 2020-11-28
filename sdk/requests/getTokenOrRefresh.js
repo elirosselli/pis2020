@@ -101,8 +101,7 @@ const getTokenOrRefresh = async type => {
       idToken: responseJson.id_token,
     });
     var end2 = now();
-    // console.log(`tiempo: ${ (end2-start2) + (end-start)}`);
-    // Además se retornan todos los parametros obtenidos al RP, junto con código y mensaje de éxito.
+    // Además se retornan todos los parámetros obtenidos al RP, junto con código y mensaje de éxito.
     return Promise.resolve({
       message: ERRORS.NO_ERROR,
       errorCode: ERRORS.NO_ERROR.errorCode,
@@ -115,7 +114,7 @@ const getTokenOrRefresh = async type => {
       tiempo: (end2-start2) + (end-start),
     });
   } catch (error) {
-    // Si existe algun error, se
+    // Si existe algún error, se
     // rechaza la promesa y se devuelve el
     // error.
     if (error.bodyString && error.bodyString.indexOf('invalid_grant') !== -1)

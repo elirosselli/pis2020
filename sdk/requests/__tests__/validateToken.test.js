@@ -20,6 +20,8 @@ jest.mock('async-mutex', () => ({
   })),
 }));
 
+const idToken = 'idToken';
+const clientId = 'clientId';
 const jwksResponse = {
   keys: [
     {
@@ -34,58 +36,38 @@ const jwksResponse = {
   ],
 };
 
-const idToken = 'idToken';
-const clientId = 'clientId';
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
-describe('validateToken', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+const validFetchMockImplemtation = () =>
+  Promise.resolve({
+    status: 200,
+    json: () => Promise.resolve(jwksResponse),
   });
 
-  fetch.mockImplementationOnce(() =>
-    Promise.reject(
-      Error({
-        status: 404,
-        bodyString:
-          '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
-        headers: {
-          'Cache-Control': 'no-store',
-          Connection: 'close',
-          'Content-Length': '176',
-          'Content-Type': 'text/html; charset=UTF-8',
-          Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
-          Pragma: 'no-cache',
-          Server: 'nginx/1.15.1',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY, SAMEORIGIN',
-        },
-      }),
-    ),
-  );
-
-  it('calls validateToken correctly but fetch rejects', async () => {
-    getParameters.mockReturnValue({
-      idToken,
-      clientId,
-    });
-
-    try {
-      await validateToken();
-    } catch (error) {
-      expect(error).toBe(ERRORS.FAILED_REQUEST);
-    }
-    expect(mockMutex).toHaveBeenCalledTimes(1);
-    expect.assertions(2);
-  });
-
-  fetch.mockImplementation(() =>
-    Promise.resolve({
-      status: 200,
-      json: () => Promise.resolve(jwksResponse),
+const invalidFetchMockImplementation = () =>
+  Promise.reject(
+    Error({
+      status: 404,
+      bodyString:
+        '<h1>Not Found</h1><p>The requested URL /oidc/v1/jwksw was not found on this server.</p>',
+      headers: {
+        'Cache-Control': 'no-store',
+        Connection: 'close',
+        'Content-Length': '176',
+        'Content-Type': 'text/html; charset=UTF-8',
+        Date: 'Thu, 05 Nov 2020 18:06:45 GMT',
+        Pragma: 'no-cache',
+        Server: 'nginx/1.15.1',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY, SAMEORIGIN',
+      },
     }),
   );
 
-  it('calls validateToken correctly and token is valid', async () => {
+describe('validateToken', () => {
+  it('calls validateToken', async () => {
     getParameters.mockReturnValue({
       idToken,
       clientId,
@@ -99,7 +81,11 @@ describe('validateToken', () => {
         errorDescription: ERRORS.NO_ERROR.errorDescription,
       }),
     );
+
+    fetch.mockImplementation(validFetchMockImplemtation);
+
     const result = await validateToken();
+
     expect(validateTokenSecurity).toHaveBeenCalledWith(
       jwksResponse,
       idToken,
@@ -115,7 +101,7 @@ describe('validateToken', () => {
     });
   });
 
-  it('calls validateToken correctly but token is not valid', async () => {
+  it('calls validateToken with invalid idToken', async () => {
     getParameters.mockReturnValue({
       idToken,
       clientId,
@@ -125,10 +111,56 @@ describe('validateToken', () => {
       Promise.reject(ERRORS.INVALID_ID_TOKEN),
     );
 
+    fetch.mockImplementation(validFetchMockImplemtation);
+
     try {
       await validateToken();
     } catch (error) {
       expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
+  });
+
+  it('calls validateToken with empty idToken', async () => {
+    getParameters.mockReturnValue({ clientId });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_ID_TOKEN);
+    }
+
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
+  });
+
+  it('calls validateToken with empty clientId', async () => {
+    getParameters.mockReturnValue({ idToken });
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.INVALID_CLIENT_ID);
+    }
+
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
+  });
+
+  it('calls validateToken, fetch rejects', async () => {
+    getParameters.mockReturnValue({
+      idToken,
+      clientId,
+    });
+
+    fetch.mockImplementation(invalidFetchMockImplementation);
+
+    try {
+      await validateToken();
+    } catch (error) {
+      expect(error).toBe(ERRORS.FAILED_REQUEST);
     }
     expect(mockMutex).toHaveBeenCalledTimes(1);
     expect.assertions(2);
