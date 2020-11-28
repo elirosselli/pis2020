@@ -6,7 +6,7 @@
 - [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
   - [Funcionalidades del módulo Configuration](#Funcionalidades-del-módulo-configuration)
-  - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-cecurity)
+  - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-security)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
   - [Funcionalidad de *getToken*](#funcionalidad-de-gettoken)
@@ -72,7 +72,7 @@ Las funcionalidades de este módulo se encargan de establecer, modificar o borra
 Al comienzo de la ejecución todos los parámetros se encuentran vacíos, a excepción del parámetro *production* que tiene valor *false*. Las funciones encontradas en este módulo son:
 
 - ***getParameters***: Encargada de obtener y retornar el valor de los parámetros.
-- ***setParameters***: Encargada de establecer el valor de los parámetros soliticados.
+- ***setParameters***: Encargada de establecer el valor de los parámetros solicitados.
 - ***clearParameters***: Encargada de borrar el valor de los parámetros, excepto por los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*.
 - ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*.
 - ***eraseCode***: Encargada de borrar el valor del parámetro *code*.
@@ -160,7 +160,7 @@ Los errores devueltos en cada caso son:
 
 ##### Generalidades
 
-Estas funciones borran el valor de todos los parámetros, con las siguientes expeciones:
+Estas funciones borran el valor de todos los parámetros, con las siguientes excepciones:
 
 - **clearParameters**: no borra los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*. Estos parámetros no son borrados ya que son necesarios para la mayoría de los *requests* y se asume que cambiarán con poca frecuencia o ninguna durante la ejecución del componente.
 - **resetParameters**: no borra el parámetro *production*, para el cuál se *setea* su valor en *false*.
@@ -228,7 +228,7 @@ La función **getRandomState** no recibe ningún parámetro, y retorna el *state
 
 ##### Código
 
-El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería *MersenneTwister* obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. Dicha librería utiliza el algortimo [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) para la generación de números pseudoaleatorios. El valor es retornado en forma de *string*.
+El código de la función consiste en generar una semilla aleatoria con la librería *Math*, luego con la librería *MersenneTwister* obtener un generador aleatorio con dicha semilla, y finalmente con ese generador obtener un número entero aleatorio. Dicha librería utiliza el algoritmo [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) para la generación de números pseudoaleatorios. El valor es retornado en forma de *string*.
 
 #### Funcionalidad de validateParameters
 
@@ -303,7 +303,7 @@ La función *validateTokenSecurity* recibe los siguientes parámetros:
 
 Para validar el *idToken* se hace uso de la librería [*jsrsasign*](https://github.com/kjur/jsrsasign).
 
-En primer lugar, esta función obteniene la clave pública del *endpoint* a partir de los atributos *n* y *m* del la *JWKS Response*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el *issuer*, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
+En primer lugar, esta función obtiene la clave pública del *endpoint* a partir de los atributos *n* y *m* del la *JWKS Response*. Tomando esta clave pública, la compara con la clave pública incluida en el *idToken*, además de validar otros parámetros como son el algoritmo de encriptación utilizado, el *issuer*, el auditor al cual va dirigido el *idToken* (*clientId*) y comprueba que no esté expirado.
 
 Posteriormente decodifica el *header* y el *payload*. Del *header* valida el *kid* que es un identificador único incluido tanto en el *idToken* como en el *JWKS Response*. Además, valida que el ACR (*Authentication Context Class Reference*) y el AMR (*Authentication Methods References*) asignados estén entre los definidos en el archivo de constantes.
 
@@ -357,11 +357,11 @@ Los errores devueltos en cada caso son:
 
 #### Generalidades
 
-La funcionalidad de **login** se encarga de autenticar al usuario final directamente ante el OP para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del **login** consiste en una función que devuelve una [promesa](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Usar_promesas). Para esto, primero se envía un *Authentication Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda validar al RP. Los parámetros obligatorios enviados son: *scope*, *responseType*, *clientId* y *redirectUri*.
+La funcionalidad de **login** se encarga de autenticar al usuario final directamente ante el OP, para lo cual se utiliza el navegador web del dispositivo móvil. El funcionamiento general del **login** consiste en una función que devuelve una [promesa](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Usar_promesas). Para esto, primero se envía un *Authentication Request* al OP a través del navegador web, donde se incluyen los parámetros necesarios para que el OP pueda validar al RP. Los parámetros obligatorios enviados son: *scope*, *responseType*, *clientId* y *redirectUri*.
 
-Para validar al RP, el OP verifica que el *clientId* y *redirectUri* enviados en la *Authentication Request* coinciden con los generados al momento del [registro](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integración+con+OpenID+Connect) del RP ante el OP. Una vez que el RP es validado, el usuario final puede realizar el proceso de autenticación y autorización directamente ante el OP a través del navegador web. En este proceso se deben ingresar las credenciales de Usuario gub.uy y autorizar al RP al acceso a los datos solicitados. Cuando esta acción finaliza el usuario final debe confirmar para volver a la aplicación.
+Para validar al RP, el OP verifica que el *clientId* y *redirectUri* enviados en la *Authentication Request* coincidan con los generados al momento del [registro](https://centroderecursos.agesic.gub.uy/web/seguridad/wiki/-/wiki/Main/ID+Uruguay+-+Integración+con+OpenID+Connect) del RP ante el OP. Una vez que el RP es validado, el usuario final puede realizar el proceso de autenticación y autorización directamente ante el OP a través del navegador web. En este proceso el usuario final debe ingresar sus credenciales de Usuario gub.uy y autorizar al RP al acceso de los datos solicitados. Cuando esta acción finaliza debe confirmar para volver a la aplicación.
 
-En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un código y descripción de éxito. En caso contrario, ya sea porque alguno de los parámetros es inválido, porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna un código y descripción acordes al error ocurrido.
+En caso de éxito, es decir que la RP sea validada ante el OP y el usuario final realice el proceso de autorización y autenticación correctamente, la función de **login** devuelve los parámetros *code* y *state*, junto a un código y descripción de éxito. En caso contrario, ya sea porque alguno de los parámetros es inválido, porque no se pudo autenticar al RP, porque el usuario final no autoriza a la aplicación o porque no se puede realizar el *request*, se retorna un código y una descripción acordes al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -372,14 +372,14 @@ La implementación de la funcionalidad de *login* involucra los siguientes archi
 - **sdk/requests/login.js**: Donde se implementa la función **login**. Esta función se encarga de realizar el *Login Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **login**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración de dónde se obtienen los parámetros necesarios.
+- **sdk/configuration/index.js**: Donde se implementa el Módulo *Configuration* y por ende de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
-- **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
+- **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo *configuration*.
 - **sdk/utils/helpers.js**: Donde se retornan los errores correspondientes en caso de un parámetro vacío.
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 - **sdk/security/index.js**: Donde se implementa la función **generateRandomState**, encargada de generar un *state* aleatorio.
 
-La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo de configuración y retorna una promesa. Cuando esta es resulta se retorna el *code*, *state* y un código y descripción de éxito. En caso de ser rechazada se retorna el código y descripción del error correspondiente.
+La función **login** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar en el *request* a través del módulo *configuration* y retorna una promesa. Cuando esta es resuelta se retorna el *code*, *state* y un código y descripción de éxito. En caso de ser rechazada se retorna el código y descripción del error correspondiente.
 
 #### Código
 
@@ -390,15 +390,14 @@ const login = async () => {
 ```
 
 El fin de la función [*async*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/funcion_asincrona) es simplificar el uso de promesas. Esta función devolverá una promesa llamada *promise*, la cual es creada al principio del código.
-En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en la *request* de *login*.
 
-Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP se compara el *state* generado con el obtenido en la respuesta, debiendo ser iguales. Esto se puede ver en la siguiente línea:
+En el cuerpo de la función, dentro del bloque [*try*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), en primer lugar se genera el *state* (un *string* aleatorio) a través de la función **generateRandomState**, que será utilizado en el *Login Request*. Luego, se declara un [*Event Listener*](https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener) que escuchará por eventos del tipo '*url*', y ejecutará la función **handleOpenUrl** en caso de detectar un evento de este tipo. Para poder interactuar con el *browser*, se utiliza [Linking](https://reactnative.dev/docs/linking). Además se pasa como parámetro el *state* generado a la función **handleOpenUrl**, ya que una vez obtenida la respuesta del OP se compara el *state* generado con el obtenido en la respuesta, debiendo estos ser iguales. Esto se puede ver en la siguiente línea:
 
 ```javascript
 Linking.addEventListener('url', event => handleOpenUrl(event, state));
 ```
 
-En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo de configuración. Si alguno de estos parámetros no se encuentra inicializado, se rechaza la promesa con un código y descripción de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la URL deseada para enviar al *Login Endpoint*. Esta URL contendrá el prefijo que indica si se utiliza la API de producción o *testing*, el *clientId*, la *redirectUri*, el *state* y opcionalmente *scope*. Esto se puede ver a continuación:
+En este punto se tiene un *Event Listener* que queda esperando por un evento del tipo '*url*'. Luego, se verifica que los parámetros necesarios para realizar la autenticación se encuentren ya definidos en el módulo *configuration*. Si alguno de estos parámetros no se encuentra inicializado, se remueve el *Event Listener* y se rechaza la promesa con un código y descripción de error correspondiente, obtenido a través de la función **initializeErrors**. Por otro lado, si se encuentran inicializados, la función intenta abrir el navegador con la URL deseada para enviar al *Login Endpoint*. Esta URL contendrá el prefijo que indica si se utiliza la API de producción o *testing*, el *clientId*, la *redirectUri*, el *response_type*, el *state* generado y opcionalmente *scope*. Esto se puede ver a continuación:
 
 ```javascript
 await Linking.openURL(loginEndpoint(state));
@@ -408,7 +407,7 @@ Al abrir el *browser*, *Linking.openURL* devuelve una promesa, que se resuelve a
 
 Una vez realizado el *request* se retorna un *response* que corresponde con un HTTP *redirect* a la *redirectUri*, lo cual es detectado por el *Event Listener* como un evento '*url*'. Esto es visible para el usuario final a través de un mensaje desplegado en el *browser*, que pregunta si desea volver a la aplicación. Luego, se ejecuta la función **handleOpenUrl**, donde el evento capturado es un objeto que tiene *key url* y *value* un *string*. Este *value* será la URL que en caso de éxito contiene el *code* y *state* y en caso contrario un error correspondiente.
 
-Adicionalmente, se intenta obtener el *code* y el *state* enviado en la solicitud a través de expresiones regulares. En caso de encontrarse ambos parámetros y que el *state* recibido sea igual al enviado, se invoca a la función **setParameters** para *setear* el *code*. Si este es válido entonces es *seteado* en el módulo de configuración. Luego se resuelve la promesa retornando al usuario dicho *code* y *state* junto a un código y descripción de éxito. Si el *code* no es válido, el *state* no coincide, o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un código y descripción del error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un código y descripción del error acorde.
+Adicionalmente, se intenta obtener el *code* y el *state* enviado en la *response* a través de expresiones regulares. En caso de encontrarse ambos parámetros y que el *state* recibido sea igual al enviado en el *Login Request*, se invoca a la función **setParameters** para *setear* el *code*. Si este es válido entonces es *seteado* en el módulo *configuration*. Luego se resuelve la promesa retornando al usuario el *code* y *state* obtenidos, junto a un código y descripción de éxito. Si el *code* no es válido, el *state* no coincide, el usuario niega el acceso a los datos o no es posible obtener los parámetros de la *response* del OP, se rechaza la promesa con un código y descripción del error correspondiente. Finalmente, se remueve el *Event Listener* para no seguir pendiente por más eventos. En el cuerpo de la función de **login** también se encuentra un bloque [*catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch), que en caso de error remueve el *Event Listener*, rechaza la promesa y devuelve un código y descripción del error acorde.
 
 #### Errores
 
@@ -419,8 +418,8 @@ Los errores devueltos en cada caso son:
 - Cuando el parámetro *redirectUri* es vacío: `ERRORS.INVALID_REDIRECT_URI`
 - Cuando el parámetro *clientSecret* es vacío: `ERRORS.INVALID_CLIENT_SECRET`
 - Cuando el usuario final no autoriza a la aplicación móvil RP a acceder a sus datos: `ERRORS.ACCESS_DENIED`
-- Cuando el *code* retornado por el OP es inválido, u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
-- Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
+- Cuando el *state* obtenido en la *response* no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
+- Cuando el *code* retornado por el OP es inválido, no se encuentra en la *response* u ocurre otro error: `ERRORS.INVALID_AUTHORIZATION_CODE`
 - Cuando se entra al bloque *catch* del código: `ERRORS.FAILED_REQUEST`
 
 ### Funcionalidad de getToken
@@ -435,7 +434,7 @@ Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-conc
 
 #### Archivos y parámetros
 
-La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionaldiad de **refreshToken**. La misma involucra los siguientes archivos:
+La implementación de la funcionalidad de **getToken** se encuentra implementada en la función **getTokenOrRefresh**, ya que su implementación es compartida con la funcionalidad de **refreshToken**. La misma involucra los siguientes archivos:
 
 - **sdk/requests/getTokenOrRefresh.js**: Donde se implementan las funcionalidades de **getToken** y **refreshToken**.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca a **getTokenOrRefresh**.
@@ -510,7 +509,7 @@ Los errores devueltos en cada caso son:
 
 #### Generalidades
 
-La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON junto a un código y descripción de éxito. En caso de error se devolvera un código y descripción indicando el error ocurrido.
+La función **getUserInfo** se encarga de la comunicación entre la aplicación de usuario y el *User Info Endpoint*, de forma de obtener los datos correspondientes al usuario final *logueado*. Por ende, esta función depende del *token* obtenido en la función **getToken**, de manera de realizar mediante el método GET, un pedido al *User Info Endpoint*. La información del usuario final devuelta por la función, dependerá del *scope* *seteado* al realizar el **login**. Dicha información será devuelta en formato JSON junto a un código y descripción de éxito. En caso de error se devolverá un código y descripción indicando el error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -528,9 +527,9 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 - **sdk/utils/errors.js**: Donde se encuentran implementados los errores a retornar.
 - **sdk/security/index.js**: Donde se implementa la función **validateSub**, encargada de validar el parámetro *sub*, contenido en la *response* del OP.
 
-La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correpondiente a la información del usuario final según los *scopes* definidos, junto a un código y descripción de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
+La función **getUserInfo** no recibe parámetros, sino que obtiene los parámetros necesarios a utilizar a través del módulo de configuración. La función retorna una promesa, que cuando se resuelve retorna un objecto en formato JSON correspondiente a la información del usuario final según los *scopes* definidos, junto a un código y descripción de éxito. En caso contrario, cuando se rechaza la promesa, se retorna un código y descripción indicando el error correspondiente.
 
-A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos scopes *seteados*.
+A continuación se presenta una lista con ejemplos de posibles valores de retorno de la función *getUserInfo* en función de los distintos *scopes* *seteados*.
 
 *Scope*: *openId*:
 

@@ -5,7 +5,7 @@ const base64URLtoBase64 = input => {
   // Reemplazar caracteres no compatibles con base64.
   let res = input.replace(/-/g, '+').replace(/_/g, '/');
 
-  // Rellenar con caracteres de relleno estandar de base64.
+  // Rellenar con caracteres de relleno estándar de base64.
   const pad = input.length % 4;
   if (pad) {
     if (pad === 1) {

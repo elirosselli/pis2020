@@ -8,11 +8,11 @@
   - [Instalación](#instalación)
   - [Instalación de react-native-ssl-pinning](#instalación-de-react-native-ssl-pinning)
   - [Configuración de redirect URI](#configuración-de-redirect-uri)
+  - [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
 - [Utilización](#utilización)
 - [Funcionalidades](#funcionalidades)
 - [Errores](#errores)
-- [Certificado *self-signed* en modo *testing*](#certificado-self-signed-en-modo-testing)
-
+  
 ## Introducción
 
 En este documento se presentan las distintas funcionalidades brindadas por el componente SDK y una guía para lograr la integración del componente con la aplicación. Además, se exponen definiciones previas necesarias para entender el protocolo utilizado para la autenticación y autorización del usuario final.
@@ -114,10 +114,10 @@ El componente SDK funciona como intermediario de la comunicación entre el RP y 
 
     | Parámetro       | Tipo      | Descripción |
     |-----------------|-----------|-------------|
-    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la poseción del mismo, ya que fue intercambiado de forma segura. |
+    | *id_token_hint*         | Requerido |Corresponde al *id_token* obtenido en el mecanismo de inicio de sesión del RP. El mismo identifica al ciudadano y cliente en cuestión y valida la integridad del RP por el hecho de la posesión del mismo, ya que fue intercambiado de forma segura. |
     | *state*     | Opcional | Valor opaco para mantener el estado entre el pedido y la respuesta. Será retornado como parámetro en la *post_logout_redirect_uri* enviada. |
 
-- *Logout Reponse*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
+- *Logout Response*: respuesta HTTP (a una *Logout Request*) que no incluye parámetros. Esta respuesta es obtenida desde el *Logout Endpoint*.
 
 Cabe destacar que ante un posible error la *response* generada por el OP contiene los siguientes parámetros:
 
@@ -191,6 +191,18 @@ En iOS, debe seguir los siguiente pasos (puede consultarlos con más detalle en 
 
 Tanto en el caso de Android como en el de iOS únicamente debe agregar la porción de su *redirect* URI que se encuentra previa a los símbolos "://".
 
+### Certificado *self-signed* en modo *testing*
+
+En modo de *testing*, es necesario agregar el certificado de la API de *testing* de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
+
+Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
+
+Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *testing* de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
+
+1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
+2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
+3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
+
 ## Utilización
 
 Para utilizar las funciones del SDK, se deben importar desde `sdk-gubuy-test`. Por ejemplo:
@@ -254,7 +266,7 @@ const LoginButton = () => {
 | `initialize (redirectUri, clientId, clientSecret, production, scope)` | Inicializa el SDK con los parámetros *redirectUri*, *clientId*, *clientSecret*, *production* y *scope*, que son utilizados en la interacción con la API de ID Uruguay.                                                                                       |
 | `login()`                                                    | Abre una ventana del navegador web del dispositivo para que el usuario final digite sus credenciales e inicie sesión con ID Uruguay. Una vez iniciada la sesión, se realiza una redirección al *redirectUri* configurado y se devuelve el *code* y un *state*.  En caso de error, devuelve el mensaje correspondiente.|
 | `getToken()`                                                  | Devuelve el *token* correspondiente para el usuario final autenticado.                                                                                                   |
-| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado en caso de que este haya expirado. Debe haberse llamado a `getToken()` previamente.                                                                                                    |
+| `refreshToken()`                                              | Actualiza el *token* del usuario final autenticado. Debe haberse llamado a `getToken()` previamente.                                                                                                    |
 | `getUserInfo()`                                               | Devuelve la información provista por ID Uruguay sobre el usuario final autenticado.  Debe haberse llamado a `getToken` previamente.                                                                                                       |
 | `validateToken()`                                                    | Verifica que el *token* recibido durante `getToken()` o `refreshToken()` sea válido, tomando en cuenta la firma, los campos alg, iss, aud, kid y que no esté expirado.                                                                                                                                          |
 | `logout()`                                                    | Cierra la sesión del usuario final en ID Uruguay y retorna el *state* obtenido. Es necesario volver a *setear* el *scope* una vez cerrada la sesión si se desea realizar un login sin antes haber invocado a la función de inicialización.                                                                                                                                         |
@@ -364,15 +376,15 @@ try {
 }
 ```
 
-Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada.
+Se debe notar que si el usuario final no inicia la sesión con ID Uruguay (ya sea porque cierra el navegador, o porque ingresa credenciales incorrectas), no se redirigirá a la *redirectUri* especificada. Esto también sucede cuando el RP ingresa credenciales no válidas en el SDK (a través de *initialize* o *setParameters*).
 
 #### Errores login
 
-Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.ACCESS_DENIED`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_STATE` y `ERRORS.FAILED_REQUEST`.
+Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.ACCESS_DENIED`, `ERRORS.INVALID_STATE`, `ERRORS.INVALID_AUTHORIZATION_CODE` y `ERRORS.FAILED_REQUEST`.
 
 ### Función getToken
 
-Una vez realizado el `login`, es posible obtener el *token* correpondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken`:
+Una vez realizado el `login`, es posible obtener el *token* correspondiente al usuario final autenticado. Para esto se debe invocar a la función `getToken`:
 
 ``` javascript
 try {
@@ -402,7 +414,7 @@ try {
 }
 ```
 
-Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta.
+Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresca los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función.
 
 #### Errores refreshToken
 
@@ -486,7 +498,7 @@ Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID
 
 ### Función logout
 
-La función `logout` permite al usuario final cerrar su sesión con ID Uruguay.
+La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Observar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
 
 ``` javascript
 try {
@@ -549,15 +561,3 @@ Los errores definidos son:
 | `ErrorInvalidState`     | invalid_state          | Invalid state parameter.                                                                                                                                                     | Cuando el *state* obtenido en una *response* no coincide con el *state* enviado en la *request* correspondiente.                                                   | No aplica.               |
 | `ErrorBase64InvalidLength`       | base64URL_to_base64_invalid_length_error  | Input base64url string is the wrong length to determine padding.                                                                                                                        | Cuando el n (modulous) del idToken es inválido.                                                                         | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
 | `ErrorBase64ToHexConversion`     | invalid_base64_to_hex_conversion          | Error while decoding base64 to hex.                                                                                                                                                     | Cuando el n (modulous) o el e (exponente) del idToken son inválidos.                                                    | Revisar que el idToken sea el mismo recibido durante getToken o refreshToken.               |
-
-## Certificado *self-signed* en modo *testing*
-
-En modo de *testing*, es necesario agregar el certificado de la API de *testing* de ID Uruguay a los certificados confiables. Los certificados se pueden obtener ingresando a la URL <https://mi-testing.iduruguay.gub.uy/login> en Google Chrome, y haciendo *click* en el ícono de candado que se muestra a la izquierda de la URL. Allí, seleccionar "Certificado" (o "Certificate"), y en el cuadro de diálogo que se abre, seleccionar "Copiar en archivo" o "Exportar".
-
-Para el desarrollo Android, debe copiar el certificado certificate.cer en la carpeta `android/app/src/main/assets` de su proyecto *React Native*.
-
-Para el desarrollo en iOS, se deben obtener los tres certificados de la URL de *testing* de ID Uruguay, siguiendo el procedimiento explicado anteriormente. Luego, se debe abrir el proyecto en XCode y se deben seguir los siguientes pasos:
-
-1. Arrastrar (*drag and drop*) los certificados descargados al proyecto en XCode.
-2. Esto abrirá un cuadro de diálogo con varias opciones. Se debe marcar la opción "Copy items if needed", además de la opción "Create folder references". En la opción "Add to targets", marcar todas las opciones disponibles.
-3. Luego de realizado esto, clickear el botón "Finish" del cuadro de diálogo
