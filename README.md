@@ -502,7 +502,7 @@ Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID
 
 ### Aclaraciones validateToken
 
-El reloj del generador JWt o del verificador puede ser más rápido o más lento, lo que puede provocar que, si estos son muy diferentes, falle la validación. Para solucionar esto se agrega a la validación un período de gracia, de 60 segundos, que indica la diferencia aceptable entre los relojes de ambos sistemas.
+El reloj del generador JWT o del verificador puede ser más rápido o más lento, lo que puede provocar que, si estos son muy diferentes, falle la validación. Para solucionar esto se agrega a la validación un período de gracia, de 60 segundos, que indica la diferencia aceptable entre los relojes de ambos sistemas.
 
 ### Función logout
 
