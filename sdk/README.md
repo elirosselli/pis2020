@@ -500,6 +500,10 @@ try {
 
 Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_ID_TOKEN` y `ERRORS.FAILED_REQUEST`.
 
+### Aclaraciones validateToken
+
+El reloj del generador JWt o del verificador puede ser más rápido o más lento, lo que puede provocar que, si estos son muy diferentes, falle la validación. Para solucionar esto se agrega a la validación un período de gracia, de 60 segundos, que indica la diferencia aceptable entre los relojes de ambos sistemas.}
+
 ### Función logout
 
 La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Observar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
