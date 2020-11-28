@@ -438,7 +438,7 @@ try {
 }
 ```
 
-Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresa los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función. 
+Esta función requiere que la función `getToken` haya sido ejecutada de forma correcta. Destacar que el SDK no refresca los *tokens* automáticamente por lo que es tarea del RP refrescarlos con esta función. 
 
 #### Errores refreshToken
 
@@ -522,7 +522,7 @@ Los errores que puede devolver son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_CLIENT_ID
 
 ### Función logout
 
-La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Destacar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
+La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Observar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
 
 ``` javascript
 try {
