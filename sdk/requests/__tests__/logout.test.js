@@ -211,7 +211,7 @@ describe('logout', () => {
     expect.assertions(4);
   });
 
-  it('calls logout with required parameters and fetch returns empty id token', async () => {
+  it('calls logout with required parameters and fetch returns empty idToken', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({
@@ -237,7 +237,7 @@ describe('logout', () => {
     expect.assertions(4);
   });
 
-  it('calls logout with required parameters and fetch returns different state', async () => {
+  it('calls logout with required parameters and fetch returns different idToken', async () => {
     getParameters.mockReturnValue({ idToken, production: false });
     fetch.mockImplementation(() =>
       Promise.resolve({
