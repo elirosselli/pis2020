@@ -5,7 +5,7 @@
 - [Introducción](#introducción)
 - [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
-  - [Funcionalidades del módulo Configuration](#Funcionalidades-del-módulo-configuration)
+  - [Funcionalidades del módulo Configuration](#funcionalidades-del-módulo-configuration)
   - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-security)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
@@ -15,7 +15,7 @@
   - [Funcionalidad de *validateToken*](#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](#funcionalidad-de-logout)
   - [Llamadas concurrentes](#llamadas-concurrentes)
-- [Ejecución de pruebas unitarias y *linter*](#ejecución-de-pruebas-unitarias-y-linter)
+- [Ejecución de pruebas y *linter*](#ejecución-de-pruebas-y-linter)
 
 ## Introducción
 
@@ -520,7 +520,7 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 - **sdk/requests/getUserInfo.js**: Donde se implementa la función **getUserInfo**. Esta función se encarga de realizar la *GetUserInfo Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **getUserInfo**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesario.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el endpoint correspondiente.
@@ -632,7 +632,7 @@ const getUserInfo = async () => {
 
 Esta realiza una request mediante la función *fetch*. Utilizando la función de sincronismos *await* se espera una posible respuesta por parte del *User Info Endpoint*.
 
-En el cuerpo de la función de **getUserInfo**, primero se verifica que los parámetros *accessToken* e *idToken* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un código y descripción del error correspondiente. A continuación, se encuentra un bloque de *try* y uno de *catch*. En el de *try*, en caso de éxito se retorna una promesa con los valores mencionados anteriormente, y un código y descripción de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un código de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un código de error y una descripción del mismo.
+En el cuerpo de la función de **getUserInfo** se presenta un bloque de *try* y uno de *catch*. En el primero, se verifica que los parámetros *accessToken* e *idToken* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un código y descripción del error correspondiente. A continuación, se envía una *request* al OP a través de la función *fetch*. En caso de éxito, se retorna una promesa con los valores mencionados anteriormente, y un código y descripción de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un código de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un código de error y una descripción del mismo.
 
 #### Errores
 
@@ -745,7 +745,7 @@ Los errores devueltos en cada caso son:
 
 La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, al igual que en la funcionalidad de **login**, se genera el *state* (un *string* aleatorio) que será utilizado en la *request* de **logout**
 
-En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
+En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -756,7 +756,7 @@ La implementación de la funcionalidad de *logout* involucra los siguientes arch
 - **sdk/requests/logout.js**: Donde se implementa la función **logout**. Esta función se encarga de realizar la *Logout Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **logout**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios, y de donde se obtiene la función **clearParameters**. Esta última se utiliza para limpiar los parámetros correspondientes de dicho módulo luego de finalizado el proceso de logout.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el *endpoint* correspondiente.
@@ -783,17 +783,17 @@ await fetch(logoutEndpoint(state)...
 
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una URL que se corresponde con la utilizada para realizar el *request*.
 
-En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente.
+En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración haciendo uso de la función **clearParameters**. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente. Cabe destacar que para que estas URIs coincidan, deben coincidir el *state* e *idTokenHint* incluídos en ambas.
 
 #### Errores
 
 Los errores devueltos en cada caso son:
 
 - En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN_HINT`
-- Cuando el parámetro *idToken* no es vacío, y la URL contenida en la respuesta del OP no coincida con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
+- Cuando el parámetro *idToken* es vacío, o el retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_ID_TOKEN_HINT`
 - Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+- Cuando el *idTokenHint* y *state* retornados coinciden con los enviados en la *request*, pero la URL contenida en la respuesta del OP no coincide con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
+- En caso de error desconocido (no controlado) se retorna: `ERRORS.FAILED_REQUEST`
 
 ## Llamadas concurrentes
 
@@ -854,21 +854,21 @@ si el SDK se encuentra en modo *testing*, con el parámetro *production* en *fal
 
 en caso de que dicho parámetro se encuentre inicializado en *true*.
 
-## Ejecución de pruebas unitarias y *linter*
+## Ejecución de pruebas y *linter*
 
 Los comandos explicados a continuación se encuentran definidos en el archivo `package.json`, en la sección *scripts*.
 
-### Pruebas unitarias
+### Pruebas unitarias y de integración
 
-Para ejecutar las pruebas unitarias, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
+Para ejecutar las pruebas unitarias y de integración, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
 `npm run test`
 
-Además, se puede obtener el cubrimiento (*coverage*) de las pruebas unitarias ejecutando el siguiente comando:
+Además, se puede obtener el cubrimiento (*coverage*) de las pruebas ejecutando el siguiente comando:
 
 `npm run testCoverage`
 
-Se observa que este comando también ejecuta las pruebas unitarias y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
+Se observa que este comando también ejecuta las pruebas y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
 
 ### *Linter*
 
@@ -877,3 +877,14 @@ Para ejecutar el *linter* se deberá ejecutar el siguiente comando dentro de la 
 `npm run linter`
 
 Las reglas que aplica el *linter* se encuentran definidas en los archivos `.eslintrc.json` y `.prettierrc.js`.
+
+### Insider
+
+Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/)
+Para su instalación se debe [descargar la herramienta](https://github.com/insidersec/insider) y ejecutar el comando:
+
+`./insider --tech javascript  --target <path-to-sdk>`.
+
+### TestApp
+
+En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*.
