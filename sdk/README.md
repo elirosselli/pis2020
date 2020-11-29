@@ -242,7 +242,7 @@ const LoginButton = () => {
   const handleLogin = async () => {
     try {
       await login();
-    } catch (err) {
+    } catch (error) {
       /*
         Manejar el error
       */
@@ -323,12 +323,19 @@ Destacar que esta función no permite *setear* parámetros vacíos.
 
 Los errores que puede devolver esta función son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_PRODUCTION`, `ERRORS.INVALID_EXPIRES_IN`, `ERRORS.INVALID_SCOPE`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_TOKEN_TYPE`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN`.
 
-### Función clearParameters y resetParameters
+### Función clearParameters
 
-Estas funciones borran todos los parámetros a excepción de los mencionados anteriormente. Basta con llamarlas de la siguiente manera:
+Esta función limpia todos los parámetros del módulo de configuración, a excepción de *redirectUri*, *clientId*, *clientSecret* y *production*. Basta con llamarla de la siguiente manera:
 
 ```javascript
 clearParameters();
+```
+
+### Función resetParameters
+
+Esta función limpia todos los parámetros del módulo de configuración, a excepción de *production*, que lo *setea* en *false*. Basta con llamarla de la siguiente manera:
+
+```javascript
 resetParameters();
 ```
 
@@ -345,7 +352,7 @@ try {
     'miProduction',
     'miScope',
   );
-} catch (err){
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -365,7 +372,7 @@ try {
   const loginResponse = await login();
   code = loginResponse.code;
   /* Hacer algo con el code */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -375,7 +382,7 @@ El *code* retornado por la función se guarda internamente en el SDK durante la 
 ``` javascript
 try {
   await login();
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -394,7 +401,7 @@ Una vez realizado el `login`, es posible obtener el *token* correspondiente al u
 try {
   const token = await getToken();
   /* Hacer algo con el token */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -413,7 +420,7 @@ El *token* otorgado por ID Uruguay tiene un tiempo de expiración fijo, por lo q
 try {
   const token = await refreshToken();
   /* Hacer algo con el token */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -432,7 +439,7 @@ Luego de realizado el `getToken`, se puede invocar la función `getUserInfo` par
 try {
   const userInfo = await getUserInfo();
   /* Hacer algo con la userInfo */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -491,7 +498,7 @@ Para llamar a la función se debe utilizar:
 try {
   const respValidateToken = await validateToken();
   /* Procesar respuesta */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -511,7 +518,7 @@ La función `logout` permite al usuario final cerrar su sesión con el OP de ID 
 ``` javascript
 try {
   await logout();
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
