@@ -242,7 +242,7 @@ const LoginButton = () => {
   const handleLogin = async () => {
     try {
       await login();
-    } catch (err) {
+    } catch (error) {
       /*
         Manejar el error
       */
@@ -345,7 +345,7 @@ try {
     'miProduction',
     'miScope',
   );
-} catch (err){
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -365,7 +365,7 @@ try {
   const loginResponse = await login();
   code = loginResponse.code;
   /* Hacer algo con el code */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -375,7 +375,7 @@ El *code* retornado por la función se guarda internamente en el SDK durante la 
 ``` javascript
 try {
   await login();
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -394,7 +394,7 @@ Una vez realizado el `login`, es posible obtener el *token* correspondiente al u
 try {
   const token = await getToken();
   /* Hacer algo con el token */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -413,7 +413,7 @@ El *token* otorgado por ID Uruguay tiene un tiempo de expiración fijo, por lo q
 try {
   const token = await refreshToken();
   /* Hacer algo con el token */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -432,7 +432,7 @@ Luego de realizado el `getToken`, se puede invocar la función `getUserInfo` par
 try {
   const userInfo = await getUserInfo();
   /* Hacer algo con la userInfo */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -491,7 +491,7 @@ Para llamar a la función se debe utilizar:
 try {
   const respValidateToken = await validateToken();
   /* Procesar respuesta */
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
@@ -511,7 +511,7 @@ La función `logout` permite al usuario final cerrar su sesión con el OP de ID 
 ``` javascript
 try {
   await logout();
-} catch (err) {
+} catch (error) {
   /* Manejar el error */
 }
 ```
