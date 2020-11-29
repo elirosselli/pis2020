@@ -257,7 +257,7 @@ const LoginButton = () => {
 };
 ```
 
- En la [App de ejemplo](../app/LoginButton/index.js) se puede ver un ejemplo de uso más detallado.
+ En la [App de ejemplo](/app/LoginButton/index.js) se puede ver un ejemplo de uso más detallado.
 
 ## Funcionalidades
 
