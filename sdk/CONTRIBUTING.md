@@ -886,5 +886,5 @@ Para su instalación se debe [descargar la herramienta](https://github.com/insid
 
 ### TestApp
 
-En la *branch* [`test/develop`](https://github.com/elirosselli/pis2020/tree/test/develop/testApp) se tiene disponible un profiler que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
+En la *branch* [`test/develop`](https://github.com/elirosselli/pis2020/tree/test/develop/testApp) se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
 
