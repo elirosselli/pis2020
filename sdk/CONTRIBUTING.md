@@ -745,7 +745,7 @@ Los errores devueltos en cada caso son:
 
 La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, al igual que en la funcionalidad de **login**, se genera el *state* (un *string* aleatorio) que será utilizado en la *request* de **logout**
 
-En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
+En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -783,7 +783,7 @@ await fetch(logoutEndpoint(state)...
 
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una URL que se corresponde con la utilizada para realizar el *request*.
 
-En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente. Cabe destacar que para que estas URIs coincidan, deben coincidir el *state* e *idTokenHint* incluídos en ambas.
+En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración haciendo uso de la función **clearParameters**. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente. Cabe destacar que para que estas URIs coincidan, deben coincidir el *state* e *idTokenHint* incluídos en ambas.
 
 #### Errores
 
