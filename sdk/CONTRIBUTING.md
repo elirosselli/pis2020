@@ -880,11 +880,11 @@ Las reglas que aplica el *linter* se encuentran definidas en los archivos `.esli
 
 ### Insider
 
-Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/) 
+Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/)
 Para su instalación se debe [descargar la herramienta](https://github.com/insidersec/insider) y ejecutar el comando:
+
 `./insider --tech javascript  --target <path-to-sdk>`.
 
 ### TestApp
 
-En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
-
+En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*.
