@@ -745,7 +745,7 @@ Los errores devueltos en cada caso son:
 
 La funcionalidad de **logout** se encarga de cerrar la sesión del usuario final en el OP. El funcionamiento general del **logout** consiste en una función que devuelve una promesa. Para esto, primero se envía un *Logout Request* al OP a través de la función *fetch*, donde se incluyen los parámetros necesarios para que el OP pueda efectuar el cierre de sesión. El único parámetro obligatorio enviado es *idTokenHint*, el cual se corresponde con el *idToken* obtenido en la última *Get Token Request* o *Refresh Token Request*. Además de este parámetro obligatorio, al igual que en la funcionalidad de **login**, se genera el *state* (un *string* aleatorio) que será utilizado en la *request* de **logout**
 
-En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
+En caso de que el parámetro *idTokenHint* sea correcto y el *state* obtenido en la respuesta coincida con el generado, la función de **logout** cierra la sesión del usuario ante el OP y devuelve el parámetro *state*, junto a un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración. En caso contrario, se retorna un código y descripción acordes al error ocurrido.
 
 Esta funcionalidad utiliza el concepto de [llamadas concurrentes](#llamadas-concurrentes).
 
@@ -756,7 +756,7 @@ La implementación de la funcionalidad de *logout* involucra los siguientes arch
 - **sdk/requests/logout.js**: Donde se implementa la función **logout**. Esta función se encarga de realizar la *Logout Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **logout**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios, y de donde se obtiene la función **clearParameters**. Esta última se utiliza para limpiar los parámetros correspondientes de dicho módulo luego de finalizado el proceso de logout.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el *endpoint* correspondiente.
@@ -783,17 +783,17 @@ await fetch(logoutEndpoint(state)...
 
 Una vez realizado el request se retorna un *response* que, en caso de éxito, contendrá una URL que se corresponde con la utilizada para realizar el *request*.
 
-En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente.
+En caso que la URL retornada sea efectivamente dicha URI, se resuelve la promesa con un código y descripción de éxito. Adicionalmente, se limpian los parámetros correspondientes del módulo de configuración haciendo uso de la función **clearParameters**. En caso contrario se rechaza la promesa, con el código y descripción del error correspondiente. Cabe destacar que para que estas URIs coincidan, deben coincidir el *state* e *idTokenHint* incluídos en ambas.
 
 #### Errores
 
 Los errores devueltos en cada caso son:
 
 - En caso de éxito: `ERRORS.NO_ERROR`
-- Cuando el parámetro *idToken* es vacío: `ERRORS.INVALID_ID_TOKEN_HINT`
-- Cuando el parámetro *idToken* no es vacío, y la URL contenida en la respuesta del OP no coincida con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
+- Cuando el parámetro *idToken* es vacío, o el retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_ID_TOKEN_HINT`
 - Cuando el *state* retornado no coincide con el enviado en la *request*: `ERRORS.INVALID_STATE`
-- En caso de error desconocido (no controlado) se retorna `ERRORS.FAILED_REQUEST`
+- Cuando el *idTokenHint* y *state* retornados coinciden con los enviados en la *request*, pero la URL contenida en la respuesta del OP no coincide con el *logoutEndpoint*: `ERRORS.INVALID_URL_LOGOUT`
+- En caso de error desconocido (no controlado) se retorna: `ERRORS.FAILED_REQUEST`
 
 ## Llamadas concurrentes
 

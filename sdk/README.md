@@ -506,7 +506,7 @@ El reloj del generador JWT o del verificador puede ser más rápido o más lento
 
 ### Función logout
 
-La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Observar que la sesión que se había iniciado en el navegado web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
+La función `logout` permite al usuario final cerrar su sesión con el OP de ID Uruguay. Observar que la sesión que se había iniciado en el navegador web a través del `login` seguirá activa por lo que es tarea del usuario final cerrar dicha sesión.
 
 ``` javascript
 try {
