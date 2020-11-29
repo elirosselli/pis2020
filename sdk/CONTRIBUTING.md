@@ -860,15 +860,15 @@ Los comandos explicados a continuación se encuentran definidos en el archivo `p
 
 ### Pruebas unitarias y de integración
 
-Para ejecutar las pruebas unitarias, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
+Para ejecutar las pruebas unitarias y de integración, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
 `npm run test`
 
-Además, se puede obtener el cubrimiento (*coverage*) de las pruebas unitarias ejecutando el siguiente comando:
+Además, se puede obtener el cubrimiento (*coverage*) de las pruebas ejecutando el siguiente comando:
 
 `npm run testCoverage`
 
-Se observa que este comando también ejecuta las pruebas unitarias y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
+Se observa que este comando también ejecuta las pruebas y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
 
 ### *Linter*
 
