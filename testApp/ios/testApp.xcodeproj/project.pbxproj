@@ -212,7 +212,6 @@
 				80DDFF78ABA751F64291B219 /* Pods-testApp-tvOSTests.debug.xcconfig */,
 				1F2916E25C8BE02C6BD781BB /* Pods-testApp-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
