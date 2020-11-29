@@ -323,12 +323,19 @@ Destacar que esta función no permite *setear* parámetros vacíos.
 
 Los errores que puede devolver esta función son: `ERRORS.NO_ERROR`, `ERRORS.INVALID_PRODUCTION`, `ERRORS.INVALID_EXPIRES_IN`, `ERRORS.INVALID_SCOPE`, `ERRORS.INVALID_REDIRECT_URI`, `ERRORS.INVALID_TOKEN_TYPE`, `ERRORS.INVALID_CLIENT_ID`, `ERRORS.INVALID_CLIENT_SECRET`, `ERRORS.INVALID_AUTHORIZATION_CODE`, `ERRORS.INVALID_TOKEN` y `ERRORS.INVALID_ID_TOKEN`.
 
-### Función clearParameters y resetParameters
+### Función clearParameters
 
-Estas funciones borran todos los parámetros a excepción de los mencionados anteriormente. Basta con llamarlas de la siguiente manera:
+Esta función limpia todos los parámetros del módulo de configuración, a excepción de *redirectUri*, *clientId*, *clientSecret* y *production*. Basta con llamarla de la siguiente manera:
 
 ```javascript
 clearParameters();
+```
+
+### Función resetParameters
+
+Esta función limpia todos los parámetros del módulo de configuración. Basta con llamarla de la siguiente manera:
+
+```javascript
 resetParameters();
 ```
 
