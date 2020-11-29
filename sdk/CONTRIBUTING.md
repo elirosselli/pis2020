@@ -520,7 +520,7 @@ La implementación de la funcionalidad de *getUserInfo* involucra los siguientes
 - **sdk/requests/getUserInfo.js**: Donde se implementa la función **getUserInfo**. Esta función se encarga de realizar la *GetUserInfo Request*.
 - **sdk/requests/index.js**: Donde se implementa la función **makeRequest**. Esta función invoca la función **getUserInfo**.
 - **sdk/interfaces/index.js**: Donde se invoca la función de **makeRequest**.
-- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesario.
+- **sdk/configuration/index.js**: Módulo de configuración, de dónde se obtienen los parámetros necesarios.
 - **sdk/utils/constants.js**: Donde se encuentran las constantes a utilizar.
 - **sdk/utils/endpoints.js**: Donde se encuentran los *endpoints* a utilizar. Se obtienen los parámetros necesarios para realizar las *requests* invocando la función **getParameters** definida en el módulo de configuración.
 - **sdk/utils/helpers.js**: Donde se implementa la función *fetch* utilizada para comunicarse con el endpoint correspondiente.
@@ -632,7 +632,7 @@ const getUserInfo = async () => {
 
 Esta realiza una request mediante la función *fetch*. Utilizando la función de sincronismos *await* se espera una posible respuesta por parte del *User Info Endpoint*.
 
-En el cuerpo de la función de **getUserInfo**, primero se verifica que los parámetros *accessToken* e *idToken* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un código y descripción del error correspondiente. A continuación, se encuentra un bloque de *try* y uno de *catch*. En el de *try*, en caso de éxito se retorna una promesa con los valores mencionados anteriormente, y un código y descripción de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un código de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un código de error y una descripción del mismo.
+En el cuerpo de la función de **getUserInfo** se presenta un bloque de *try* y uno de *catch*. En el primero, se verifica que los parámetros *accessToken* e *idToken* se encuentren definidos en el módulo de configuración. En caso negativo, se rechaza la promesa con un código y descripción del error correspondiente. A continuación, se envía una *request* al OP a través de la función *fetch*. En caso de éxito, se retorna una promesa con los valores mencionados anteriormente, y un código y descripción de éxito. Si la *response* tiene un código de error, o el *sub* que retorna no es válido, se retorna un código de error y una descripción del mismo. Esto último se valida a través de la función **validateSub**. En el bloque de *catch*, se retorna un código de error y una descripción del mismo.
 
 #### Errores
 
@@ -880,11 +880,11 @@ Las reglas que aplica el *linter* se encuentran definidas en los archivos `.esli
 
 ### Insider
 
-Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/) 
+Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/)
 Para su instalación se debe [descargar la herramienta](https://github.com/insidersec/insider) y ejecutar el comando:
+
 `./insider --tech javascript  --target <path-to-sdk>`.
 
 ### TestApp
 
-En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
-
+En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*.
