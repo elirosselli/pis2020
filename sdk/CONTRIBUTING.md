@@ -15,7 +15,7 @@
   - [Funcionalidad de *validateToken*](#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](#funcionalidad-de-logout)
   - [Llamadas concurrentes](#llamadas-concurrentes)
-- [Ejecución de pruebas unitarias y *linter*](#ejecución-de-pruebas-unitarias-y-linter)
+- [Ejecución de pruebas y *linter*](#ejecución-de-pruebas-y-linter)
 
 ## Introducción
 
@@ -854,11 +854,11 @@ si el SDK se encuentra en modo *testing*, con el parámetro *production* en *fal
 
 en caso de que dicho parámetro se encuentre inicializado en *true*.
 
-## Ejecución de pruebas unitarias y *linter*
+## Ejecución de pruebas y *linter*
 
 Los comandos explicados a continuación se encuentran definidos en el archivo `package.json`, en la sección *scripts*.
 
-### Pruebas unitarias
+### Pruebas unitarias y de integración
 
 Para ejecutar las pruebas unitarias, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
