@@ -2,11 +2,10 @@
 
 ## Pasos previos
 
-Debera completar el codigo de App.js con sus credenciales de RP en el lugar indiciado.
-A su vez debera seguir la guia diponible en el archivo README.md del directorio sdk para configurar el deep-linking.
+Debera completar el código de App.js con sus credenciales de RP en el lugar indicado.
+A su vez deberá seguir la [guía diponible](https://github.com/elirosselli/pis2020/blob/develop/sdk/README.md) para configurar su redirect URI.
 
-## Ejecucion
+## Ejecución
 
-Ejecute 'npx react-native start' en una consola parado en el directorio testApp.
-En otra consola, en el mismo directorio, ejecute 'npx react-native run-android'. Luego de completado el comando la aplicacion deberia ejecutar en su dispositivo.
-Para ejecutar el profiler, presione en su dispositivo el boton 'Analizar Tiempos'. En consola se deberian imprimir los resultados.
+Siga los pasos bajo las secciones de "Ejecutar en Android" o "Ejecutar en iOS" de la [guía de ejecución](https://github.com/elirosselli/pis2020/blob/develop/app/README.md) de la app de ejemplo para lograr ejecutar esta aplicación.
+Para ejecutar el profiler, presione en su dispositivo el botón 'Analizar Tiempos'. En consola se deberían imprimir los resultados.
