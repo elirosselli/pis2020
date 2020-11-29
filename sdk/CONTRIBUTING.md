@@ -74,7 +74,7 @@ Al comienzo de la ejecución todos los parámetros se encuentran vacíos, a exce
 - ***getParameters***: Encargada de obtener y retornar el valor de los parámetros.
 - ***setParameters***: Encargada de establecer el valor de los parámetros solicitados.
 - ***clearParameters***: Encargada de borrar el valor de los parámetros, excepto por los parámetros *redirectUri*, *clientId*, *clientSecret* y *production*.
-- ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*.
+- ***resetParameters***: Encargada de borrar el valor de todos los parámetros, a excepción del parámetro *production*, que es *seteado* en *false*.
 - ***eraseCode***: Encargada de borrar el valor del parámetro *code*.
   
 Todas estas funciones involucran los siguientes archivos:
@@ -107,14 +107,14 @@ const getParameters = () => parameters;
 Esta función se encarga de establecer el valor de los parámetros encontrados en el módulo de configuración. Además, antes de establecer su valor los valida utilizando el módulo de seguridad. Esta validación implica verificar que dichos parámetros no contengan datos maliciosos o erróneos. Se considera que un parámetro es malicioso o erróneo si su valor es vacío cuando no debe serlo, contiene caracteres inválidos o el tipo de su valor no coincide con el tipo del parámetro correspondiente.
 Muchas funciones del SDK *setean* parámetros utilizando esta función para que el resto del componente pueda utilizarlos.
 
-El funcionamiento general de **setParameters** consiste en recorrer los valores pasados por parámetro, y *setearlos* en el módulo en caso de que no sean inválidos. Los chequeos de validez pueden sanitizar el parámetro eliminado caracteres o partes inválidas, de manera que no se retorna un error y se guarda el valor sanitizado. En caso de éxito se *setean* los valores de los parámetros retornando un código y descripción de éxito. En caso contrario, se retorna un código y descripción del error indicando cual es el parámetro inválido.
+El funcionamiento general de **setParameters** consiste en recorrer los valores pasados por parámetro, y *setearlos* en el módulo en caso de que no sean inválidos.  En caso de éxito se *setean* los valores de los parámetros retornando un código y descripción de éxito. En caso contrario, se retorna un código y descripción del error indicando cual es el parámetro inválido.
 
 ##### Archivos y Parámetros
 
-La función **setParameters** involucra los mismos archivos que **getParameters**, junto con:
-**sdk/security/validateParameters/index.js**: Donde se implementa la función de validación de parámetros del módulo de seguridad.
+La función **setParameters** involucra los mismos archivos que **getParameters**, junto con
+**sdk/security/validateParameters/index.js**, donde se implementa la función de validación de parámetros del módulo de seguridad.
 
-La función de **setParameters** recibe como parámetros los valores de los parámetros a *setear* en el módulo de configuración. En particular, recibe un objeto con parejas *(clave, valor)* donde la *clave* es el nombre del parámetro, y el *valor* contiene el valor a *setear* del parámetro. La función retorna el error de tipo *NO_ERROR* indicando que la operación resultó exitosa, o en caso contrario un error indicando el parámetro inválido.
+La función de **setParameters** recibe como parámetros los valores de los parámetros a *setear* en el módulo de configuración. En particular, recibe un objeto con parejas *(clave, valor)* donde la *clave* es el nombre del parámetro, y el *valor* contiene el valor a *setear* del parámetro. La función retorna un objeto *NO_ERROR*, indicando que la operación resultó exitosa, o en caso contrario un error indicando el parámetro inválido.
 
 ##### Código
 
@@ -138,7 +138,7 @@ Donde [*Object.keys()*](https://developer.mozilla.org/es/docs/Web/JavaScript/Ref
 
 En caso de que el valor correspondiente a la clave actual sea distinto de vacío, se ejecuta un bloque [*try-catch*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/try...catch). Se realiza este chequeo, ya que no se permiten *setear* valores vacíos. En el bloque *try*, se ejecuta la función **validateParameters** del módulo de seguridad, que se encarga de validar los valores de los parámetros como fue mencionado anteriormente. En caso de que el parámetro que esté siendo chequeado en la iteración sea válido, se *setea* el mismo en el objeto *validParameters*, en caso contrario, la función **validateParameters** lanzará una excepción que será capturada en el bloque *catch* donde se *setea* el error obtenido en la variable *error*.
 
-En caso de error, se lanza una excepción indicando el *error* retornado por la función de validación de parámetros, con la sentencia [*throw*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/throw). En caso contrario, se *setean* los parámetros del módulo en el objeto *parameters* con los valores guardados en el objeto *validParameters* y se retorna el error de tipo *NO_ERROR* indicando que no hubo error.
+En caso de error, se lanza una excepción indicando el *error* retornado por la función de validación de parámetros, con la sentencia [*throw*](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/throw). En caso contrario, se *setean* los parámetros del módulo en el objeto *parameters* con los valores guardados en el objeto *validParameters* y se retorna un objeto *NO_ERROR* indicando que no hubo error.
 
 #### Errores
 
