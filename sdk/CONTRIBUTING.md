@@ -5,7 +5,7 @@
 - [Introducción](#introducción)
 - [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
-  - [Funcionalidades del módulo Configuration](#Funcionalidades-del-módulo-configuration)
+  - [Funcionalidades del módulo Configuration](#funcionalidades-del-módulo-configuration)
   - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-security)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
@@ -15,7 +15,7 @@
   - [Funcionalidad de *validateToken*](#funcionalidad-de-validatetoken)
   - [Funcionalidad de *logout*](#funcionalidad-de-logout)
   - [Llamadas concurrentes](#llamadas-concurrentes)
-- [Ejecución de pruebas unitarias y *linter*](#ejecución-de-pruebas-unitarias-y-linter)
+- [Ejecución de pruebas y *linter*](#ejecución-de-pruebas-y-linter)
 
 ## Introducción
 
@@ -854,21 +854,21 @@ si el SDK se encuentra en modo *testing*, con el parámetro *production* en *fal
 
 en caso de que dicho parámetro se encuentre inicializado en *true*.
 
-## Ejecución de pruebas unitarias y *linter*
+## Ejecución de pruebas y *linter*
 
 Los comandos explicados a continuación se encuentran definidos en el archivo `package.json`, en la sección *scripts*.
 
-### Pruebas unitarias
+### Pruebas unitarias y de integración
 
-Para ejecutar las pruebas unitarias, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
+Para ejecutar las pruebas unitarias y de integración, se deberá ejecutar el siguiente comando dentro de la carpeta /sdk:
 
 `npm run test`
 
-Además, se puede obtener el cubrimiento (*coverage*) de las pruebas unitarias ejecutando el siguiente comando:
+Además, se puede obtener el cubrimiento (*coverage*) de las pruebas ejecutando el siguiente comando:
 
 `npm run testCoverage`
 
-Se observa que este comando también ejecuta las pruebas unitarias y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
+Se observa que este comando también ejecuta las pruebas y devuelve sus resultados, devolviendo además los porcentajes de cubrimiento para los criterios de cubrimiento definidos.
 
 ### *Linter*
 
@@ -877,3 +877,14 @@ Para ejecutar el *linter* se deberá ejecutar el siguiente comando dentro de la 
 `npm run linter`
 
 Las reglas que aplica el *linter* se encuentran definidas en los archivos `.eslintrc.json` y `.prettierrc.js`.
+
+### Insider
+
+Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/) 
+Para su instalación se debe [descargar la herramienta](https://github.com/insidersec/insider) y ejecutar el comando:
+`./insider --tech javascript  --target <path-to-sdk>`.
+
+### TestApp
+
+En la *branch* `test/develop` se tiene disponible un *profiler* que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
+
