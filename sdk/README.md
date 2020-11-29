@@ -333,7 +333,7 @@ clearParameters();
 
 ### Función resetParameters
 
-Esta función limpia todos los parámetros del módulo de configuración. Basta con llamarla de la siguiente manera:
+Esta función limpia todos los parámetros del módulo de configuración, a excepción de *production*, que lo *setea* en *false*. Basta con llamarla de la siguiente manera:
 
 ```javascript
 resetParameters();
