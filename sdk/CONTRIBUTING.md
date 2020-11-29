@@ -5,7 +5,7 @@
 - [Introducción](#introducción)
 - [Diseño en alto nivel del componente SDK](#diseño-en-alto-nivel-del-componente-sdk)
 - [Funcionalidades del componente SDK](#funcionalidades-del-componente-sdk)
-  - [Funcionalidades del módulo Configuration](#Funcionalidades-del-módulo-configuration)
+  - [Funcionalidades del módulo Configuration](#funcionalidades-del-módulo-configuration)
   - [Funcionalidades del módulo Security](#funcionalidades-del-módulo-security)
   - [Funcionalidad de *initialize*](#funcionalidad-de-initialize)
   - [Funcionalidad de *login*](#funcionalidad-de-login)
@@ -877,3 +877,14 @@ Para ejecutar el *linter* se deberá ejecutar el siguiente comando dentro de la 
 `npm run linter`
 
 Las reglas que aplica el *linter* se encuentran definidas en los archivos `.eslintrc.json` y `.prettierrc.js`.
+
+### Insider
+
+Es una herramienta de análisis estático de código que busca vulnerabilidades de seguridad cubriendo el [OWASP Top 10.](https://owasp.org/www-project-top-ten/) 
+Para su instalación se debe [descargar la herramienta](https://github.com/insidersec/insider) y ejecutar el comando:
+`./insider --tech javascript  --target <path-to-sdk>`.
+
+### TestApp
+
+En la *branch* [`test/develop`](https://github.com/elirosselli/pis2020/tree/test/develop/testApp) se tiene disponible un profiler que obtiene los tiempos de ejecución de cada una de las funciones expuestas por el SDK (sin contar el tiempo de las *request* y *responses*). Para construir dicha herramienta se introdujeron *timers* a lo largo del código del SDK, por lo que si este sufre modificaciones es probable que también deba modificarse la disposición de los *timers*. 
+
