@@ -768,7 +768,7 @@ describe('configuration & security modules and make request type get user info i
     expect.assertions(5);
   });
 
-  it('calls set parameters and makes a get user info request with expired accessToken', async () => {
+  it('calls set parameters and makes a get user info request with expired accessToken with WWW authenticate header', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -801,6 +801,68 @@ describe('configuration & security modules and make request type get user info i
       Promise.reject({
         headers: {
           'WWW-Authenticate':
+            'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
+      }),
+    );
+
+    try {
+      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
+    }
+
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
+  });
+
+  it('calls set parameters and makes a get user info request with expired accessToken with Www authenticate header', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
             'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
         },
       }),
@@ -946,7 +1008,7 @@ describe('configuration & security modules and make request type get user info i
     expect.assertions(4);
   });
 
-  it('calls set parameters and makes a get user info request, fetch returns some error with www authenticate header', async () => {
+  it('calls set parameters and makes a get user info request, fetch returns some error with WWW authenticate header', async () => {
     const clientId = 'clientId';
     const clientSecret = 'clientSecret';
     const code = 'correctCode';
@@ -978,6 +1040,65 @@ describe('configuration & security modules and make request type get user info i
       Promise.reject({
         headers: {
           'WWW-Authenticate':
+            'error="other_error", error_description="other_error_description"',
+        },
+      }),
+    );
+    try {
+      await makeRequest(REQUEST_TYPES.GET_USER_INFO);
+    } catch (err) {
+      expect(err).toBe(ERRORS.FAILED_REQUEST);
+    }
+    parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(4);
+  });
+
+  it('calls set parameters and makes a get user info request, fetch returns some error with Www authenticate header', async () => {
+    const clientId = 'clientId';
+    const clientSecret = 'clientSecret';
+    const code = 'correctCode';
+    const redirectUri = 'redirectUri';
+    setParameters({
+      clientId,
+      clientSecret,
+      accessToken,
+      code,
+      redirectUri,
+      idToken,
+    });
+
+    let parameters = getParameters();
+    expect(parameters).toStrictEqual({
+      redirectUri,
+      clientId,
+      clientSecret,
+      production: false,
+      code,
+      accessToken,
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: '',
+      idToken,
+      scope: '',
+    });
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
             'error="other_error", error_description="other_error_description"',
         },
       }),

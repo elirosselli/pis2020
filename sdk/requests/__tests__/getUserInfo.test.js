@@ -100,7 +100,7 @@ describe('getUserInfo', () => {
     });
   });
 
-  it('calls getUserInfo with incorrect access token', async () => {
+  it('calls getUserInfo with incorrect access token with WWW authenticate header', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       clientSecret: 'clientSecret',
@@ -113,6 +113,34 @@ describe('getUserInfo', () => {
       Promise.reject({
         headers: {
           'WWW-Authenticate':
+            'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
+        },
+      }),
+    );
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.INVALID_TOKEN);
+    }
+
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect.assertions(2);
+  });
+
+  it('calls getUserInfo with incorrect access token with Www authenticate header', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      accessToken: 'incorrectAccessToken',
+      idToken,
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
             'error="invalid_token", error_description="The access token provided is expired, revoked, malformed, or invalid for other reasons"',
         },
       }),
@@ -198,7 +226,7 @@ describe('getUserInfo', () => {
     expect.assertions(3);
   });
 
-  it('calls getUserInfo and returns some error with www authenticate header', async () => {
+  it('calls getUserInfo and returns some error with WWW authenticate header', async () => {
     getParameters.mockReturnValue({
       clientId: 'clientId',
       clientSecret: 'clientSecret',
@@ -211,6 +239,35 @@ describe('getUserInfo', () => {
       Promise.reject({
         headers: {
           'WWW-Authenticate':
+            'error="other_error", error_description="other_error_description"',
+        },
+      }),
+    );
+
+    try {
+      await getUserInfo();
+    } catch (err) {
+      expect(err).toStrictEqual(ERRORS.FAILED_REQUEST);
+    }
+
+    expect(mockMutex).toHaveBeenCalledTimes(1);
+    expect(validateSub).not.toHaveBeenCalled();
+    expect.assertions(3);
+  });
+
+  it('calls getUserInfo and returns some error with Www authenticate header', async () => {
+    getParameters.mockReturnValue({
+      clientId: 'clientId',
+      clientSecret: 'clientSecret',
+      redirectUri: 'redirectUri',
+      accessToken: 'correctAccessToken',
+      idToken,
+    });
+
+    fetch.mockImplementation(() =>
+      Promise.reject({
+        headers: {
+          'Www-Authenticate':
             'error="other_error", error_description="other_error_description"',
         },
       }),
