@@ -62,10 +62,6 @@ const getUserInfo = async () => {
     if (error === ERRORS.INVALID_ID_TOKEN) {
       return Promise.reject(ERRORS.INVALID_ID_TOKEN);
     }
-    // const stringsHeadersAndroid =
-    //   error.headers && error.headers['WWW-Authenticate'];
-    // const stringsHeadersIos =
-    //   error.headers && error.headers['Www-Authenticate'];
     const stringsHeaders =
       error.headers &&
       (error.headers['WWW-Authenticate'] || error.headers['Www-Authenticate']);
